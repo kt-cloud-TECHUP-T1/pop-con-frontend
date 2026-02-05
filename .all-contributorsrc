@@ -1,0 +1,22 @@
+{
+  "projectName": "pop-con-frontend",
+  "projectOwner": "f1m1nn2r",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": ["README.md"],
+  "imageSize": 100,
+  "commit": true,
+  "commitConvention": "eslint",
+  "contributors": [
+    {
+      "login": "gxpk2978",
+      "name": "Lee Won chan",
+      "avatar_url": "https://avatars.githubusercontent.com/u/81314972?v=4",
+      "profile": "https://github.com/gxpk2978",
+      "contributions": ["code"]
+    }
+  ],
+  "contributorsPerLine": 2,
+  "linkToUsage": true
+}
+
