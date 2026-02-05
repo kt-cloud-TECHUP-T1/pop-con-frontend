@@ -1,6 +1,6 @@
 # Pop-con Frontend Project
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
-[![All Contributors](https://img.shields.io/badge/all_contributors-1-orange.svg?style=flat-square)](#contributors-)
+[![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
 
 ## 기술 스택 (Technical Stack)
@@ -45,6 +45,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   <tbody>
     <tr>
       <td align="center" valign="top" width="50%"><a href="https://github.com/gxpk2978"><img src="https://avatars.githubusercontent.com/u/81314972?v=4?s=100" width="100px;" alt="Lee Won chan"/><br /><sub><b>Lee Won chan</b></sub></a><br /><a href="https://github.com/f1m1nn2r/pop-con-frontend/commits?author=gxpk2978" title="Code">💻</a></td>
+      <td align="center" valign="top" width="50%"><a href="https://github.com/f1m1nn2r"><img src="https://avatars.githubusercontent.com/u/130326962?v=4?s=100" width="100px;" alt="김민중"/><br /><sub><b>김민중</b></sub></a><br /><a href="https://github.com/f1m1nn2r/pop-con-frontend/commits?author=f1m1nn2r" title="Code">💻</a></td>
     </tr>
   </tbody>
   <tfoot>
