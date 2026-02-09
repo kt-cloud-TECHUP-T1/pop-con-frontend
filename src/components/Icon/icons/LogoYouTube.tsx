@@ -1,0 +1,18 @@
+import * as React from 'react';
+import type { SVGProps } from 'react';
+const SvgLogoYouTube = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1em"
+    height="1em"
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <path
+      fill="#262626"
+      d="M12 4.545c.06 0 6.664.002 8.318.447.916.245 1.64.97 1.885 1.885.447 1.661.447 5.123.447 5.123 0 .019-.001 3.466-.447 5.123a2.68 2.68 0 0 1-1.885 1.885c-1.654.445-8.258.447-8.317.447 0 0-6.658 0-8.319-.447a2.68 2.68 0 0 1-1.885-1.885C1.351 15.466 1.35 12.019 1.35 12c0 0 0-3.462.447-5.123.245-.916.97-1.64 1.885-1.885 1.661-.447 8.319-.447 8.319-.447m-2.13 10.65L15.408 12 9.87 8.806z"
+    />
+  </svg>
+);
+export default SvgLogoYouTube;
