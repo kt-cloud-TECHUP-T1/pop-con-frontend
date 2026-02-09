@@ -1,4 +1,6 @@
-import Image from "next/image";
+import { Button } from '@/components/ui/button';
+import { Typography } from '@/components/ui/typography';
+import Image from 'next/image';
 
 export default function Home() {
   return (
@@ -17,20 +19,20 @@ export default function Home() {
             To get started, edit the page.tsx file.
           </h1>
           <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
+            Looking for a starting point or more instructions? Head over to{' '}
             <a
               href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
               className="font-medium text-zinc-950 dark:text-zinc-50"
             >
               Templates
-            </a>{" "}
-            or the{" "}
+            </a>{' '}
+            or the{' '}
             <a
               href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
               className="font-medium text-zinc-950 dark:text-zinc-50"
             >
               Learning
-            </a>{" "}
+            </a>{' '}
             center.
           </p>
         </div>
@@ -59,6 +61,20 @@ export default function Home() {
             Documentation
           </a>
         </div>
+        <Button variant="primary" size="large">
+          Label
+        </Button>
+        <Button variant="secondary" size="medium">
+          Label
+        </Button>
+
+        <Button variant="tertiary" size="small">
+          Label
+        </Button>
+
+        <Button variant="destructive" size="xsmall">
+          지삼선
+        </Button>
       </main>
     </div>
   );
