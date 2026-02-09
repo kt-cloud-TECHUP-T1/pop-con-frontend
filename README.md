@@ -1,38 +1,10 @@
 # Pop-con Frontend Project
+
 <!-- ALL-CONTRIBUTORS-BADGE:START - Do not remove or modify this section -->
+
 [![All Contributors](https://img.shields.io/badge/all_contributors-2-orange.svg?style=flat-square)](#contributors-)
+
 <!-- ALL-CONTRIBUTORS-BADGE:END -->
-
-## 기술 스택 (Technical Stack)
-
-- **Framework**: Next.js (v16.1.6)
-- **Language**: TypeScript
-- **Styling**: Tailwind CSS, PostCSS
-- **State Management**: Zustand
-- **Data Fetching**: `@tanstack/react-query`, Axios
-- **UI Components**: `class-variance-authority`, `clsx`, `lucide-react`, `tailwind-merge`, `tw-animate-css`
-- **Validation**: Zod
-- **Realtime Communication**: Socket.io-client
-
-## 협업 컨벤션 (Collaboration Conventions)
-
-### 브랜치 전략 (Git Flow)
-
-- `main`: 배포 가능한 안정 버전 (Production)
-- `dev`: 다음 배포를 위한 개발 브랜치
-- `feat/기능명(이슈명)`: 새로운 기능 개발 (예: `feat/login`, `feat/user-profile`)
-- `fix/기능명(이슈명)`: 버그 수정 (예: `fix/inventory-error`, `fix/login-bug`)
-
-### 📝 커밋 메시지 규칙 (Commit Message Rules)
-
-- `feat`: 새로운 기능 추가
-- `fix`: 버그 수정
-- `docs`: 문서 수정 (README, Swagger 등)
-- `test`: 테스트 코드 추가
-- `refactor`: 코드 리팩토링 (기능 변경 없음)
-- `chore`: 빌드, 패키지 매니저 설정 변경
-
----
 
 ## Contributors ✨
 
@@ -64,4 +36,38 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-This project follows the [all-contributors](https://github.com/all-contributors/all-contributors) specification. Contributions of any kind welcome!
+## 기술 스택 (Technical Stack)
+
+- **Framework**: Next.js (v16.1.6)
+- **Language**: TypeScript
+- **Styling**: Tailwind CSS, PostCSS
+- **State Management**: Zustand
+- **Data Fetching**: `@tanstack/react-query`, Axios
+- **UI Components**: `class-variance-authority`, `clsx`, `lucide-react`, `tailwind-merge`, `tw-animate-css`
+- **Validation**: Zod
+- **Realtime Communication**: Socket.io-client
+
+## 협업 컨벤션 (Collaboration Conventions)
+
+### 브랜치 전략 (Git Flow)
+
+- `main`: 배포 가능한 안정 버전 (Production)
+- `dev`: 다음 배포를 위한 개발 브랜치
+- `feat/기능명(이슈명)`: 새로운 기능 개발 (예: `feat/login`, `feat/user-profile`)
+- `fix/기능명(이슈명)`: 버그 수정 (예: `fix/inventory-error`, `fix/login-bug`)
+
+### 📝 커밋 메시지 규칙 (Commit Message Rules)
+
+- `feat`: 새로운 기능 추가
+- `fix`: 버그 수정
+- `docs`: 문서 수정 (README, Swagger 등)
+- `test`: 테스트 코드 추가
+- `refactor`: 코드 리팩토링 (기능 변경 없음)
+- `chore`: 빌드, 패키지 매니저 설정 변경
+
+## 📚 가이드 문서
+
+- **Icon System**: SVGR 기반 아이콘 관리 및 추가 방법 ([가이드 바로가기](./src/docs/icons.md))
+- **Modal System**: 디자인 시스템 기반의 공통 모달(CommonModal) 및 레이아웃 사용 가이드 ([가이드 바로가기](./src/docs/modals.md))
+
+---
