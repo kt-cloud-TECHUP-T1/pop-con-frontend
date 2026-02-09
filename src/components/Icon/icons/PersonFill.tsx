@@ -1,0 +1,18 @@
+import * as React from 'react';
+import type { SVGProps } from 'react';
+const SvgPersonFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1em"
+    height="1em"
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <path
+      fill="#262626"
+      d="M12 13c2.383 0 4.585.655 6.22 1.768 1.629 1.108 2.78 2.744 2.78 4.676A2.556 2.556 0 0 1 18.444 22H5.556A2.556 2.556 0 0 1 3 19.444c0-1.932 1.151-3.568 2.78-4.676C7.415 13.655 9.617 13 12 13m0-11a5 5 0 1 1 0 10 5 5 0 0 1 0-10"
+    />
+  </svg>
+);
+export default SvgPersonFill;

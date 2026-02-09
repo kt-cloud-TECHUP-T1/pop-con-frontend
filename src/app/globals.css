@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -44,6 +44,19 @@
   --radius-2xl: calc(var(--radius) + 8px);
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
+
+  /* 디자인 시스템 설계도에 따른 border-radius */
+  --radius-shape-none: 0;
+  --radius-2xs: 4px;
+  --radius-xs: 6px;
+  --radius-s: 8px;
+  --radius-ms: 10px;
+  --radius-m: 12px;
+  --radius-ml: 16px;
+  --radius-lg: 20px;
+  --radius-xl: 24px;
+  --radius-shape-full: 1000px;
+  /* END 디자인 시스템 설계도에 따른 border-radius */
 }
 
 :root {
