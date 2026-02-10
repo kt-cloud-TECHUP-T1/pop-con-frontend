@@ -10,7 +10,7 @@ const SvgMenu = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     <path
-      fill="#262626"
+      fill="currentColor"
       d="M20 18a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2zm0-7a1 1 0 1 1 0 2H4a1 1 0 1 1 0-2zm0-7a1 1 0 1 1 0 2H4a1 1 0 0 1 0-2z"
     />
   </svg>

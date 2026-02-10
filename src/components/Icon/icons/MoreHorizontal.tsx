@@ -10,7 +10,7 @@ const SvgMoreHorizontal = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     <path
-      fill="#262626"
+      fill="currentColor"
       d="M8 12a2 2 0 1 1-4 0 2 2 0 0 1 4 0m6 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0m6 0a2 2 0 1 1-4 0 2 2 0 0 1 4 0"
     />
   </svg>

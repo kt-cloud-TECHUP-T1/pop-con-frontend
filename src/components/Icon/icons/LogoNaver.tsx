@@ -10,7 +10,7 @@ const SvgLogoNaver = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     <path
-      fill="#262626"
+      fill="currentColor"
       d="M14.86 12.598 8.905 3.5H3.972v17h5.169v-9.098l5.953 9.098h4.934v-17h-5.169z"
     />
   </svg>
