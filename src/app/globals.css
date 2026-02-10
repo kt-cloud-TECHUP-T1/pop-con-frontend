@@ -57,6 +57,23 @@
   --radius-xl: 24px;
   --radius-shape-full: 1000px;
   /* END 디자인 시스템 설계도에 따른 border-radius */
+
+  /* Spacing – Desktop 기준 => s,m,l등 모바일기준은 media 사이즈에 따라 모바일사이즈 적용, gap, padding, margin 에 적용*/
+  --spacing-none: 0px;
+
+  --spacing-3xs: 2px;
+  --spacing-2xs: 4px;
+  --spacing-xs: 8px;
+  --spacing-s: 16px;
+  --spacing-ms: 24px;
+  --spacing-m: 32px;
+  --spacing-ml: 40px;
+  --spacing-l: 48px;
+  --spacing-xl: 64px;
+  --spacing-2xl: 80px;
+  --spacing-3xl: 96px;
+
+  --spacing-page: 120px;
 }
 
 /* =========================
@@ -176,6 +193,8 @@
   --opacity-72: 72%;
   --opacity-80: 80%;
   --opacity-100: 100%;
+
+  --btn-state-disabled: #2424240a;
 }
 
 /* =========================
@@ -193,7 +212,7 @@
   --btn-destructive-default: var(--red-50);
   --btn-destructive-hover: var(--red-40);
   --btn-destructive-pressed: var(--red-30);
-  --btn-destructive-disabled: var(--red-70);
+  --btn-destructive-disabled: var(--red-80);
 
   /* Button - Secondary */
   --btn-secondary-default: var(--neutral-90);
@@ -379,5 +398,25 @@
   }
   body {
     @apply bg-background text-foreground font-sans;
+  }
+}
+@media (max-width: 768px) {
+  @theme inline {
+    /* Spacing – Mobile */
+    --spacing-none: 0px;
+
+    --spacing-3xs: 2px;
+    --spacing-2xs: 4px;
+    --spacing-xs: 8px;
+    --spacing-s: 12px;
+    --spacing-ms: 16px;
+    --spacing-m: 24px;
+    --spacing-ml: 32px;
+    --spacing-l: 40px;
+    --spacing-xl: 48px;
+    --spacing-2xl: 64px;
+    --spacing-3xl: 80px;
+
+    --spacing-page: 64px;
   }
 }

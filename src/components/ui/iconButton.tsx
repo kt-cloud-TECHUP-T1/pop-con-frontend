@@ -2,9 +2,10 @@ import * as React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
+import { Icon, type IconName } from '@/components/Icon/Icon';
 
-const buttonVariants = cva(
-  'inline-flex items-center justify-center whitespace-nowrap font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none ',
+const iconButtonVariants = cva(
+  'inline-flex items-center justify-center rounded-shape-full transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 disabled:pointer-events-none',
   {
     variants: {
       variant: {
@@ -16,22 +17,14 @@ const buttonVariants = cva(
           'border border-[var(--line-4)] bg-white text-[var(--content-high)] hover:bg-[var(--btn-tertiary-hover)] hover:border-[var(--line-4)] active:bg-[var(--btn-tertiary-pressed)] active:border-[var(--line-4)] disabled:border-[var(--line-3)] disabled:text-[var(--content-disabled)]',
         destructive:
           'bg-[var(--btn-destructive-default)] text-white hover:bg-[var(--btn-destructive-hover)] active:bg-[var(--btn-destructive-pressed)] disabled:bg-[var(--btn-destructive-disabled)]',
-        ghost:
-          'bg-transparent text-[var(--content-high)] hover:bg-[var(--ghost-btn-primary-hover)] active:bg-[var(--ghost-btn-primary-pressed)] disabled:text-[var(--content-disabled)]',
       },
-      // 사이즈에 관한건 아직 맵핑된 inline 사이즈 사용전
       size: {
-        large:
-          'h-12 min-w-[88px] px-3 py-2  gap-[var(--spacing-xs)]  text-base rounded-[var(--radius-ms)]',
-        medium:
-          'h-10 min-w-[72px] px-2.5 py-2  gap-[var(--spacing-xs)] text-sm rounded-[var(--radius-s)]',
-        small:
-          'h-9 min-w-[68px] px-2.5 py-2  gap-[var(--spacing-2xs)] text-sm rounded-[var(--radius-ms)]',
-        xsmall:
-          'h-7 min-w-[50px] px-2 py-1  gap-[var(--spacing-2xs)]  text-xs rounded-[var(--radius-xs)]',
+        large: 'h-12 w-12 p-[var(--spacing-xs)] gap-[var(--spacing-xs)]',
+        medium: 'h-10 w-10 p-[var(--spacing-xs)] gap-[var(--spacing-xs)] ',
+        small: 'h-8 w-8 p-[var(--spacing-2xs)] gap-[var(--spacing-xs)]',
+        xsmall: 'h-6 w-6 p-[var(--spacing-2xs)] gap-[var(--spacing-xs)]',
       },
     },
-
     defaultVariants: {
       variant: 'primary',
       size: 'medium',
@@ -39,25 +32,26 @@ const buttonVariants = cva(
   }
 );
 
-export interface ButtonProps
+export interface IconButtonProps
   extends
     React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+    VariantProps<typeof iconButtonVariants> {
+  icon: IconName;
+  iconSize?: number;
   asChild?: boolean;
-  leftIcon?: React.ReactNode;
-  rightIcon?: React.ReactNode;
+  ariaLabel: string; // 🔥 필수
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
+export const IconButton = React.forwardRef<HTMLButtonElement, IconButtonProps>(
   (
     {
       className,
       variant,
       size,
+      icon,
+      iconSize,
       asChild = false,
-      leftIcon,
-      rightIcon,
-      children,
+      ariaLabel,
       ...props
     },
     ref
@@ -66,18 +60,15 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     return (
       <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
+        aria-label={ariaLabel}
+        className={cn(iconButtonVariants({ variant, size, className }))}
         {...props}
       >
-        {leftIcon && <span className="inline-flex shrink-0">{leftIcon}</span>}
-        {children}
-        {rightIcon && <span className="inline-flex shrink-0">{rightIcon}</span>}
+        <Icon name={icon} size={iconSize} className="shrink-0" />
       </Comp>
     );
   }
 );
 
-Button.displayName = 'Button';
-
-export { Button, buttonVariants };
+IconButton.displayName = 'IconButton';
