@@ -6,7 +6,7 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
+  --font-sans: var(--font-family-sans);
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -60,6 +60,269 @@
   --radius-shape-full: 1000px;
   /* END 디자인 시스템 설계도에 따른 border-radius */
 
+  /* Spacing – Desktop 기준 => s,m,l등 모바일기준은 media 사이즈에 따라 모바일사이즈 적용, gap, padding, margin 에 적용*/
+  --spacing-none: 0px;
+
+  --spacing-3xs: 2px;
+  --spacing-2xs: 4px;
+  --spacing-xs: 8px;
+  --spacing-s: 16px;
+  --spacing-ms: 24px;
+  --spacing-m: 32px;
+  --spacing-ml: 40px;
+  --spacing-l: 48px;
+  --spacing-xl: 64px;
+  --spacing-2xl: 80px;
+  --spacing-3xl: 96px;
+
+  --spacing-page: 120px;
+}
+
+/* =========================
+   Primitive Colors
+   ========================= */
+:root {
+  /* Common */
+  --black: #000000;
+  --white: #ffffff;
+
+  /* Neutral */
+  --neutral-10: #0a0a0a;
+  --neutral-20: #171717;
+  --neutral-30: #262626;
+  --neutral-40: #404040;
+  --neutral-50: #525252;
+  --neutral-60: #737373;
+  --neutral-70: #a3a3a3;
+  --neutral-80: #d4d4d4;
+  --neutral-90: #e5e5e5;
+  --neutral-95: #f5f5f5;
+  --neutral-99: #fafafa;
+
+  /* Cool Neutral */
+  --cool-neutral-10: #121619;
+  --cool-neutral-20: #21272a;
+  --cool-neutral-30: #343a3f;
+  --cool-neutral-40: #474d52;
+  --cool-neutral-50: #585e64;
+  --cool-neutral-60: #878d96;
+  --cool-neutral-70: #a2a9b0;
+  --cool-neutral-80: #cdd3da;
+  --cool-neutral-90: #e2e5e9;
+  --cool-neutral-95: #f0f3f4;
+  --cool-neutral-99: #f6f7f9;
+
+  /* Blue */
+  --blue-10: #172554;
+  --blue-20: #1e3a8a;
+  --blue-30: #1e40af;
+  --blue-40: #1d4ed8;
+  --blue-50: #2563eb;
+  --blue-60: #3b82f6;
+  --blue-70: #60a5fa;
+  --blue-80: #93c5fd;
+  --blue-90: #bfdbfe;
+  --blue-95: #dbeafe;
+  --blue-99: #eff6ff;
+
+  /* Red */
+  --red-10: #450a0a;
+  --red-20: #7f1d1d;
+  --red-30: #991b1b;
+  --red-40: #b91c1c;
+  --red-50: #dc2626;
+  --red-60: #ef4444;
+  --red-70: #f87171;
+  --red-80: #fca5a5;
+  --red-90: #fecaca;
+  --red-95: #ffe2e2;
+  --red-99: #fef2f2;
+
+  /* Green */
+  --green-10: #052e16;
+  --green-20: #14532d;
+  --green-30: #166534;
+  --green-40: #15803d;
+  --green-50: #16a64b;
+  --green-60: #22c55e;
+  --green-70: #4ade80;
+  --green-80: #86efac;
+  --green-90: #bbf7d0;
+  --green-95: #dcfce7;
+  --green-99: #f0fdf4;
+
+  /* Yellow */
+  --yellow-10: #422006;
+  --yellow-20: #713f12;
+  --yellow-30: #854d0e;
+  --yellow-40: #a16207;
+  --yellow-50: #ca8a04;
+  --yellow-60: #eab308;
+  --yellow-70: #facc15;
+  --yellow-80: #fde047;
+  --yellow-90: #fef08a;
+  --yellow-95: #fef9c3;
+  --yellow-99: #fefce8;
+
+  /* Orange */
+  --orange-10: #431407;
+  --orange-20: #7c2d12;
+  --orange-30: #9a3412;
+  --orange-40: #c2410c;
+  --orange-50: #f35e11;
+  --orange-60: #f97316;
+  --orange-70: #fb923c;
+  --orange-80: #fdba74;
+  --orange-90: #fed7aa;
+  --orange-95: #ffedd5;
+  --orange-99: #fff7ed;
+
+  /* Opacity (percent) */
+  --opacity-0: 0%;
+  --opacity-2: 2%;
+  --opacity-4: 4%;
+  --opacity-6: 6%;
+  --opacity-8: 8%;
+  --opacity-12: 12%;
+  --opacity-16: 16%;
+  --opacity-20: 20%;
+  --opacity-24: 24%;
+  --opacity-32: 32%;
+  --opacity-40: 40%;
+  --opacity-48: 48%;
+  --opacity-56: 56%;
+  --opacity-64: 64%;
+  --opacity-72: 72%;
+  --opacity-80: 80%;
+  --opacity-100: 100%;
+
+  --btn-state-disabled: #2424240a;
+}
+
+/* =========================
+   Design Semantic Tokens (Light)
+   ========================= */
+
+:root {
+  /* Button - Primary */
+  --btn-primary-default: var(--neutral-10);
+  --btn-primary-hover: var(--neutral-30);
+  --btn-primary-pressed: var(--neutral-40);
+  --btn-primary-disabled: var(--neutral-80);
+
+  /* Button - Destructive */
+  --btn-destructive-default: var(--red-50);
+  --btn-destructive-hover: var(--red-40);
+  --btn-destructive-pressed: var(--red-30);
+  --btn-destructive-disabled: var(--red-80);
+
+  /* Button - Secondary */
+  --btn-secondary-default: var(--neutral-90);
+  --btn-secondary-hover: var(--neutral-80);
+  --btn-secondary-pressed: var(--neutral-70);
+  --btn-secondary-disabled: var(--neutral-95);
+
+  /* Button - Tertiary */
+  --btn-tertiary-hover: var(--neutral-80);
+  --btn-tertiary-pressed: var(--neutral-70);
+
+  /* Ghost Button */
+  --ghost-btn-primary-hover: var(--neutral-80);
+  --ghost-btn-primary-pressed: var(--neutral-70);
+  --ghost-btn-secondary-hover: var(--neutral-80);
+  --ghost-btn-secondary-pressed: var(--neutral-70);
+
+  /* Contents (Text) */
+  --content-high: var(--neutral-30);
+  --content-medium: var(--neutral-40);
+  --content-low: var(--neutral-50);
+  --content-extra-low: var(--neutral-60);
+  --content-placeholder: var(--neutral-70);
+  --content-disabled: #0a0a0a66;
+
+  /* Background */
+  --bg-default: var(--white);
+  --bg-strong: var(--neutral-95);
+
+  /* Component */
+  --component-default: #0a0a0a0a;
+  --component-strong: #0a0a0a1f;
+  --component-disabled: #0a0a0a14;
+
+  /* Surface */
+  --surface-dimmed: #0a0a0a8f;
+
+  /* Line */
+  --line-1: #0a0a0a0a;
+  --line-2: #0a0a0a0f;
+  --line-3: #0a0a0a14;
+  --line-4: #0a0a0a29;
+  --line-5: #0a0a0a33;
+
+  /* Status */
+  --status-positive: var(--green-50);
+  --status-negative: var(--orange-50);
+  --status-warning: var(--red-50);
+}
+
+/* =========================
+   CSS Custom Properties (전역 변수)
+   ========================= */
+:root {
+  /* Font Family */
+  --font-family-sans:
+    'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+
+  /* Font Weights */
+  --font-weight-regular: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  /* Typography - Responsive with clamp() + rem */
+  /* Display */
+  --font-size-display-1: clamp(2.25rem, 4vw + 0.5rem, 3rem);
+  --line-height-display-1: 1.32;
+
+  --font-size-display-2: clamp(2rem, 3.5vw + 0.5rem, 2.5rem);
+  --line-height-display-2: 1.32;
+
+  /* Heading */
+  --font-size-heading-1: clamp(1.5rem, 2.5vw + 0.5rem, 2rem);
+  --line-height-heading-1: 1.4;
+
+  --font-size-heading-2: clamp(1.375rem, 1.5vw + 0.5rem, 1.5rem);
+  --line-height-heading-2: 1.4;
+
+  /* Title */
+  --font-size-title-1: 1.375rem;
+  --line-height-title-1: 1.4;
+
+  --font-size-title-2: 1.125rem;
+  --line-height-title-2: 1.48;
+
+  /* Body */
+  --font-size-body-1: 1rem;
+  --line-height-body-1: 1.48;
+
+  --font-size-body-2: 0.875rem;
+  --line-height-body-2: 1.48;
+
+  /* Label */
+  --font-size-label-1: 1rem;
+  --line-height-label-1: 1.48;
+
+  --font-size-label-2: 0.875rem;
+  --line-height-label-2: 1.48;
+
+  --font-size-label-3: 0.8125rem;
+  --line-height-label-3: 1.48;
+
+  /* Caption */
+  --font-size-caption-1: 0.8125rem;
+  --line-height-caption-1: 1.48;
+
+  --font-size-caption-2: 0.75rem;
+  --line-height-caption-2: 1.48;
   /* 디자인 시스템 설계도에 따른 shadow (elevation) */
   --shadow-elevation-s:
     0px 1px 2px rgba(0, 0, 0, 0.12), 0px 0px 1px rgba(0, 0, 0, 0.08),
@@ -160,6 +423,26 @@
     @apply border-border outline-ring/50;
   }
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground font-sans;
+  }
+}
+@media (max-width: 768px) {
+  @theme inline {
+    /* Spacing – Mobile */
+    --spacing-none: 0px;
+
+    --spacing-3xs: 2px;
+    --spacing-2xs: 4px;
+    --spacing-xs: 8px;
+    --spacing-s: 12px;
+    --spacing-ms: 16px;
+    --spacing-m: 24px;
+    --spacing-ml: 32px;
+    --spacing-l: 40px;
+    --spacing-xl: 48px;
+    --spacing-2xl: 64px;
+    --spacing-3xl: 80px;
+
+    --spacing-page: 64px;
   }
 }
