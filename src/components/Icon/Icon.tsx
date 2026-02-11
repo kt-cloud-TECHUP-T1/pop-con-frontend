@@ -4,7 +4,7 @@ import * as Icons from './icons';
 // 자동완성을 위한 타입
 export type IconName = keyof typeof Icons;
 
-interface IconProps {
+export interface IconProps {
   name: IconName;
   size?: number;
   color?: string;
