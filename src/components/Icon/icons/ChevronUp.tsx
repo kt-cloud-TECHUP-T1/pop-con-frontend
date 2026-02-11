@@ -10,7 +10,7 @@ const SvgChevronUp = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     <path
-      fill="#262626"
+      fill="currentColor"
       d="M11.37 7.225a1 1 0 0 1 1.337.068l8 8a1 1 0 0 1-1.414 1.414L12 9.414l-7.293 7.293a1 1 0 0 1-1.414-1.414l8-8z"
     />
   </svg>

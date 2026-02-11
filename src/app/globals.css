@@ -55,6 +55,8 @@
   --radius-ml: 16px;
   --radius-lg: 20px;
   --radius-xl: 24px;
+  --radius-2xl: 32px;
+  --radius-3xl: 48px;
   --radius-shape-full: 1000px;
   /* END 디자인 시스템 설계도에 따른 border-radius */
 
@@ -321,6 +323,30 @@
 
   --font-size-caption-2: 0.75rem;
   --line-height-caption-2: 1.48;
+  /* 디자인 시스템 설계도에 따른 shadow (elevation) */
+  --shadow-elevation-s:
+    0px 1px 2px rgba(0, 0, 0, 0.12), 0px 0px 1px rgba(0, 0, 0, 0.08),
+    0px 0px 1px rgba(0, 0, 0, 0.08);
+  --shadow-elevation-m:
+    0px 2px 8px rgba(0, 0, 0, 0.12), 0px 0px 4px rgba(0, 0, 0, 0.08),
+    0px 0px 1px rgba(0, 0, 0, 0.08);
+  --shadow-elevation-l:
+    0px 6px 12px rgba(0, 0, 0, 0.12), 0px 4px 8px rgba(0, 0, 0, 0.08),
+    0px 0px 4px rgba(0, 0, 0, 0.08);
+  --shadow-elevation-xl:
+    0px 16px 20px rgba(0, 0, 0, 0.12), 0px 8px 16px rgba(0, 0, 0, 0.08),
+    0px 0px 8px rgba(0, 0, 0, 0.08);
+  /* END 디자인 시스템 설계도에 따른 shadow (elevation) */
+
+  /* 디자인 시스템 설계도에 따른 Avatar 사이즈 */
+  --size-avatar-xs: 20px;
+  --size-avatar-sm: 24px;
+  --size-avatar-md: 32px;
+  --size-avatar-lg: 40px;
+  --size-avatar-xl: 48px;
+  --size-avatar-2xl: 72px;
+  --size-avatar-3xl: 88px;
+  /* END 디자인 시스템 설계도에 따른 Avatar 사이즈 */
 }
 
 :root {

@@ -10,7 +10,7 @@ const SvgCheck = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     <path
-      fill="#262626"
+      fill="currentColor"
       d="M17.83 6.58a1.3 1.3 0 1 1 1.84 1.84l-9 9a1.3 1.3 0 0 1-1.838 0l-4.5-4.5a1.3 1.3 0 1 1 1.838-1.838l3.58 3.58z"
     />
   </svg>

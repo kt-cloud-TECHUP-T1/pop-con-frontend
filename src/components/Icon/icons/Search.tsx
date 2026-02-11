@@ -10,7 +10,7 @@ const SvgSearch = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     <path
-      fill="#262626"
+      fill="currentColor"
       d="M9.5 2a7.5 7.5 0 0 1 5.962 12.048l5.745 5.745a1 1 0 1 1-1.414 1.414l-5.745-5.745A7.5 7.5 0 1 1 9.5 2m0 2a5.5 5.5 0 1 0 0 11 5.5 5.5 0 0 0 0-11"
     />
   </svg>
