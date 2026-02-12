@@ -1,51 +1,60 @@
 'use client';
-import { Icon } from '@/components/Icon/Icon';
-import { Button } from '@/components/ui/button';
-import { IconButton } from '@/components/ui/iconButton';
-import { Input } from '@/components/ui/input';
-import { TextArea } from '@/components/ui/textArea';
-import { Typography } from '@/components/ui/typography';
-import Image from 'next/image';
+
 import { useState } from 'react';
+import { VerificationInput } from '@/components/ui/verificationInput';
+import type { FieldState } from '@/components/ui/fieldWrapper';
 
 export default function Home() {
   const [value, setValue] = useState('');
-
-  const state =
-    value.length === 0 ? 'default' : value.includes('@') ? 'positive' : 'error';
+  const [resendCount, setResendCount] = useState(0);
+  const [state, setState] = useState<FieldState>('default');
 
   return (
-    <div>
-      {/* <Input
-        label="label"
-        placeholder="이메일 입력"
-        required
-        value={value}
-        inputSize="large"
-        state={state}
-        onChange={(e) => setValue(e.target.value)}
-        messages={{
-          default: '회사 이메일을 입력해주세요',
-          error: '에러임',
-          positive: '긍정',
-          disabled: 'dis',
-        }}
-      /> */}
+    <div className="p-10">
+      <div className="w-80">
+        <VerificationInput
+          key={resendCount}
+          label="인증번호"
+          required
+          value={value}
+          onChange={(e) => setValue(e.target.value)}
+          state={state}
+          duration={60}
+          onExpire={() => console.log('만료됨')}
+          inputMode="numeric"
+          maxLength={6}
+          messages={{
+            default: '인증번호를 입력해주세요',
+            error: '잘못된 인증번호입니다',
+            positive: '인증 완료',
+            expire: '시간이 만료되었습니다',
+          }}
+        />
 
-      <TextArea
-        label="설명"
-        required
-        placeholder="내용을 입력해주세요"
-        state={state}
-        value={value}
-        onChange={(e) => setValue(e.target.value)}
-        messages={{
-          default: '내용을 작성해주세요.',
-          error: '잘못 입력하였습니다. ',
-          positive: '제출 가능',
-          disabled: '입력 불가능합니다.',
-        }}
-      />
+        <button
+          onClick={() => {
+            setValue('');
+            setState('default');
+            setResendCount((prev) => prev + 1); // 🔥 key 변경 → 초기화
+          }}
+          className="mt-4 px-4 py-2 bg-black text-white"
+        >
+          재전송
+        </button>
+
+        <button
+          onClick={() => setState('positive')}
+          className="mt-2 px-4 py-2 bg-green-600 text-white"
+        >
+          성공 처리
+        </button>
+        <button
+          onClick={() => setState('error')}
+          className="mt-2 px-4 py-2 bg-red-600 text-white"
+        >
+          에러 처리
+        </button>
+      </div>
     </div>
   );
 }

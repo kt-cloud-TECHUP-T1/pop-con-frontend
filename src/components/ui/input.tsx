@@ -12,6 +12,7 @@ interface InputMessages {
   error?: string;
   positive?: string;
   disabled?: string;
+  expire?: string;
 }
 
 const inputVariants = cva(
@@ -35,6 +36,8 @@ const inputVariants = cva(
           'border-[var(--status-warning)] focus-visible:border-[var(--status-warning)]',
         positive:
           'border-[var(--line-3)] focus-visible:border-[var(--color-ring)]',
+        expire:
+          'border-[var(--status-warning)] focus-visible:border-[var(--status-warning)]',
       },
       inputSize: {
         large: 'h-14 px-[var(--spacing-s)] text-[var(--font-size-body-1)]',
@@ -42,10 +45,15 @@ const inputVariants = cva(
         small: 'h-10 px-[var(--spacing-xs)] text-[var(--font-size-body-2)]',
         xsmall: 'h-8 px-[var(--spacing-xs)] text-[var(--font-size-body-2)]',
       },
+      hasSuffix: {
+        true: 'pr-16', // suffix 공간 확보
+        false: '',
+      },
     },
     defaultVariants: {
       state: 'default',
       inputSize: 'medium',
+      hasSuffix: false,
     },
   }
 );
@@ -56,6 +64,7 @@ export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> 
   state?: FieldState;
   messages?: InputMessages;
   inputSize?: InputSize;
+  suffix?: React.ReactNode;
 }
 
 export const Input = React.forwardRef<HTMLInputElement, InputProps>(
@@ -68,10 +77,13 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       messages,
       inputSize = 'medium',
       disabled,
+      suffix,
       ...props
     },
     ref
   ) => {
+    const hasSuffix = !!suffix;
+
     return (
       <FieldWrapper
         label={label}
@@ -80,12 +92,38 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         disabled={disabled}
         messages={messages}
       >
-        <input
-          ref={ref}
-          disabled={disabled}
-          className={cn(inputVariants({ state, inputSize }), className)}
-          {...props}
-        />
+        <div className="relative w-full">
+          <input
+            ref={ref}
+            disabled={disabled}
+            className={cn(
+              inputVariants({
+                state,
+                inputSize,
+                hasSuffix,
+              }),
+              className
+            )}
+            {...props}
+          />
+
+          {suffix && (
+            <div
+              className="
+                  pointer-events-none
+                  absolute
+                  right-4
+                  top-1/2
+                  -translate-y-1/2
+                  text-[var(--content-medium)]
+                  text-[var(--font-size-body-2)]
+                  font-[var(--font-weight-bold)]
+                "
+            >
+              {suffix}
+            </div>
+          )}
+        </div>
       </FieldWrapper>
     );
   }
