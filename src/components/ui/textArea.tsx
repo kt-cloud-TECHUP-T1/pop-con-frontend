@@ -5,16 +5,16 @@ import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
 import { FieldWrapper, FieldState } from './fieldWrapper';
 
-type InputSize = 'large' | 'medium' | 'small' | 'xsmall';
+type TextAreaSize = 'large' | 'medium' | 'small' | 'xsmall';
 
-interface InputMessages {
+interface TextAreaMessages {
   default?: string;
   error?: string;
   positive?: string;
   disabled?: string;
 }
 
-const inputVariants = cva(
+const textAreaVariants = cva(
   [
     'w-full',
     'rounded-[var(--radius-s)]',
@@ -25,6 +25,7 @@ const inputVariants = cva(
     'placeholder:text-[var(--content-placeholder)]',
     'disabled:bg-[var(--component-disabled)]',
     'disabled:cursor-not-allowed',
+    'resize-none', // 디자인 시스템 기준 고정 추천
   ].join(' '),
   {
     variants: {
@@ -36,29 +37,29 @@ const inputVariants = cva(
         positive:
           'border-[var(--line-3)] focus-visible:border-[var(--color-ring)]',
       },
-      inputSize: {
-        large: 'h-14 px-[var(--spacing-s)] text-[var(--font-size-body-1)]',
-        medium: 'h-12 px-[var(--spacing-s)] text-[var(--font-size-body-1)]',
-        small: 'h-10 px-[var(--spacing-xs)] text-[var(--font-size-body-2)]',
-        xsmall: 'h-8 px-[var(--spacing-xs)] text-[var(--font-size-body-2)]',
+      textAreaSize: {
+        large: 'min-h-32 p-[var(--spacing-s)] text-[var(--font-size-body-1)]',
+        medium: 'min-h-28 p-[var(--spacing-s)] text-[var(--font-size-body-1)]',
+        small: 'min-h-24 p-[var(--spacing-xs)] text-[var(--font-size-body-2)]',
+        xsmall: 'min-h-20 p-[var(--spacing-xs)] text-[var(--font-size-body-2)]',
       },
     },
     defaultVariants: {
       state: 'default',
-      inputSize: 'medium',
+      textAreaSize: 'medium',
     },
   }
 );
 
-export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+export interface TextAreaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label?: string;
   required?: boolean;
   state?: FieldState;
-  messages?: InputMessages;
-  inputSize?: InputSize;
+  messages?: TextAreaMessages;
+  textAreaSize?: TextAreaSize;
 }
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+export const TextArea = React.forwardRef<HTMLTextAreaElement, TextAreaProps>(
   (
     {
       className,
@@ -66,7 +67,7 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
       label,
       required,
       messages,
-      inputSize = 'medium',
+      textAreaSize = 'medium',
       disabled,
       ...props
     },
@@ -80,10 +81,10 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
         disabled={disabled}
         messages={messages}
       >
-        <input
+        <textarea
           ref={ref}
           disabled={disabled}
-          className={cn(inputVariants({ state, inputSize }), className)}
+          className={cn(textAreaVariants({ state, textAreaSize }), className)}
           {...props}
         />
       </FieldWrapper>
@@ -91,4 +92,4 @@ export const Input = React.forwardRef<HTMLInputElement, InputProps>(
   }
 );
 
-Input.displayName = 'Input';
+TextArea.displayName = 'TextArea';
