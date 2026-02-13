@@ -3,6 +3,7 @@
 import { AVATAR_SIZE, type AvatarSizeType } from '@/constants/design-system';
 import { Icon, IconProps } from '@/components/Icon/Icon';
 import Image from 'next/image';
+import { Box } from './CommonBox';
 
 export interface AvatarProps {
   src?: string; // 이미지 URL
@@ -20,8 +21,9 @@ export const Avatar = ({
   icon = { name: 'PersonFill' },
 }: AvatarProps) => {
   return (
-    <div
-      className={`${AVATAR_SIZE[size]} ${className} rounded-full overflow-hidden flex items-center justify-center relative bg-gray-200`}
+    <Box
+      className={`${AVATAR_SIZE[size]} ${className} overflow-hidden flex items-center justify-center relative bg-gray-200`}
+      radius="FULL"
     >
       {src ? (
         <Image
@@ -33,6 +35,6 @@ export const Avatar = ({
       ) : (
         <Icon name={icon.name} color={icon.color} size={icon.size} />
       )}
-    </div>
+    </Box>
   );
 };

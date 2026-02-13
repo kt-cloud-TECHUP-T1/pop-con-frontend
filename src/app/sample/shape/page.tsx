@@ -15,8 +15,8 @@ export default function CommonShapeSamplePage() {
     { key: 'ML', label: 'rounded-ml' },
     { key: 'LG', label: 'rounded-lg' },
     { key: 'XL', label: 'rounded-xl' },
-    { key: 'XL2', label: 'rounded-2xl' },
-    { key: 'XL3', label: 'rounded-3xl' },
+    { key: '_2XL', label: 'rounded-2xl' },
+    { key: '_3XL', label: 'rounded-3xl' },
     { key: 'FULL', label: 'rounded-shape-full' },
   ];
 
@@ -61,7 +61,7 @@ export default function CommonShapeSamplePage() {
 <Box/>
 
 // 2. radius 적용한 박스
-<Box radius='XL2'>radius</Box>
+<Box radius='_2XL'>radius</Box>
 
 // 3. shadow 적용한 박스
 <Box shadow='XL'>shadow</Box>

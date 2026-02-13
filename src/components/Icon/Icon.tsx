@@ -1,5 +1,11 @@
 import React from 'react';
-import * as Icons from './icons';
+import * as BaseIcons from './icons';
+import * as UiIcons from './ui-icons';
+
+const Icons = {
+  ...BaseIcons,
+  ...UiIcons,
+};
 
 // 자동완성을 위한 타입
 export type IconName = keyof typeof Icons;
