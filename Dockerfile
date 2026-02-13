@@ -1,7 +1,9 @@
-# 1. 의존성 설치 단계 (Dependencies)
-FROM node:22-alpine AS deps
-# Next.js 실행을 위해 필요한 라이브러리 추가 (안정성 보장)
+# 0. 공통 베이스
+FROM node:22-alpine AS base
 RUN apk add --no-cache libc6-compat
+
+# 1. 의존성 설치 단계 (Dependencies)
+FROM base AS deps
 WORKDIR /app
 
 # 의존성 설치 (패키지 매니저 파일 복사)
@@ -9,7 +11,7 @@ COPY package.json package-lock.json* ./
 RUN npm ci
 
 # 2. 빌드 단계 (Builder)
-FROM node:22-alpine AS builder
+FROM base AS builder
 WORKDIR /app
 
 COPY --from=deps /app/node_modules ./node_modules
@@ -18,7 +20,7 @@ COPY . .
 RUN npm run build
 
 # 3. 실행 단계 (Runner)
-FROM node:22-alpine AS runner
+FROM base AS runner
 WORKDIR /app
 
 ENV NODE_ENV=production
