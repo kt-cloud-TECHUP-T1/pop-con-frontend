@@ -1,21 +1,132 @@
-import * as React from "react"
+'use client';
 
-import { cn } from "@/lib/utils"
+import * as React from 'react';
+import { cva } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
+import { FieldWrapper, FieldState } from './fieldWrapper';
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
-  return (
-    <input
-      type={type}
-      data-slot="input"
-      className={cn(
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input h-9 w-full min-w-0 rounded-md border bg-transparent px-3 py-1 text-base shadow-xs transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-        className
-      )}
-      {...props}
-    />
-  )
+type InputSize = 'large' | 'medium' | 'small' | 'xsmall';
+
+interface InputMessages {
+  default?: string;
+  error?: string;
+  positive?: string;
+  disabled?: string;
+  expire?: string;
 }
 
-export { Input }
+const inputVariants = cva(
+  [
+    'w-full',
+    'rounded-[var(--radius-s)]',
+    'bg-[var(--bg-default)]',
+    'border',
+    'transition-colors',
+    'outline-none',
+    'placeholder:text-[var(--content-placeholder)]',
+    'disabled:bg-[var(--component-disabled)]',
+    'disabled:cursor-not-allowed',
+  ].join(' '),
+  {
+    variants: {
+      state: {
+        default:
+          'border-[var(--line-3)] focus-visible:border-[var(--color-ring)]',
+        error:
+          'border-[var(--status-warning)] focus-visible:border-[var(--status-warning)]',
+        positive:
+          'border-[var(--line-3)] focus-visible:border-[var(--color-ring)]',
+        expire:
+          'border-[var(--status-warning)] focus-visible:border-[var(--status-warning)]',
+      },
+      inputSize: {
+        large: 'h-14 px-[var(--spacing-s)] text-[var(--font-size-body-1)]',
+        medium: 'h-12 px-[var(--spacing-s)] text-[var(--font-size-body-1)]',
+        small: 'h-10 px-[var(--spacing-xs)] text-[var(--font-size-body-2)]',
+        xsmall: 'h-8 px-[var(--spacing-xs)] text-[var(--font-size-body-2)]',
+      },
+      hasSuffix: {
+        true: 'pr-16', // suffix 공간 확보
+        false: '',
+      },
+    },
+    defaultVariants: {
+      state: 'default',
+      inputSize: 'medium',
+      hasSuffix: false,
+    },
+  }
+);
+
+export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
+  label?: string;
+  required?: boolean;
+  state?: FieldState;
+  messages?: InputMessages;
+  inputSize?: InputSize;
+  suffix?: React.ReactNode;
+}
+
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  (
+    {
+      className,
+      state = 'default',
+      label,
+      required,
+      messages,
+      inputSize = 'medium',
+      disabled,
+      suffix,
+      ...props
+    },
+    ref
+  ) => {
+    const hasSuffix = !!suffix;
+
+    return (
+      <FieldWrapper
+        label={label}
+        required={required}
+        state={state}
+        disabled={disabled}
+        messages={messages}
+      >
+        <div className="relative w-full">
+          <input
+            ref={ref}
+            disabled={disabled}
+            className={cn(
+              inputVariants({
+                state,
+                inputSize,
+                hasSuffix,
+              }),
+              className
+            )}
+            {...props}
+          />
+
+          {suffix && (
+            <div
+              className="
+                  pointer-events-none
+                  absolute
+                  right-4
+                  top-1/2
+                  -translate-y-1/2
+                  text-[var(--content-medium)]
+                  text-[var(--font-size-body-2)]
+                  font-[var(--font-weight-bold)]
+                "
+            >
+              {suffix}
+            </div>
+          )}
+        </div>
+      </FieldWrapper>
+    );
+  }
+);
+
+Input.displayName = 'Input';

@@ -22,13 +22,13 @@ const buttonVariants = cva(
       // 사이즈에 관한건 아직 맵핑된 inline 사이즈 사용전
       size: {
         large:
-          'h-12 min-w-[88px] px-3 py-2  gap-[var(--spacing-xs)]  text-base rounded-[var(--radius-ms)]',
+          'h-12 min-w-[88px] px-3 py-2  gap-xs  text-base rounded-[var(--radius-ms)]',
         medium:
-          'h-10 min-w-[72px] px-2.5 py-2  gap-[var(--spacing-xs)] text-sm rounded-[var(--radius-s)]',
+          'h-10 min-w-[72px] px-2.5 py-2  gap-xs text-sm rounded-[var(--radius-s)]',
         small:
-          'h-9 min-w-[68px] px-2.5 py-2  gap-[var(--spacing-2xs)] text-sm rounded-[var(--radius-ms)]',
+          'h-9 min-w-[68px] px-2.5 py-2  gap-2xs text-sm rounded-[var(--radius-ms)]',
         xsmall:
-          'h-7 min-w-[50px] px-2 py-1  gap-[var(--spacing-2xs)]  text-xs rounded-[var(--radius-xs)]',
+          'h-7 min-w-[50px] px-2 py-1  gap-2xs  text-xs rounded-[var(--radius-xs)]',
       },
     },
 
