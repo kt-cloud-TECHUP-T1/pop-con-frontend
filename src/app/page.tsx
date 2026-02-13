@@ -1,6 +1,7 @@
 'use client';
 
 import { IdentityNumberInput } from '@/components/ui/identityNumberInput';
+import { Input } from '@/components/ui/input';
 import { useState } from 'react';
 
 export default function Home() {
@@ -16,10 +17,18 @@ export default function Home() {
           default: '주민등록번호를 입력해주세요.',
           error: 'error',
         }}
-        onComplete={(value) => {
-          console.log('완성된 주민번호:', value);
+        onComplete={(identity) => {
+          console.log('완성된 주민번호:', identity);
+          setIdentity(identity);
         }}
       />
+      <button onClick={() => console.log('identity', identity)}>+</button>
+
+      <Input
+        label="email입력"
+        inputSize="xsmall"
+        placeholder="입력해이씨"
+      ></Input>
     </div>
   );
 }
