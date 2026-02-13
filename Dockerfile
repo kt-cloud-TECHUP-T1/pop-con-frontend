@@ -15,10 +15,6 @@ WORKDIR /app
 COPY --from=deps /app/node_modules ./node_modules
 COPY . .
 
-# 빌드 시 필요한 환경변수 주입 (프론트엔드 팀에 확인 후 추가 가능)
-ARG NEXT_PUBLIC_API_URL
-ENV NEXT_PUBLIC_API_URL=$NEXT_PUBLIC_API_URL
-
 RUN npm run build
 
 # 3. 실행 단계 (Runner)
