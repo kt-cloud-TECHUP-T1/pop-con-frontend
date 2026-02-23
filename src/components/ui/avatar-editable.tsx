@@ -3,7 +3,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { Avatar, AvatarProps } from './CommonAvatar';
+import { Avatar, AvatarProps } from './avatar';
 import { Icon } from '@/components/Icon/Icon';
 
 interface AvatarEditableProps extends Omit<AvatarProps, 'className'> {

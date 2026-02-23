@@ -10,7 +10,7 @@ import { RADIUS, RadiusType } from '@/constants/design-system';
 import { cn } from '@/lib/utils';
 import { Icon, IconName } from '@/components/Icon/Icon';
 
-interface CommonModalProps {
+interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
@@ -24,7 +24,7 @@ interface CommonModalProps {
   iconClassName?: string; // 아이콘 스타일
 }
 
-export default function CommonModal({
+export default function Modal({
   isOpen,
   onClose,
   title,
@@ -36,7 +36,7 @@ export default function CommonModal({
   icon, // 기본값 없음
   iconSize = 64,
   iconClassName,
-}: CommonModalProps) {
+}: ModalProps) {
   const sizeClasses = {
     sm: 'w-[calc(100%-2rem)] max-w-[384px]',
     md: 'w-[calc(100%-2rem)] max-w-[480px]',
