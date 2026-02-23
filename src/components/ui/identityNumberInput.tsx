@@ -6,7 +6,7 @@ import { cn } from '@/lib/utils';
 import { FieldMessages } from './fieldWrapper';
 import { useEffect, useRef, useState } from 'react';
 
-type Props = {
+type IdentityNumberInputProps = {
   label?: string;
   required?: boolean;
   state?: 'default' | 'error' | 'positive' | 'expire';
@@ -22,7 +22,7 @@ export function IdentityNumberInput({
   messages,
   disabled,
   onComplete,
-}: Props) {
+}: IdentityNumberInputProps) {
   const [front, setFront] = useState('');
   const [middle, setMiddle] = useState('');
   const [back, setBack] = useState('');
@@ -123,7 +123,7 @@ export function IdentityNumberInput({
       disabled={disabled}
       messages={messages}
     >
-      <div className="flex items-center gap-3 relative">
+      <div className="flex items-center gap-[var(--spacing-2xs)] relative">
         {/* 앞 6자리 */}
         <div onClick={() => frontRef.current?.focus()}>
           <Input
@@ -137,7 +137,7 @@ export function IdentityNumberInput({
             onFocus={() => handleFocus('front')}
             placeholder="●●●●●●"
             disabled={disabled}
-            className="w-40 text-left tracking-widest"
+            className="w-[141px] rounded-[var(--radius-ms)] text-left tracking-widest"
           />
         </div>
 
@@ -158,13 +158,13 @@ export function IdentityNumberInput({
             onFocus={() => handleFocus('middle')}
             placeholder=""
             disabled={disabled}
-            className="w-12 text-transparent caret-black"
+            className="w-12 rounded-[var(--radius-ms)] text-transparent caret-black"
           />
 
           <div
             className={cn(
               'absolute inset-0',
-              'flex items-center justify-center'
+              'flex items-center justify-center pointer-events-none '
             )}
           >
             {middle ? (
@@ -177,7 +177,7 @@ export function IdentityNumberInput({
 
         {/* 뒤 6자리 UI (항상 진한 dot) */}
         <div
-          className="flex items-center text-black text-xl tracking-widest cursor-text"
+          className="flex items-center text-black text-[var(--font-size-label-1)] tracking-widest cursor-text"
           onClick={() => backRef.current?.focus()}
         >
           ●●●●●●
