@@ -3,7 +3,7 @@
 import * as React from 'react';
 import { cva } from 'class-variance-authority';
 import { cn } from '@/lib/utils';
-import { FieldWrapper, FieldState } from './fieldWrapper';
+import { FieldWrapper, FieldState } from './field-wrapper';
 
 type TextAreaSize = 'large' | 'medium' | 'small' | 'xsmall';
 

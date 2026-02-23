@@ -1,9 +1,9 @@
 'use client';
 
 import { Input } from './input';
-import { FieldWrapper } from './fieldWrapper';
+import { FieldWrapper } from './field-wrapper';
 import { cn } from '@/lib/utils';
-import { FieldMessages } from './fieldWrapper';
+import { FieldMessages } from './field-wrapper';
 import { useEffect, useRef, useState } from 'react';
 
 type IdentityNumberInputProps = {
