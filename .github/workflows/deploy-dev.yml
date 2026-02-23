@@ -13,6 +13,9 @@ jobs:
   deploy:
     name: Deploy to ECR
     runs-on: ubuntu-latest
+    concurrency:
+      group: deploy-dev-${{ github.ref }}
+      cancel-in-progress: true
 
     steps:
       - name: Checkout
@@ -44,4 +47,4 @@ jobs:
 
       - name: Set image output
         id: build-image
-        run: echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:frontend-${{ github.sha }}"
+        run: echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:frontend-${{ github.sha }}" >> $GITHUB_OUTPUT
