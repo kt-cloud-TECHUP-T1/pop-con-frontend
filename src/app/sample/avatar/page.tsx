@@ -2,7 +2,7 @@
 
 import { Avatar } from '@/components/common/CommonAvatar';
 import { AvatarEditable } from '@/components/common/CommonAvatarEditable';
-import { RADIUS } from '@/constants/design-system';
+import { Box } from '@/components/common/CommonBox';
 import type { AvatarSizeType } from '@/constants/design-system';
 
 const AVATAR_SIZES: Array<{
@@ -16,8 +16,8 @@ const AVATAR_SIZES: Array<{
   { key: 'MD', label: 'Medium', iconSize: 20, pixel: '32×32' },
   { key: 'LG', label: 'Large', iconSize: 20, pixel: '40×40' },
   { key: 'XL', label: 'Extra Large', iconSize: 24, pixel: '48×48' },
-  { key: 'XL2', label: '2X Large', iconSize: 36, pixel: '72×72' },
-  { key: 'XL3', label: '3X Large', iconSize: 44, pixel: '88×88' },
+  { key: '_2XL', label: '2X Large', iconSize: 36, pixel: '72×72' },
+  { key: '_3XL', label: '3X Large', iconSize: 44, pixel: '88×88' },
 ];
 
 export default function CommonAvatarSamplePage() {
@@ -33,7 +33,7 @@ export default function CommonAvatarSamplePage() {
       {/* 기본 아바타 */}
       <div className="mb-20">
         <h2 className="text-2xl font-bold mb-8">기본 아바타</h2>
-        <div className={`${RADIUS.XL3} bg-white p-20 border border-gray-200`}>
+        <Box className="bg-white p-20 border border-gray-200" radius="_3XL">
           {/* 아이콘 아바타 */}
           <div className="mb-12">
             <h3 className="text-lg font-semibold mb-6 text-gray-700">아이콘</h3>
@@ -72,13 +72,13 @@ export default function CommonAvatarSamplePage() {
               ))}
             </div>
           </div>
-        </div>
+        </Box>
       </div>
 
       {/* 편집 아바타 */}
       <div className="mb-20">
         <h2 className="text-2xl font-bold mb-8">편집 가능한 아바타</h2>
-        <div className={`${RADIUS.XL3} bg-white p-20 border border-gray-200`}>
+        <Box className="bg-white p-20 border border-gray-200" radius="_3XL">
           <div className="mb-12">
             <div className="flex gap-6 items-center">
               <AvatarEditable
@@ -88,7 +88,7 @@ export default function CommonAvatarSamplePage() {
                   size: 36,
                 }}
                 onEdit={() => alert('아바타 편집')}
-                size="XL2"
+                size="_2XL"
               />
               <AvatarEditable
                 icon={{
@@ -97,7 +97,7 @@ export default function CommonAvatarSamplePage() {
                   size: 44,
                 }}
                 onEdit={() => alert('아바타 편집')}
-                size="XL3"
+                size="_3XL"
               />
             </div>
           </div>
@@ -106,18 +106,17 @@ export default function CommonAvatarSamplePage() {
               <AvatarEditable
                 src="/images/temp/God-Sang-hyeok.png"
                 onEdit={() => alert('아바타 편집')}
-                size="XL2"
+                size="_2XL"
               />
               <AvatarEditable
                 src="/images/temp/God-Sang-hyeok.png"
                 onEdit={() => alert('아바타 편집')}
-                size="XL3"
+                size="_3XL"
               />
             </div>
           </div>
-        </div>
+        </Box>
       </div>
-
       {/* 사용 방법 */}
       <div>
         <h2 className="text-2xl font-bold mb-8">사용 방법</h2>
@@ -131,8 +130,9 @@ import { AvatarEditable } from '@/components/common/CommonAvatarEditable';
 
 // 2. 커스텀 아이콘 아바타
 <Avatar
-  icon={{ name: 'PersonFill', color: 'white', size: 20 }}
+  icon={{ name: 'PersonFill', size: 20 }}
   size="MD"
+  className="text-white"
 />
 
 // 3. 이미지 아바타
@@ -145,7 +145,7 @@ import { AvatarEditable } from '@/components/common/CommonAvatarEditable';
 // 4. 편집 가능한 아바타
 <AvatarEditable
   src="/images/user.png"
-  size="XL2"
+  size="_2XL"
   onEdit={() => {
     // 편집 로직
   }}

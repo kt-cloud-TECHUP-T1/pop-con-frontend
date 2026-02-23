@@ -2,6 +2,7 @@
 
 'use client';
 
+import { cn } from '@/lib/utils';
 import { Avatar, AvatarProps } from './CommonAvatar';
 import { Icon } from '@/components/Icon/Icon';
 
@@ -19,9 +20,12 @@ export const AvatarEditable = ({
       <Avatar {...avatarProps} />
       <button
         onClick={onEdit}
-        className="absolute bottom-0 right-0 w-7 h-7 bg-black rounded-full flex items-center justify-center border-2 border-white hover:bg-blue-600"
+        className={cn(
+          'absolute bottom-0 right-0 w-7 h-7 bg-black rounded-full',
+          'flex items-center justify-center border-2 border-white cursor-pointer'
+        )}
       >
-        <Icon name="Pencil" color="white" size={16} />
+        <Icon name="Pencil" className="text-white" size={16} />
       </button>
     </div>
   );

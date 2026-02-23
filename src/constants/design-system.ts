@@ -9,8 +9,8 @@ export const RADIUS = {
   ML: 'rounded-ml', // 16px
   LG: 'rounded-lg', // 20px
   XL: 'rounded-xl', // 24px
-  XL2: 'rounded-2xl', // 32px
-  XL3: 'rounded-3xl', // 48px
+  _2XL: 'rounded-2xl', // 32px
+  _3XL: 'rounded-3xl', // 48px
   FULL: 'rounded-shape-full', // 1000px
 } as const;
 
@@ -27,11 +27,10 @@ export const AVATAR_SIZE = {
   MD: 'size-avatar-md', // 32x32
   LG: 'size-avatar-lg', // 40x40
   XL: 'size-avatar-xl', // 48x48
-  XL2: 'size-avatar-2xl', // 72x72
-  XL3: 'size-avatar-3xl', // 88x88
+  _2XL: 'size-avatar-2xl', // 72x72
+  _3XL: 'size-avatar-3xl', // 88x88
 };
-
-export type RadiusType = keyof typeof RADIUS;
 
 export type ShadowType = keyof typeof SHADOW;
 export type AvatarSizeType = keyof typeof AVATAR_SIZE;
+export type RadiusType = keyof typeof RADIUS;

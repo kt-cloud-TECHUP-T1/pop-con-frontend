@@ -1,3 +1,11 @@
+---
+name: ✨ 기능 요청 (Feature Request)
+about: 새로운 기능 또는 개선 사항을 제안합니다.
+title: '[FEAT] '
+labels: enhancement
+assignees: ''
+---
+
 ## ✨ 어떤 기능인가요?
 
 > 구현하려는 기능을 한 줄로 간단히 설명해주세요.

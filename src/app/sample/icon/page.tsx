@@ -1,9 +1,8 @@
 'use client';
 
+import { Box } from '@/components/common/CommonBox';
 import { Icon, type IconName } from '@/components/Icon/Icon';
-import { RADIUS } from '@/constants/design-system';
 
-// 아이콘 리스트를 배열로 관리하면 유지보수가 훨씬 편합니다.
 const ICON_LIST: IconName[] = [
   'Bell',
   'Comment',
@@ -30,19 +29,21 @@ export default function CommonIconSamplePage() {
 
       <div className="mb-20">
         <h2 className="text-2xl font-bold mb-8">아이콘</h2>
-        <div
-          className={`${RADIUS.XL} bg-[#F8F8F8] flex justify-center gap-8 py-16 px-10`}
+        <Box
+          className="bg-[#F8F8F8] flex justify-center gap-8 py-16 px-10"
+          radius="XL"
         >
           {['Home', 'Like', 'Comment'].map((name) => (
             <div key={name} className="flex flex-col items-center gap-3">
-              <div
-                className={`${RADIUS.ML} bg-white w-24 h-24 flex justify-center items-center`}
+              <Box
+                className="bg-white w-24 h-24 flex justify-center items-center"
+                radius="ML"
               >
                 <Icon name={name as IconName} size={50} />
-              </div>
+              </Box>
             </div>
           ))}
-        </div>
+        </Box>
       </div>
 
       <div className="mb-20">
@@ -56,8 +57,9 @@ export default function CommonIconSamplePage() {
           </p>
         </div>
 
-        <div
-          className={`${RADIUS.XL} bg-[#F8F8F8] flex flex-col gap-8 py-16 px-10`}
+        <Box
+          className="bg-[#F8F8F8] flex flex-col gap-8 py-16 px-10"
+          radius="XL"
         >
           <section>
             <div className="flex gap-8 justify-center">
@@ -98,7 +100,7 @@ export default function CommonIconSamplePage() {
               ))}
             </div>
           </section>
-        </div>
+        </Box>
       </div>
 
       <div>

@@ -1,5 +1,4 @@
 import { Box } from '@/components/common/CommonBox';
-import { RADIUS, SHADOW } from '@/constants/design-system';
 
 export default function CommonShadowSamplePage() {
   const SHADOW_SAMPLES = [
@@ -24,8 +23,9 @@ export default function CommonShadowSamplePage() {
 
       <div className="mb-20">
         <h2 className="text-2xl font-bold mb-8">높이</h2>
-        <div
-          className={`${RADIUS.XL} bg-[#f7f7f7] py-20 flex justify-center gap-8`}
+        <Box
+          className="bg-[#f7f7f7] py-20 flex justify-center gap-8"
+          radius="XL"
         >
           {SHADOW_SAMPLES.map(({ key }) => (
             <Box
@@ -38,7 +38,7 @@ export default function CommonShadowSamplePage() {
               </div>
             </Box>
           ))}
-        </div>
+        </Box>
       </div>
 
       <div>
