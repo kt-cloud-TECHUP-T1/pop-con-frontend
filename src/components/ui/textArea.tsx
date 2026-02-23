@@ -12,6 +12,7 @@ interface TextAreaMessages {
   error?: string;
   positive?: string;
   disabled?: string;
+  expire?: string;
 }
 
 const textAreaVariants = cva(
