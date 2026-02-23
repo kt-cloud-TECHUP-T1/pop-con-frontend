@@ -5,7 +5,7 @@ import { cn } from '@/lib/utils';
 
 export type FieldState = 'default' | 'error' | 'positive' | 'expire';
 
-interface FieldMessages {
+export interface FieldMessages {
   default?: string;
   error?: string;
   positive?: string;

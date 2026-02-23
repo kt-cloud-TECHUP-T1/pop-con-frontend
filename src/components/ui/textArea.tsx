@@ -36,6 +36,8 @@ const textAreaVariants = cva(
           'border-[var(--status-warning)] focus-visible:border-[var(--status-warning)]',
         positive:
           'border-[var(--line-3)] focus-visible:border-[var(--color-ring)]',
+        expire:
+          'border-[var(--status-warning)] focus-visible:border-[var(--status-warning)]',
       },
       textAreaSize: {
         large: 'min-h-32 p-[var(--spacing-s)] text-[var(--font-size-body-1)]',

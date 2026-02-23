@@ -1,14 +1,16 @@
 'use client';
 
-import * as React from 'react';
 import { Input } from './input';
 import { FieldWrapper } from './fieldWrapper';
+import { cn } from '@/lib/utils';
+import { FieldMessages } from './fieldWrapper';
+import { useEffect, useRef, useState } from 'react';
 
-type Props = {
+type IdentityNumberInputProps = {
   label?: string;
   required?: boolean;
   state?: 'default' | 'error' | 'positive' | 'expire';
-  messages?: 'default' | 'error' | 'positive' | 'expire' | undefined;
+  messages?: FieldMessages;
   disabled?: boolean;
   onComplete?: (value: string) => void;
 };
@@ -20,14 +22,19 @@ export function IdentityNumberInput({
   messages,
   disabled,
   onComplete,
-}: Props) {
-  const [front, setFront] = React.useState('');
-  const [middle, setMiddle] = React.useState('');
-  const [back, setBack] = React.useState('');
+}: IdentityNumberInputProps) {
+  const [front, setFront] = useState('');
+  const [middle, setMiddle] = useState('');
+  const [back, setBack] = useState('');
 
-  const frontRef = React.useRef<HTMLInputElement>(null);
-  const middleRef = React.useRef<HTMLInputElement>(null);
-  const backRef = React.useRef<HTMLInputElement>(null);
+  // 포커스 이동 시점의 최신 값을 확인하기 위한 ref
+  const frontVal = useRef('');
+  const middleVal = useRef('');
+  const backVal = useRef('');
+
+  const frontRef = useRef<HTMLInputElement>(null);
+  const middleRef = useRef<HTMLInputElement>(null);
+  const backRef = useRef<HTMLInputElement>(null);
 
   const onlyNumber = (v: string) => v.replace(/\D/g, '');
 
@@ -35,6 +42,7 @@ export function IdentityNumberInput({
   const handleFrontChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const nums = onlyNumber(e.target.value).slice(0, 6);
     setFront(nums);
+    frontVal.current = nums;
 
     if (nums.length === 6) {
       middleRef.current?.focus();
@@ -45,6 +53,7 @@ export function IdentityNumberInput({
   const handleMiddleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const nums = onlyNumber(e.target.value).slice(0, 1);
     setMiddle(nums);
+    middleVal.current = nums;
 
     if (nums.length === 1) {
       backRef.current?.focus();
@@ -55,6 +64,7 @@ export function IdentityNumberInput({
   const handleBackChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const nums = onlyNumber(e.target.value).slice(0, 6);
     setBack(nums);
+    backVal.current = nums;
   };
 
   // 백스페이스 이동
@@ -73,8 +83,33 @@ export function IdentityNumberInput({
     }
   };
 
+  // 포커스 제어 (순차 입력 및 삭제 강제)
+  const handleFocus = (field: 'front' | 'middle' | 'back') => {
+    if (field === 'front') {
+      if (middleVal.current.length > 0) {
+        if (backVal.current.length > 0) {
+          backRef.current?.focus();
+        } else {
+          middleRef.current?.focus();
+        }
+      }
+    } else if (field === 'middle') {
+      if (frontVal.current.length < 6) {
+        frontRef.current?.focus();
+      } else if (backVal.current.length > 0) {
+        backRef.current?.focus();
+      }
+    } else if (field === 'back') {
+      if (frontVal.current.length < 6) {
+        frontRef.current?.focus();
+      } else if (middleVal.current.length < 1) {
+        middleRef.current?.focus();
+      }
+    }
+  };
+
   // 전체 값 완성 시 콜백
-  React.useEffect(() => {
+  useEffect(() => {
     if (front.length === 6 && middle.length === 1 && back.length === 6) {
       onComplete?.(front + middle + back);
     }
@@ -88,7 +123,7 @@ export function IdentityNumberInput({
       disabled={disabled}
       messages={messages}
     >
-      <div className="flex items-center gap-3 relative">
+      <div className="flex items-center gap-[var(--spacing-2xs)] relative">
         {/* 앞 6자리 */}
         <div onClick={() => frontRef.current?.focus()}>
           <Input
@@ -96,34 +131,53 @@ export function IdentityNumberInput({
             inputMode="numeric"
             maxLength={6}
             value={front}
+            state={state}
             onChange={handleFrontChange}
             onKeyDown={(e) => handleKeyDown(e, 'front')}
+            onFocus={() => handleFocus('front')}
             placeholder="●●●●●●"
             disabled={disabled}
-            className="w-40 text-left tracking-widest"
+            className="w-[141px] rounded-[var(--radius-ms)] text-left tracking-widest"
           />
         </div>
 
         <span>-</span>
-
         {/* 뒷 첫 자리 */}
-        <div onClick={() => middleRef.current?.focus()}>
+        <div
+          className="relative w-12"
+          onClick={() => middleRef.current?.focus()}
+        >
           <Input
             ref={middleRef}
             inputMode="numeric"
             maxLength={1}
             value={middle}
+            state={state}
             onChange={handleMiddleChange}
             onKeyDown={(e) => handleKeyDown(e, 'middle')}
-            placeholder="●"
+            onFocus={() => handleFocus('middle')}
+            placeholder=""
             disabled={disabled}
-            className="w-12 text-left "
+            className="w-12 rounded-[var(--radius-ms)] text-transparent caret-black"
           />
+
+          <div
+            className={cn(
+              'absolute inset-0',
+              'flex items-center justify-center pointer-events-none '
+            )}
+          >
+            {middle ? (
+              <span className="text-black">{middle}</span>
+            ) : (
+              <span className="text-[var(--content-placeholder)]">●</span>
+            )}
+          </div>
         </div>
 
         {/* 뒤 6자리 UI (항상 진한 dot) */}
         <div
-          className="flex items-center text-black text-xl tracking-widest cursor-text"
+          className="flex items-center text-black text-[var(--font-size-label-1)] tracking-widest cursor-text"
           onClick={() => backRef.current?.focus()}
         >
           ●●●●●●
@@ -138,8 +192,9 @@ export function IdentityNumberInput({
           value={back}
           onChange={handleBackChange}
           onKeyDown={(e) => handleKeyDown(e, 'back')}
+          onFocus={() => handleFocus('back')}
           disabled={disabled}
-          className="absolute opacity-0"
+          className="absolute opacity-0 pointer-events-none w-0 h-0"
         />
       </div>
     </FieldWrapper>
