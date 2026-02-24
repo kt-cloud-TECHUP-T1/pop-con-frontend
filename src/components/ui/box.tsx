@@ -14,13 +14,13 @@ type BoxProps = React.HTMLAttributes<HTMLElement> & {
   shadow?: ShadowType;
 };
 
-export function Box({
+export const Box = ({
   as: Comp = 'div',
   radius = 'NONE',
   shadow,
   className,
   ...props
-}: BoxProps) {
+}: BoxProps) => {
   return (
     <Comp
       className={cn(
@@ -32,4 +32,4 @@ export function Box({
       {...props}
     />
   );
-}
+};

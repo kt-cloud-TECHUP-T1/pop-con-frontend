@@ -10,7 +10,7 @@ export interface AvatarProps {
   alt?: string;
   size?: AvatarSizeType;
   className?: string;
-  icon?: Pick<IconProps, 'name' | 'color' | 'size'>;
+  icon?: Pick<IconProps, 'name' | 'size' | 'className'>;
 }
 
 export const Avatar = ({
@@ -33,7 +33,7 @@ export const Avatar = ({
           className="w-full h-full object-cover"
         />
       ) : (
-        <Icon name={icon.name} color={icon.color} size={icon.size} />
+        <Icon name={icon.name} size={icon.size} className={icon.className} />
       )}
     </Box>
   );
