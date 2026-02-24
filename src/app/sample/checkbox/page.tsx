@@ -1,10 +1,10 @@
-import { Box } from '@/components/common/CommonBox';
-import { CommonCheckbox } from '@/components/common/CommonCheckbox';
-import type { CommonCheckboxProps } from '@/components/common/CommonCheckbox';
+import { Box } from '@/components/ui/box';
+import { Checkbox } from '@/components/ui/checkbox';
+import type { CheckboxProps } from '@/components/ui/checkbox';
 
 const CHECKBOX_SAMPLES: Array<{
   label: string;
-  props: Pick<CommonCheckboxProps, 'visualState' | 'isError' | 'disabled'>;
+  props: Pick<CheckboxProps, 'visualState' | 'isError' | 'disabled'>;
 }> = [
   { label: 'default', props: {} },
   { label: 'hover', props: { visualState: 'hover' } },
@@ -13,7 +13,7 @@ const CHECKBOX_SAMPLES: Array<{
   { label: 'disabled', props: { disabled: true } },
 ];
 
-export default function CommonCheckboxSamplePage() {
+export default function CheckboxSamplePage() {
   return (
     <div className="p-10">
       <div className="mb-14">
@@ -29,7 +29,7 @@ export default function CommonCheckboxSamplePage() {
         >
           {CHECKBOX_SAMPLES.map((item) => (
             <div key={item.label} className="flex flex-col items-center gap-2">
-              <CommonCheckbox size={48} {...item.props} />
+              <Checkbox size={48} {...item.props} />
               <span>{item.label}</span>
             </div>
           ))}
