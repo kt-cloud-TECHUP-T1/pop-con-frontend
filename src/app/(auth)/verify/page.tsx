@@ -19,7 +19,7 @@ export default function Verify() {
         className="w-full max-w-[360px] bg-[#F35E11] text-center py-3 mx-auto"
         radius="MS"
       >
-        <button>
+        <button type="button">
           <Typography variant="label-1" className="text-white">
             인증하기
           </Typography>
