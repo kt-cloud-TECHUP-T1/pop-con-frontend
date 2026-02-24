@@ -32,9 +32,15 @@ const FOOTER_COMPANY_INFO = [
 ] as const;
 
 const FOOTER_SOCIAL_LINKS: FooterLink[] = [
-  { label: '인스타그램 아이콘', link: '#' },
-  { label: '유튜브 아이콘', link: '#' },
-  { label: '블로그 아이콘', link: '#' },
+  { label: '인스타그램 아이콘', link: 'https://www.instagram.com/' },
+  {
+    label: '유튜브 아이콘',
+    link: 'https://www.youtube.com/?app=desktop&hl=ko&gl=KR',
+  },
+  {
+    label: '블로그 아이콘',
+    link: 'https://section.blog.naver.com/BlogHome.naver?directoryNo=0&currentPage=1&groupId=0',
+  },
 ];
 
 export const Footer = () => {
@@ -54,7 +60,7 @@ export const Footer = () => {
           </ul>
         </nav>
       </div>
-      <nav>
+      <address className="not-italic">
         {FOOTER_COMPANY_INFO.map((companys) => (
           <ul key={companys.join('-')} className="flex">
             {companys.map((company) => (
@@ -62,9 +68,11 @@ export const Footer = () => {
             ))}
           </ul>
         ))}
-      </nav>
+      </address>
       <div className="container mx-auto px-4">
-        <p className="text-center">© 2025 PopCon. All rights reserved.</p>
+        <p className="text-center">
+          © {new Date().getFullYear()} PopCon. All rights reserved.
+        </p>
         <nav>
           <ul>
             {FOOTER_SOCIAL_LINKS.map((socials) => (
