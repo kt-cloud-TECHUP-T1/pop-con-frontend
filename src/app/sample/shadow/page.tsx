@@ -1,6 +1,6 @@
-import { Box } from '@/components/common/CommonBox';
+import { Box } from '@/components/ui/box';
 
-export default function CommonShadowSamplePage() {
+export default function ShadowSamplePage() {
   const SHADOW_SAMPLES = [
     { key: 'S', label: 'Small' },
     { key: 'M', label: 'Medium' },

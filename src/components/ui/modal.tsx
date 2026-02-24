@@ -5,7 +5,7 @@ import {
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from '@/components/ui/dialog';
+} from '@/components/primitives/dialog';
 import { RADIUS, RadiusType } from '@/constants/design-system';
 import { cn } from '@/lib/utils';
 import { Icon, IconName } from '@/components/Icon/Icon';

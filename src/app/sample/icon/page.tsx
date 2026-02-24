@@ -1,6 +1,6 @@
 'use client';
 
-import { Box } from '@/components/common/CommonBox';
+import { Box } from '@/components/ui/box';
 import { Icon, type IconName } from '@/components/Icon/Icon';
 
 const ICON_LIST: IconName[] = [
@@ -13,7 +13,7 @@ const ICON_LIST: IconName[] = [
   'Pin',
 ];
 
-export default function CommonIconSamplePage() {
+export default function IconSamplePage() {
   return (
     <div className="p-10">
       <div className="mb-14">

@@ -1,10 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import CommonModal, {
-  ModalBody,
-  ModalFooter,
-} from '@/components/common/CommonModal';
+import CommonModal, { ModalBody, ModalFooter } from '@/components/ui/modal';
 import { Button } from '@/components/ui/button';
 import { IconName } from '@/components/Icon/Icon';
 
@@ -47,7 +44,7 @@ const MODAL_SAMPLES = [
   },
 ];
 
-export default function CommonModalSamplePage() {
+export default function ModalSamplePage() {
   const [openStatus, setOpenStatus] = useState<Record<string, boolean>>({});
 
   const toggleModal = (id: string, isOpen: boolean) => {

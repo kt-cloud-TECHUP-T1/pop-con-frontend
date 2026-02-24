@@ -1,8 +1,8 @@
 'use client';
 
-import { Avatar } from '@/components/common/CommonAvatar';
-import { AvatarEditable } from '@/components/common/CommonAvatarEditable';
-import { Box } from '@/components/common/CommonBox';
+import { Avatar } from '@/components/ui/avatar';
+import { AvatarEditable } from '@/components/ui/avatar-editable';
+import { Box } from '@/components/ui/box';
 import type { AvatarSizeType } from '@/constants/design-system';
 
 const AVATAR_SIZES: Array<{
@@ -20,7 +20,7 @@ const AVATAR_SIZES: Array<{
   { key: '_3XL', label: '3X Large', iconSize: 44, pixel: '88×88' },
 ];
 
-export default function CommonAvatarSamplePage() {
+export default function AvatarSamplePage() {
   return (
     <div className="p-10">
       <div className="mb-10">
@@ -43,7 +43,7 @@ export default function CommonAvatarSamplePage() {
                   <Avatar
                     icon={{
                       name: 'PersonFill',
-                      color: 'white',
+                      className: 'text-white',
                       size: iconSize,
                     }}
                     size={key}
@@ -84,7 +84,7 @@ export default function CommonAvatarSamplePage() {
               <AvatarEditable
                 icon={{
                   name: 'PersonFill',
-                  color: 'white',
+                  className: 'text-white',
                   size: 36,
                 }}
                 onEdit={() => alert('아바타 편집')}
@@ -93,7 +93,7 @@ export default function CommonAvatarSamplePage() {
               <AvatarEditable
                 icon={{
                   name: 'PersonFill',
-                  color: 'white',
+                  className: 'text-white',
                   size: 44,
                 }}
                 onEdit={() => alert('아바타 편집')}

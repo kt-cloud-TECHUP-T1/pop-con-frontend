@@ -27,7 +27,7 @@ import { Icon } from '@/components/Icon/Icon';
 
 <Icon name="LogoNaver" />
 <Icon name="ChevronUp" size={32} />
-<Icon name="ChevronLeft" color="#FF0000" />
+<Icon name="ChevronLeft" className="text-red-500" />
 <Icon name="ChevronRight" className="text-blue-500" />
 ```
 
@@ -35,7 +35,6 @@ import { Icon } from '@/components/Icon/Icon';
 
 - `name`: 아이콘 이름 (필수, 자동완성 지원)
 - `size`: 아이콘 크기 (기본값: 24)
-- `color`: 아이콘 색상 (기본값: 'currentColor')
 - `className`: 추가 스타일 클래스
 - `onClick`: 클릭 이벤트 핸들러
 
@@ -99,7 +98,7 @@ console.log(`✅ Generated exports for ${files.length} icons`);
 
 ## ⚠️ 주의사항
 
-1. **색상 관리**: Figma에서 아이콘 색상을 검정(#000000)으로 통일하면 `color` prop으로 색상 변경 가능
+1. **색상 관리**: Figma에서 아이콘 색상을 `currentColor`로 유지하면 `className`(예: `text-red-500`)으로 색상 변경 가능
 2. **크기 통일**: 모든 아이콘은 24x24px 기준으로 제작 (viewBox 기반 스케일링)
 3. **파일명 중복**: 같은 이름의 아이콘이 있으면 덮어씌워지니 주의
 4. **Git 관리**: `src/assets/icons/`는 원본 보관용, `src/components/Icon/icons/`는 생성 파일

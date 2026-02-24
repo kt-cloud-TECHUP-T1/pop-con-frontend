@@ -13,7 +13,6 @@ export type IconName = keyof typeof Icons;
 export interface IconProps {
   name: IconName;
   size?: number;
-  color?: string;
   className?: string;
   onClick?: () => void;
 }
@@ -21,7 +20,6 @@ export interface IconProps {
 export const Icon: React.FC<IconProps> = ({
   name,
   size = 24,
-  color = 'currentColor',
   className,
   onClick,
 }) => {
@@ -36,7 +34,6 @@ export const Icon: React.FC<IconProps> = ({
     <IconComponent
       width={size}
       height={size}
-      fill={color}
       className={className}
       onClick={onClick}
     />

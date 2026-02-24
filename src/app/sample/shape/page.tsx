@@ -1,7 +1,7 @@
-import { Box } from '@/components/common/CommonBox';
+import { Box } from '@/components/ui/box';
 import { RadiusType } from '@/constants/design-system';
 
-export default function CommonShapeSamplePage() {
+export default function ShapeSamplePage() {
   const BOX_SIZES: Array<{
     key: RadiusType;
     label: string;
