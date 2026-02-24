@@ -15,6 +15,9 @@ export default meta;
 
 type Story = StoryObj<typeof Box>;
 
-export const Defaault: Story = {
-  args: {},
+export const Default: Story = {
+  args: {
+    radius: 'M',
+    shadow: 'M',
+  },
 };

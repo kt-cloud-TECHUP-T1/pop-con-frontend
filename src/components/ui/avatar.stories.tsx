@@ -87,7 +87,7 @@ export const Default: StoryObj<AvatarPlaygroundArgs> = {
   ),
 };
 
-export const IconAvartarSizes: Story = {
+export const IconAvatarSizes: Story = {
   render: () => (
     <div className="flex gap-6 items-end">
       {AVATAR_SIZES.map(({ key, pixel, iconSize }) => (
