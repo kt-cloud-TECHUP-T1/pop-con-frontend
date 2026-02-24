@@ -16,7 +16,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4 # 최신 버전 v4 권장
+        with:
+          fetch-depth: 0 # 전체 Git 히스토리를 가져오도록 설정
 
       - name: Install dependencies
         run: npm install
