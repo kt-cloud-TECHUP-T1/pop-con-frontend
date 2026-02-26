@@ -32,9 +32,7 @@ export default function RootLayout({
       >
         <MSWProvider>
           <Header />
-          <section className="main">
-            {children}
-          </section>
+          <section className="main">{children}</section>
           <Footer />
         </MSWProvider>
       </body>
