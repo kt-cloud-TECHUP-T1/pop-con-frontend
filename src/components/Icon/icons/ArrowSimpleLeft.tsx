@@ -8,7 +8,7 @@ const SvgArrowRght = (props: SVGProps<SVGSVGElement>) => (
     fill="currentColor"
     {...props}
   >
-    <path d="M11.67 3.87L9.9 2.1L0 12l9.9 9.9l1.77-1.77L3.54 12z" />
+    <path d="M17.77 3.77L16 2L6 12l10 10l1.77-1.77L9.54 12z" />
   </svg>
 );
 export default SvgArrowRght;

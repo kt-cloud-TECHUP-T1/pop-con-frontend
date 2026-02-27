@@ -64,14 +64,14 @@ export const CardOverlay: React.FC<CardOverlayProps> = ({
         )}
       >
         <div className="flex flex-col justify-start items-start gap-1">
-          <div
+          <h6
             className={cn(
               'title',
               'self-stretch justify-start text-Common-White text-3xl font-bold leading-10 line-clamp-2'
             )}
           >
             {title}
-          </div>
+          </h6>
           {description && (
             <div className="justify-start text-Common-White text-lg font-normal leading-6">
               {description}

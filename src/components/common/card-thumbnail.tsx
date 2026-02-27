@@ -109,14 +109,14 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
                 </div>
               </div>
             )}
-            <div
+            <h6
               className={cn(
                 'title',
                 'justify-start text-Contents-High text-lg font-bold leading-6'
               )}
             >
               {title}
-            </div>
+            </h6>
             {description && (
               <div className="justify-start text-Contents-High text-base font-normal leading-6">
                 {description}
