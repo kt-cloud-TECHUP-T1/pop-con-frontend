@@ -1,6 +1,9 @@
+'use client';
+
 import React from 'react';
+
 import { cva } from 'class-variance-authority';
-import { cn } from '@/lib/utils';
+
 import {
   Carousel,
   CarouselApi,
@@ -10,6 +13,7 @@ import {
   CarouselOptions,
   CarouselPrevious,
 } from '@/components/ui/carousel';
+import { cn } from '@/lib/utils';
 
 export type GridSizeValue = 1 | 2 | 3 | 4 | 5 | 'auto';
 export type ResponsiveGridSize =

@@ -1,6 +1,9 @@
+'use client';
+
 import React from 'react';
-import { GridCarousel } from '@/components/common/grid-carousel';
+
 import { CardOverlay } from '@/components/common/card-overlay';
+import { GridCarousel } from '@/components/common/grid-carousel';
 import { Section } from '../components/section';
 
 const dummy = Array.from({ length: 10 }).map((_, index) => {

@@ -1,7 +1,10 @@
+'use client';
+
+import React from 'react';
+
+import { CardThumbnail } from '@/components/common/card-thumbnail';
 import { GridCarousel } from '@/components/common/grid-carousel';
 import { Section } from '../components/section';
-import { CardThumbnail } from '@/components/common/card-thumbnail';
-import React from 'react';
 
 const dummy = Array.from({ length: 10 }).map((_, index) => {
   return {
