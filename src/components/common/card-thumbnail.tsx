@@ -21,10 +21,7 @@ const thumbnailVariants = cva(
   }
 );
 
-export interface CardThumbnailProps
-  extends
-    React.HTMLAttributes<HTMLDivElement>,
-    VariantProps<typeof thumbnailVariants> {
+export interface CardThumbnailProps {
   thumbnailUrl: string;
   thumbnailAlt?: string;
   thumbnailRatio?: '1/1' | '3/4' | '16/9';
@@ -60,8 +57,6 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
   isLiked,
   onClickLike,
   onClick,
-  className,
-  ...rest
 }) => {
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -70,7 +65,7 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
 
   return (
     <div
-      className={cn('card-thumbnail', onClick && 'cursor-pointer', className)}
+      className={cn('card-thumbnail', onClick && 'cursor-pointer')}
       onClick={onClick}
       role={onClick ? 'button' : undefined}
       tabIndex={onClick ? 0 : undefined}
@@ -84,7 +79,6 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
             }
           : undefined
       }
-      {...rest}
     >
       <div className="self-stretch flex flex-col justify-start items-start gap-4">
         <div
@@ -113,6 +107,11 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
             >
               <Icon name={isLiked ? 'HeartFill' : 'Heart'} size={32} />
             </button>
+          )}
+          {index && (
+            <div className="w-10 h-10 p-2.5 bg-orange-500 rounded-ms inline-flex flex-col justify-center items-center text-white text-2xl font-bold absolute bottom-4 left-4">
+              {index}
+            </div>
           )}
         </div>
         <div

@@ -43,9 +43,10 @@ export const Ranking = () => {
         }}
         carouselOpts={{ align: 'start' }}
         alignArrowToRatio="3/4"
-        items={item.map((item) => (
+        items={item.map((item, index) => (
           <CardThumbnail
             key={item.id}
+            index={index + 1}
             thumbnailUrl={item.thumbnailUrl}
             thumbnailRatio="3/4"
             title={item.title}
