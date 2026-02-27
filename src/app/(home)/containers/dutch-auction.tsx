@@ -33,7 +33,10 @@ export const DutchAuction = () => {
   return (
     <Section title="더치 경매" showButtonMore onClickMore={handleClickMore}>
       <GridCarousel
-        gridSize={2}
+        gridSize={{
+          default: 1,
+          md: 2,
+        }}
         carouselOpts={{ align: 'start' }}
         alignArrowToRatio="16/9"
         items={item.map((item) => (

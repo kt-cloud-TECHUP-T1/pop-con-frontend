@@ -37,7 +37,11 @@ export const Recommand = () => {
       onClickMore={handleClickMore}
     >
       <GridCarousel
-        gridSize={4}
+        gridSize={{
+          default: 2,
+          md: 3,
+          lg: 4,
+        }}
         carouselOpts={{ align: 'start' }}
         alignArrowToRatio="3/4"
         items={item.map((item) => (

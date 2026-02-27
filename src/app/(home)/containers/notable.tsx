@@ -37,7 +37,11 @@ export const Notable = () => {
       onClickMore={handleClickMore}
     >
       <GridCarousel
-        gridSize={5}
+        gridSize={{
+          default: 2,
+          md: 3,
+          lg: 5,
+        }}
         carouselOpts={{ align: 'start' }}
         alignArrowToRatio="3/4"
         items={item.map((item) => (

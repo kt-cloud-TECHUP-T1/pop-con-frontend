@@ -11,17 +11,17 @@ const MAIN_CATEGORIES = [
 
 export const CategoryList = () => {
   return (
-    <div className="flex justify-center items-center gap-10 my-2xl">
+    <div className="flex justify-center items-center flex-wrap gap-10 my-2xl">
       {MAIN_CATEGORIES.map((category) => (
         <Link
           key={category.id}
           href={`/category/${category.id}`}
-          className="flex flex-col items-center"
+          className="flex flex-col items-center basis-auto"
         >
           <img
             src={category.icon}
             alt={category.name}
-            className="w-20 h-20 rounded-xl mb-s"
+            className="min-size-20 rounded-xl mb-s"
           />
           <span className="text-Contents-High text-base font-normal leading-6">
             {category.name}

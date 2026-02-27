@@ -33,7 +33,11 @@ export const Ranking = () => {
   return (
     <Section title="팝콘 랭킹" showButtonMore onClickMore={handleClickMore}>
       <GridCarousel
-        gridSize={5}
+        gridSize={{
+          default: 2,
+          md: 3,
+          lg: 5,
+        }}
         carouselOpts={{ align: 'start' }}
         alignArrowToRatio="3/4"
         items={item.map((item) => (

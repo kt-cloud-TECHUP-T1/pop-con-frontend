@@ -33,7 +33,11 @@ export const LuckyDraw = () => {
   return (
     <Section title="드로우" showButtonMore onClickMore={handleClickMore}>
       <GridCarousel
-        gridSize={4}
+        gridSize={{
+          default: 2,
+          md: 3,
+          lg: 4,
+        }}
         carouselOpts={{ align: 'start' }}
         alignArrowToRatio="3/4"
         items={item.map((item) => (

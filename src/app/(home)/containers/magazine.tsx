@@ -29,7 +29,11 @@ export const Magazine = () => {
   return (
     <Section title="매거진" showButtonMore onClickMore={handleClickMore}>
       <GridCarousel
-        gridSize={4}
+        gridSize={{
+          default: 1,
+          md: 2,
+          lg: 4,
+        }}
         carouselOpts={{ align: 'start' }}
         items={item.map((item) => (
           <CardOverlay
