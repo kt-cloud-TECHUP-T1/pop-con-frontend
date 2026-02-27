@@ -169,6 +169,7 @@
   --orange-20: #7c2d12;
   --orange-30: #9a3412;
   --orange-40: #c2410c;
+  --orange-45: #d6500b;
   --orange-50: #f35e11;
   --orange-60: #f97316;
   --orange-70: #fb923c;
@@ -205,9 +206,9 @@
 
 :root {
   /* Button - Primary */
-  --btn-primary-default: var(--neutral-10);
-  --btn-primary-hover: var(--neutral-30);
-  --btn-primary-pressed: var(--neutral-40);
+  --btn-primary-default: var(--orange-50);
+  --btn-primary-hover: var(--orange-45);
+  --btn-primary-pressed: var(--orange-40);
   --btn-primary-disabled: var(--neutral-80);
 
   /* Button - Destructive */
