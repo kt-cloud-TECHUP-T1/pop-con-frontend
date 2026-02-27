@@ -1,3 +1,6 @@
+import React from 'react';
+import { cva } from 'class-variance-authority';
+import { cn } from '@/lib/utils';
 import {
   Carousel,
   CarouselApi,
@@ -7,9 +10,6 @@ import {
   CarouselOptions,
   CarouselPrevious,
 } from '@/components/ui/carousel';
-import { cn } from '@/lib/utils';
-import { cva } from 'class-variance-authority';
-import React from 'react';
 
 export type GridSizeValue = 1 | 2 | 3 | 4 | 5 | 'auto';
 export type ResponsiveGridSize =
@@ -23,129 +23,50 @@ export type ResponsiveGridSize =
       '2xl'?: GridSizeValue;
     };
 
-const basisClasses = {
-  default: {
-    1: 'basis-full',
-    2: 'basis-1/2',
-    3: 'basis-1/3',
-    4: 'basis-1/4',
-    5: 'basis-1/5',
-    auto: 'basis-auto',
-  },
-  sm: {
-    1: 'sm:basis-full',
-    2: 'sm:basis-1/2',
-    3: 'sm:basis-1/3',
-    4: 'sm:basis-1/4',
-    5: 'sm:basis-1/5',
-    auto: 'sm:basis-auto',
-  },
-  md: {
-    1: 'md:basis-full',
-    2: 'md:basis-1/2',
-    3: 'md:basis-1/3',
-    4: 'md:basis-1/4',
-    5: 'md:basis-1/5',
-    auto: 'md:basis-auto',
-  },
-  lg: {
-    1: 'lg:basis-full',
-    2: 'lg:basis-1/2',
-    3: 'lg:basis-1/3',
-    4: 'lg:basis-1/4',
-    5: 'lg:basis-1/5',
-    auto: 'lg:basis-auto',
-  },
-  xl: {
-    1: 'xl:basis-full',
-    2: 'xl:basis-1/2',
-    3: 'xl:basis-1/3',
-    4: 'xl:basis-1/4',
-    5: 'xl:basis-1/5',
-    auto: 'xl:basis-auto',
-  },
-  '2xl': {
-    1: '2xl:basis-full',
-    2: '2xl:basis-1/2',
-    3: '2xl:basis-1/3',
-    4: '2xl:basis-1/4',
-    5: '2xl:basis-1/5',
-    auto: '2xl:basis-auto',
-  },
-};
+const TAILWIND_SAFELIST = `
+  basis-full basis-1/2 basis-1/3 basis-1/4 basis-1/5 basis-auto
+  sm:basis-full sm:basis-1/2 sm:basis-1/3 sm:basis-1/4 sm:basis-1/5 sm:basis-auto
+  md:basis-full md:basis-1/2 md:basis-1/3 md:basis-1/4 md:basis-1/5 md:basis-auto
+  lg:basis-full lg:basis-1/2 lg:basis-1/3 lg:basis-1/4 lg:basis-1/5 lg:basis-auto
+  xl:basis-full xl:basis-1/2 xl:basis-1/3 xl:basis-1/4 xl:basis-1/5 xl:basis-auto
+  2xl:basis-full 2xl:basis-1/2 2xl:basis-1/3 2xl:basis-1/4 2xl:basis-1/5 2xl:basis-auto
 
-const widthClasses = {
-  default: {
-    1: 'w-full',
-    2: 'w-1/2',
-    3: 'w-1/3',
-    4: 'w-1/4',
-    5: 'w-1/5',
-    auto: 'w-full',
-  },
-  sm: {
-    1: 'sm:w-full',
-    2: 'sm:w-1/2',
-    3: 'sm:w-1/3',
-    4: 'sm:w-1/4',
-    5: 'sm:w-1/5',
-    auto: 'sm:w-full',
-  },
-  md: {
-    1: 'md:w-full',
-    2: 'md:w-1/2',
-    3: 'md:w-1/3',
-    4: 'md:w-1/4',
-    5: 'md:w-1/5',
-    auto: 'md:w-full',
-  },
-  lg: {
-    1: 'lg:w-full',
-    2: 'lg:w-1/2',
-    3: 'lg:w-1/3',
-    4: 'lg:w-1/4',
-    5: 'lg:w-1/5',
-    auto: 'lg:w-full',
-  },
-  xl: {
-    1: 'xl:w-full',
-    2: 'xl:w-1/2',
-    3: 'xl:w-1/3',
-    4: 'xl:w-1/4',
-    5: 'xl:w-1/5',
-    auto: 'xl:w-full',
-  },
-  '2xl': {
-    1: '2xl:w-full',
-    2: '2xl:w-1/2',
-    3: '2xl:w-1/3',
-    4: '2xl:w-1/4',
-    5: '2xl:w-1/5',
-    auto: '2xl:w-full',
-  },
-};
+  w-full w-1/2 w-1/3 w-1/4 w-1/5
+  sm:w-full sm:w-1/2 sm:w-1/3 sm:w-1/4 sm:w-1/5
+  md:w-full md:w-1/2 md:w-1/3 md:w-1/4 md:w-1/5
+  lg:w-full lg:w-1/2 lg:w-1/3 lg:w-1/4 lg:w-1/5
+  xl:w-full xl:w-1/2 xl:w-1/3 xl:w-1/4 xl:w-1/5
+  2xl:w-full 2xl:w-1/2 2xl:w-1/3 2xl:w-1/4 2xl:w-1/5
+`;
 
 const getResponsiveClasses = (
   gridSize: ResponsiveGridSize,
   type: 'basis' | 'width'
 ) => {
-  const map = type === 'basis' ? basisClasses : widthClasses;
+  const generateClass = (bp: string, size: GridSizeValue) => {
+    const prefix = bp === 'default' ? '' : `${bp}:`;
+    const target = type === 'basis' ? 'basis' : 'w';
 
-  if (typeof gridSize === 'object' && gridSize !== null) {
-    const classes = [];
-    if (gridSize.default) classes.push(map.default[gridSize.default]);
-    if (gridSize.sm) classes.push(map.sm[gridSize.sm]);
-    if (gridSize.md) classes.push(map.md[gridSize.md]);
-    if (gridSize.lg) classes.push(map.lg[gridSize.lg]);
-    if (gridSize.xl) classes.push(map.xl[gridSize.xl]);
-    if (gridSize['2xl']) classes.push(map['2xl'][gridSize['2xl']]);
-    return cn(classes);
+    // auto 사이즈 예외 처리
+    if (size === 'auto') {
+      return type === 'basis' ? `${prefix}basis-auto` : `${prefix}w-full`;
+    }
+
+    // GridSizeValue 로직 처리 (1일 땐 full, 나머지는 1/x 비율)
+    const fraction = size === 1 ? 'full' : `1/${size}`;
+    return `${prefix}${target}-${fraction}`;
+  };
+
+  if (typeof gridSize !== 'object' || gridSize === null) {
+    return generateClass('default', gridSize);
   }
 
-  return map.default[gridSize];
+  return cn(
+    Object.entries(gridSize).map(([bp, size]) =>
+      generateClass(bp, size as GridSizeValue)
+    )
+  );
 };
-
-const carouselItemVariants = cva('pl-m');
 
 const carouselArrowWrapperVariants = cva('relative', {
   variants: {
@@ -221,10 +142,7 @@ export const GridCarousel: React.FC<GridCarouselProps> = ({
     <Carousel className="w-full" opts={carouselOpts} setApi={setApi}>
       <CarouselContent className="-ml-m">
         {items.map((item, index) => (
-          <CarouselItem
-            key={index}
-            className={cn(carouselItemVariants(), basisClass)}
-          >
+          <CarouselItem key={index} className={cn('pl-m', basisClass)}>
             <CarouselItem className="pl-0">{item}</CarouselItem>
           </CarouselItem>
         ))}
