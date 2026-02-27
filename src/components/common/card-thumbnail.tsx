@@ -10,6 +10,7 @@ const thumbnailVariants = cva(
   {
     variants: {
       ratio: {
+        '1/1': 'aspect-square',
         '3/4': 'aspect-[3/4]',
         '16/9': 'aspect-video',
       },
@@ -25,7 +26,7 @@ export interface CardThumbnailProps
     React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof thumbnailVariants> {
   thumbnailUrl: string;
-  thumbnailRatio?: '3/4' | '16/9';
+  thumbnailRatio?: '1/1' | '3/4' | '16/9';
   title?: string;
   label?: string;
   description?: string;
@@ -43,7 +44,7 @@ export interface CardThumbnailProps
 
 export const CardThumbnail: React.FC<CardThumbnailProps> = ({
   thumbnailUrl,
-  thumbnailRatio = '3/4',
+  thumbnailRatio = '1/1',
   title,
   label,
   description,

@@ -29,6 +29,7 @@ export interface GridCarouselProps {
   carouselOpts?: CarouselOptions;
   showArrows?: boolean;
   showIndexes?: boolean;
+  alignArrowToRatio?: '3/4' | '16/9' | '1/1' | 'auto';
 }
 
 export const GridCarousel: React.FC<GridCarouselProps> = ({
@@ -37,9 +38,22 @@ export const GridCarousel: React.FC<GridCarouselProps> = ({
   carouselOpts,
   showArrows = true,
   showIndexes,
+  alignArrowToRatio = 'auto',
 }) => {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
+
+  const arrowStyle = React.useMemo(() => {
+    if (
+      alignArrowToRatio &&
+      alignArrowToRatio !== 'auto' &&
+      gridSize !== 'auto'
+    ) {
+      const [w, h] = alignArrowToRatio.split('/').map(Number);
+      return { aspectRatio: `${gridSize * w} / ${h}` };
+    }
+    return undefined;
+  }, [alignArrowToRatio, gridSize]);
 
   React.useEffect(() => {
     if (!api) {
@@ -66,7 +80,17 @@ export const GridCarousel: React.FC<GridCarouselProps> = ({
         ))}
       </CarouselContent>
       {showArrows && (
-        <div className="container absolute h-full top-0 left-1/2 -translate-x-1/2 pointer-events-none z-10">
+        <div
+          className={cn(
+            'container absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none z-10',
+            alignArrowToRatio &&
+              alignArrowToRatio !== 'auto' &&
+              gridSize !== 'auto'
+              ? 'h-auto'
+              : 'h-full'
+          )}
+          style={arrowStyle}
+        >
           <CarouselPrevious className="size-12 min-w-auto min-h-auto outline-1 -outline-offset-1 inline-flex justify-center items-center gap-2 overflow-hidden shadow-[0px_2px_8px_0px_rgba(0,0,0,0.12)] -left-6 bg-white pointer-events-auto" />
           <CarouselNext className="size-12 min-w-auto min-h-auto outline-1 -outline-offset-1 inline-flex justify-center items-center gap-2 overflow-hidden shadow-[0px_2px_8px_0px_rgba(0,0,0,0.12)] -right-6 bg-white pointer-events-auto" />
         </div>

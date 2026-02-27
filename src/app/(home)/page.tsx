@@ -33,9 +33,11 @@ export default function Home() {
           <GridCarousel
             gridSize={4}
             carouselOpts={{ align: 'start' }}
+            alignArrowToRatio="3/4"
             items={Array.from({ length: 10 }).map((_, index) => (
               <CardThumbnail
                 thumbnailUrl="https://placehold.co/300x300"
+                thumbnailRatio="3/4"
                 title="Title"
                 description="Sub Text"
                 caption="Caption"
@@ -59,9 +61,11 @@ export default function Home() {
           <GridCarousel
             gridSize={5}
             carouselOpts={{ align: 'start' }}
+            alignArrowToRatio="3/4"
             items={Array.from({ length: 10 }).map((_, index) => (
               <CardThumbnail
                 thumbnailUrl="https://placehold.co/300x300"
+                thumbnailRatio="3/4"
                 index={index + 1}
                 title="Title"
                 description="Sub Text"
@@ -86,6 +90,7 @@ export default function Home() {
           <GridCarousel
             gridSize={2}
             carouselOpts={{ align: 'start' }}
+            alignArrowToRatio="16/9"
             items={Array.from({ length: 10 }).map((_, index) => (
               <CardThumbnail
                 thumbnailUrl="https://placehold.co/300x300"
@@ -113,9 +118,11 @@ export default function Home() {
           <GridCarousel
             gridSize={4}
             carouselOpts={{ align: 'start' }}
+            alignArrowToRatio="3/4"
             items={Array.from({ length: 10 }).map((_, index) => (
               <CardThumbnail
                 thumbnailUrl="https://placehold.co/300x300"
+                thumbnailRatio="3/4"
                 label="2.23(월) 10:30 오픈"
                 title="Title"
                 description="Sub Text"
@@ -159,9 +166,11 @@ export default function Home() {
           <GridCarousel
             gridSize={5}
             carouselOpts={{ align: 'start' }}
+            alignArrowToRatio="3/4"
             items={Array.from({ length: 10 }).map((_, index) => (
               <CardThumbnail
                 thumbnailUrl="https://placehold.co/300x300"
+                thumbnailRatio="3/4"
                 title="Title"
                 description="Sub Text"
                 caption="Caption"
@@ -185,9 +194,11 @@ export default function Home() {
           <GridCarousel
             gridSize={5}
             carouselOpts={{ align: 'start' }}
+            alignArrowToRatio="3/4"
             items={Array.from({ length: 10 }).map((_, index) => (
               <CardThumbnail
                 thumbnailUrl="https://placehold.co/300x300"
+                thumbnailRatio="3/4"
                 title="Title"
                 description="Sub Text"
                 caption="Caption"
