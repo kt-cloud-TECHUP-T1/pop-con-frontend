@@ -26,6 +26,7 @@ export interface CardThumbnailProps
     React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof thumbnailVariants> {
   thumbnailUrl: string;
+  thumbnailAlt?: string;
   thumbnailRatio?: '1/1' | '3/4' | '16/9';
   title?: string;
   label?: string;
@@ -44,6 +45,7 @@ export interface CardThumbnailProps
 
 export const CardThumbnail: React.FC<CardThumbnailProps> = ({
   thumbnailUrl,
+  thumbnailAlt = '',
   thumbnailRatio = '1/1',
   title,
   label,
@@ -58,6 +60,8 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
   isLiked,
   onClickLike,
   onClick,
+  className,
+  ...rest
 }) => {
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -66,8 +70,21 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
 
   return (
     <div
-      className={cn('card-thumbnail', onClick && 'cursor-pointer')}
+      className={cn('card-thumbnail', onClick && 'cursor-pointer', className)}
       onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
+      {...rest}
     >
       <div className="self-stretch flex flex-col justify-start items-start gap-4">
         <div
@@ -82,9 +99,12 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
               thumbnailVariants({ ratio: thumbnailRatio })
             )}
             src={thumbnailUrl}
+            alt={thumbnailAlt || title || ''}
           />
           {showButtonLike && (
             <button
+              type="button"
+              aria-pressed={isLiked}
               className={cn(
                 'button-like',
                 'right-0 top-0 p-4 absolute text-white cursor-pointer'

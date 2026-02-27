@@ -6,7 +6,7 @@ import { Magazine } from './containers/magazine';
 import { MainBanner } from './containers/main-banner';
 import { Notable } from './containers/notable';
 import { Ranking } from './containers/ranking';
-import { Recommand } from './containers/recommand';
+import { Recommend } from './containers/recommend';
 
 export default function Home() {
   return (
@@ -14,7 +14,7 @@ export default function Home() {
       <MainBanner />
       <CategoryList />
       <div className="container mx-auto">
-        <Recommand />
+        <Recommend />
         <Ranking />
         <DutchAuction />
         <LuckyDraw />

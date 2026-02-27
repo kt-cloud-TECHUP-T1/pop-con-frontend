@@ -4,7 +4,20 @@
 @custom-variant dark (&:is(.dark *));
 
 @utility container {
-  max-width: 1200px;
+  width: 100%;
+  margin-inline: auto;
+  @variant sm {
+    max-width: 640px;
+  }
+  @variant md {
+    max-width: 768px;
+  }
+  @variant lg {
+    max-width: 1024px;
+  }
+  @variant xl {
+    max-width: 1200px;
+  }
 }
 
 @theme inline {
@@ -458,7 +471,6 @@
    ========================= */
 
 @layer components {
-
   /* 디자인 시스템 설계도에 따른 Avatar 사이즈 */
   .size-avatar-xs {
     width: var(--size-avatar-xs);

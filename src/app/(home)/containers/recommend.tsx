@@ -18,7 +18,7 @@ const dummy = Array.from({ length: 10 }).map((_, index) => {
   };
 });
 
-export const Recommand = () => {
+export const Recommend = () => {
   const [item, setItems] = React.useState(dummy);
 
   const handleClick = (id: number) => {

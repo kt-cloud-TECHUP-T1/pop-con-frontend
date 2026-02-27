@@ -30,11 +30,11 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
+        <Header />
         <MSWProvider>
-          <Header />
           <section className="main">{children}</section>
-          <Footer />
         </MSWProvider>
+        <Footer />
       </body>
     </html>
   );

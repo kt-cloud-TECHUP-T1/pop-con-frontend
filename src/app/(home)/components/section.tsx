@@ -1,14 +1,16 @@
 import { Icon } from '@/components/Icon/Icon';
 
+export interface SectionHeaderProps {
+  title: string;
+  showButtonMore?: boolean;
+  onClickMore?: () => void;
+}
+
 const SectionTitle = ({
   title,
   showButtonMore,
   onClickMore,
-}: {
-  title: string;
-  showButtonMore?: boolean;
-  onClickMore?: () => void;
-}) => {
+}: SectionHeaderProps) => {
   return (
     <div className="flex justify-between items-center mb-6">
       <h2 className="justify-start text-black text-3xl font-bold leading-10">
@@ -16,6 +18,7 @@ const SectionTitle = ({
       </h2>
       {showButtonMore && (
         <button
+          type="button"
           className="inline-flex justify-start items-center gap-0.5 text-neutral-500 cursor-pointer"
           onClick={onClickMore}
         >
@@ -36,12 +39,7 @@ export const Section = ({
   title,
   showButtonMore,
   onClickMore,
-}: {
-  children: React.ReactNode;
-  title: string;
-  showButtonMore?: boolean;
-  onClickMore?: () => void;
-}) => {
+}: { children: React.ReactNode } & SectionHeaderProps) => {
   return (
     <section className="mb-20">
       <SectionTitle

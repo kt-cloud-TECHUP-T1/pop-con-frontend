@@ -21,6 +21,7 @@ export interface CardOverlayProps
     React.HTMLAttributes<HTMLDivElement>,
     VariantProps<typeof thumbnailVariants> {
   thumbnailUrl: string;
+  thumbnailAlt?: string;
   thumbnailRatio?: '3/4' | '16/9';
   title?: string;
   description?: string;
@@ -30,20 +31,37 @@ export interface CardOverlayProps
 
 export const CardOverlay: React.FC<CardOverlayProps> = ({
   thumbnailUrl,
+  thumbnailAlt = '',
   thumbnailRatio = '3/4',
   title,
   description,
   caption,
   onClick,
+  className,
+  ...props
 }) => {
   return (
     <div
       className={cn(
         'card-overlay',
         'relative rounded-ml border border-Line-Line-3/10 overflow-hidden',
-        onClick && 'cursor-pointer'
+        onClick && 'cursor-pointer',
+        className
       )}
       onClick={onClick}
+      role={onClick ? 'button' : undefined}
+      tabIndex={onClick ? 0 : undefined}
+      onKeyDown={
+        onClick
+          ? (e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onClick();
+              }
+            }
+          : undefined
+      }
+      {...props}
     >
       <img
         className={cn(
@@ -51,6 +69,7 @@ export const CardOverlay: React.FC<CardOverlayProps> = ({
           thumbnailVariants({ ratio: thumbnailRatio })
         )}
         src={thumbnailUrl}
+        alt={thumbnailAlt || title || ''}
       />
 
       <div

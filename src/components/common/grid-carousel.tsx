@@ -135,11 +135,13 @@ export const GridCarousel: React.FC<GridCarouselProps> = ({
       return;
     }
 
+    const onSelect = () => setCurrent(api.selectedScrollSnap() + 1);
     setCurrent(api.selectedScrollSnap() + 1);
 
-    api.on('select', () => {
-      setCurrent(api.selectedScrollSnap() + 1);
-    });
+    api.on('select', onSelect);
+    return () => {
+      api.off('select', onSelect);
+    };
   }, [api]);
 
   return (
@@ -147,7 +149,7 @@ export const GridCarousel: React.FC<GridCarouselProps> = ({
       <CarouselContent className="-ml-m">
         {items.map((item, index) => (
           <CarouselItem key={index} className={cn('pl-m', basisClass)}>
-            <CarouselItem className="pl-0">{item}</CarouselItem>
+            <div className="pl-0">{item}</div>
           </CarouselItem>
         ))}
       </CarouselContent>
