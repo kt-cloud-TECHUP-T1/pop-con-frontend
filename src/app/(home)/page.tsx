@@ -12,6 +12,7 @@ export default function Home() {
       <GridCarousel
         gridSize="auto"
         carouselOpts={{ loop: true }}
+        showIndexes
         items={Array.from({ length: 10 }).map((_, index) => (
           <div className="w-[384px]">
             <CardOverlay

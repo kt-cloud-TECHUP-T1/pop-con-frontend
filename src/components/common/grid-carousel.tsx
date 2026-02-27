@@ -1,5 +1,6 @@
 import {
   Carousel,
+  CarouselApi,
   CarouselContent,
   CarouselItem,
   CarouselNext,
@@ -8,6 +9,7 @@ import {
 } from '@/components/ui/carousel';
 import { cn } from '@/lib/utils';
 import { cva } from 'class-variance-authority';
+import React from 'react';
 
 const carouselItemVariants = cva('pl-m', {
   variants: {
@@ -26,6 +28,7 @@ export interface GridCarouselProps {
   items: React.ReactNode[];
   carouselOpts?: CarouselOptions;
   showArrows?: boolean;
+  showIndexes?: boolean;
 }
 
 export const GridCarousel: React.FC<GridCarouselProps> = ({
@@ -33,9 +36,25 @@ export const GridCarousel: React.FC<GridCarouselProps> = ({
   items,
   carouselOpts,
   showArrows = true,
+  showIndexes,
 }) => {
+  const [api, setApi] = React.useState<CarouselApi>();
+  const [current, setCurrent] = React.useState(0);
+
+  React.useEffect(() => {
+    if (!api) {
+      return;
+    }
+
+    setCurrent(api.selectedScrollSnap() + 1);
+
+    api.on('select', () => {
+      setCurrent(api.selectedScrollSnap() + 1);
+    });
+  }, [api]);
+
   return (
-    <Carousel className="w-full" opts={carouselOpts}>
+    <Carousel className="w-full" opts={carouselOpts} setApi={setApi}>
       <CarouselContent className="-ml-m">
         {items.map((item, index) => (
           <CarouselItem
@@ -50,6 +69,21 @@ export const GridCarousel: React.FC<GridCarouselProps> = ({
         <div className="container absolute h-full top-0 left-1/2 -translate-x-1/2 pointer-events-none z-10">
           <CarouselPrevious className="size-12 min-w-auto min-h-auto outline-1 -outline-offset-1 inline-flex justify-center items-center gap-2 overflow-hidden shadow-[0px_2px_8px_0px_rgba(0,0,0,0.12)] -left-6 bg-white pointer-events-auto" />
           <CarouselNext className="size-12 min-w-auto min-h-auto outline-1 -outline-offset-1 inline-flex justify-center items-center gap-2 overflow-hidden shadow-[0px_2px_8px_0px_rgba(0,0,0,0.12)] -right-6 bg-white pointer-events-auto" />
+        </div>
+      )}
+      {showIndexes && (
+        <div className="flex justify-center items-center gap-2 mt-6">
+          {Array.from({ length: items.length }).map((_, index) => (
+            <div
+              key={index}
+              className={cn(
+                'size-2.5 rounded-full bg-neutral-900 opacity-15',
+                current === index + 1 && 'bg-neutral-700 opacity-100'
+              )}
+            >
+              <span className="sr-only">{index + 1}</span>
+            </div>
+          ))}
         </div>
       )}
     </Carousel>
