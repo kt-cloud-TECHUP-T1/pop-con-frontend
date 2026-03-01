@@ -9,8 +9,8 @@ import {
 } from '@/constants/auth';
 
 export const signupHandler = http.post('/auth/signup', async ({ request }) => {
-  const authHeader = request.headers.get('Authorization');
   const body = (await request.json()) as {
+    registerToken?: string;
     agreements?: {
       isPrivacyPolicyAgreed?: boolean;
       isIdentifierPolicyAgreed?: boolean;
@@ -25,18 +25,20 @@ export const signupHandler = http.post('/auth/signup', async ({ request }) => {
   // --------------------------------- //
 
   // Case 4: 인증 정보가 유효하지 않음(토큰 오류)
-  if (!authHeader?.startsWith('Bearer ')) {
+  if (!body.registerToken) {
     return HttpResponse.json(
       {
-        code: AUTH_ERROR_CODES.AUTH.INVALID_AUTH,
-        message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_AUTH,
-        data: null,
+        code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
+        message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
+        data: {
+          registerToken: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN,
+        },
       },
-      { status: 401 }
+      { status: 400 }
     );
   }
 
-  const registerToken = authHeader.replace('Bearer ', '').trim();
+  const registerToken = body.registerToken.trim();
   const agreements = body.agreements;
   const agreementErrors: Record<string, string> = {};
 

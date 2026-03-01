@@ -1,4 +1,4 @@
-// JOIN-1001 본인인증 완료(토큰 발급)
+// JOIN-1001 본인인증 완료
 
 import { http, HttpResponse } from 'msw';
 import { generateMockToken } from '@/mocks/utils/token';
@@ -9,35 +9,54 @@ import {
 } from '@/constants/auth';
 
 export const identityCompleteHandler = http.post(
-  '/auth/identity/complete',
+  '/api/auth/identity/complete',
   async ({ request }) => {
-    const body = (await request.json()) as { identityVerificationId?: string };
+    const body = (await request.json()) as {
+      identityVerificationId?: string;
+      registerToken?: string;
+    };
 
     // --------------------------------- //
     // ----------- 에러 케이스 ----------- //
     // --------------------------------- //
 
     // Case 1: 입력값 오류(agreements 누락/타입 오류/필수 약관 false)
-    if (!body.identityVerificationId) {
+    if (!body.identityVerificationId || !body.registerToken) {
       return HttpResponse.json(
         {
           code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
           message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
           data: {
-            identityVerificationId: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
+            ...(!body.identityVerificationId
+              ? { identityVerificationId: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID }
+              : {}),
+            ...(!body.registerToken
+              ? { registerToken: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN }
+              : {}),
           },
         },
         { status: 400 }
       );
     }
 
-    const { identityVerificationId } = body;
+    const { identityVerificationId, registerToken } = body;
 
-    // Case 2: 만 14세 미만 (테스트용 특정 ID)
+    if (registerToken === 'register_expired' || registerToken === 'register_missing') {
+      return HttpResponse.json(
+        {
+          code: AUTH_ERROR_CODES.AUTH.SESSION_EXPIRED,
+          message: '회원가입 세션이 만료되었습니다. 다시 가입 절차를 진행해주세요.',
+          data: null,
+        },
+        { status: 401 }
+      );
+    }
+
+    // Case 2: 만 14세 미만
     if (identityVerificationId === 'iv_underage') {
       return HttpResponse.json(
         {
-          code: AUTH_ERROR_CODES.COMMON.ALREADY_REGISTERED,
+          code: 'J001',
           message: AUTH_MESSAGES.IDENTITY.ERROR.UNDERAGE,
           data: null,
         },
@@ -73,7 +92,7 @@ export const identityCompleteHandler = http.post(
     // ----------- 성공 케이스 ----------- //
     // --------------------------------- //
 
-    // 성공 케이스 - 신규 회원 (기본값)
+    // 성공 케이스 - 신규 회원
     if (identityVerificationId.startsWith('iv_new')) {
       return HttpResponse.json(
         {
@@ -81,16 +100,14 @@ export const identityCompleteHandler = http.post(
           message: AUTH_MESSAGES.IDENTITY.SUCCESS.NEW_USER,
           data: {
             isNewUser: true,
-            registerToken: generateMockToken('register'),
             nextStep: AUTH_RESPONSE_CODE.NEXT_STEP.TERMS,
-            expiresAt: new Date(Date.now() + 30 * 60 * 1000).toISOString(),
           },
         },
         { status: 200 }
       );
     }
 
-    // 성공 케이스 - 기존 회원
+    // 성공 케이스 - 기존 회원 (기본값)
     return HttpResponse.json(
       {
         code: AUTH_RESPONSE_CODE.STATUS.SUCCESS,

@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Box } from '@/components/ui/box';
+import { Typography } from '../ui/typography';
 
 type FooterLink = {
   label: string;
@@ -31,6 +32,7 @@ const FOOTER_COMPANY_INFO = [
   ['사업자등록번호: 123-45-67890', '통신판매번호: 2025-서울강남-1234'],
 ] as const;
 
+// TODO 실제 아이콘 삽입하기
 const FOOTER_SOCIAL_LINKS: FooterLink[] = [
   { label: '인스타그램 아이콘', link: 'https://www.instagram.com/' },
   {
@@ -45,44 +47,51 @@ const FOOTER_SOCIAL_LINKS: FooterLink[] = [
 
 export const Footer = () => {
   return (
-    <footer className="py-6">
-      <div className="flex items-center justify-between">
-        <Box className="w-[130px] h-[32px] flex items-center justify-center logo bg-[#E5E5E5] text-black">
-          Logo
+    <footer className="w-full py-6">
+      <Box className="max-w-[1280px] mx-auto px-10">
+        <Box className="flex items-center justify-between">
+          <Link
+            href="/"
+            className="w-[130px] h-[32px] flex items-center justify-center logo bg-[#E5E5E5] text-black"
+          >
+            Logo
+          </Link>
+          <nav>
+            <ul className="flex gap-8">
+              {FOOTER_LINK.map((links) => (
+                <li key={links.link}>
+                  <Link href={links.link}>{links.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
         </Box>
-        <nav>
-          <ul className="flex gap-8">
-            {FOOTER_LINK.map((links) => (
-              <li key={links.link}>
-                <Link href={links.link}>{links.label}</Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
-      <address className="not-italic">
-        {FOOTER_COMPANY_INFO.map((companys) => (
-          <ul key={companys.join('-')} className="flex">
-            {companys.map((company) => (
-              <li key={company}>{company}</li>
-            ))}
-          </ul>
-        ))}
-      </address>
-      <div className="container mx-auto px-4">
-        <p className="text-center">
-          © {new Date().getFullYear()} PopCon. All rights reserved.
-        </p>
-        <nav>
-          <ul>
-            {FOOTER_SOCIAL_LINKS.map((socials) => (
-              <li key={socials.label}>
-                <Link href={socials.link}>{socials.label}</Link>
-              </li>
-            ))}
-          </ul>
-        </nav>
-      </div>
+        <address className="not-italic text-[var(--neutral-60)] mb-8 mt-6">
+          {FOOTER_COMPANY_INFO.map((companys) => (
+            <ul key={companys.join('-')} className="flex space-y-1">
+              {companys.map((company) => (
+                <li key={company}>
+                  <Typography variant="body-2">{company}</Typography>
+                </li>
+              ))}
+            </ul>
+          ))}
+        </address>
+        <div className="container mx-auto flex justify-between pt-6 border-t border-color-[var(--neutral-90)] text-[var(--neutral-60)]">
+          <Typography variant="body-2">
+            © {new Date().getFullYear()} PopCon. All rights reserved.
+          </Typography>
+          <nav>
+            <ul className="flex gap-4">
+              {FOOTER_SOCIAL_LINKS.map((socials) => (
+                <li key={socials.label}>
+                  <Link href={socials.link}>{socials.label}</Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+        </div>
+      </Box>
     </footer>
   );
 };

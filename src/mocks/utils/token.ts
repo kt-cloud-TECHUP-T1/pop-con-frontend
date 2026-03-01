@@ -46,7 +46,7 @@ const getExpiration = (type: 'access' | 'refresh' | 'register'): number => {
     case 'refresh':
       return 86400 * 7; // 7일
     case 'register':
-      return 1800; // 30분
+      return 600; // 10분
   }
 };
 
