@@ -24,8 +24,10 @@ export const signupHandler = http.post('/auth/signup', async ({ request }) => {
   // ---- API 명세 순서대로 작성됐습니다 ---- //
   // --------------------------------- //
 
+  const registerToken = body.registerToken?.trim();
+
   // Case 4: 인증 정보가 유효하지 않음(토큰 오류)
-  if (!body.registerToken) {
+  if (!registerToken) {
     return HttpResponse.json(
       {
         code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
@@ -38,7 +40,6 @@ export const signupHandler = http.post('/auth/signup', async ({ request }) => {
     );
   }
 
-  const registerToken = body.registerToken.trim();
   const agreements = body.agreements;
   const agreementErrors: Record<string, string> = {};
 

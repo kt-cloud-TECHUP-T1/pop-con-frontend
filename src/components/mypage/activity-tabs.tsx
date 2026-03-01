@@ -9,7 +9,7 @@ type ActivityTabsProps = {
 
 export function ActivityTabs({ currentTab }: ActivityTabsProps) {
   return (
-    <div className="flex flex-wrap gap-2" aria-label="활동 내역 탭">
+    <nav className="flex flex-wrap gap-2" aria-label="활동 내역 탭">
       {ACTIVITY_TABS.map((tab) => {
         const isActive = currentTab === tab.value;
 
@@ -29,6 +29,6 @@ export function ActivityTabs({ currentTab }: ActivityTabsProps) {
           </Link>
         );
       })}
-    </div>
+    </nav>
   );
 }

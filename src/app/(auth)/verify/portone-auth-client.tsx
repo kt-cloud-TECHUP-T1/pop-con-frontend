@@ -53,7 +53,7 @@ export default function PortoneAuthClient() {
         size="sm"
       >
         <ModalBody>{under14Message}</ModalBody>
-        <ModalFooter className="justify-cennter">
+        <ModalFooter className="justify-center">
           <Button onClick={closeUnder14Modal} variant="primary" size="medium">
             메인으로 돌아가기
           </Button>

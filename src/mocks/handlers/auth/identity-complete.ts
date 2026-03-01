@@ -20,17 +20,20 @@ export const identityCompleteHandler = http.post(
     // ----------- 에러 케이스 ----------- //
     // --------------------------------- //
 
+    const identityVerificationId = body.identityVerificationId?.trim();
+    const registerToken = body.registerToken?.trim();
+
     // Case 1: 입력값 오류(agreements 누락/타입 오류/필수 약관 false)
-    if (!body.identityVerificationId || !body.registerToken) {
+    if (!identityVerificationId || !registerToken) {
       return HttpResponse.json(
         {
           code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
           message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
           data: {
-            ...(!body.identityVerificationId
+            ...(!identityVerificationId
               ? { identityVerificationId: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID }
               : {}),
-            ...(!body.registerToken
+            ...(!registerToken
               ? { registerToken: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN }
               : {}),
           },
@@ -38,8 +41,6 @@ export const identityCompleteHandler = http.post(
         { status: 400 }
       );
     }
-
-    const { identityVerificationId, registerToken } = body;
 
     if (registerToken === 'register_expired' || registerToken === 'register_missing') {
       return HttpResponse.json(

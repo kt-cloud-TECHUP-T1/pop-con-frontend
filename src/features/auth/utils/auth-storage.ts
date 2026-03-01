@@ -1,6 +1,4 @@
 const ACCESS_TOKEN_KEY = 'accessToken';
-const REFRESH_TOKEN_KEY = 'refreshToken';
-export const AUTH_CHANGE_EVENT_NAME = 'auth-change';
 
 const isBrowser = () => typeof window !== 'undefined';
 
@@ -9,31 +7,13 @@ export function getAccessToken() {
   return window.localStorage.getItem(ACCESS_TOKEN_KEY);
 }
 
-export function hasAccessToken() {
-  return Boolean(getAccessToken());
-}
-
-export function setAuthTokens(tokens: {
-  accessToken?: string;
-  refreshToken?: string;
-}) {
+export function setAccessToken(accessToken?: string) {
   if (!isBrowser()) return;
 
-  if (tokens.accessToken) {
-    window.localStorage.setItem(ACCESS_TOKEN_KEY, tokens.accessToken);
+  if (accessToken) {
+    // NOTE: 리프레시 토큰은 보안 이슈로 더 이상 프론트 storage에서 다루지 않음
+    window.localStorage.setItem(ACCESS_TOKEN_KEY, accessToken);
+    return;
   }
-
-  if (tokens.refreshToken) {
-    window.localStorage.setItem(REFRESH_TOKEN_KEY, tokens.refreshToken);
-  }
-
-  window.dispatchEvent(new Event(AUTH_CHANGE_EVENT_NAME));
-}
-
-export function clearAuthTokens() {
-  if (!isBrowser()) return;
-
   window.localStorage.removeItem(ACCESS_TOKEN_KEY);
-  window.localStorage.removeItem(REFRESH_TOKEN_KEY);
-  window.dispatchEvent(new Event(AUTH_CHANGE_EVENT_NAME));
 }

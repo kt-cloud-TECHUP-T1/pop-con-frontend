@@ -12,7 +12,7 @@ const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
 const mockIdentityVerificationId =
   process.env.NEXT_PUBLIC_MSW_IDENTITY_VERIFICATION_ID;
 
-export async function requsetPortfoneIdentityVerification(): Promise<PortoneVerifyResult> {
+export async function requestPortoneIdentityVerification(): Promise<PortoneVerifyResult> {
   try {
     if (!storeId || !channelKey) {
       return {
@@ -30,11 +30,7 @@ export async function requsetPortfoneIdentityVerification(): Promise<PortoneVeri
     });
 
     if (response?.code !== undefined) {
-      const code = String(response.code).toUpperCase();
       const message = response.message ?? '본인인증에 실패했습니다.';
-      const cancelled = code.includes('CANCEL') || message.includes('취소');
-
-      if (cancelled) return { status: 'cancelled', message };
       return { status: 'failed', message };
     }
 
@@ -46,7 +42,18 @@ export async function requsetPortfoneIdentityVerification(): Promise<PortoneVeri
       status: 'success',
       identityVerificationId: response.identityVerificationId,
     };
-  } catch {
+  } catch (error) {
+    if (PortOne.isIdentityVerificationError(error)) {
+      if (error.code === PortOne.GrpcErrorCode.Cancelled) {
+        return { status: 'cancelled', message: error.message };
+      }
+
+      return {
+        status: 'failed',
+        message: error.message || '본인인증에 실패했습니다.',
+      };
+    }
+
     return {
       status: 'failed',
       message: '인증 모듈 오류가 발생했습니다. 다시 시도해주세요.',

@@ -80,7 +80,7 @@ export const Footer = () => {
             </ul>
           ))}
         </address>
-        <div className="container mx-auto flex justify-between pt-6 border-t border-color-[var(--neutral-90)] text-[var(--neutral-60)]">
+        <div className="container mx-auto flex justify-between pt-6 border-t border-[var(--neutral-90)] text-[var(--neutral-60)]">
           <Typography variant="body-2">
             © {new Date().getFullYear()} PopCon. All rights reserved.
           </Typography>

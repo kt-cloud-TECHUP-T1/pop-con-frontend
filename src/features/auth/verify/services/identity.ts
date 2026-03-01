@@ -16,39 +16,46 @@ export async function completeIdentityVertification(
   identityVerificationId: string,
   registerToken: string
 ): Promise<CompleteIdentityResult> {
-  const res = await fetch('/api/auth/identity/complete', {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ identityVerificationId, registerToken }),
-  });
+  try {
+    const res = await fetch('/api/auth/identity/complete', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ identityVerificationId, registerToken }),
+    });
 
-  const result = (await res.json()) as Partial<IdentityCompleteResponse>;
+    const result = (await res.json()) as Partial<IdentityCompleteResponse>;
 
-  if (result.code === 'J001') {
+    if (result.code === 'J001') {
+      return {
+        status: 'under14',
+        message: result.message ?? AUTH_MESSAGES.IDENTITY.ERROR.UNDERAGE,
+      };
+    }
+
+    if (!res.ok || result.code !== 'SUCCESS') {
+      return {
+        status: 'failed',
+        message: result.message ?? '본인인증 처리 중 오류가 발생했습니다.',
+      };
+    }
+
+    if (!result.data) {
+      return {
+        status: 'failed',
+        message: '응답 데이터가 없습니다.',
+      };
+    }
+
     return {
-      status: 'under14',
-      message: result.message ?? AUTH_MESSAGES.IDENTITY.ERROR.UNDERAGE,
+      status: 'success',
+      data: result.data,
     };
-  }
-
-  if (!res.ok || result.code !== 'SUCCESS') {
+  } catch {
     return {
       status: 'failed',
-      message: result.message ?? '본인인증 처리 중 오류가 발생했습니다.',
+      message: '본인인증 처리 중 오류가 발생했습니다.',
     };
   }
-
-  if (!result.data) {
-    return {
-      status: 'failed',
-      message: '응답 데이터가 없습니다.',
-    };
-  }
-
-  return {
-    status: 'success',
-    data: result.data,
-  };
 }

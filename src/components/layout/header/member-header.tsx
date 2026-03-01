@@ -7,7 +7,7 @@ import { Avatar } from '@/components/ui/avatar';
 
 export function MemberHeader() {
   return (
-    <header className="w-full border-b border-color-[var(--neutral-90)] py-6">
+    <header className="w-full border-b border-[var(--neutral-90)] py-6">
       <Box className="mx-auto flex max-w-[1280px] items-center justify-between gap-8 px-10">
         <Box className="min-w-0 flex flex-1 items-start gap-12">
           <Link
@@ -26,8 +26,9 @@ export function MemberHeader() {
             suffix="Search"
             inputSize="small"
             placeholder="Search..."
+            aria-label="검색"
           />
-          <Link href="/mypage">
+          <Link href="/mypage" aria-label="마이페이지">
             <Avatar
               icon={{ name: 'PersonFill', className: 'text-white', size: 18 }}
             ></Avatar>
