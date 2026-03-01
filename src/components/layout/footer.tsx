@@ -68,9 +68,12 @@ export const Footer = () => {
         </Box>
         <address className="not-italic text-[var(--neutral-60)] mb-8 mt-6">
           {FOOTER_COMPANY_INFO.map((companys) => (
-            <ul key={companys.join('-')} className="flex space-y-1">
+            <ul key={companys.join('-')} className="flex flex-wrap">
               {companys.map((company) => (
-                <li key={company}>
+                <li
+                  key={company}
+                  className="flex items-center after:mx-2 after:content-['|'] last:after:hidden after:text-[#0A0A0A]/8"
+                >
                   <Typography variant="body-2">{company}</Typography>
                 </li>
               ))}
