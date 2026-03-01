@@ -3,6 +3,23 @@
 
 @custom-variant dark (&:is(.dark *));
 
+@utility container {
+  width: 100%;
+  margin-inline: auto;
+  @variant sm {
+    max-width: 640px;
+  }
+  @variant md {
+    max-width: 768px;
+  }
+  @variant lg {
+    max-width: 1024px;
+  }
+  @variant xl {
+    max-width: 1200px;
+  }
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -422,10 +439,12 @@
   * {
     @apply border-border outline-ring/50;
   }
+
   body {
     @apply bg-background text-foreground font-sans;
   }
 }
+
 @media (max-width: 768px) {
   @theme inline {
     /* Spacing – Mobile */
@@ -457,44 +476,55 @@
     width: var(--size-avatar-xs);
     height: var(--size-avatar-xs);
   }
+
   .size-avatar-sm {
     width: var(--size-avatar-sm);
     height: var(--size-avatar-sm);
   }
+
   .size-avatar-md {
     width: var(--size-avatar-md);
     height: var(--size-avatar-md);
   }
+
   .size-avatar-lg {
     width: var(--size-avatar-lg);
     height: var(--size-avatar-lg);
   }
+
   .size-avatar-xl {
     width: var(--size-avatar-xl);
     height: var(--size-avatar-xl);
   }
+
   .size-avatar-2xl {
     width: var(--size-avatar-2xl);
     height: var(--size-avatar-2xl);
   }
+
   .size-avatar-3xl {
     width: var(--size-avatar-3xl);
     height: var(--size-avatar-3xl);
   }
+
   /* END 디자인 시스템 설계도에 따른 Avatar 사이즈 */
 
   /* 디자인 시스템 설계도에 따른 shadow (elevation) */
   .shadow-elevation-s {
     box-shadow: var(--shadow-elevation-s);
   }
+
   .shadow-elevation-m {
     box-shadow: var(--shadow-elevation-m);
   }
+
   .shadow-elevation-l {
     box-shadow: var(--shadow-elevation-l);
   }
+
   .shadow-elevation-xl {
     box-shadow: var(--shadow-elevation-xl);
   }
+
   /* END 디자인 시스템 설계도에 따른 shadow (elevation) */
 }
