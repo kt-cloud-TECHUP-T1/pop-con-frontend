@@ -9,10 +9,13 @@ export default function TestMSW() {
 
   const handleTest = async (id: string) => {
     try {
-      const res = await fetch('/auth/identity/complete', {
+      const res = await fetch('/api/auth/identity/complete', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ identityVerificationId: id }),
+        body: JSON.stringify({
+          identityVerificationId: id,
+          registerToken: 'register_from_social_login',
+        }),
       });
 
       const contentType = res.headers.get('content-type') || '';

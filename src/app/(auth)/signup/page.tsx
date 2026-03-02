@@ -1,5 +1,5 @@
-// 회원가입
+import { Wrapper } from '@/components/layout/wrapper';
 
-export default function Signup() {
-  return <div>회원가입 페이지</div>;
+export default function SignupPage() {
+  return <Wrapper>회원가입 페이지</Wrapper>;
 }

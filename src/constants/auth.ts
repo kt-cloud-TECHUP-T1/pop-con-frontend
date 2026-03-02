@@ -2,13 +2,14 @@ export const AUTH_MESSAGES = {
   IDENTITY: {
     SUCCESS: {
       NEW_USER: '본인인증이 완료되었습니다. 약관에 동의해주세요.',
-      EXISTING_USER: '로그인이 완료되었습니다.',
+      EXISTING_USER: '계정 연결 및 로그인이 완료되었습니다.',
     },
     ERROR: {
       INVALID_INPUT: '입력값이 올바르지 않습니다.',
       UNDERAGE: '만 14세 미만은 가입이 제한됩니다.',
       INVALID_AUTH: '인증 정보가 유효하지 않습니다.',
       REQUIRED_ID: '본인인증 식별자가 필요합니다.',
+      REQUIRED_REGISTER_TOKEN: '가입 진행 토큰이 필요합니다.',
     },
   },
   SIGNUP: {
@@ -76,7 +77,6 @@ export const AUTH_RESPONSE_CODE = {
   },
   NEXT_STEP: {
     TERMS: 'TERMS',
-    SIGNUP: 'SIGNUP', // 예시: 약관 동의 후 단계
-    HOME: 'HOME', // 예시: 가입 완료 후 단계
+    HOME: 'HOME',
   },
 } as const;

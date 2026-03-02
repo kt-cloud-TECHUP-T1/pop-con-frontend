@@ -1,9 +1,16 @@
-import { PropsWithChildren } from 'react';
+import { cn } from '@/lib/utils';
 
-export const Wrapper = ({ children }: PropsWithChildren) => {
+type WrapperProps = React.ComponentProps<'div'>;
+
+export const Wrapper = ({ className, children, ...props }: WrapperProps) => {
   return (
-    // TODO pt-120px 박은 것 유동적으로 바뀌도록 수정이 필요함
-    <div className="w-full max-w-[1280px] mx-auto px-10 pt-[120px]">
+    <div
+      className={cn(
+        'w-full max-w-[1280px] min-h-screen mx-auto px-10 ',
+        className
+      )}
+      {...props}
+    >
       {children}
     </div>
   );

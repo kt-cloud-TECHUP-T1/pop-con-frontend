@@ -64,34 +64,34 @@
 
 ## git status 결과
 
-deleted: .github/ISSUE_TEMPLATE/feature.md
+modified: .gitignore
+modified: components.json
+modified: eslint.config.mjs
 modified: package-lock.json
 modified: package.json
-modified: src/app/globals.css
-modified: src/app/layout.tsx
 modified: src/app/sample/avatar/page.tsx
+modified: src/app/sample/checkbox/page.tsx
 modified: src/app/sample/icon/page.tsx
+modified: src/app/sample/modal/page.tsx
 modified: src/app/sample/shadow/page.tsx
 modified: src/app/sample/shape/page.tsx
+deleted: src/app/test-msw/page.tsx
 modified: src/components/Icon/Icon.tsx
-modified: src/components/common/CommonAvatar.tsx
-modified: src/components/common/CommonAvatarEditable.tsx
-modified: src/components/ui/checkbox.tsx
-modified: src/constants/design-system.ts
+modified: src/components/ui/avatar.tsx
+modified: src/components/ui/box.tsx
+deleted: src/components/ui/dialog.tsx
+modified: src/components/ui/modal.tsx
+modified: src/docs/icons.md
 
-.github/ISSUE_TEMPLATE/bug_report.md
-.github/ISSUE_TEMPLATE/feature_request.md
-.github/PULL_REQUEST_TEMPLATE.md
-.github/refactor.md
-docs/
-public/mockServiceWorker.js
-src/app/providers.tsx
-src/app/sample/checkbox/
-src/app/test-msw/
-src/assets/ui-icons/
-src/components/Icon/icons/Checkbox.tsx
-src/components/Icon/icons/CheckboxFill.tsx
-src/components/Icon/ui-icons/
-src/components/common/CommonCheckbox.tsx
-src/constants/auth.ts
-src/mocks/
+Untracked files:
+(use "git add <file>..." to include in what will be committed)
+.github/workflows/chromatic.yml
+.storybook/
+src/app/(auth)/
+src/app/(protected)/
+src/app/sample/test-msw/
+src/components/layout/
+src/components/primitives/dialog.tsx
+src/components/ui/avatar.stories.tsx
+src/components/ui/box.stories.tsx
+src/stories/
