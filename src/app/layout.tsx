@@ -31,9 +31,7 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
-        <MSWProvider>
-          <section className="main">{children}</section>
-        </MSWProvider>
+        <MSWProvider>{children}</MSWProvider>
         <Footer />
       </body>
     </html>

@@ -1,6 +1,16 @@
-// protected -> 로그인 필수 영역
-// 임시로 만들어둔 거라 수정이 필요하시면 수정하셔도 됩니다!
+import { Wrapper } from '@/components/layout/wrapper';
+import { MyPageSidebar } from '@/components/mypage/my-page-sidebar';
+import { Typography } from '@/components/ui/typography';
 
 export default function ProtectedPage() {
-  return <div>test</div>;
+  return (
+    <Wrapper className="pt-10">
+      <div>
+        <Typography variant="title-1" weight="medium" className="mb-4">
+          My 팝콘
+        </Typography>
+        <MyPageSidebar pathname="/mypage" />
+      </div>
+    </Wrapper>
+  );
 }

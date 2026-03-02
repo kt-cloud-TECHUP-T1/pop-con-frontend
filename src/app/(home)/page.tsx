@@ -1,3 +1,4 @@
+import { Wrapper } from '@/components/layout/wrapper';
 import { CategoryList } from './components/category-list';
 import { DutchAuction } from './containers/dutch-auction';
 import { EndingSoon } from './containers/ending-soon';
@@ -10,10 +11,10 @@ import { Recommend } from './containers/recommend';
 
 export default function Home() {
   return (
-    <div>
+    <div className="mt-6">
       <MainBanner />
       <CategoryList />
-      <div className="container mx-auto">
+      <Wrapper className="py-0">
         <Recommend />
         <Ranking />
         <DutchAuction />
@@ -21,7 +22,7 @@ export default function Home() {
         <Magazine />
         <Notable />
         <EndingSoon />
-      </div>
+      </Wrapper>
     </div>
   );
 }
