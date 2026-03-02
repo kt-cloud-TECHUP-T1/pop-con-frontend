@@ -7,15 +7,19 @@ import { Typography } from '@/components/ui/typography';
 export default function Login() {
   return (
     <Wrapper>
-      <Typography weight="bold" variant="heading-1" className="text-center">
+      <Typography
+        weight="bold"
+        variant="heading-1"
+        className="text-center pt-3xl"
+      >
         로그인
       </Typography>
 
-      <div className="btn-group w-full max-w-[360px] mx-auto flex flex-col gap-3 pt-[30px]">
+      <div className="btn-group w-full max-w-[360px] mx-auto flex flex-col gap-3 pt-ml">
         <Button
           size="large"
-          className="w-full bg-[#FEE500]"
-          leftIcon={<img src="/icons/kakao_btn.png" alt="카카오" />}
+          className="w-full bg-[#FEE500] hover:bg-[#FEE500] active:bg-[#FEE500]"
+          leftIcon={<img src="/icons/kakao.svg" className="w-6 h-6"></img>}
         >
           <Typography variant="label-1" weight="medium" className="text-black">
             카카오 로그인
@@ -23,17 +27,13 @@ export default function Login() {
         </Button>
         <Button
           size="large"
-          className="w-full bg-[#03C75A]"
-          leftIcon={
-            <img src="/icons/naver_btn.png" alt="네이버" className="w-6 h-6" />
-          }
+          className="w-full bg-[#03C75A] hover:bg-[#03C75A] active:bg-[#03C75A]"
+          leftIcon={<img src="/icons/naver.svg" className="w-6 h-6"></img>}
         >
           <Typography variant="label-1" weight="medium">
             네이버 로그인
           </Typography>
         </Button>
-
-        <Button>dd</Button>
       </div>
     </Wrapper>
   );
