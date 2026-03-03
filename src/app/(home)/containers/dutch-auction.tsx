@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import { CardThumbnail } from '@/components/common/card-thumbnail';
-import { GridCarousel } from '@/components/common/grid-carousel';
+import { CardThumbnail } from '@/components/content/card-thumbnail';
+import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
 
 const dummy = Array.from({ length: 10 }).map((_, index) => {

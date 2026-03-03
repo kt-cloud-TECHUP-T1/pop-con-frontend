@@ -1,7 +1,7 @@
 'use client';
 
-import { CardOverlay } from '@/components/common/card-overlay';
-import { GridCarousel } from '@/components/common/grid-carousel';
+import { CardOverlay } from '@/components/content/card-overlay';
+import { GridCarousel } from '@/components/content/grid-carousel';
 
 export const MainBanner = () => {
   return (

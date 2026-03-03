@@ -47,7 +47,7 @@ const FOOTER_SOCIAL_LINKS: FooterLink[] = [
 
 export const Footer = () => {
   return (
-    <footer className="w-full py-6">
+    <footer className="w-full pt-10 pb-12 border-t border-top-[#ebebeb]">
       <Box className="max-w-[1280px] mx-auto px-10">
         <Box className="flex items-center justify-between">
           <Link
