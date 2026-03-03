@@ -19,7 +19,20 @@ const meta = {
     },
     radius: {
       control: 'select',
-      options: ['NONE', 'XXS', 'XS', 'S', 'MS', 'M', 'ML', 'LG', 'XL', '_2XL', '_3XL', 'FULL'],
+      options: [
+        'NONE',
+        'XXS',
+        'XS',
+        'S',
+        'MS',
+        'M',
+        'ML',
+        'LG',
+        'XL',
+        '_2XL',
+        '_3XL',
+        'FULL',
+      ],
     },
     showClose: { control: 'boolean' },
     icon: {
@@ -83,10 +96,7 @@ function SampleContent() {
   );
 }
 
-function createSampleStory(
-  triggerLabel: string,
-  args: ModalStoryArgs
-): Story {
+function createSampleStory(triggerLabel: string, args: ModalStoryArgs): Story {
   return {
     args: {
       ...args,
@@ -94,9 +104,12 @@ function createSampleStory(
       onClose: () => undefined,
       children: null,
     },
-    render: ({ isOpen: _isOpen, onClose: _onClose, children: _children, ...storyArgs }) => (
-      <ModalExample {...storyArgs} triggerLabel={triggerLabel} />
-    ),
+    render: ({
+      isOpen: _isOpen,
+      onClose: _onClose,
+      children: _children,
+      ...storyArgs
+    }) => <ModalExample {...storyArgs} triggerLabel={triggerLabel} />,
   };
 }
 
@@ -114,14 +127,14 @@ export const NormalTrue = createSampleStory('Normal - True', {
 
 export const IconFalse = createSampleStory('Icon - False', {
   title: 'Icon - False',
-  showClose: true,
+  showClose: false,
   size: 'md',
   icon: 'Blank',
 });
 
 export const IconTrue = createSampleStory('Icon - True', {
   title: 'Icon - True',
-  showClose: false,
+  showClose: true,
   size: 'md',
   icon: 'Blank',
 });

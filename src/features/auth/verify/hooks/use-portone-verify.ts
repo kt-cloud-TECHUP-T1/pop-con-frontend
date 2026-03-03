@@ -9,7 +9,7 @@ import {
   setRegisterToken,
 } from '@/features/auth/utils/auth-storage';
 
-export function usePortfoneVerify() {
+export function usePortoneVerify() {
   const router = useRouter();
   const [isPending, setIsPending] = useState(false);
   const [isUnder14ModalOpen, setIsUnder14ModalOpen] = useState(false);

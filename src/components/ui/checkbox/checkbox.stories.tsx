@@ -78,23 +78,31 @@ export const States: Story = {
       radius="XL"
     >
       <div className="flex flex-col items-center gap-2">
-        <Checkbox size={48} />
+        <Checkbox size={48} aria-label="default 상태 체크박스" />
         <span>default</span>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <Checkbox size={48} visualState="hover" />
+        <Checkbox
+          size={48}
+          visualState="hover"
+          aria-label="hover 상태 체크박스"
+        />
         <span>hover</span>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <Checkbox size={48} visualState="pressed" />
+        <Checkbox
+          size={48}
+          visualState="pressed"
+          aria-label="pressed 상태 체크박스"
+        />
         <span>pressed</span>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <Checkbox size={48} isError />
+        <Checkbox size={48} isError aria-label="error 상태 체크박스" />
         <span>error</span>
       </div>
       <div className="flex flex-col items-center gap-2">
-        <Checkbox size={48} disabled />
+        <Checkbox size={48} disabled aria-label="disabled 상태 체크박스" />
         <span>disabled</span>
       </div>
     </Box>

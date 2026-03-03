@@ -5,6 +5,8 @@ type LikedPopupCardProps = {
   description: string;
   caption: string;
   thumbnailUrl: string;
+  isLiked?: boolean;
+  onClickLike?: () => void;
 };
 
 export function LikedPopupCard({
@@ -12,6 +14,8 @@ export function LikedPopupCard({
   description,
   caption,
   thumbnailUrl,
+  isLiked = true,
+  onClickLike,
 }: LikedPopupCardProps) {
   return (
     <CardThumbnail
@@ -21,7 +25,8 @@ export function LikedPopupCard({
       description={description}
       caption={caption}
       showButtonLike
-      isLiked
+      isLiked={isLiked}
+      onClickLike={onClickLike}
     />
   );
 }

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
+import type { ComponentProps, ReactNode } from 'react';
 
 import { Button } from '@/components/ui/button';
 import {
@@ -59,7 +60,7 @@ const SNACKBAR_VARIANTS: SnackbarVariant[] = [
   'destructive',
 ];
 
-function SnackbarFrame({ children }: { children: React.ReactNode }) {
+function SnackbarFrame({ children }: { children: ReactNode }) {
   return <div className="rounded-[24px] p-8">{children}</div>;
 }
 
@@ -68,11 +69,13 @@ function VariantRow({
   buildProps,
 }: {
   title: string;
-  buildProps: (variant: SnackbarVariant) => React.ComponentProps<typeof Snackbar>;
+  buildProps: (variant: SnackbarVariant) => ComponentProps<typeof Snackbar>;
 }) {
   return (
     <div className="flex flex-col gap-3">
-      <p className="text-sm font-medium text-[var(--content-medium)]">{title}</p>
+      <p className="text-sm font-medium text-[var(--content-medium)]">
+        {title}
+      </p>
       <div className="flex gap-4">
         {SNACKBAR_VARIANTS.map((variant) => (
           <Snackbar key={`${title}-${variant}`} {...buildProps(variant)} />
