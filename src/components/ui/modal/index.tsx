@@ -10,7 +10,7 @@ import { RADIUS, RadiusType } from '@/constants/design-system';
 import { cn } from '@/lib/utils';
 import { Icon, IconName } from '@/components/Icon/Icon';
 
-interface ModalProps {
+export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
@@ -46,12 +46,12 @@ export default function Modal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
+        showCloseButton={showClose}
         className={cn(
           sizeClasses[size],
           RADIUS[radius],
           'px-6 pb-8 text-center block',
           showClose ? 'pt-20' : 'pt-8',
-          !showClose && '[&>button]:hidden',
           className
         )}
       >

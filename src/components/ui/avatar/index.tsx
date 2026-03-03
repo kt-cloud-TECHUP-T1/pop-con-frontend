@@ -3,7 +3,7 @@
 import { AVATAR_SIZE, type AvatarSizeType } from '@/constants/design-system';
 import { Icon, IconProps } from '@/components/Icon/Icon';
 import Image from 'next/image';
-import { Box } from './box';
+import { Box } from '@/components/ui/box';
 
 export interface AvatarProps {
   src?: string; // 이미지 URL

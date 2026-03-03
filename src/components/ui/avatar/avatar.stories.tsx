@@ -1,10 +1,10 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 // import { fn } from 'storybook/test';
 
-import { Avatar } from './avatar';
+import { Avatar } from './index';
 import { AvatarEditable } from './avatar-editable';
 import type { AvatarSizeType } from '@/constants/design-system';
-import { IconName } from '../Icon/Icon';
+import { IconName } from '@/components/Icon/Icon';
 
 const AVATAR_SIZES: Array<{
   key: AvatarSizeType;

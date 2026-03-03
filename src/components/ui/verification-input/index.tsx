@@ -1,8 +1,8 @@
 'use client';
 
 import { forwardRef, useEffect, useState } from 'react';
-import { Input, InputProps } from './input';
-import type { FieldState } from './field-wrapper';
+import { Input, InputProps } from '@/components/ui/input';
+import type { FieldState } from '@/components/ui/field-wrapper';
 
 export interface VerificationInputProps extends Omit<InputProps, 'suffix'> {
   duration?: number; // 전체 제한 시간 (초)
