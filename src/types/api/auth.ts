@@ -11,6 +11,4 @@ export type IdentityCompleteData = TokenPayload & {
   userId?: number;
   nextStep?: IdentityNextStep;
   expiresAt?: string;
-  ci?: string;
-  birthDate?: string;
 };
