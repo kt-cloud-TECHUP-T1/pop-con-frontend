@@ -6,8 +6,11 @@ type IdentityCompleteRequestBody = {
   registerToken?: string;
 };
 
-const BACKEND_API_BASE_URL =
-  process.env.BACKEND_API_BASE_URL ?? 'https://devapi.popcon.store';
+const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL;
+
+if (!BACKEND_API_BASE_URL) {
+  throw new Error('BACKEND_API_BASE_URL is not set');
+}
 
 export async function POST(request: Request) {
   const body = (await request.json()) as IdentityCompleteRequestBody;
@@ -22,10 +25,16 @@ export async function POST(request: Request) {
         message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
         data: {
           ...(!identityVerificationId
-            ? { identityVerificationId: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID }
+            ? {
+                identityVerificationId:
+                  AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
+              }
             : {}),
           ...(!registerToken
-            ? { registerToken: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN }
+            ? {
+                registerToken:
+                  AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN,
+              }
             : {}),
         },
       },

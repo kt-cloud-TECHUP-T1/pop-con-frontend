@@ -117,7 +117,7 @@ export const Sizes: Story = {
     <div className="flex items-end gap-8">
       {[16, 20, 24, 32, 48].map((size) => (
         <div key={size} className="flex flex-col items-center gap-2">
-          <Checkbox size={size} />
+          <Checkbox size={size} aria-label={`${size}px 체크박스`} />
           <span>{size}px</span>
         </div>
       ))}
