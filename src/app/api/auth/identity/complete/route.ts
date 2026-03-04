@@ -6,7 +6,7 @@ type IdentityCompleteRequestBody = {
   registerToken?: string;
 };
 
-const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL;
+const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL ?? 'https://devapi.popcon.store';
 
 if (!BACKEND_API_BASE_URL) {
   throw new Error('BACKEND_API_BASE_URL is not set');
