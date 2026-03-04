@@ -21,6 +21,62 @@ export const SHADOW = {
   XL: 'shadow-elevation-xl',
 };
 
+export const BORDER = {
+  NONE: 'border-none',
+  SUBTLE: 'border border-[var(--line-3)]',
+  DEFAULT: 'border border-[var(--line-4)]',
+  STRONG: 'border border-[var(--neutral-30)]',
+  STRONG_2: 'border-[2px] border-[var(--neutral-30)]',
+} as const;
+
+export const BACKGROUND = {
+  TRANSPARENT: 'bg-transparent',
+  DEFAULT: 'bg-[var(--bg-default)]',
+  STRONG: 'bg-[var(--bg-strong)]',
+} as const;
+
+export const PADDING = {
+  NONE: 'p-[var(--spacing-none)]',
+  _2XS: 'p-[var(--spacing-2xs)]',
+  XS: 'p-[var(--spacing-xs)]',
+  S: 'p-[var(--spacing-s)]',
+  MS: 'p-[var(--spacing-ms)]',
+  M: 'p-[var(--spacing-m)]',
+  ML: 'p-[var(--spacing-ml)]',
+  L: 'p-[var(--spacing-l)]',
+  XL: 'p-[var(--spacing-xl)]',
+  _2XL: 'p-[var(--spacing-2xl)]',
+  _3XL: 'p-[var(--spacing-3xl)]',
+} as const;
+
+export const PADDING_X = {
+  NONE: 'px-[var(--spacing-none)]',
+  _2XS: 'px-[var(--spacing-2xs)]',
+  XS: 'px-[var(--spacing-xs)]',
+  S: 'px-[var(--spacing-s)]',
+  MS: 'px-[var(--spacing-ms)]',
+  M: 'px-[var(--spacing-m)]',
+  ML: 'px-[var(--spacing-ml)]',
+  L: 'px-[var(--spacing-l)]',
+  XL: 'px-[var(--spacing-xl)]',
+  _2XL: 'px-[var(--spacing-2xl)]',
+  _3XL: 'px-[var(--spacing-3xl)]',
+} as const;
+
+export const PADDING_Y = {
+  NONE: 'py-[var(--spacing-none)]',
+  _2XS: 'py-[var(--spacing-2xs)]',
+  XS: 'py-[var(--spacing-xs)]',
+  S: 'py-[var(--spacing-s)]',
+  MS: 'py-[var(--spacing-ms)]',
+  M: 'py-[var(--spacing-m)]',
+  ML: 'py-[var(--spacing-ml)]',
+  L: 'py-[var(--spacing-l)]',
+  XL: 'py-[var(--spacing-xl)]',
+  _2XL: 'py-[var(--spacing-2xl)]',
+  _3XL: 'py-[var(--spacing-3xl)]',
+} as const;
+
 export const AVATAR_SIZE = {
   XS: 'size-avatar-xs', // 20x20
   SM: 'size-avatar-sm', // 24x24
@@ -34,3 +90,6 @@ export const AVATAR_SIZE = {
 export type ShadowType = keyof typeof SHADOW;
 export type AvatarSizeType = keyof typeof AVATAR_SIZE;
 export type RadiusType = keyof typeof RADIUS;
+export type BorderType = keyof typeof BORDER;
+export type BackgroundType = keyof typeof BACKGROUND;
+export type PaddingType = keyof typeof PADDING;

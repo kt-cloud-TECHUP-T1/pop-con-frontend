@@ -4,6 +4,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { MSWProvider } from './providers';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
+import { SnackbarToaster } from '@/components/ui/snackbar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,6 +34,7 @@ export default function RootLayout({
         <Header />
         <MSWProvider>{children}</MSWProvider>
         <Footer />
+        <SnackbarToaster />
       </body>
     </html>
   );

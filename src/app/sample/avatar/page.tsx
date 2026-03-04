@@ -1,7 +1,7 @@
 'use client';
 
 import { Avatar } from '@/components/ui/avatar';
-import { AvatarEditable } from '@/components/ui/avatar-editable';
+import { AvatarEditable } from '@/components/ui/avatar/avatar-editable';
 import { Box } from '@/components/ui/box';
 import type { AvatarSizeType } from '@/constants/design-system';
 
