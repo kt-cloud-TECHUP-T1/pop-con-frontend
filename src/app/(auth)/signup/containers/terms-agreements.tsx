@@ -16,12 +16,17 @@ export default function TermsAgreements() {
   const canSignup = terms.filter((term) => term.isRequired).every((term) => term.isAgreed);
 
   const handleClickTerm = (index: number) => {
-    setTerms(terms.map((term, i) => i === index ? { ...term, isAgreed: !term.isAgreed } : term));
-  };
-  const handleAllAgreedChange = () => {
-    const allAgreed = terms.every((term) => term.isAgreed);
-    setTerms(terms.map((term) => ({ ...term, isAgreed: !allAgreed })))
-  };
+  setTerms((prev) =>
+    prev.map((term, i) => i === index ? { ...term, isAgreed: !term.isAgreed } : term)
+  );
+};
+
+const handleAllAgreedChange = () => {
+  setTerms((prev) => {
+    const allAgreed = prev.every((term) => term.isAgreed);
+    return prev.map((term) => ({ ...term, isAgreed: !allAgreed }));
+  });
+};
   const handleSubmit = () => {
     console.log('signup');
   };
@@ -33,7 +38,7 @@ export default function TermsAgreements() {
 
         <section className="flex flex-col gap-2.5 mb-10">
           {terms.map((term, index) => (
-            <AgreementCheckbox key={term.label} checked={term.isAgreed} onCheckedChange={() => handleClickTerm(index)} label={term.label} isRequired={term.isRequired} />
+            <AgreementCheckbox key={term.id} checked={term.isAgreed} onCheckedChange={() => handleClickTerm(index)} label={term.label} isRequired={term.isRequired} />
           ))}
         </section>
 
