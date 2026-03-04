@@ -80,3 +80,25 @@ export const AUTH_RESPONSE_CODE = {
     HOME: 'HOME',
   },
 } as const;
+
+export const TERMS: readonly {
+  id: string;
+  label: string;
+  isRequired: boolean;
+}[] = [
+  { id: 'age',
+    label: '만 14세 이상입니다',
+    isRequired: true 
+  },
+  { id: 'privacy',
+     label: '개인정보 수집 및 이용 동의',
+    isRequired: true 
+  },
+  { id: 'servicePolicy',
+     label: 'Pop-con 서비스 이용약관 동의',
+    isRequired: true 
+  },
+  { id: 'marketing',
+    label: '마케팅 수신 동의',
+    isRequired: false },
+];
