@@ -1,4 +1,5 @@
 const ACCESS_TOKEN_KEY = 'accessToken';
+const REGISTER_TOKEN_KEY = 'registerToken';
 
 const isBrowser = () => typeof window !== 'undefined';
 
@@ -16,4 +17,20 @@ export function setAccessToken(accessToken?: string) {
     return;
   }
   window.localStorage.removeItem(ACCESS_TOKEN_KEY);
+}
+
+export function getRegisterToken() {
+  if (!isBrowser()) return null;
+  return window.localStorage.getItem(REGISTER_TOKEN_KEY);
+}
+
+export function setRegisterToken(registerToken?: string) {
+  if (!isBrowser()) return;
+
+  if (registerToken) {
+    window.localStorage.setItem(REGISTER_TOKEN_KEY, registerToken);
+    return;
+  }
+
+  window.localStorage.removeItem(REGISTER_TOKEN_KEY);
 }

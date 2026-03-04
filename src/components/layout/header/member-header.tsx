@@ -21,6 +21,7 @@ export function MemberHeader() {
           <HeaderNav />
         </Box>
         <Box className="flex shrink-0 items-center gap-6">
+          {/* TODO 검색 아이콘 삽입 필요 */}
           <Input
             className="w-[320px] border border-[var(--orange-50)]"
             suffix="Search"

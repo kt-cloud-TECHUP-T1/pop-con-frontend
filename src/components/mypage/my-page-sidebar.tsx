@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { MY_PAGE_SIDEBAR } from '@/constants/mypage';
 import { cn } from '@/lib/utils';
 import type { MyPageSidebarItem } from '@/types/mypage';
@@ -15,11 +18,9 @@ const isActiveSidebarItem = (
   return pathname.startsWith(item.href);
 };
 
-type MyPageSidebarProps = {
-  pathname: string;
-};
+export function MyPageSidebar() {
+  const pathname = usePathname();
 
-export function MyPageSidebar({ pathname }: MyPageSidebarProps) {
   return (
     <nav aria-label="마이페이지 사이드바">
       <ul className="space-y-8">

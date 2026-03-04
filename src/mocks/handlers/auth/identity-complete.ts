@@ -101,7 +101,9 @@ export const identityCompleteHandler = http.post(
           message: AUTH_MESSAGES.IDENTITY.SUCCESS.NEW_USER,
           data: {
             isNewUser: true,
+            registerToken: `reg_${crypto.randomUUID()}`,
             nextStep: AUTH_RESPONSE_CODE.NEXT_STEP.TERMS,
+            expiresAt: new Date(Date.now() + 10 * 60 * 1000).toISOString(),
           },
         },
         { status: 200 }
