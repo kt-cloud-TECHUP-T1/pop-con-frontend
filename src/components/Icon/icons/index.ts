@@ -59,3 +59,4 @@ export { default as Share1 } from './Share1';
 export { default as Tune } from './Tune';
 export { default as Video } from './Video';
 export { default as Write } from './Write';
+export { default as CreditCard } from './CreditCard';
