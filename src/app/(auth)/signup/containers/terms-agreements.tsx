@@ -2,16 +2,15 @@
 
 import { Separator } from '@/components/ui/separator';
 import { TERMS } from '@/constants/auth';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import AllAgreeCheckbox from '../components/all-agree-checkbox';
 import AgreementCheckbox from '../components/agreement-checkbox';
 import SignupButton from '../components/signup-button';
-import { useRouter } from 'next/navigation';
+
+const initialTerms = TERMS.map(term => ({ ...term, isAgreed: false }));
 
 export default function TermsAgreements() {
-  const router = useRouter();
-  
-  const [terms, setTerms] = useState<typeof TERMS>(TERMS);
+  const [terms, setTerms] = useState(initialTerms);
 
   const isAllAgreed = terms.every((term) => term.isAgreed);
   const canSignup = terms.filter((term) => term.isRequired).every((term) => term.isAgreed);

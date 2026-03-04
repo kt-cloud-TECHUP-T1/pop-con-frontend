@@ -84,26 +84,21 @@ export const AUTH_RESPONSE_CODE = {
 export const TERMS: readonly {
   label: string;
   isRequired: boolean;
-  isAgreed: boolean;
 }[] = [
   {
     label: '만 14세 이상입니다',
     isRequired: true,   
-    isAgreed: false,
   },
   {
     label: '개인정보 수집 및 이용 동의',
     isRequired: true,
-    isAgreed: false,
   },
   {
     label: 'Pop-con 서비스 이용약관 동의',
     isRequired: true,
-    isAgreed: false,
   },
   {
     label: '마케팅 수신 동의',
     isRequired: false,
-    isAgreed: false,
   },
 ];
