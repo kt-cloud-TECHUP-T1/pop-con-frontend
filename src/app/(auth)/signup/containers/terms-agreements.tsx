@@ -2,12 +2,14 @@
 
 import { Separator } from '@/components/ui/separator';
 import { TERMS } from '@/constants/auth';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import AllAgreeCheckbox from '../components/all-agree-checkbox';
 import AgreementCheckbox from '../components/agreement-checkbox';
 import SignupButton from '../components/signup-button';
+import { useRouter } from 'next/navigation';
 
 export default function TermsAgreements() {
+  const router = useRouter();
   
   const [terms, setTerms] = useState<typeof TERMS>(TERMS);
 
@@ -21,12 +23,12 @@ export default function TermsAgreements() {
     const allAgreed = terms.every((term) => term.isAgreed);
     setTerms(terms.map((term) => ({ ...term, isAgreed: !allAgreed })))
   };
-  const handleClickSignup = () => {
+  const handleSubmit = () => {
     console.log('signup');
   };
 
   return (
-      <div>
+      <form onSubmit={handleSubmit}>
         <AllAgreeCheckbox checked={isAllAgreed} onCheckedChange={handleAllAgreedChange} />
         <Separator className='my-4' />
 
@@ -36,7 +38,7 @@ export default function TermsAgreements() {
           ))}
         </section>
 
-        <SignupButton disabled={!canSignup} onClick={handleClickSignup} />
-      </div>
+        <SignupButton disabled={!canSignup} />
+      </form>
   );
 }
