@@ -1,5 +1,7 @@
 import { SaleDetailLayout } from '@/components/layout/sale-detail-layout';
 import { Wrapper } from '@/components/layout/wrapper';
+import SaleHeader from '@/components/sale-detail/contents/sale-header';
+import { SaleThumbnail } from '@/components/sale-detail/contents/sale-thumbnail';
 import NoticeCard from '@/components/sale-detail/summary/notice-card';
 import PaymentRegisterCard from '@/components/sale-detail/summary/payment-register-card';
 
@@ -7,11 +9,18 @@ export default function AuctionPage() {
   return (
     <Wrapper className="py-[var(--spacing-l)]">
       <SaleDetailLayout
-        left={<div className="h-[1600px] ">LEFT 영역</div>}
+        left={
+          <div className="flex flex-col gap-ms ">
+            <SaleThumbnail size="lg" src="/images/temp/sanrio.jpg" />
+            <SaleHeader
+              subTitle="T1 x Sanrio"
+              title="T1 산리오 팝업"
+            ></SaleHeader>
+          </div>
+        }
         right={
-          <div className="h-[600px] ">
-            RIGHT 영역
-            <div>
+          <div>
+            <div className="flex flex-col gap-xs">
               <NoticeCard
                 items={[
                   '경매 및 드로우 신청은 1인 1회로 제한됩니다.',
@@ -19,8 +28,8 @@ export default function AuctionPage() {
                   '2분마다 경매입니다. ',
                   '본인 확인을 위해 신분증을 지참해주세요.',
                 ]}
-              ></NoticeCard>
-              <PaymentRegisterCard title="경매"></PaymentRegisterCard>
+              />
+              <PaymentRegisterCard title="경매" />
             </div>
           </div>
         }

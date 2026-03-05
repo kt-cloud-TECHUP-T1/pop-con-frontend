@@ -4,6 +4,7 @@ import { Wrapper } from '@/components/layout/wrapper';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Login() {
   return (
@@ -29,22 +30,16 @@ export default function Login() {
             카카오 로그인
           </Typography>
         </Button>
-        <Button
-          size="large"
-          className="w-full bg-[#03C75A] hover:bg-[#03C75A] active:bg-[#03C75A]"
-          leftIcon={
-            <Image
-              src="/icons/naver.svg"
-              width={24}
-              height={24}
-              alt="네이버"
-            ></Image>
-          }
-        >
-          <Typography variant="label-1" weight="medium">
-            네이버 로그인
-          </Typography>
-        </Button>
+        <Link href={`https://devapi.popcon.store/auth/oauth/naver`}>
+          <Button
+            size="large"
+            className="w-full bg-[#03C75A] hover:bg-[#03C75A] active:bg-[#03C75A]"
+          >
+            <Typography variant="label-1" weight="medium">
+              네이버 로그인
+            </Typography>
+          </Button>
+        </Link>
       </div>
     </Wrapper>
   );

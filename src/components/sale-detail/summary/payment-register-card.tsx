@@ -10,10 +10,9 @@ export default function PaymentRegisterCard({
 }: PaymentRegisterCardProps) {
   return (
     <div className="flex gap-s px-ms py-s bg-[var(--orange-99)] border-[1px] border-[var(--orange-95)] rounded-ml justify-between">
-      {/* 좌측섹션 */}
       <section>
         <div>
-          <header className="flex gap-2xs items-center">
+          <div className="flex gap-2xs items-center">
             <Icon
               name="CreditCard"
               size={20}
@@ -22,7 +21,7 @@ export default function PaymentRegisterCard({
             <Typography variant="label-2" weight="medium">
               간편결제 등록 필수
             </Typography>
-          </header>
+          </div>
           <div className="pt-3xs">
             <Typography variant="caption-2" weight="regular">
               {title}를 위해서는 사전에 카드 정보를 등록해야 합니다.
@@ -30,7 +29,6 @@ export default function PaymentRegisterCard({
           </div>
         </div>
       </section>
-      {/* 우측섹션 */}
       <section className="flex items-center justify-center">
         <Icon
           name="ChevronRight"
