@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -14,6 +14,33 @@ export default function Test() {
   const [inputValue, setInputValue] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+
+  useEffect(() => {
+    const handleClick = (e: MouseEvent) => {
+      const target = (e.target as HTMLElement).closest('button');
+      if (!target) return;
+
+      const rect = target.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
+
+      const offsetX = e.clientX - centerX;
+      const offsetY = e.clientY - centerY;
+      const distance = Math.sqrt(offsetX * offsetX + offsetY * offsetY);
+
+      console.log('[클릭 좌표 추적]', {
+        버튼_이름: target.textContent?.trim(),
+        클릭_좌표:{x: e.clientX, y: e.clientY},
+        버튼_중심_좌표:{x: centerX, y: centerY},
+        오차:{x: Math.round(offsetX * 100) / 100, y: Math.round(offsetY * 100) / 100},
+        거리: Math.round(distance * 100) / 100,
+        매크로_여부: distance < 1,
+      });
+    };
+
+    document.addEventListener('click', handleClick, true);
+    return () => document.removeEventListener('click', handleClick, true);
+  }, []);
 
   return (
     <main className="p-8 space-y-12 bg-gray-50 min-h-screen">

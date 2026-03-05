@@ -5,7 +5,7 @@ import { Wrapper } from '@/components/layout/wrapper';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
-import { usePortfoneVerify } from '@/features/auth/verify/hooks/use-portone-verify';
+import { usePortoneVerify } from '@/features/auth/verify/hooks/use-portone-verify';
 
 // 본인인증 연동 참고 사이트 (SDK v2 기준)
 // https://developers.portone.io/opi/ko/extra/identity-verification/readme-v2?v=v2
@@ -17,7 +17,7 @@ export default function PortoneAuthClient() {
     isUnder14ModalOpen,
     under14Message,
     closeUnder14Modal,
-  } = usePortfoneVerify();
+  } = usePortoneVerify();
 
   return (
     // TODO pt-120px 박은 것 유동적으로 바뀌도록 수정이 필요함
