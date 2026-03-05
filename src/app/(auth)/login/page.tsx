@@ -10,7 +10,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
-
 const ERROR_MESSAGE_MAP: Record<string, string> = {
   [AUTH_ERROR_CODES.COMMON.BAD_REQUEST]:
     AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
@@ -20,6 +19,8 @@ const ERROR_MESSAGE_MAP: Record<string, string> = {
   [AUTH_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR]:
     AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR,
 };
+type SocialProvider = 'kakao' | 'naver';
+const REDIRECT_DELAY = 1000;
 
 export default function Login() {
   const router = useRouter();
@@ -27,7 +28,7 @@ export default function Login() {
   const errorCode = params.get('error');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
 
-  const socialLoginHandler = (provider: 'kakao' | 'naver') => {
+  const socialLoginHandler = (provider: SocialProvider) => {
     if (isLoggingIn) return;
 
     if (!NEXT_PUBLIC_API_BASE_URL) {
@@ -51,16 +52,15 @@ export default function Login() {
 
     const errorMessage =
       ERROR_MESSAGE_MAP[errorCode] ?? AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR;
-    console.log(errorMessage);
 
     snackbar.destructive({
       title: '로그인실패',
       description: errorMessage,
       showCloseButton: true,
-      duration: 1000,
+      duration: REDIRECT_DELAY,
       onClose: toLogin,
     });
-    const timer = setTimeout(toLogin, 1000);
+    const timer = setTimeout(toLogin, REDIRECT_DELAY);
 
     return () => clearTimeout(timer);
   }, [errorCode, toLogin]);
