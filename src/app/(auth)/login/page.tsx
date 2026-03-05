@@ -12,6 +12,14 @@ import { useCallback, useEffect, useState } from 'react';
 const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const normalizedBaseUrl = NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
+const isValidAbsoluteUrl = (value: string) => {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
 
 const ERROR_MESSAGE_MAP: Record<string, string> = {
   [AUTH_ERROR_CODES.COMMON.BAD_REQUEST]:
@@ -34,10 +42,10 @@ export default function Login() {
   const socialLoginHandler = (provider: SocialProvider) => {
     if (isLoggingIn) return;
 
-    if (!normalizedBaseUrl) {
+    if (!normalizedBaseUrl || isValidAbsoluteUrl(normalizedBaseUrl)) {
       snackbar.destructive({
         title: '설정 오류',
-        description: 'API_BASE_URL 설정 오류.',
+        description: 'API_BASE_URL 설정 오류',
       });
       return;
     }
