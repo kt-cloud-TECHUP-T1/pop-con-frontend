@@ -10,6 +10,9 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+const normalizedBaseUrl = NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
+
 const ERROR_MESSAGE_MAP: Record<string, string> = {
   [AUTH_ERROR_CODES.COMMON.BAD_REQUEST]:
     AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
@@ -31,7 +34,7 @@ export default function Login() {
   const socialLoginHandler = (provider: SocialProvider) => {
     if (isLoggingIn) return;
 
-    if (!NEXT_PUBLIC_API_BASE_URL) {
+    if (!normalizedBaseUrl) {
       snackbar.destructive({
         title: '설정 오류',
         description: 'API_BASE_URL 설정 오류.',
@@ -39,7 +42,7 @@ export default function Login() {
       return;
     }
     setIsLoggingIn(true);
-    window.location.href = `${NEXT_PUBLIC_API_BASE_URL}/auth/oauth/${provider}`;
+    window.location.href = `${normalizedBaseUrl}/auth/oauth/${provider}`;
   };
 
   const toLogin = useCallback(() => {
