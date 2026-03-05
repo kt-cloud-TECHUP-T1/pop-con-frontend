@@ -42,10 +42,10 @@ export default function Login() {
   const socialLoginHandler = (provider: SocialProvider) => {
     if (isLoggingIn) return;
 
-    if (!normalizedBaseUrl || isValidAbsoluteUrl(normalizedBaseUrl)) {
+    if (!normalizedBaseUrl || !isValidAbsoluteUrl(normalizedBaseUrl)) {
       snackbar.destructive({
         title: '설정 오류',
-        description: 'API_BASE_URL 설정 오류',
+        description: 'API_BASE_URL 설정이 올바르지 않습니다.',
       });
       return;
     }
