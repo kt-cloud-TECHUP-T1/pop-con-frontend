@@ -44,6 +44,11 @@ jobs:
             ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:frontend-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_PORTONE_STORE_ID=${{ secrets.NEXT_PUBLIC_PORTONE_STORE_ID }}
+            NEXT_PUBLIC_PORTONE_CHANNEL_KEY=${{ secrets.NEXT_PUBLIC_PORTONE_CHANNEL_KEY }}
+            NEXT_PUBLIC_API_MOCKING=${{ secrets.NEXT_PUBLIC_API_MOCKING }}
+            NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
 
       - name: Set image output
         id: build-image
