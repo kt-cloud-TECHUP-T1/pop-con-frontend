@@ -6,6 +6,7 @@ import { ActivityStatusBadge } from '@/app/(protected)/mypage/components/activit
 import { ActivityHistoryRow } from '@/app/(protected)/mypage/components/activity-history/activity-history-row';
 import { ActivityStatusFilters } from '@/app/(protected)/mypage/components/activity-history/activity-status-filters';
 import type { ActivityStatusTone } from '@/app/(protected)/mypage/components/activity-history/types';
+import { formatWon } from '@/lib/utils';
 
 type DrawStatusFilter =
   | 'all'
@@ -70,8 +71,6 @@ const drawHistory: DrawHistoryItem[] = [
     statusTone: 'neutral',
   },
 ];
-
-const formatWon = (value: number) => `${value.toLocaleString('ko-KR')}원`;
 
 export default function MyPageActivityDrawsPage() {
   const [activeFilter, setActiveFilter] = useState<DrawStatusFilter>('all');

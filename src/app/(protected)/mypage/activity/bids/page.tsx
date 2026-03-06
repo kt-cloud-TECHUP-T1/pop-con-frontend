@@ -2,6 +2,7 @@ import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { ActivityHistoryRow } from '@/app/(protected)/mypage/components/activity-history/activity-history-row';
+import { formatWon } from '@/lib/utils';
 
 type BidStatus = 'paid' | 'refunded';
 type ReviewAction = 'write' | 'edit' | 'disabled';
@@ -41,8 +42,6 @@ const bidHistory: BidHistoryItem[] = [
     reviewAction: 'disabled',
   },
 ];
-
-const formatWon = (value: number) => `${value.toLocaleString('ko-KR')}원`;
 
 export default function MyPageActivityBidsPage() {
   return (
