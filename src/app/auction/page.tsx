@@ -15,12 +15,12 @@ export default function AuctionPage() {
       <SaleDetailLayout
         left={
           <div className="flex flex-col gap-ms ">
-            <SaleThumbnail size="lg" src="/images/temp/sanrio.jpg" />
+            <SaleThumbnail size="lg" src="/images/temp/no-image.png" />
             <SaleHeader
-              subTitle="T1 x Sanrio"
-              title="T1 산리오 팝업"
+              subTitle="T1 x subTitle"
+              title="T1 팝업 Title"
             ></SaleHeader>
-            <SaleTab></SaleTab>
+            <SaleTab viewCount={0}></SaleTab>
             <section id="content" className="scroll-mt-24">
               <SaleContent />
             </section>
