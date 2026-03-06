@@ -289,7 +289,8 @@
 :root {
   /* Font Family */
   --font-family-sans:
-    'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, sans-serif;
+    var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
 
   /* Font Weights */
   --font-weight-regular: 400;

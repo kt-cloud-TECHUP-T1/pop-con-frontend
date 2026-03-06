@@ -60,18 +60,24 @@ export function usePortoneVerify() {
       return;
     }
 
-    if (completeResult.data.isNewUser && completeResult.data.nextStep === 'TERMS') {
-      router.push('/signup');
+    if (completeResult.data.isNewUser) {
+      if (completeResult.data.nextStep === 'TERMS') {
+        router.push('/signup');
+        return;
+      }
+
+      if (completeResult.data.nextStep === 'HOME') {
+        setAccessToken(completeResult.data.accessToken);
+        router.push('/');
+        return;
+      }
+
+      alert('다음 단계 정보를 확인할 수 없습니다.');
       return;
     }
 
-    if (!completeResult.data.isNewUser) {
-      setAccessToken(completeResult.data.accessToken);
-      router.push('/');
-      return;
-    }
-
-    alert('다음 단계 정보를 확인할 수 없습니다.');
+    setAccessToken(completeResult.data.accessToken);
+    router.push('/');
   };
 
   // 예기치 못한 런타임 예외를 공통 에러 메시지로 처리

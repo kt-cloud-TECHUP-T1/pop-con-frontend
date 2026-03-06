@@ -11,9 +11,8 @@ export default async function MyPageTicketDetailPage({
   params,
 }: TicketDetailPageProps) {
   const { id } = await params;
-  const ticketId = Number(id);
 
-  if (!Number.isInteger(ticketId) || ticketId <= 0) {
+  if (!/^[1-9]\d*$/.test(id)) {
     notFound();
   }
 
