@@ -5,6 +5,7 @@ import { Geist, Geist_Mono } from 'next/font/google';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { SnackbarToaster } from '@/components/ui/snackbar';
+import { MSWProvider } from './providers';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -38,8 +39,7 @@ export default function RootLayout({
         className={`${pretendard.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <Header />
-        {/* <MSWProvider>{children}</MSWProvider> */}
-        {children}
+        <MSWProvider>{children}</MSWProvider>
         <Footer />
         <SnackbarToaster />
       </body>

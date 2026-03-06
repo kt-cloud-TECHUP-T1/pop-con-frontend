@@ -10,6 +10,7 @@ export function useProfileSettings() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const objectUrlRef = useRef<string | null>(null);
 
+  const [nickname, setNickname] = useState('심심한 고래');
   const [selectedImageFileName, setSelectedImageFileName] = useState<
     string | null
   >(null);
@@ -78,12 +79,16 @@ export function useProfileSettings() {
 
   const handleSave = () => {
     setIsSaving(true);
-    // TODO: API 연결 시 이 핸들러에서 닉네임/이미지 저장 요청을 처리
-    setIsSaving(false);
+    try {
+      // TODO: API 연결 시 이 핸들러에서 nickname / image 저장 요청을 처리
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return {
-    nicknameDefaultValue: '심심한 고래',
+    nickname,
+    setNickname,
     previewImageSrc,
     selectedImageFileName,
     imageErrorMessage,

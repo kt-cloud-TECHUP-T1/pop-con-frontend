@@ -9,7 +9,8 @@ import { Input } from '@/components/ui/input';
 import { Typography } from '@/components/ui/typography';
 
 interface ProfileSettingsFormSectionProps {
-  nicknameDefaultValue: string;
+  nickname: string;
+  onNicknameChange: (value: string) => void;
   previewImageSrc: string | null;
   selectedImageFileName: string | null;
   imageErrorMessage: string;
@@ -20,7 +21,8 @@ interface ProfileSettingsFormSectionProps {
 }
 
 export function ProfileSettingsFormSection({
-  nicknameDefaultValue,
+  nickname,
+  onNicknameChange,
   previewImageSrc,
   selectedImageFileName,
   imageErrorMessage,
@@ -29,6 +31,8 @@ export function ProfileSettingsFormSection({
   onImagePickerOpen,
   onImageRemove,
 }: ProfileSettingsFormSectionProps) {
+  const nicknameInputId = 'profile-nickname';
+
   return (
     <>
       <MyPageHeader
@@ -39,13 +43,17 @@ export function ProfileSettingsFormSection({
       <Box as="article" radius="ML" border="#0A0A0A14" className="p-8 sm:p-10">
         <div className="grid gap-8">
           <div className="grid gap-3 sm:grid-cols-[160px_minmax(0,400px)] sm:items-center">
-            <Typography variant="title-2" weight="medium">
-              닉네임
-            </Typography>
+            <label htmlFor={nicknameInputId}>
+              <Typography variant="title-2" weight="medium">
+                닉네임
+              </Typography>
+            </label>
             <Input
+              id={nicknameInputId}
               inputSize="medium"
               placeholder="한글 2~10자, 영문 16자 이내만 가능합니다."
-              defaultValue={nicknameDefaultValue}
+              value={nickname}
+              onChange={(event) => onNicknameChange(event.target.value)}
             />
           </div>
 
@@ -62,7 +70,7 @@ export function ProfileSettingsFormSection({
                 {previewImageSrc ? (
                   <Image
                     src={previewImageSrc}
-                    alt="프로필 이미지"
+                    alt="프로필 이미지 미리보기"
                     width={88}
                     height={88}
                     unoptimized={previewImageSrc.startsWith('blob:')}
@@ -79,7 +87,8 @@ export function ProfileSettingsFormSection({
                 ref={fileInputRef}
                 type="file"
                 accept="image/png,image/jpeg,image/webp"
-                className="hidden"
+                className="sr-only"
+                aria-label="프로필 이미지 파일 선택"
                 onChange={onImageFileChange}
               />
 

@@ -37,7 +37,6 @@ export function ActivityHistoryRow({
         height={104}
         radius="ML"
         border="#0A0A0A14"
-        className="h-26 w-20"
       />
 
       <Typography variant="title-2" weight="medium">

@@ -2,6 +2,7 @@ import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
 import { ProfileSummaryCard } from '@/app/(protected)/mypage/info/profile/components/profile-summary-card';
 import type { ProfileInfoItem } from '@/app/(protected)/mypage/info/profile/components/profile-info-list';
 
+// TODO: 하드코딩 데이터를 실제 사용자 정보로 교체 필요
 const PROFILE_INFO: ProfileInfoItem[] = [
   { label: '이름', value: '이상혁' },
   { label: '생년월일', value: '1996.05.07' },

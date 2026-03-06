@@ -6,7 +6,8 @@ import { useProfileSettings } from '@/app/(protected)/mypage/info/profile/settin
 
 export default function MyPageSettingsPage() {
   const {
-    nicknameDefaultValue,
+    nickname,
+    setNickname,
     previewImageSrc,
     selectedImageFileName,
     imageErrorMessage,
@@ -21,7 +22,8 @@ export default function MyPageSettingsPage() {
   return (
     <section className="max-w-[960px]">
       <ProfileSettingsFormSection
-        nicknameDefaultValue={nicknameDefaultValue}
+        nickname={nickname}
+        onNicknameChange={setNickname}
         previewImageSrc={previewImageSrc}
         selectedImageFileName={selectedImageFileName}
         imageErrorMessage={imageErrorMessage}

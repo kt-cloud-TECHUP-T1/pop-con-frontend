@@ -20,7 +20,7 @@ const myTickets: MyTicketItem[] = [
     dateTime: '2026.03.14(토) 오후 1:30',
     address: '서울 영등포구 여의대로 108, 더현대 서울',
     reservationNumber: 'TKT50434728',
-    href: '/mypage/info/tickets',
+    href: '/mypage/info/tickets/1',
   },
   {
     id: 2,
@@ -28,7 +28,7 @@ const myTickets: MyTicketItem[] = [
     dateTime: '2026.03.14(토) 오후 1:30',
     address: '서울 영등포구 여의대로 108, 더현대 서울',
     reservationNumber: 'TKT50434728',
-    href: '/mypage/info/tickets',
+    href: '/mypage/info/tickets/2',
   },
   {
     id: 3,
@@ -36,7 +36,7 @@ const myTickets: MyTicketItem[] = [
     dateTime: '2026.03.14(토) 오후 1:30',
     address: '서울 영등포구 여의대로 108, 더현대 서울',
     reservationNumber: 'TKT50434728',
-    href: '/mypage/info/tickets',
+    href: '/mypage/info/tickets/3',
   },
 ];
 
@@ -60,7 +60,11 @@ export default function MyPageInfoTicketsPage() {
               padding="M"
               className="flex items-center gap-4 transition-colors hover:border-[var(--neutral-70)]"
             >
-              <ThumbnailImage width={80} height={104} radius="S" className="h-26 w-20" />
+              <ThumbnailImage
+                width={80}
+                height={104}
+                radius="S"
+              />
 
               <div className="min-w-0 flex-1">
                 <Typography variant="title-2" weight="medium" className="mb-2">

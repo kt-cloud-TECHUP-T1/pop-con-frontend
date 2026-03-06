@@ -29,12 +29,17 @@ export function ThumbnailImage({
   const imageSrc = src?.trim() ? src : fallbackSrc;
 
   return (
-    <Box radius={radius} border={border} className={cn('overflow-hidden', className)}>
+    <Box
+      radius={radius}
+      border={border}
+      className={cn('relative overflow-hidden', className)}
+      style={{ width, height }}
+    >
       <Image
         src={imageSrc}
-        width={width}
-        height={height}
-        className={cn('h-full w-full object-cover', imageClassName)}
+        fill
+        sizes={`${width}px`}
+        className={cn('object-cover', imageClassName)}
         alt={alt}
       />
     </Box>
