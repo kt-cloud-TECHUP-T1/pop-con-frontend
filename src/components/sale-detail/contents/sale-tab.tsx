@@ -11,12 +11,20 @@ const SECTION_TO_TAB = {
   review: 'review',
 } as const;
 
+const TAB_TO_SECTION = {
+  info: 'content',
+  review: 'review',
+} as const;
+
+const OBSERVE_SECTION_IDS = ['content', 'map', 'review'] as const;
+const TAB_CHANGE_THRESHOLD = 0.3;
+
 export default function SaleTab() {
   const [activeTab, setActiveTab] = useState<TabValue>('info');
 
   const handleTabClick = (tab: TabValue) => {
     setActiveTab(tab);
-    const targetId = tab === 'info' ? 'content' : 'review';
+    const targetId = TAB_TO_SECTION[tab];
     const targetElement = document.getElementById(targetId);
 
     if (!targetElement) return;
@@ -28,7 +36,7 @@ export default function SaleTab() {
   };
 
   useEffect(() => {
-    const sectionIds = ['content', 'map', 'review'];
+    const sectionIds = OBSERVE_SECTION_IDS;
 
     const elements = sectionIds
       .map((id) => document.getElementById(id))
@@ -38,17 +46,21 @@ export default function SaleTab() {
 
     const observer = new IntersectionObserver(
       (entries) => {
-        const visibleEntry = entries.find((entry) => entry.isIntersecting);
+        const visibleEntries = entries.filter((entry) => entry.isIntersecting);
 
-        if (!visibleEntry) return;
+        if (visibleEntries.length === 0) return;
 
-        const sectionId = visibleEntry.target.id as keyof typeof SECTION_TO_TAB;
+        const mostVisible = visibleEntries.reduce((prev, current) =>
+          prev.intersectionRatio > current.intersectionRatio ? prev : current
+        );
+
+        const sectionId = mostVisible.target.id as keyof typeof SECTION_TO_TAB;
         const nextTab = SECTION_TO_TAB[sectionId];
 
-        setActiveTab(nextTab);
+        setActiveTab((prev) => (prev === nextTab ? prev : nextTab));
       },
       {
-        threshold: 0.3,
+        threshold: TAB_CHANGE_THRESHOLD,
       }
     );
 
