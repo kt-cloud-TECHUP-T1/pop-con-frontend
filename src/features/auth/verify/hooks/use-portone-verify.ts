@@ -3,11 +3,7 @@ import { requestPortoneIdentityVerification } from '../services/portone';
 import { completeIdentityVertification } from '../services/identity';
 import { useState } from 'react';
 import { AUTH_MESSAGES } from '@/constants/auth';
-import {
-  getRegisterToken,
-  setAccessToken,
-  setRegisterToken,
-} from '@/features/auth/utils/auth-storage';
+import { setAccessToken } from '@/features/auth/utils/auth-storage';
 
 export function usePortoneVerify() {
   const router = useRouter();
@@ -36,16 +32,8 @@ export function usePortoneVerify() {
         return;
       }
 
-      const registerToken = getRegisterToken();
-
-      if (!registerToken) {
-        alert(AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN);
-        return;
-      }
-
       const completeResult = await completeIdentityVertification(
-        verifyResult.identityVerificationId,
-        registerToken
+        verifyResult.identityVerificationId
       );
 
       if (completeResult.status === 'under14') {
@@ -55,7 +43,6 @@ export function usePortoneVerify() {
       }
 
       if (completeResult.status === 'sessionExpired') {
-        setRegisterToken();
         alert(completeResult.message);
         return;
       }
@@ -69,7 +56,6 @@ export function usePortoneVerify() {
         completeResult.data.isNewUser &&
         completeResult.data.nextStep === 'TERMS'
       ) {
-        setRegisterToken(completeResult.data.registerToken ?? registerToken);
         router.push('/signup');
         return;
       }
@@ -78,7 +64,6 @@ export function usePortoneVerify() {
         // 로그인 연결 포인트: 기존회원 세션 처리는 추후 로그인 담당 구현에 맞춰 재연결
         // 현재는 refresh token 저장 없이 access token만 임시 저장
         setAccessToken(completeResult.data.accessToken);
-        setRegisterToken();
         router.push('/');
         return;
       }

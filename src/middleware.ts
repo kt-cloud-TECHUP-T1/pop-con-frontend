@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
-    return NextResponse.next();
-    // const registerToken = request.cookies.get('registerToken')?.value;
-    // return registerToken ?
-    //     NextResponse.next() :
-    //     NextResponse.redirect(new URL('/login', request.url));
-    }
-    
+  // const registerToken = request.cookies.get('register_token')?.value;
+
+  // if (!registerToken) {
+  //   return NextResponse.redirect(new URL('/login', request.url));
+  // }
+
+  return NextResponse.next();
+}
+
 export const config = {
   matcher: ['/signup', '/verify'],
 };

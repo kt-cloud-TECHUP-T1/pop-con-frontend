@@ -16,14 +16,16 @@ type CompleteIdentityResult =
 const DEVICE_ID_HEADER = 'X-Device-Id';
 const DEVICE_ID_STORAGE_KEY = 'deviceId';
 
+// 기기마다 서로다른 키값? 모바일은 되는데 데스크탑은 힘든 걸로 알고 있음
 function getDeviceId() {
   if (typeof window === 'undefined') return null;
   return window.localStorage.getItem(DEVICE_ID_STORAGE_KEY);
 }
 
+//
+
 export async function completeIdentityVertification(
-  identityVerificationId: string,
-  registerToken: string
+  identityVerificationId: string
 ): Promise<CompleteIdentityResult> {
   try {
     const deviceId = getDeviceId();
@@ -33,7 +35,7 @@ export async function completeIdentityVertification(
         'Content-Type': 'application/json',
         ...(deviceId ? { [DEVICE_ID_HEADER]: deviceId } : {}),
       },
-      body: JSON.stringify({ identityVerificationId, registerToken }),
+      body: JSON.stringify({ identityVerificationId }),
     });
 
     const result = (await res.json()) as Partial<IdentityCompleteResponse>;
@@ -49,7 +51,8 @@ export async function completeIdentityVertification(
       return {
         status: 'sessionExpired',
         message:
-          result.message ?? '회원가입 세션이 만료되었습니다. 다시 가입 절차를 진행해주세요.',
+          result.message ??
+          '회원가입 세션이 만료되었습니다. 다시 가입 절차를 진행해주세요.',
       };
     }
 

@@ -1,5 +1,5 @@
-import { redirect } from 'next/navigation';
+import { MyPageDashboard } from '@/components/mypage/my-page-dashboard';
 
 export default function ProtectedPage() {
-  redirect('/mypage/info/profile');
+  return <MyPageDashboard />;
 }

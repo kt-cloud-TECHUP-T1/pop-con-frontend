@@ -9,8 +9,6 @@ type PortoneVerifyResult =
 
 const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
 const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
-const mockIdentityVerificationId =
-  process.env.NEXT_PUBLIC_MSW_IDENTITY_VERIFICATION_ID;
 
 export async function requestPortoneIdentityVerification(): Promise<PortoneVerifyResult> {
   try {
@@ -23,9 +21,7 @@ export async function requestPortoneIdentityVerification(): Promise<PortoneVerif
 
     const response = await PortOne.requestIdentityVerification({
       storeId,
-      identityVerificationId:
-        mockIdentityVerificationId ??
-        `identity-verification-${crypto.randomUUID()}`,
+      identityVerificationId: `identity-verification-${crypto.randomUUID()}`,
       channelKey,
     });
 

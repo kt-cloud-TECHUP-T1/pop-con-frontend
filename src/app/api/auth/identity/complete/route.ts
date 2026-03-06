@@ -3,10 +3,10 @@ import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
 
 type IdentityCompleteRequestBody = {
   identityVerificationId?: string;
-  registerToken?: string;
 };
 
-const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL ?? 'https://devapi.popcon.store';
+const BACKEND_API_BASE_URL =
+  process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL ?? 'https://devapi.popcon.store';
 
 if (!BACKEND_API_BASE_URL) {
   throw new Error('BACKEND_API_BASE_URL is not set');
@@ -15,10 +15,10 @@ if (!BACKEND_API_BASE_URL) {
 export async function POST(request: Request) {
   const body = (await request.json()) as IdentityCompleteRequestBody;
   const identityVerificationId = body.identityVerificationId?.trim();
-  const registerToken = body.registerToken?.trim();
   const deviceId = request.headers.get('X-Device-Id');
+  const cookie = request.headers.get('cookie');
 
-  if (!identityVerificationId || !registerToken) {
+  if (!identityVerificationId) {
     return NextResponse.json(
       {
         code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
@@ -28,12 +28,6 @@ export async function POST(request: Request) {
             ? {
                 identityVerificationId:
                   AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
-              }
-            : {}),
-          ...(!registerToken
-            ? {
-                registerToken:
-                  AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN,
               }
             : {}),
         },
@@ -50,10 +44,10 @@ export async function POST(request: Request) {
         headers: {
           'Content-Type': 'application/json',
           ...(deviceId ? { 'X-Device-Id': deviceId } : {}),
+          ...(cookie ? { Cookie: cookie } : {}),
         },
         body: JSON.stringify({
           identityVerificationId,
-          registerToken,
         }),
         cache: 'no-store',
       }

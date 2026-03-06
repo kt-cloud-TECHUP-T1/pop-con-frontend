@@ -21,12 +21,14 @@ export function LikedPopupCard({
     <CardThumbnail
       thumbnailUrl={thumbnailUrl}
       thumbnailRatio="3/4"
+      isLiked={isLiked}
+      onClickLike={onClickLike}
       title={title}
       description={description}
       caption={caption}
       showButtonLike
-      isLiked={isLiked}
-      onClickLike={onClickLike}
+      showCountView
+      showCountLike
     />
   );
 }

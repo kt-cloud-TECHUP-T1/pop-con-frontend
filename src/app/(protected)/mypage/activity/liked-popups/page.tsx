@@ -13,7 +13,7 @@ export default function MyPageActivityLikedPopupsPage() {
   return (
     <section>
       <MyPagePageHeader title="찜한 팝업스토어" titleVariant="title-2" />
-      <div className="grid grid-cols-1 gap-x-8 gap-y-10 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
+      <div className="grid grid-cols-1 gap-x-2 gap-y-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {likedPopups.map((popup) => (
           <LikedPopupCard
             key={popup.id}

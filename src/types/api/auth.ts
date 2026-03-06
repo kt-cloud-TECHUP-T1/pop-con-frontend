@@ -6,9 +6,11 @@ export type TokenPayload = {
 
 export type IdentityNextStep = 'TERMS' | 'HOME';
 
-export type IdentityCompleteData = TokenPayload & {
+export type IdentityCompleteData = {
   isNewUser: boolean;
   userId?: number;
+  accessToken?: string;
+  refreshToken?: string;
   nextStep?: IdentityNextStep;
   expiresAt?: string;
 };

@@ -24,6 +24,14 @@ jobs:
         run: npm run build-storybook
 
       - name: Publish to Chromatic
-        run: npx chromatic --storybook-build-dir=storybook-static --exit-zero-on-changes
-        env:
-          CHROMATIC_PROJECT_TOKEN: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+        id: chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          storybookBuildDir: storybook-static
+          exitZeroOnChanges: true
+
+      - name: Add Storybook link to workflow summary
+        if: ${{ steps.chromatic.outputs.storybookUrl != '' }}
+        run: |
+          echo "🚀 storybook: ${{ steps.chromatic.outputs.storybookUrl }}" >> "$GITHUB_STEP_SUMMARY"

@@ -45,20 +45,21 @@ export const Checkbox = React.forwardRef<
             size={size}
             className={cn(
               'pointer-events-none transition-all duration-150',
-              '[--checkbox-border-color:var(--line-4)]',
-              'group-hover:[--checkbox-border-color:var(--content-high)]',
-              'group-active:[--checkbox-border-color:var(--content-high)]',
-              'group-data-[visual-state=hover]:[--checkbox-border-color:var(--content-high)]',
-              'group-data-[visual-state=pressed]:[--checkbox-border-color:var(--content-high)]',
+              '[--checkbox-border-color:#F35E11]',
+              'group-hover:[--checkbox-border-color:#D6500B]',
+              'group-active:[--checkbox-border-color:#C2410C]',
+              'group-data-[visual-state=hover]:[--checkbox-border-color:#D6500B]',
+              'group-data-[visual-state=pressed]:[--checkbox-border-color:#C2410C]',
               'group-disabled:[--checkbox-border-color:var(--component-disabled)]',
               'group-hover:opacity-85 group-active:opacity-75 group-active:scale-95',
               'group-data-[visual-state=hover]:opacity-85',
               'group-data-[visual-state=pressed]:opacity-75 group-data-[visual-state=pressed]:scale-95',
               isError &&
-                `[--checkbox-border-color:var(--status-warning)] 
-                group-hover:[--checkbox-border-color:var(--status-warning)] 
-                group-data-[visual-state=hover]:[--checkbox-border-color:var(--status-warning)] 
-                group-data-[visual-state=pressed]:[--checkbox-border-color:var(--status-warning)] 
+                `[--checkbox-border-color:#DC2626] 
+                group-hover:[--checkbox-border-color:#DC2626] 
+                group-active:[--checkbox-border-color:#DC2626]
+                group-data-[visual-state=hover]:[--checkbox-border-color:#DC2626] 
+                group-data-[visual-state=pressed]:[--checkbox-border-color:#DC2626] 
                 group-hover:opacity-70 
                 group-data-[visual-state=hover]:opacity-70`
             )}
@@ -72,13 +73,18 @@ export const Checkbox = React.forwardRef<
             size={size}
             className={cn(
               'pointer-events-none transition-all duration-150',
-              '[--checkbox-fill-bg:var(--content-high)]',
+              '[--checkbox-fill-bg:#F35E11]',
+              'group-hover:[--checkbox-fill-bg:#D6500B]',
+              'group-active:[--checkbox-fill-bg:#C2410C]',
+              'group-data-[visual-state=hover]:[--checkbox-fill-bg:#D6500B]',
+              'group-data-[visual-state=pressed]:[--checkbox-fill-bg:#C2410C]',
               'group-disabled:[--checkbox-fill-bg:var(--component-disabled)]',
               isError &&
-                `[--checkbox-fill-bg:var(--status-warning)] 
-                group-hover:[--checkbox-fill-bg:var(--status-warning)] 
-                group-data-[visual-state=hover]:[--checkbox-fill-bg:var(--status-warning)] 
-                group-data-[visual-state=pressed]:[--checkbox-fill-bg:var(--status-warning)]`,
+                `[--checkbox-fill-bg:#DC2626] 
+                group-hover:[--checkbox-fill-bg:#DC2626] 
+                group-active:[--checkbox-fill-bg:#DC2626]
+                group-data-[visual-state=hover]:[--checkbox-fill-bg:#DC2626] 
+                group-data-[visual-state=pressed]:[--checkbox-fill-bg:#DC2626]`,
               'group-hover:opacity-90 group-active:opacity-80 group-active:scale-95',
               'group-data-[visual-state=hover]:opacity-90',
               'group-data-[visual-state=pressed]:opacity-80 group-data-[visual-state=pressed]:scale-95'
