@@ -28,6 +28,7 @@ export function ActivityStatusFilters<T extends string>({
           <button
             key={option.value}
             type="button"
+            aria-pressed={isActive}
             onClick={() => onChange(option.value)}
             className={cn(
               'rounded-full border px-4 py-2 transition-colors',
