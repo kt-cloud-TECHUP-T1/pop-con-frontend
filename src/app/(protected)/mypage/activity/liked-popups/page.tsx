@@ -1,5 +1,5 @@
 import { LikedPopupCard } from '@/app/(protected)/mypage/components/liked-popup-card';
-import { MyPagePageHeader } from '@/app/(protected)/mypage/components/page-header';
+import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
 
 const likedPopups = Array.from({ length: 12 }, (_, index) => ({
   id: index + 1,
@@ -12,7 +12,11 @@ const likedPopups = Array.from({ length: 12 }, (_, index) => ({
 export default function MyPageActivityLikedPopupsPage() {
   return (
     <section>
-      <MyPagePageHeader title="찜한 팝업스토어" titleVariant="title-2" />
+      <MyPageHeader
+        title="찜한 팝업스토어"
+        titleVariant="heading-1"
+        titleWeight="bold"
+      />
       <div className="grid grid-cols-1 gap-x-2 gap-y-6 sm:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
         {likedPopups.map((popup) => (
           <LikedPopupCard
