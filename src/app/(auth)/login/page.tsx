@@ -1,11 +1,81 @@
 // 로그인
-
+'use client';
+import { Icon } from '@/components/Icon/Icon';
 import { Wrapper } from '@/components/layout/wrapper';
 import { Button } from '@/components/ui/button';
+import { snackbar } from '@/components/ui/snackbar';
 import { Typography } from '@/components/ui/typography';
-import Image from 'next/image';
+import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
+
+const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+
+const normalizedBaseUrl = NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
+const isValidAbsoluteUrl = (value: string) => {
+  try {
+    const url = new URL(value);
+    return url.protocol === 'http:' || url.protocol === 'https:';
+  } catch {
+    return false;
+  }
+};
+
+const ERROR_MESSAGE_MAP: Record<string, string> = {
+  [AUTH_ERROR_CODES.COMMON.BAD_REQUEST]:
+    AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
+  [AUTH_ERROR_CODES.AUTH.INVALID_AUTH]:
+    AUTH_MESSAGES.IDENTITY.ERROR.INVALID_AUTH,
+  [AUTH_ERROR_CODES.AUTH.SESSION_EXPIRED]: AUTH_MESSAGES.TOKEN.ERROR.EXPIRED,
+  [AUTH_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR]:
+    AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR,
+};
+type SocialProvider = 'kakao' | 'naver';
+const REDIRECT_DELAY = 1000;
 
 export default function Login() {
+  const router = useRouter();
+  const params = useSearchParams();
+  const errorCode = params.get('error');
+  const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const socialLoginHandler = (provider: SocialProvider) => {
+    if (isLoggingIn) return;
+
+    if (!normalizedBaseUrl || !isValidAbsoluteUrl(normalizedBaseUrl)) {
+      snackbar.destructive({
+        title: '설정 오류',
+        description: 'API_BASE_URL 설정이 올바르지 않습니다.',
+      });
+      return;
+    }
+    setIsLoggingIn(true);
+    window.location.href = `${normalizedBaseUrl}/auth/oauth/${provider}`;
+  };
+
+  const toLogin = useCallback(() => {
+    setIsLoggingIn(false);
+    router.replace('/login');
+  }, [router]);
+
+  useEffect(() => {
+    if (!errorCode) return;
+
+    const errorMessage =
+      ERROR_MESSAGE_MAP[errorCode] ?? AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR;
+
+    snackbar.destructive({
+      title: '로그인실패',
+      description: errorMessage,
+      showCloseButton: true,
+      duration: REDIRECT_DELAY,
+      onClose: toLogin,
+    });
+    const timer = setTimeout(toLogin, REDIRECT_DELAY);
+
+    return () => clearTimeout(timer);
+  }, [errorCode, toLogin]);
+
   return (
     <Wrapper className="pt-[120px]">
       <Typography weight="bold" variant="heading-1" className="text-center">
@@ -15,31 +85,31 @@ export default function Login() {
       <div className="btn-group w-full max-w-[360px] mx-auto flex flex-col gap-3 pt-ml">
         <Button
           size="large"
-          className="w-full bg-[#FEE500] hover:bg-[#FEE500] active:bg-[#FEE500]"
+          className="w-full bg-[#FEE500] hover:bg-[#FEE500] active:bg-[#FEE500] disabled:bg-[#FEE500] disabled:text-[var(--content-high)]"
           leftIcon={
-            <Image
-              src="/icons/kakao.svg"
-              width={24}
-              height={24}
-              alt="카카오"
-            ></Image>
+            <Icon
+              name="LogoKakao"
+              size={24}
+              className="text-[var(--content-high)]"
+            ></Icon>
           }
+          disabled={isLoggingIn}
+          onClick={() => socialLoginHandler('kakao')}
         >
-          <Typography variant="label-1" weight="medium" className="text-black">
+          <Typography
+            variant="label-1"
+            weight="medium"
+            className="text-[var(--content-high)]"
+          >
             카카오 로그인
           </Typography>
         </Button>
         <Button
           size="large"
-          className="w-full bg-[#03C75A] hover:bg-[#03C75A] active:bg-[#03C75A]"
-          leftIcon={
-            <Image
-              src="/icons/naver.svg"
-              width={24}
-              height={24}
-              alt="네이버"
-            ></Image>
-          }
+          className="w-full bg-[#03C75A] hover:bg-[#03C75A] active:bg-[#03C75A] disabled:bg-[#03C75A] disabled:text-white"
+          leftIcon={<Icon name="LogoNaver" size={24}></Icon>}
+          onClick={() => socialLoginHandler('naver')}
+          disabled={isLoggingIn}
         >
           <Typography variant="label-1" weight="medium">
             네이버 로그인
