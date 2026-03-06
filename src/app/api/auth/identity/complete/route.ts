@@ -6,7 +6,7 @@ type IdentityCompleteRequestBody = {
 };
 
 const BACKEND_API_BASE_URL =
-  process.env.NEXT_PUBLIC_BACKEND_API_BASE_URL ?? 'https://devapi.popcon.store';
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://devapi.popcon.store';
 
 if (!BACKEND_API_BASE_URL) {
   throw new Error('BACKEND_API_BASE_URL is not set');
