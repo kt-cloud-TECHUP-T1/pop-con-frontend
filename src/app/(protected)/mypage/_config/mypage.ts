@@ -1,4 +1,4 @@
-import type { ActivityTabItem, MyPageSidebarSection } from '@/types/mypage';
+import type { MyPageSidebarSection } from '@/types/mypage';
 
 export const MY_PAGE_SIDEBAR: MyPageSidebarSection[] = [
   {
@@ -54,10 +54,3 @@ export const MY_PAGE_SIDEBAR: MyPageSidebarSection[] = [
     ],
   },
 ] satisfies MyPageSidebarSection[];
-
-export const ACTIVITY_TABS: ActivityTabItem[] = [
-  { label: '내 티켓', value: 'tickets' },
-  { label: '낙찰 내역', value: 'bids' },
-  { label: '드로우 응모 내역', value: 'draws' },
-  { label: '리뷰 관리', value: 'reviews' },
-] satisfies ActivityTabItem[];
