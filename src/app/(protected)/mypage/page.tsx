@@ -1,4 +1,4 @@
-import { MyPageDashboard } from '@/components/mypage/my-page-dashboard';
+import { MyPageDashboard } from '@/app/(protected)/mypage/components/my-page-dashboard';
 
 export default function ProtectedPage() {
   return <MyPageDashboard />;

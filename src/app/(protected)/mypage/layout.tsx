@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Wrapper } from '@/components/layout/wrapper';
-import { MyPageSidebar } from '@/components/mypage/my-page-sidebar';
+import { MyPageSidebar } from '@/app/(protected)/mypage/components/my-page-sidebar';
 import { Typography } from '@/components/ui/typography';
 
 type MyPageLayoutProps = {

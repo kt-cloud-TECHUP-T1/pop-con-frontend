@@ -1,5 +1,5 @@
-import { LikedPopupCard } from '@/components/mypage/liked-popup-card';
-import { MyPagePageHeader } from '@/components/mypage/page-header';
+import { LikedPopupCard } from '@/app/(protected)/mypage/components/liked-popup-card';
+import { MyPagePageHeader } from '@/app/(protected)/mypage/components/page-header';
 
 const likedPopups = Array.from({ length: 12 }, (_, index) => ({
   id: index + 1,

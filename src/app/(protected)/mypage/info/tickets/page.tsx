@@ -1,4 +1,4 @@
-import { MyPagePageHeader } from '@/components/mypage/page-header';
+import { MyPagePageHeader } from '@/app/(protected)/mypage/components/page-header';
 
 export default function MyPageInfoTicketsPage() {
   return (
