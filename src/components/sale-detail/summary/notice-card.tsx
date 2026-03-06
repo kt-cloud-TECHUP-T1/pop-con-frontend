@@ -13,7 +13,7 @@ export default function NoticeCard({
   slot,
 }: NoticeCardProps) {
   return (
-    <section className="w-full rounded-sm border border-[var(--line-3)] bg-[var(--component-default)] p-ms">
+    <section className="w-full rounded-ml border border-[var(--line-3)] bg-[var(--component-default)] p-ms">
       <header>
         <Typography
           variant="body-1"

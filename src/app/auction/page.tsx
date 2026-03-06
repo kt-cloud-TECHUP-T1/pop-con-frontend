@@ -1,6 +1,9 @@
 import { SaleDetailLayout } from '@/components/layout/sale-detail-layout';
 import { Wrapper } from '@/components/layout/wrapper';
+import SaleContent from '@/components/sale-detail/contents/sale-content';
 import SaleHeader from '@/components/sale-detail/contents/sale-header';
+import { SaleMap } from '@/components/sale-detail/contents/sale-map';
+import SaleReview from '@/components/sale-detail/contents/sale-review';
 import { SaleThumbnail } from '@/components/sale-detail/contents/sale-thumbnail';
 import NoticeCard from '@/components/sale-detail/summary/notice-card';
 import PaymentRegisterCard from '@/components/sale-detail/summary/payment-register-card';
@@ -16,6 +19,9 @@ export default function AuctionPage() {
               subTitle="T1 x Sanrio"
               title="T1 산리오 팝업"
             ></SaleHeader>
+            <SaleContent></SaleContent>
+            <SaleMap></SaleMap>
+            <SaleReview></SaleReview>
           </div>
         }
         right={
