@@ -1,3 +1,5 @@
+'use client';
+
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 
 type LikedPopupCardProps = {
@@ -26,7 +28,7 @@ export function LikedPopupCard({
       title={title}
       description={description}
       caption={caption}
-      showButtonLike
+      showButtonLike={Boolean(onClickLike)}
       showCountView
       showCountLike
     />

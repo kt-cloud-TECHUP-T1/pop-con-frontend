@@ -81,10 +81,12 @@ export function PaymentMethodCard({
             <Box
               as="button"
               type="button"
+              disabled
               paddingY="_2XS"
               paddingX="XS"
-              className="transition-colors"
+              className="cursor-not-allowed opacity-60 transition-colors"
             >
+              {/* TODO: 삭제 API 연동 후 onDelete 콜백을 props로 받아 실제 삭제 동작을 연결한다. */}
               <Typography
                 variant="label-3"
                 weight="medium"
