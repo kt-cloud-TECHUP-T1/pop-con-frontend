@@ -49,9 +49,6 @@ export default function AuctionPage() {
           </div>
         }
       />
-      <div className="pt-[50px]">
-        <SaleContent />
-      </div>
     </Wrapper>
   );
 }
