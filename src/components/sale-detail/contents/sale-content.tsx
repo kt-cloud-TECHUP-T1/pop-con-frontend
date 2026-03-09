@@ -75,7 +75,9 @@ export default function SaleContent({ className }: SaleContentProps) {
         <ContentSection>
           <div>
             {INTRODUCTION_LINES.map((row, idx) => (
-              <p key={idx}>{row}</p>
+              <Typography key={idx} variant="body-1" weight="regular">
+                {row}
+              </Typography>
             ))}
           </div>
         </ContentSection>
@@ -83,19 +85,27 @@ export default function SaleContent({ className }: SaleContentProps) {
           <div>
             {EVENT_SECTIONS.map((section, idx) => (
               <div key={idx}>
-                <p>{section.title}</p>
+                <Typography variant="body-1" weight="regular">
+                  {section.title}
+                </Typography>
 
                 {section.description.length > 0 && (
                   <div>
                     {section.description.map((row, idx) => (
-                      <p key={idx}>{row}</p>
+                      <Typography key={idx} variant="body-1" weight="regular">
+                        {row}
+                      </Typography>
                     ))}
                   </div>
                 )}
                 {section.items.length > 0 && (
                   <ul>
                     {section.items.map((row, idx) => (
-                      <li key={idx}>{row}</li>
+                      <li key={idx}>
+                        <Typography variant="body-1" weight="regular" as="span">
+                          {row}
+                        </Typography>
+                      </li>
                     ))}
                   </ul>
                 )}
@@ -106,11 +116,9 @@ export default function SaleContent({ className }: SaleContentProps) {
         <ContentSection title="[INFO]">
           <div>
             {INFO_ROWS.map((row, idx) => (
-              <p key={idx}>
-                <span>
-                  {row.label} : {row.value}
-                </span>
-              </p>
+              <Typography key={idx} variant="body-1" weight="regular">
+                {row.label} : {row.value}
+              </Typography>
             ))}
           </div>
         </ContentSection>
@@ -128,10 +136,8 @@ interface ContentSectionProps {
 function ContentSection({ title, className, children }: ContentSectionProps) {
   return (
     <section className={className}>
-      <Typography variant="body-1" weight="regular">
-        <div>{title}</div>
-        <div>{children}</div>
-      </Typography>
+      {title && <div>{title}</div>}
+      <div>{children}</div>
     </section>
   );
 }

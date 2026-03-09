@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 type TabValue = 'info' | 'review';
 
 interface SaleTabProps {
-  viewCount: number;
+  reviewCount: number;
 }
 const SECTION_TO_TAB = {
   content: 'info',
@@ -22,7 +22,7 @@ const TAB_TO_SECTION = {
 const OBSERVE_SECTION_IDS = ['content', 'map', 'review'] as const;
 const TAB_CHANGE_THRESHOLD = 0.3;
 
-export default function SaleTab({ viewCount = 0 }: SaleTabProps) {
+export default function SaleTab({ reviewCount = 0 }: SaleTabProps) {
   const [activeTab, setActiveTab] = useState<TabValue>('info');
 
   const handleTabClick = (tab: TabValue) => {
@@ -99,7 +99,7 @@ export default function SaleTab({ viewCount = 0 }: SaleTabProps) {
               : ' text-gray-400'
           )}
         >
-          리뷰 {viewCount}
+          리뷰 {reviewCount}
         </button>
       </div>
     </nav>
