@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
 import { Wrapper } from '@/components/layout/wrapper';
-import { MyPageSidebar } from '@/components/mypage/my-page-sidebar';
+import { MyPageSidebar } from '@/app/(protected)/mypage/components/my-page-sidebar';
 import { Typography } from '@/components/ui/typography';
 
 type MyPageLayoutProps = {
@@ -9,7 +9,7 @@ type MyPageLayoutProps = {
 
 export default function MyPageLayout({ children }: MyPageLayoutProps) {
   return (
-    <Wrapper className="py-10">
+    <Wrapper className="py-10 min-h-[650px]">
       <div className="space-y-6">
         <div className="grid gap-10 md:grid-cols-[220px_minmax(0,1fr)]">
           <aside>

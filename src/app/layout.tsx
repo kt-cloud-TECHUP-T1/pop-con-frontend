@@ -1,11 +1,17 @@
 import './globals.css';
+import localFont from 'next/font/local';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
-import { MSWProvider } from './providers';
 import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
-import { pretendard } from './fonts';
 import { SnackbarToaster } from '@/components/ui/snackbar';
+import { MSWProvider } from './providers';
+
+const pretendard = localFont({
+  src: '../../public/fonts/PretendardVariable.woff2',
+  variable: '--font-pretendard',
+  display: 'swap',
+});
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,8 +34,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${pretendard.variable} ${geistMono.variable}`}>
-      <body className="antialiased">
+    <html lang="en">
+      <body
+        className={`${pretendard.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
         <Header />
         <MSWProvider>{children}</MSWProvider>
         <Footer />

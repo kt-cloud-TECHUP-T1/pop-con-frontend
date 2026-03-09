@@ -2,15 +2,12 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { MY_PAGE_SIDEBAR } from '@/constants/mypage';
+import { MY_PAGE_SIDEBAR } from '@/app/(protected)/mypage/_config/mypage';
 import { cn } from '@/lib/utils';
 import type { MyPageSidebarItem } from '@/types/mypage';
 import { Typography } from '@/components/ui/typography';
 
-const isActiveSidebarItem = (
-  pathname: string,
-  item: MyPageSidebarItem
-) => {
+const isActiveSidebarItem = (pathname: string, item: MyPageSidebarItem) => {
   if (item.match === 'exact') {
     return pathname === item.href;
   }

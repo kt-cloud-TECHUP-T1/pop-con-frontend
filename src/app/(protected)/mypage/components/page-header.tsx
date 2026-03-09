@@ -1,22 +1,21 @@
 import { Typography, type TypographyVariant } from '@/components/ui/typography';
-import { cn } from '@/lib/utils';
 
-type MyPagePageHeaderProps = {
+type MyPageHeaderProps = {
   title: string;
   description?: string;
   titleVariant?: TypographyVariant;
-  className?: string;
+  titleWeight?: 'regular' | 'medium' | 'bold';
 };
 
-export function MyPagePageHeader({
+export function MyPageHeader({
   title,
   description,
   titleVariant = 'heading-2',
-  className,
-}: MyPagePageHeaderProps) {
+  titleWeight = 'medium',
+}: MyPageHeaderProps) {
   return (
-    <header className={cn('mb-6', className)}>
-      <Typography variant={titleVariant} weight="medium">
+    <header className="mb-8">
+      <Typography variant={titleVariant} weight={titleWeight}>
         {title}
       </Typography>
       {description ? (

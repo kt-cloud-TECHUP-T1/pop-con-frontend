@@ -288,6 +288,11 @@
    CSS Custom Properties (전역 변수)
    ========================= */
 :root {
+  /* Font Family */
+  --font-family-sans:
+    var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
+
   /* Font Weights */
   --font-weight-regular: 400;
   --font-weight-medium: 500;

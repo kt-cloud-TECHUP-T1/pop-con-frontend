@@ -26,7 +26,7 @@ const SectionTitle = ({
             더보기
           </span>
           <span className="w-5 h-5 flex justify-center items-center">
-            <Icon name="ArrowSimpleRight" size={10} />
+            <Icon name="ChevronRightSmall" size={20} />
           </span>
         </button>
       )}

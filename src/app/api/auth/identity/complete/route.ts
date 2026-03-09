@@ -3,39 +3,43 @@ import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
 
 type IdentityCompleteRequestBody = {
   identityVerificationId?: string;
-  registerToken?: string;
 };
 
-const BACKEND_API_BASE_URL = process.env.BACKEND_API_BASE_URL ?? 'https://devapi.popcon.store';
+const NEXT_PUBLIC_API_BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://devapi.popcon.store';
 
-if (!BACKEND_API_BASE_URL) {
+if (!NEXT_PUBLIC_API_BASE_URL) {
   throw new Error('BACKEND_API_BASE_URL is not set');
 }
 
 export async function POST(request: Request) {
-  const body = (await request.json()) as IdentityCompleteRequestBody;
-  const identityVerificationId = body.identityVerificationId?.trim();
-  const registerToken = body.registerToken?.trim();
+  let identityVerificationId = '';
   const deviceId = request.headers.get('X-Device-Id');
+  const cookie = request.headers.get('cookie');
 
-  if (!identityVerificationId || !registerToken) {
+  try {
+    const body = (await request.json()) as IdentityCompleteRequestBody;
+    identityVerificationId = body.identityVerificationId?.trim() ?? '';
+  } catch {
     return NextResponse.json(
       {
         code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
         message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
         data: {
-          ...(!identityVerificationId
-            ? {
-                identityVerificationId:
-                  AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
-              }
-            : {}),
-          ...(!registerToken
-            ? {
-                registerToken:
-                  AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN,
-              }
-            : {}),
+          identityVerificationId: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
+        },
+      },
+      { status: 400 }
+    );
+  }
+
+  if (!identityVerificationId) {
+    return NextResponse.json(
+      {
+        code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
+        message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
+        data: {
+          identityVerificationId: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
         },
       },
       { status: 400 }
@@ -44,16 +48,16 @@ export async function POST(request: Request) {
 
   try {
     const response = await fetch(
-      `${BACKEND_API_BASE_URL}/auth/identity/complete`,
+      `${NEXT_PUBLIC_API_BASE_URL}/auth/identity/complete`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           ...(deviceId ? { 'X-Device-Id': deviceId } : {}),
+          ...(cookie ? { Cookie: cookie } : {}),
         },
         body: JSON.stringify({
           identityVerificationId,
-          registerToken,
         }),
         cache: 'no-store',
       }
