@@ -2,8 +2,9 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useLayoutEffect, useMemo, useRef, useState } from 'react';
+import { type Ref, useEffect, useMemo, useState } from 'react';
 import { Typography } from '@/components/ui/typography';
+import { useTabIndicator } from '@/hooks/use-tab-indicator';
 import { HEADER_LINKS } from './types';
 
 export function HeaderNav() {
@@ -24,58 +25,22 @@ export function HeaderNav() {
     setUiActiveLink(routeActiveLink);
   }, [routeActiveLink]);
 
-  const navListRef = useRef<HTMLUListElement | null>(null);
-  const itemRefs = useRef<Record<string, HTMLLIElement | null>>({});
-  const mountedRef = useRef(false);
-  const [indicator, setIndicator] = useState({
-    x: 0,
-    width: 0,
-    opacity: 0,
-    ready: false,
-  });
-
-  useLayoutEffect(() => {
-    const updateIndicator = () => {
-      const navEl = navListRef.current;
-      const activeEl = itemRefs.current[uiActiveLink];
-      if (!navEl || !activeEl) return;
-
-      const navRect = navEl.getBoundingClientRect();
-      const itemRect = activeEl.getBoundingClientRect();
-
-      setIndicator((prev) => ({
-        x: itemRect.left - navRect.left,
-        width: itemRect.width,
-        opacity: 1,
-        ready: mountedRef.current ? prev.ready || true : false,
-      }));
-    };
-
-    updateIndicator();
-    window.addEventListener('resize', updateIndicator);
-
-    if (!mountedRef.current) {
-      mountedRef.current = true;
-      requestAnimationFrame(() => {
-        setIndicator((prev) => ({ ...prev, ready: true }));
-      });
-    }
-
-    return () => window.removeEventListener('resize', updateIndicator);
-  }, [uiActiveLink]);
+  const { indicator, setContainerRef, setItemRef } =
+    useTabIndicator(uiActiveLink);
 
   return (
     <nav className="min-w-0">
-      <ul ref={navListRef} className="relative flex gap-6 whitespace-nowrap">
+      <ul
+        ref={setContainerRef as Ref<HTMLUListElement>}
+        className="relative flex gap-6 whitespace-nowrap"
+      >
         {HEADER_LINKS.map((item) => {
           const isActive = item.link === uiActiveLink;
 
           return (
             <li
               key={item.label}
-              ref={(el) => {
-                itemRefs.current[item.link] = el;
-              }}
+              ref={setItemRef(item.link) as Ref<HTMLLIElement>}
             >
               <Link
                 href={item.link}

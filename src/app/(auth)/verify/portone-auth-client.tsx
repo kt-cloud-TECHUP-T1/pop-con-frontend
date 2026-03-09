@@ -20,8 +20,7 @@ export default function PortoneAuthClient() {
   } = usePortoneVerify();
 
   return (
-    // TODO pt-120px 박은 것 유동적으로 바뀌도록 수정이 필요함
-    <Wrapper className="pt-[120px]">
+    <Wrapper className="flex min-h-screen flex-col justify-start pb-24 pt-[120px]">
       <Typography
         variant="heading-1"
         weight="bold"

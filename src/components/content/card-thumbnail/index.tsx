@@ -58,6 +58,8 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
   onClickLike,
   onClick,
 }) => {
+  const isLikeInteractive = Boolean(onClickLike);
+
   const handleLike = (e: React.MouseEvent) => {
     e.stopPropagation();
     onClickLike?.();
@@ -99,9 +101,12 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
             <button
               type="button"
               aria-pressed={isLiked}
+              aria-disabled={!isLikeInteractive}
+              disabled={!isLikeInteractive}
               className={cn(
                 'button-like',
-                'right-0 top-0 p-4 absolute text-white cursor-pointer'
+                'right-0 top-0 p-4 absolute text-white',
+                isLikeInteractive ? 'cursor-pointer' : 'cursor-default opacity-70'
               )}
               onClick={handleLike}
             >

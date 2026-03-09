@@ -46,6 +46,11 @@ export const AUTH_MESSAGES = {
 } as const;
 
 export const AUTH_ERROR_CODES = {
+  // 가입 플로우 (J)
+  JOIN: {
+    UNDERAGE: 'J001', // 만 14세 미만 가입 제한
+  },
+
   // 비즈니스 공통 규칙 (C)
   COMMON: {
     BAD_REQUEST: 'C001', // 입력값 오류
