@@ -1,5 +1,8 @@
 'use client';
 
+import { Icon } from '@/components/Icon/Icon';
+import { Button } from '@/components/ui/button';
+import { Typography } from '@/components/ui/typography';
 import { useEffect, useRef } from 'react';
 
 interface SaleMapProps {
@@ -77,8 +80,23 @@ export function SaleMap({ location }: SaleMapProps) {
   }, [location]);
 
   return (
-    <section id="map" className="w-full h-[400px] scroll-mt-24">
-      <div ref={mapElementRef} className="w-full h-full" />
-    </section>
+    <div className="">
+      <div>
+        <Typography variant="title-1" weight="bold">
+          팝업 스토어 위치
+        </Typography>
+      </div>
+      <section id="map" className="w-full h-[300px] pt-ms">
+        <div ref={mapElementRef} className="w-full h-full" />
+      </section>
+      <div className="flex p-ms justify-between items-center">
+        <Typography variant="body-1" weight="regular">
+          {location}
+        </Typography>
+        <Button variant="secondary" leftIcon={<Icon name="Copy"></Icon>}>
+          주소 복사
+        </Button>
+      </div>
+    </div>
   );
 }

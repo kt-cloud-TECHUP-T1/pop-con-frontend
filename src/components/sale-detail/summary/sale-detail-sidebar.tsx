@@ -12,11 +12,11 @@ export interface SaleDetailSidebarProps {
   weekendOpen: string;
   weekendClose: string;
 
-  auctionOpenAt: string;
-  auctionCloseAt: string;
+  auctionOpenAt?: string;
+  auctionCloseAt?: string;
 
-  drawOpenAt: string;
-  drawCloseAt: string;
+  drawOpenAt?: string;
+  drawCloseAt?: string;
 
   startPrice: number;
   currentPrice: number;
@@ -36,8 +36,6 @@ export function SaleDetailSidebar({
   weekendClose,
   auctionOpenAt,
   auctionCloseAt,
-  drawOpenAt,
-  drawCloseAt,
   startPrice,
   currentPrice,
   extraTicket,
@@ -45,7 +43,7 @@ export function SaleDetailSidebar({
   phaseStatus,
 }: SaleDetailSidebarProps) {
   return (
-    <div className="flex flex-col gap-xs">
+    <div className="flex flex-col gap-s">
       <NoticeCard
         items={[
           '경매 및 드로우 신청은 1인 1회로 제한됩니다.',

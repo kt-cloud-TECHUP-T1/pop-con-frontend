@@ -28,8 +28,8 @@ export function SaleDetailMain({
   likeCount,
 }: SaleDetailMainProps) {
   return (
-    <div className="flex flex-col gap-ms">
-      <SaleThumbnail size="lg" src="/images/temp/no-image.png" />
+    <div className="flex flex-col gap-m">
+      <SaleThumbnail size="lg" src="/images/temp/sanrio.jpg" />
       <SaleHeader
         subTitle={subtitle}
         title={title}
@@ -37,7 +37,7 @@ export function SaleDetailMain({
         likeCount={likeCount}
       />
       <SaleTab reviewCount={reviewCount} />
-      <SaleContent />
+      <SaleContent description={description} />
       <SaleMap location={location} />
       <SaleReview />
     </div>
