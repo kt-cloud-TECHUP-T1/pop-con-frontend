@@ -21,16 +21,9 @@ export default function AuctionPage() {
               title="T1 팝업 Title"
             ></SaleHeader>
             <SaleTab viewCount={0}></SaleTab>
-            <section id="content" className="scroll-mt-24">
-              <SaleContent />
-            </section>
-            <section id="map" className="scroll-mt-24">
-              <SaleMap></SaleMap>
-            </section>
-
-            <section id="review">
-              <SaleReview></SaleReview>
-            </section>
+            <SaleContent />
+            <SaleMap></SaleMap>
+            <SaleReview></SaleReview>
           </div>
         }
         right={

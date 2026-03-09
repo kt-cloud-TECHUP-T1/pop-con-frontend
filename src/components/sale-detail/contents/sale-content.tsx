@@ -63,7 +63,7 @@ export default function SaleContent({ className }: SaleContentProps) {
   return (
     <section
       id="content"
-      className={cn('w-full', className)}
+      className={cn('w-full scroll-mt-24', className)}
       aria-labelledby="sale-content-heading"
     >
       <div>
