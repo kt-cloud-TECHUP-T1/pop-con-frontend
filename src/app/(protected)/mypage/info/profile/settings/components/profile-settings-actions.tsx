@@ -13,7 +13,7 @@ export function ProfileSettingsActions({
   isSaving = false,
 }: ProfileSettingsActionsProps) {
   return (
-    <div className="mt-14 flex flex-wrap items-center justify-center gap-4">
+    <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
       <Link
         href={cancelHref}
         className={buttonVariants({
