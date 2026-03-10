@@ -21,7 +21,7 @@ export function SaleDetailLayout({
     >
       <section className="min-w-0 ">{left}</section>
 
-      <aside className="h-fit lg:sticky lg:top-0 ">{right}</aside>
+      <aside className="h-fit lg:sticky lg:top-xl ">{right}</aside>
     </main>
   );
 }

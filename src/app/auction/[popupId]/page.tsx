@@ -1,11 +1,12 @@
 import { SaleDetailLayout } from '@/components/layout/sale-detail-layout';
 import { Wrapper } from '@/components/layout/wrapper';
 import { SaleDetailMain } from '@/components/sale-detail/contents/sale-detail-main';
+import SaleTimeCountBar from '@/components/sale-detail/contents/sale-time-count-bar';
 import { SaleDetailSidebar } from '@/components/sale-detail/summary/sale-detail-sidebar';
 
 const mockData = {
   phaseType: 'AUCTION',
-  phaseStatus: 'UPCOMING',
+  phaseStatus: 'OPEN',
   popupId: 1,
   liked: true,
   thumbnailUrl: 'https://imagelink.com/thumbnail.jpg',
@@ -54,9 +55,10 @@ const mockData = {
   weekendOpen: '10:00',
   weekendClose: '22:00',
   auctionOpenAt: '2026-02-09T10:00:00+09:00',
-  auctionCloseAt: '2026-02-12T18:00:00+09:00',
+  auctionCloseAt: '2026-03-12T18:00:00+09:00',
   drawOpenAt: '2026-02-14T10:00:00+09:00',
   drawCloseAt: '2026-02-18T18:00:00+09:00',
+  serverNow: '2026-03-11T18:09:00+09:00',
   startPrice: 132000,
   currentPrice: 102000,
   extraTicket: 10,
@@ -65,38 +67,45 @@ const mockData = {
 export default function AuctionPage() {
   const data = mockData;
   return (
-    <Wrapper className="py-[var(--spacing-l)]">
-      <SaleDetailLayout
-        left={
-          <SaleDetailMain
-            description={data.description}
-            image={data.thumbnailUrl}
-            location={data.location}
-            reviewCount={data.reviewCount}
-            title={data.title}
-            subtitle={data.subtitle}
-            viewCount={data.viewCount}
-            likeCount={data.likeCount}
-          ></SaleDetailMain>
-        }
-        right={
-          <SaleDetailSidebar
-            openAt={data.openAt}
-            closeAt={data.closeAt}
-            weekdayOpen={data.weekdayOpen}
-            weekdayClose={data.weekdayClose}
-            weekendOpen={data.weekendOpen}
-            weekendClose={data.weekendClose}
-            auctionOpenAt={data.auctionOpenAt}
-            auctionCloseAt={data.auctionCloseAt}
-            startPrice={data.startPrice}
-            currentPrice={data.currentPrice}
-            extraTicket={data.extraTicket}
-            phaseType={data.phaseType}
-            phaseStatus={data.phaseStatus}
-          ></SaleDetailSidebar>
-        }
+    <div>
+      <SaleTimeCountBar
+        phaseStatus={data.phaseStatus} // 'UPCOMING' | 'OPEN' | 'CLOSED'
+        auctionCloseAt={data.auctionCloseAt}
+        serverNow={data.serverNow}
       />
-    </Wrapper>
+      <Wrapper className="py-m">
+        <SaleDetailLayout
+          left={
+            <SaleDetailMain
+              description={data.description}
+              image={data.thumbnailUrl}
+              location={data.location}
+              reviewCount={data.reviewCount}
+              title={data.title}
+              subtitle={data.subtitle}
+              viewCount={data.viewCount}
+              likeCount={data.likeCount}
+            ></SaleDetailMain>
+          }
+          right={
+            <SaleDetailSidebar
+              openAt={data.openAt}
+              closeAt={data.closeAt}
+              weekdayOpen={data.weekdayOpen}
+              weekdayClose={data.weekdayClose}
+              weekendOpen={data.weekendOpen}
+              weekendClose={data.weekendClose}
+              auctionOpenAt={data.auctionOpenAt}
+              auctionCloseAt={data.auctionCloseAt}
+              startPrice={data.startPrice}
+              currentPrice={data.currentPrice}
+              extraTicket={data.extraTicket}
+              phaseType={data.phaseType}
+              phaseStatus={data.phaseStatus}
+            ></SaleDetailSidebar>
+          }
+        />
+      </Wrapper>
+    </div>
   );
 }
