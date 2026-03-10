@@ -17,8 +17,8 @@ export default function SaleHeader({
   className,
 }: SaleHeaderProps) {
   return (
-    <div>
-      <section className="flex justify-between ">
+    <div className="py-m">
+      <section className="flex justify-between">
         <Typography
           variant="title-2"
           weight="medium"

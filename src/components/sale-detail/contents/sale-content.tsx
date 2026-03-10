@@ -13,7 +13,7 @@ export default function SaleContent({
   return (
     <section
       id="content"
-      className={cn('w-full scroll-mt-24', className)}
+      className={cn('w-full scroll-mt-24 py-l', className)}
       aria-labelledby="sale-content-heading"
     >
       <div>

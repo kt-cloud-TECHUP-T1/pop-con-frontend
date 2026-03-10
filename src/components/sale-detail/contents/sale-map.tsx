@@ -15,7 +15,8 @@ export function SaleMap({ location }: SaleMapProps) {
   const markerRef = useRef<naver.maps.Marker | null>(null);
 
   useEffect(() => {
-    const clientId = process.env.NEXT_PUBLIC_NAVER_CLIENT_ID;
+    // const clientId = process.env.NEXT_PUBLIC_NAVER_CLIENT_ID;
+    const clientId = null;
     if (!clientId) return;
 
     const initOrUpdateMap = () => {
@@ -80,22 +81,24 @@ export function SaleMap({ location }: SaleMapProps) {
   }, [location]);
 
   return (
-    <div className="">
+    <div className="pb-l">
       <div>
-        <Typography variant="title-1" weight="bold">
+        <Typography variant="title-1" weight="bold" className="pb-ms">
           팝업 스토어 위치
         </Typography>
       </div>
-      <section id="map" className="w-full h-[300px] pt-ms">
-        <div ref={mapElementRef} className="w-full h-full" />
-      </section>
-      <div className="flex p-ms justify-between items-center">
-        <Typography variant="body-1" weight="regular">
-          {location}
-        </Typography>
-        <Button variant="secondary" leftIcon={<Icon name="Copy"></Icon>}>
-          주소 복사
-        </Button>
+      <div className="border-[1px] border-[var(--line-3)] rounded-m">
+        <section id="map" className="w-full h-[300px] ">
+          <div ref={mapElementRef} className="w-full h-full rounded-m" />
+        </section>
+        <div className="flex p-ms justify-between items-center">
+          <Typography variant="body-1" weight="regular">
+            {location}
+          </Typography>
+          <Button variant="secondary" leftIcon={<Icon name="Copy"></Icon>}>
+            주소 복사
+          </Button>
+        </div>
       </div>
     </div>
   );
