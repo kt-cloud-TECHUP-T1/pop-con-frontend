@@ -1,16 +1,18 @@
 import Link from 'next/link';
 import { Icon } from '@/components/Icon/Icon';
-import { Typography } from '@/components/ui/typography';
 import { LikedPopupCard } from '@/app/(protected)/mypage/components/liked-popup-card';
-import { likedPopups } from '@/app/(protected)/mypage/_main/data/mock-data';
+import { likedPopups } from '@/app/(protected)/mypage/data/mock-data';
+import { MyPageHeader } from '../../components/page-header';
 
 export function LikedPopupsSection() {
   return (
     <section>
       <div className="mb-6 flex items-center justify-between gap-4">
-        <Typography variant="heading-1" weight="bold">
-          찜한 팝업스토어
-        </Typography>
+        <MyPageHeader
+          title="찜한 팝업스토어"
+          titleVariant="heading-1"
+          titleWeight="bold"
+        />
         <Link
           href="/mypage/activity/liked-popups"
           className="inline-flex items-center gap-1 text-sm text-[var(--neutral-60)] transition-colors hover:text-[var(--neutral-10)]"

@@ -42,7 +42,7 @@ const myTickets: MyTicketItem[] = [
 
 export default function MyPageInfoTicketsPage() {
   return (
-    <section className="max-w-[920px]">
+    <section>
       <MyPageHeader
         title="내 티켓"
         titleVariant="heading-1"
@@ -60,11 +60,7 @@ export default function MyPageInfoTicketsPage() {
               padding="M"
               className="flex items-center gap-4 transition-colors hover:border-[var(--neutral-70)]"
             >
-              <ThumbnailImage
-                width={80}
-                height={104}
-                radius="S"
-              />
+              <ThumbnailImage width={80} height={104} radius="S" />
 
               <div className="min-w-0 flex-1">
                 <Typography variant="title-2" weight="medium" className="mb-2">
