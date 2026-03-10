@@ -65,6 +65,7 @@ export const PADDING_X = {
 
 export const PADDING_Y = {
   NONE: 'py-[var(--spacing-none)]',
+  _3XS: 'py-[var(--spacing-3xs)]',
   _2XS: 'py-[var(--spacing-2xs)]',
   XS: 'py-[var(--spacing-xs)]',
   S: 'py-[var(--spacing-s)]',
