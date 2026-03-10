@@ -1,5 +1,6 @@
 import type { IconName } from '@/components/Icon/Icon';
-import type { ActivityStatusTone } from '@/app/(protected)/mypage/components/activity-history/types';
+import type { ActivityStatusTone } from '@/features/mypage/types/activity';
+import type { DrawResult } from '@/features/mypage/draws/services/confirm-draw-result';
 
 export type ActivityTab = 'draw' | 'bid';
 
@@ -21,6 +22,8 @@ export type ActivityItem = {
   paidAt: string;
   stateLabel: string;
   stateTone: ActivityStatusTone;
+  isResultPending?: boolean;
+  pendingResultMock?: DrawResult;
 };
 
 export type LikedPopupItem = {
