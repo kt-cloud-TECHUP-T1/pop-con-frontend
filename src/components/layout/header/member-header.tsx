@@ -39,9 +39,9 @@ export function MemberHeader() {
               aria-label="검색"
             />
           </label>
-          <Link href="/notifications" aria-label="알림">
-            <Icon name="Bell" size={24} className="text-[var(--neutral-20)]" />
-          </Link>
+          {/* TODO: 알림 기능 확정 전까지 아이콘만 노출 */}
+          <Icon name="Bell" size={24} className="text-[var(--neutral-20)]" />
+
           <Link href="/mypage" aria-label="마이페이지">
             <Avatar
               className="bg-[var(--neutral-90)]"

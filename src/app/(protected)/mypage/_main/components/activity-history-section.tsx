@@ -44,6 +44,8 @@ export function ActivityHistorySection() {
   });
   const { indicator, setContainerRef, setItemRef } = useTabIndicator(activeTab);
   const tabItems = activeTab === 'draw' ? drawActivityItems : activityItems.bid;
+  const getTabId = (tab: ActivityTab) => `activity-history-tab-${tab}`;
+  const getPanelId = (tab: ActivityTab) => `activity-history-panel-${tab}`;
 
   return (
     <>
@@ -57,6 +59,8 @@ export function ActivityHistorySection() {
           <div
             ref={setContainerRef as Ref<HTMLDivElement>}
             className="relative flex border-b border-black/10"
+            role="tablist"
+            aria-label="활동 내역 탭"
           >
             {/* 탭 */}
             {activityTabs.map((tab) => {
@@ -65,9 +69,14 @@ export function ActivityHistorySection() {
               return (
                 <button
                   key={tab.value}
+                  id={getTabId(tab.value)}
                   type="button"
                   ref={setItemRef(tab.value) as Ref<HTMLButtonElement>}
                   onClick={() => setActiveTab(tab.value)}
+                  role="tab"
+                  aria-selected={isActive}
+                  aria-controls={getPanelId(tab.value)}
+                  tabIndex={isActive ? 0 : -1}
                   className={cn(
                     'min-w-[180px] px-6 py-4 transition-colors',
                     isActive
@@ -99,32 +108,38 @@ export function ActivityHistorySection() {
           </div>
         </div>
 
-        <ActivityHistoryList
-          items={tabItems}
-          getTitle={(item) => item.title}
-          getPrice={(item) => item.price}
-          getPaidAt={(item) => item.paidAt}
-          renderRightContent={(item) =>
-            activeTab === 'draw' && item.isResultPending ? (
-              <Box
-                as="button"
-                type="button"
-                paddingX="S"
-                radius="XS"
-                onClick={() => handleRevealResult(item)}
-                disabled={isRevealing}
-                className="bg-[var(--orange-50)] py-2 text-white flex gap-1"
-              >
-                <Icon name="Search" size={18} className="text-white" />
-                <Typography as="p" variant="label-3">
-                  결과 확인하기
-                </Typography>
-              </Box>
-            ) : (
-              <ActivityStatusBadge label={item.stateLabel} tone={item.stateTone} />
-            )
-          }
-        />
+        <div
+          id={getPanelId(activeTab)}
+          role="tabpanel"
+          aria-labelledby={getTabId(activeTab)}
+        >
+          <ActivityHistoryList
+            items={tabItems}
+            getTitle={(item) => item.title}
+            getPrice={(item) => item.price}
+            getPaidAt={(item) => item.paidAt}
+            renderRightContent={(item) =>
+              activeTab === 'draw' && item.isResultPending ? (
+                <Box
+                  as="button"
+                  type="button"
+                  paddingX="S"
+                  radius="XS"
+                  onClick={() => handleRevealResult(item)}
+                  disabled={isRevealing}
+                  className="bg-[var(--orange-50)] py-2 text-white flex gap-1"
+                >
+                  <Icon name="Search" size={18} className="text-white" />
+                  <Typography as="p" variant="label-3">
+                    결과 확인하기
+                  </Typography>
+                </Box>
+              ) : (
+                <ActivityStatusBadge label={item.stateLabel} tone={item.stateTone} />
+              )
+            }
+          />
+        </div>
       </section>
 
       {/* 결과 확인하기 -> 모달창 */}

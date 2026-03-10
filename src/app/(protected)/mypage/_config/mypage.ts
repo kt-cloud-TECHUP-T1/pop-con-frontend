@@ -48,7 +48,7 @@ export const MY_PAGE_SIDEBAR: MyPageSidebarSection[] = [
       { label: '설정', href: '/mypage/others/settings', match: 'prefix' },
       {
         label: '고객센터',
-        href: '/customer-service',
+        href: '/support',
         match: 'prefix',
       },
     ],
