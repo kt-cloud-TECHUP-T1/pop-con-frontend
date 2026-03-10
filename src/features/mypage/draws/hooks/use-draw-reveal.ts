@@ -1,4 +1,4 @@
-import { useRef, useState, type Dispatch, type SetStateAction } from 'react';
+import { useState, type Dispatch, type SetStateAction } from 'react';
 import {
   confirmDrawResult,
   type DrawResult,
@@ -32,7 +32,6 @@ export function useDrawReveal<TItem extends { id: number }>({
   getMockResult,
   applyRevealResult,
 }: UseDrawRevealParams<TItem>) {
-  const requestIdRef = useRef(0);
   const [selectedItem, setSelectedItem] = useState<TItem | null>(null);
   const [isRevealing, setIsRevealing] = useState(false);
   const [revealedResult, setRevealedResult] = useState<DrawResult | null>(null);
@@ -40,7 +39,6 @@ export function useDrawReveal<TItem extends { id: number }>({
 
   // 모달 종료 시 결과 확인 플로우 상태 초기화
   const closeRevealModal = () => {
-    requestIdRef.current += 1;
     setIsRevealing(false);
     setRevealedResult(null);
     setRevealError(null);
@@ -54,44 +52,33 @@ export function useDrawReveal<TItem extends { id: number }>({
     const mockResult = getMockResult(item);
     if (!mockResult) return;
 
-    const requestId = ++requestIdRef.current;
     setSelectedItem(item);
     setIsRevealing(true);
     setRevealedResult(null);
     setRevealError(null);
 
-    try {
-      const response = await confirmDrawResult({
-        drawHistoryId: item.id,
-        mockResult,
-      });
+    const response = await confirmDrawResult({
+      drawHistoryId: item.id,
+      mockResult,
+    });
 
-      if (response.status === 'failed') {
-        setIsRevealing(false);
-        setRevealError(response.message);
-        return;
-      }
-
-      // 결과 공개 성공 시, 호출부에서 전달한 전략으로 목록 상태를 동기화
-      const badge = getResultBadge(response.result);
-      setItems((prev) =>
-        prev.map((currentItem) =>
-          currentItem.id === item.id
-            ? applyRevealResult(currentItem, response.result, badge)
-            : currentItem
-        )
-      );
-      setRevealedResult(response.result);
-    } catch {
-      if (requestId !== requestIdRef.current) return;
-      setRevealError(
-        '결과 확인 중 오류가 발생했습니다. 잠시 후 다시 시도해 주세요.'
-      );
-    } finally {
-      if (requestId === requestIdRef.current) {
-        setIsRevealing(false);
-      }
+    if (response.status === 'failed') {
+      setIsRevealing(false);
+      setRevealError(response.message);
+      return;
     }
+
+    // 결과 공개 성공 시, 호출부에서 전달한 전략으로 목록 상태를 동기화
+    const badge = getResultBadge(response.result);
+    setItems((prev) =>
+      prev.map((currentItem) =>
+        currentItem.id === item.id
+          ? applyRevealResult(currentItem, response.result, badge)
+          : currentItem
+      )
+    );
+    setIsRevealing(false);
+    setRevealedResult(response.result);
   };
 
   return {

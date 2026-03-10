@@ -4,9 +4,16 @@ import { completeIdentityVerification } from '../services/identity';
 import { useState } from 'react';
 import { AUTH_MESSAGES } from '@/constants/auth';
 import { setAccessToken } from '@/features/auth/utils/auth-storage';
+import { snackbar } from '@/components/ui/snackbar';
 
-export function usePortoneVerify() {
+type UsePortoneVerifyOptions = {
+  disableRedirect?: boolean;
+  onVerified?: () => void;
+};
+
+export function usePortoneVerify(options?: UsePortoneVerifyOptions) {
   const router = useRouter();
+  const disableRedirect = options?.disableRedirect ?? false;
   // 본인인증 요청 중 중복 클릭/호출을 막기 위한 로딩 상태
   const [isPending, setIsPending] = useState(false);
   // 만 14세 미만 가입 제한 안내 모달 상태 및 메시지
@@ -24,12 +31,18 @@ export function usePortoneVerify() {
     const verifyResult = await requestPortoneIdentityVerification();
 
     if (verifyResult.status === 'cancelled') {
-      alert('본인인증이 완료되지 않았습니다.');
+      snackbar.informative({
+        title: '본인인증 취소',
+        description: '본인인증이 완료되지 않았습니다.',
+      });
       return null;
     }
 
     if (verifyResult.status === 'failed') {
-      alert(verifyResult.message);
+      snackbar.destructive({
+        title: '본인인증 실패',
+        description: verifyResult.message,
+      });
       return null;
     }
 
@@ -51,16 +64,27 @@ export function usePortoneVerify() {
     }
 
     if (completeResult.status === 'sessionExpired') {
-      alert(completeResult.message);
+      snackbar.destructive({
+        title: '세션 만료',
+        description: completeResult.message,
+      });
       return;
     }
 
     if (completeResult.status === 'failed') {
-      alert(completeResult.message);
+      snackbar.destructive({
+        title: '본인인증 실패',
+        description: completeResult.message,
+      });
       return;
     }
 
     if (completeResult.data.isNewUser) {
+      if (disableRedirect) {
+        options?.onVerified?.();
+        return;
+      }
+
       if (completeResult.data.nextStep === 'TERMS') {
         router.push('/signup');
         return;
@@ -72,11 +96,20 @@ export function usePortoneVerify() {
         return;
       }
 
-      alert('다음 단계 정보를 확인할 수 없습니다.');
+      snackbar.destructive({
+        title: '처리 실패',
+        description: '다음 단계 정보를 확인할 수 없습니다.',
+      });
       return;
     }
 
     setAccessToken(completeResult.data.accessToken);
+
+    if (disableRedirect) {
+      options?.onVerified?.();
+      return;
+    }
+
     router.push('/');
   };
 
@@ -87,7 +120,10 @@ export function usePortoneVerify() {
         ? error.message
         : AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR;
 
-    alert(message);
+    snackbar.destructive({
+      title: '오류 발생',
+      description: message,
+    });
   };
 
   // 전체 인증 흐름 오케스트레이션:

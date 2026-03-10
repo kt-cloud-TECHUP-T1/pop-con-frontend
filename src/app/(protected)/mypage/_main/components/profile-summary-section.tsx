@@ -6,11 +6,12 @@ import { Typography } from '@/components/ui/typography';
 import {
   summaryCards,
   summaryStats,
-} from '@/app/(protected)/mypage/_main/data/mock-data';
+} from '@/app/(protected)/mypage/data/mock-data';
 
 export function ProfileSummarySection() {
   return (
     <section className="space-y-2">
+      {/* 프로필 */}
       <Box
         as="section"
         radius="ML"
@@ -58,7 +59,7 @@ export function ProfileSummarySection() {
           </Link>
         </div>
       </Box>
-
+      {/* 활동 내역 1(내 티켓, 드로우 내역 등) */}
       <div className="grid gap-2 xl:grid-cols-4">
         {summaryCards.map((card) => (
           <Box
@@ -87,7 +88,7 @@ export function ProfileSummarySection() {
           </Box>
         ))}
       </div>
-
+      {/* 활동 내역 2(드로우 당첨/미당첨, 진행중인 드로우 등) */}
       <Box
         border="#0A0A0A14"
         padding="S"

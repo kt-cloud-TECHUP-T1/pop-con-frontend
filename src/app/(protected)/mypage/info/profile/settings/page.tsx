@@ -1,42 +1,15 @@
-'use client';
-
-import { ProfileSettingsActions } from '@/app/(protected)/mypage/info/profile/settings/components/profile-settings-actions';
-import { ProfileSettingsFormSection } from '@/app/(protected)/mypage/info/profile/settings/components/profile-settings-form-section';
-import { useProfileSettings } from '@/app/(protected)/mypage/info/profile/settings/hooks/use-profile-settings';
+import { SettingsPageClient } from '@/app/(protected)/mypage/info/profile/settings/components/settings-page-client';
+import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
 
 export default function MyPageSettingsPage() {
-  const {
-    nickname,
-    setNickname,
-    previewImageSrc,
-    selectedImageFileName,
-    imageErrorMessage,
-    fileInputRef,
-    isSaving,
-    openImagePicker,
-    handleImageFileChange,
-    handleImageRemove,
-    handleSave,
-  } = useProfileSettings();
-
   return (
-    <section className="max-w-[960px]">
-      <ProfileSettingsFormSection
-        nickname={nickname}
-        onNicknameChange={setNickname}
-        previewImageSrc={previewImageSrc}
-        selectedImageFileName={selectedImageFileName}
-        imageErrorMessage={imageErrorMessage}
-        fileInputRef={fileInputRef}
-        onImageFileChange={handleImageFileChange}
-        onImagePickerOpen={openImagePicker}
-        onImageRemove={handleImageRemove}
+    <>
+      <MyPageHeader
+        title="프로필 설정"
+        titleVariant="heading-1"
+        titleWeight="bold"
       />
-      <ProfileSettingsActions
-        cancelHref="/mypage/info/profile"
-        onSave={handleSave}
-        isSaving={isSaving}
-      />
-    </section>
+      <SettingsPageClient />
+    </>
   );
 }

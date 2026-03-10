@@ -40,20 +40,20 @@ export function DrawResultRevealModal({
         ) : revealError ? (
           <p className="text-sm text-[var(--red-50)]">{revealError}</p>
         ) : (
-          revealedResult && (
-            <>
+          <>
+            {revealedResult && (
               <ActivityStatusBadge
                 label={getResultBadge(revealedResult).label}
                 tone={getResultBadge(revealedResult).tone}
                 className="animate-in fade-in zoom-in-95 duration-300"
               />
-              <p className="text-sm text-[var(--neutral-30)]">
-                {revealedResult === 'won'
-                  ? '축하합니다! 드로우에 당첨되었어요.'
-                  : '아쉽지만 이번 드로우는 미당첨이에요.'}
-              </p>
-            </>
-          )
+            )}
+            <p className="text-sm text-[var(--neutral-30)]">
+              {revealedResult === 'won'
+                ? '축하합니다! 드로우에 당첨되었어요.'
+                : '아쉽지만 이번 드로우는 미당첨이에요.'}
+            </p>
+          </>
         )}
         <Button
           type="button"

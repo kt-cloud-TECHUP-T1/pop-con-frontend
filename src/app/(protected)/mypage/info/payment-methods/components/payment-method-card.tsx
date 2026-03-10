@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
-import type { CardBrandCode, PaymentMethod } from './types';
+import type { CardBrandCode, PaymentMethod } from '../types';
 import { Button } from '@/components/ui/button';
 
 const CARD_BRAND_IMAGE: Record<CardBrandCode, string> = {
@@ -12,6 +12,7 @@ const CARD_BRAND_IMAGE: Record<CardBrandCode, string> = {
 type PaymentMethodCardProps = PaymentMethod;
 type PaymentMethodCardActionProps = {
   onSetPrimary: (paymentMethodId: number) => void;
+  onDelete: (paymentMethodId: number) => void;
 };
 
 export function PaymentMethodCard({
@@ -21,6 +22,7 @@ export function PaymentMethodCard({
   maskedNumber,
   isPrimary,
   onSetPrimary,
+  onDelete,
 }: PaymentMethodCardProps & PaymentMethodCardActionProps) {
   return (
     <Box as="article" radius="ML" border="#0A0A0A14" paddingY="MS" paddingX="M">
@@ -53,7 +55,7 @@ export function PaymentMethodCard({
         </div>
 
         {isPrimary ? (
-          <Box radius="XS" paddingX="XS" paddingY="_2XS" background="#CDEFD7">
+          <Box radius="XS" paddingX="XS" background="#CDEFD7" className="pb-1">
             <Typography
               variant="label-3"
               weight="medium"
@@ -81,12 +83,11 @@ export function PaymentMethodCard({
             <Box
               as="button"
               type="button"
-              disabled
+              onClick={() => onDelete(id)}
               paddingY="_2XS"
               paddingX="XS"
-              className="cursor-not-allowed opacity-60 transition-colors"
+              className="transition-opacity hover:opacity-70"
             >
-              {/* TODO: 삭제 API 연동 후 onDelete 콜백을 props로 받아 실제 삭제 동작을 연결한다. */}
               <Typography
                 variant="label-3"
                 weight="medium"

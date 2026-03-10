@@ -1,4 +1,4 @@
-import type { MyPageSidebarSection } from '@/types/mypage';
+import type { MyPageSidebarSection } from '@/features/mypage/types/navigation';
 
 export const MY_PAGE_SIDEBAR: MyPageSidebarSection[] = [
   {
@@ -48,7 +48,7 @@ export const MY_PAGE_SIDEBAR: MyPageSidebarSection[] = [
       { label: '설정', href: '/mypage/others/settings', match: 'prefix' },
       {
         label: '고객센터',
-        href: '/mypage/others/support',
+        href: '/support',
         match: 'prefix',
       },
     ],

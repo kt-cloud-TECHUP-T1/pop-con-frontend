@@ -2,6 +2,7 @@ import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
 import { personalProfileRows } from '@/app/(protected)/mypage/data/mock-data';
 import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
+import { PersonalPhoneVerifyAction } from '@/app/(protected)/mypage/info/profile/personal/components/personal-phone-verify-action';
 
 export default function MyPagePersonalInfoPage() {
   return (
@@ -29,7 +30,9 @@ export default function MyPagePersonalInfoPage() {
                 </Typography>
               </dd>
               <div className="md:justify-self-end">
-                {item.action === 'verifyPhone' || item.action === 'edit' ? (
+                {item.action === 'verifyPhone' ? (
+                  <PersonalPhoneVerifyAction />
+                ) : item.action === 'edit' ? (
                   <Box
                     as="button"
                     type="button"
@@ -37,14 +40,13 @@ export default function MyPagePersonalInfoPage() {
                     paddingX="M"
                     border="#0A0A0A29"
                     radius="MS"
-                    disabled
                   >
                     <Typography
                       variant="label-1"
                       weight="medium"
-                      className="whitespace-nowrap text-[var(--neutral-50)]"
+                      className="whitespace-nowrap"
                     >
-                      준비중
+                      변경
                     </Typography>
                   </Box>
                 ) : null}

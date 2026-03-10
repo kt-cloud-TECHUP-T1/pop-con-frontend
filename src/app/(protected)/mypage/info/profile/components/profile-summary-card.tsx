@@ -12,6 +12,7 @@ type ProfileSummaryCardProps = {
   nickname: string;
   infoItems: ProfileInfoItem[];
   settingsHref: string;
+  personalInfoHref: string;
 };
 
 export function ProfileSummaryCard({
@@ -19,6 +20,7 @@ export function ProfileSummaryCard({
   nickname,
   infoItems,
   settingsHref,
+  personalInfoHref,
 }: ProfileSummaryCardProps) {
   return (
     <Box
@@ -42,7 +44,10 @@ export function ProfileSummaryCard({
         </div>
 
         <ProfileInfoList items={infoItems} />
-        <ProfileActionButtons settingsHref={settingsHref} />
+        <ProfileActionButtons
+          settingsHref={settingsHref}
+          personalInfoHref={personalInfoHref}
+        />
       </div>
     </Box>
   );

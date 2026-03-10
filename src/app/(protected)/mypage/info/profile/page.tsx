@@ -18,12 +18,12 @@ export default function MyPageProfilePage() {
         titleVariant="heading-1"
         titleWeight="bold"
       />
-
       <ProfileSummaryCard
         imageSrc="/images/temp/God-Sang-hyeok.png"
         nickname="심심한 고래"
         infoItems={PROFILE_INFO}
         settingsHref="/mypage/info/profile/settings"
+        personalInfoHref="/mypage/info/profile/personal"
       />
     </section>
   );

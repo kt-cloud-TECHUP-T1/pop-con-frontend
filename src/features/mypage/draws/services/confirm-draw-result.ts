@@ -30,7 +30,9 @@ function isDrawResult(value: unknown): value is DrawResult {
 async function mockConfirmDrawResult(
   mockResult: DrawResult
 ): Promise<ConfirmDrawResultResponse> {
-  await new Promise((resolve) => setTimeout(resolve, RESULT_CHECK_DELAY_MS));
+  await new Promise((resolve) =>
+    window.setTimeout(resolve, RESULT_CHECK_DELAY_MS)
+  );
 
   return {
     status: 'success',
