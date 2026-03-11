@@ -54,11 +54,11 @@ const mockData = {
   weekdayClose: '21:00',
   weekendOpen: '10:00',
   weekendClose: '22:00',
-  auctionOpenAt: '2026-02-09T10:00:00+09:00',
-  auctionCloseAt: '2026-03-12T18:00:00+09:00',
+  auctionOpenAt: '2026-03-13T10:00:00+09:00',
+  auctionCloseAt: '2026-03-13T18:00:00+09:00',
   drawOpenAt: '2026-02-14T10:00:00+09:00',
   drawCloseAt: '2026-02-18T18:00:00+09:00',
-  serverNow: '2026-03-11T18:09:00+09:00',
+  serverNow: '2026-03-10T00:00:00+09:00',
   startPrice: 132000,
   currentPrice: 102000,
   extraTicket: 10,
@@ -100,11 +100,14 @@ export default function AuctionPage() {
               weekendClose={data.weekendClose}
               auctionOpenAt={data.auctionOpenAt}
               auctionCloseAt={data.auctionCloseAt}
+              drawOpenAt={data.drawOpenAt}
+              drawCloseAt={data.drawCloseAt}
               startPrice={data.startPrice}
               currentPrice={data.currentPrice}
               extraTicket={data.extraTicket}
               phaseType={data.phaseType}
               phaseStatus={data.phaseStatus}
+              serverNow={data.serverNow}
             ></SaleDetailSidebar>
           }
         />
