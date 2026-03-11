@@ -5,12 +5,14 @@ interface SaleDetailLayoutProps {
   left: React.ReactNode;
   right: React.ReactNode;
   className?: string;
+  hasStickyTopBar: boolean;
 }
 
 export function SaleDetailLayout({
   left,
   right,
   className,
+  hasStickyTopBar = false,
 }: SaleDetailLayoutProps) {
   return (
     <main
@@ -21,7 +23,14 @@ export function SaleDetailLayout({
     >
       <section className="min-w-0 ">{left}</section>
 
-      <aside className="h-fit lg:sticky lg:top-xl ">{right}</aside>
+      <aside
+        className={cn(
+          'h-fit lg:sticky',
+          hasStickyTopBar ? 'lg:top-[52px]' : 'lg:top-s'
+        )}
+      >
+        {right}
+      </aside>
     </main>
   );
 }

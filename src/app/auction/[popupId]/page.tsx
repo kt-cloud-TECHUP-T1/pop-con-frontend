@@ -66,6 +66,8 @@ const mockData = {
 
 export default function AuctionPage() {
   const data = mockData;
+  const hasStickyTopBar = data.phaseStatus !== 'UPCOMING';
+
   return (
     <div>
       <SaleTimeCountBar
@@ -75,6 +77,7 @@ export default function AuctionPage() {
       />
       <Wrapper className="py-m">
         <SaleDetailLayout
+          hasStickyTopBar={hasStickyTopBar}
           left={
             <SaleDetailMain
               description={data.description}
