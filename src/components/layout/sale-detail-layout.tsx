@@ -26,7 +26,9 @@ export function SaleDetailLayout({
       <aside
         className={cn(
           'h-fit lg:sticky',
-          hasStickyTopBar ? 'lg:top-[52px]' : 'lg:top-s'
+          hasStickyTopBar
+            ? 'lg:top-[calc(var(--sale-time-bar-height)+var(--spacing-s))]'
+            : 'lg:top-s'
         )}
       >
         {right}

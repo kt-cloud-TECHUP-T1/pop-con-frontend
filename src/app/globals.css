@@ -367,6 +367,7 @@
   --size-avatar-2xl: 72px;
   --size-avatar-3xl: 88px;
   /* END 디자인 시스템 설계도에 따른 Avatar 사이즈 */
+  --sale-time-bar-height: 40px;
 }
 
 :root {

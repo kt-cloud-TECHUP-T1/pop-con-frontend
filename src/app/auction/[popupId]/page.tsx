@@ -6,7 +6,7 @@ import { SaleDetailSidebar } from '@/components/sale-detail/summary/sale-detail-
 
 const mockData = {
   phaseType: 'AUCTION',
-  phaseStatus: 'OPEN',
+  phaseStatus: 'UPCOMING',
   popupId: 1,
   liked: true,
   thumbnailUrl: 'https://imagelink.com/thumbnail.jpg',
