@@ -7,7 +7,7 @@ interface NoticeCardProps {
   slot?: ReactNode;
 }
 
-export default function NoticeCard({
+export default function SaleNoticeCard({
   title = '안내사항',
   items,
   slot,

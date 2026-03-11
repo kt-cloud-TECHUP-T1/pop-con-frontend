@@ -61,3 +61,4 @@ export { default as Video } from './Video';
 export { default as Write } from './Write';
 export { default as CreditCard } from './CreditCard';
 export { default as Copy } from './Copy';
+export { default as Clock } from './Clock';

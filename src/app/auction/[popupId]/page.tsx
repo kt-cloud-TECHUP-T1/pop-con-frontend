@@ -3,10 +3,10 @@ import { Wrapper } from '@/components/layout/wrapper';
 import { SaleDetailMain } from '@/components/sale-detail/contents/sale-detail-main';
 import SaleTimeCountBar from '@/components/sale-detail/contents/sale-time-count-bar';
 import { SaleDetailSidebar } from '@/components/sale-detail/summary/sale-detail-sidebar';
-
+// 'UPCOMING' | 'OPEN' | 'CLOSED'
 const mockData = {
   phaseType: 'AUCTION',
-  phaseStatus: 'UPCOMING',
+  phaseStatus: 'OPEN',
   popupId: 1,
   liked: true,
   thumbnailUrl: 'https://imagelink.com/thumbnail.jpg',
@@ -108,6 +108,7 @@ export default function AuctionPage() {
               phaseType={data.phaseType}
               phaseStatus={data.phaseStatus}
               serverNow={data.serverNow}
+              location={data.location}
             ></SaleDetailSidebar>
           }
         />

@@ -4,36 +4,41 @@ import useCountdown from '../hooks/use-countdown';
 import { splitRemainingTime } from '../utils/sale-detail-utils';
 
 interface OpenCountCardProps {
-  auctionOpenAt: string;
+  saleOpenAt: string;
   phaseType: string;
   phaseStatus: string;
   serverNow: string;
 }
 
 export default function OpenCountCard({
-  auctionOpenAt,
+  saleOpenAt,
   phaseType,
   phaseStatus,
   serverNow,
 }: OpenCountCardProps) {
-  const remaining = useCountdown(auctionOpenAt, serverNow);
+  const remaining = useCountdown(saleOpenAt, serverNow);
   const { days, hours, minutes, seconds } = splitRemainingTime(remaining);
-
+  // 'UPCOMING' | 'OPEN' | 'CLOSED'
+  if (phaseStatus === 'OPEN' || phaseStatus === 'CLOSED') return;
   return (
-    <div className="p-ms bg-[var(--neutral-20)] text-[var(--white)] rounded-ml flex flex-col gap-xs items-center">
-      <Typography variant="body-2" weight="regular">
-        {phaseType == 'AUCTION' ? '경매' : '드로우'} 오픈까지
-      </Typography>
-      <div className="flex items-start justify-center gap-xs text-white">
-        <CountItem value={days} label="일" />
-        <Separator />
-        <CountItem value={hours} label="시간" />
-        <Separator />
-        <CountItem value={minutes} label="분" />
-        <Separator />
-        <CountItem value={seconds} label="초" />
-      </div>
-    </div>
+    <>
+      {phaseStatus == 'UPCOMING' && (
+        <div className="p-ms bg-[var(--neutral-20)] text-[var(--white)] rounded-ml flex flex-col gap-xs items-center">
+          <Typography variant="body-2" weight="regular">
+            {phaseType == 'AUCTION' ? '경매' : '드로우'} 오픈까지
+          </Typography>
+          <div className="flex items-start justify-center gap-xs text-white">
+            <CountItem value={days} label="일" />
+            <Separator />
+            <CountItem value={hours} label="시간" />
+            <Separator />
+            <CountItem value={minutes} label="분" />
+            <Separator />
+            <CountItem value={seconds} label="초" />
+          </div>
+        </div>
+      )}
+    </>
   );
 }
 

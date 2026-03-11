@@ -1,8 +1,9 @@
 // auction-detail-sidebar.tsx
-import NoticeCard from '@/components/sale-detail/summary/notice-card';
 import PaymentRegisterCard from '@/components/sale-detail/summary/payment-register-card';
 import { AuctionInfoContent } from '@/constants/sale-detail';
 import OpenCountCard from './open-count-card';
+import SaleNoticeCard from '@/components/sale-detail/summary/sale-notice-card';
+import SaleInfoCard from './sale-info-card';
 
 export interface SaleDetailSidebarProps {
   openAt: string;
@@ -28,9 +29,11 @@ export interface SaleDetailSidebarProps {
   phaseType: string;
   phaseStatus: string;
   serverNow: string;
+  location: string;
 }
 
 export function SaleDetailSidebar({
+  location,
   openAt,
   closeAt,
   weekdayOpen,
@@ -49,13 +52,30 @@ export function SaleDetailSidebar({
   return (
     <div className="flex flex-col gap-s">
       <OpenCountCard
-        auctionOpenAt={auctionOpenAt}
+        saleOpenAt={auctionOpenAt}
         phaseType={phaseType}
         phaseStatus={phaseStatus}
         serverNow={serverNow}
       ></OpenCountCard>
-      <NoticeCard items={AuctionInfoContent} />
       <PaymentRegisterCard title="경매" />
+      <SaleInfoCard
+        phaseType={phaseType}
+        phaseStatus={phaseStatus}
+        openAt={openAt}
+        closeAt={closeAt}
+        weekdayOpen={weekdayOpen}
+        weekdayClose={weekdayClose}
+        weekendOpen={weekendOpen}
+        weekendClose={weekendClose}
+        location={location}
+        priceCloseAt={auctionCloseAt}
+        startPrice={startPrice}
+        currentPrice={currentPrice}
+        extraTicket={extraTicket}
+        serverNow={serverNow}
+      ></SaleInfoCard>
+
+      <SaleNoticeCard items={AuctionInfoContent} />
     </div>
   );
 }
