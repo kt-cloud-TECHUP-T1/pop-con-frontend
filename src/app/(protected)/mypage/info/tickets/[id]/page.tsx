@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
+import { PageHeader } from '@/components/shared/page-header';
 
 type TicketDetailPageProps = {
   params: Promise<{
@@ -18,7 +18,7 @@ export default async function MyPageTicketDetailPage({
 
   return (
     <section>
-      <MyPageHeader
+      <PageHeader
         title="내 티켓"
         titleVariant="heading-1"
         titleWeight="bold"

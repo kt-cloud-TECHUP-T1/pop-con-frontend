@@ -2,13 +2,13 @@ import Link from 'next/link';
 import { Icon } from '@/components/Icon/Icon';
 import { LikedPopupCard } from '@/app/(protected)/mypage/components/liked-popup-card';
 import { likedPopups } from '@/app/(protected)/mypage/data/mock-data';
-import { MyPageHeader } from '../../components/page-header';
+import { PageHeader } from '@/components/shared/page-header';
 
 export function LikedPopupsSection() {
   return (
     <section>
       <div className="mb-6 flex items-center justify-between gap-4">
-        <MyPageHeader
+        <PageHeader
           title="찜한 팝업스토어"
           titleVariant="heading-1"
           titleWeight="bold"

@@ -1,9 +1,9 @@
-import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
+import { PageHeader } from '@/components/shared/page-header';
 
 export default function MyPageActivityReviewsPage() {
   return (
     <section>
-      <MyPageHeader
+      <PageHeader
         title="내 리뷰"
         titleVariant="heading-1"
         titleWeight="bold"

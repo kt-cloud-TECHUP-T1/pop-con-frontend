@@ -1,4 +1,4 @@
-import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
+import { PageHeader } from '@/components/shared/page-header';
 import { ProfileSummaryCard } from '@/app/(protected)/mypage/info/profile/components/profile-summary-card';
 import type { ProfileInfoItem } from '@/app/(protected)/mypage/info/profile/components/profile-info-list';
 
@@ -13,7 +13,7 @@ const PROFILE_INFO: ProfileInfoItem[] = [
 export default function MyPageProfilePage() {
   return (
     <section className="max-w-[960px]">
-      <MyPageHeader
+      <PageHeader
         title="프로필 관리"
         titleVariant="heading-1"
         titleWeight="bold"
