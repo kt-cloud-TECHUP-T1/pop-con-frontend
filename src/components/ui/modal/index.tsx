@@ -14,6 +14,7 @@ export interface ModalProps {
   isOpen: boolean;
   onClose: () => void;
   title?: string;
+  srTitle?: string;
   children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
   radius?: RadiusType;
@@ -28,6 +29,7 @@ export default function Modal({
   isOpen,
   onClose,
   title,
+  srTitle = '알림',
   children,
   size = 'md',
   radius = 'LG', // design-system.ts에 맞게 작성 필요
@@ -55,7 +57,7 @@ export default function Modal({
           className
         )}
       >
-        {title && (
+        {title ? (
           <DialogHeader>
             {/* icon prop이 있을 때만 아이콘 표시 */}
             {icon && (
@@ -69,6 +71,8 @@ export default function Modal({
               {title}
             </DialogTitle>
           </DialogHeader>
+        ) : (
+          <DialogTitle className="sr-only">{srTitle}</DialogTitle>
         )}
         <div className="text-[#737373]">{children}</div>
       </DialogContent>
