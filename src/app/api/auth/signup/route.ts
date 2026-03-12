@@ -5,10 +5,6 @@ import { SignupRequest } from '@/types/api/auth';
 const NEXT_PUBLIC_API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://devapi.popcon.store';
 
-if (!NEXT_PUBLIC_API_BASE_URL) {
-  throw new Error('BACKEND_API_BASE_URL is not set');
-}
-
 function buildInvalidInputResponse(fieldErrors: Record<string, string>) {
   return NextResponse.json(
     {
@@ -24,7 +20,8 @@ function validateSignupRequest(body: Partial<SignupRequest>) {
   const fieldErrors: Record<string, string> = {};
 
   if (!body.registerToken?.trim()) {
-    fieldErrors.registerToken = AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN;
+    fieldErrors.registerToken =
+      AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN;
   }
 
   if (!body.agreements || typeof body.agreements !== 'object') {

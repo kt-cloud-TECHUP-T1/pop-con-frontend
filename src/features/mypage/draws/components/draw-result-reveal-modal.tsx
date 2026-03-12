@@ -23,7 +23,13 @@ export function DrawResultRevealModal({
   onClose,
 }: DrawResultRevealModalProps) {
   return (
-    <Modal isOpen={isOpen} onClose={onClose} showClose={false} size="sm">
+    <Modal
+      isOpen={isOpen}
+      onClose={onClose}
+      showClose={false}
+      size="sm"
+      srTitle="드로우 결과"
+    >
       <ModalBody className="flex flex-col items-center">
         {isRevealing ? (
           <>

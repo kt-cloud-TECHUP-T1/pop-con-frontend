@@ -10,11 +10,9 @@ import { RADIUS, RadiusType } from '@/constants/design-system';
 import { cn } from '@/lib/utils';
 import { Icon, IconName } from '@/components/Icon/Icon';
 
-export interface ModalProps {
+type ModalBaseProps = {
   isOpen: boolean;
   onClose: () => void;
-  title?: string;
-  srTitle?: string;
   children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
   radius?: RadiusType;
@@ -23,13 +21,17 @@ export interface ModalProps {
   icon?: IconName; // 아이콘 이름
   iconSize?: number; // 아이콘 크기
   iconClassName?: string; // 아이콘 스타일
-}
+};
+
+export type ModalProps =
+  | (ModalBaseProps & { title: string; srTitle?: string })
+  | (ModalBaseProps & { title?: undefined; srTitle: string });
 
 export default function Modal({
   isOpen,
   onClose,
   title,
-  srTitle = '알림',
+  srTitle,
   children,
   size = 'md',
   radius = 'LG', // design-system.ts에 맞게 작성 필요

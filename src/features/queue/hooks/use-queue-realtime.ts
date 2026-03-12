@@ -2,8 +2,14 @@
 
 import { useCallback, useEffect, useRef, useState } from 'react';
 import type { Socket } from 'socket.io-client';
-import { createQueueSocket, getQueueSocketUrl } from '@/features/queue/services/queue-socket';
-import type { QueueConnectionStatus, QueueSnapshot } from '@/features/queue/types/queue';
+import {
+  createQueueSocket,
+  getQueueSocketUrl,
+} from '@/features/queue/services/queue-socket';
+import type {
+  QueueConnectionStatus,
+  QueueSnapshot,
+} from '@/features/queue/types/queue';
 
 interface UseQueueRealtimeParams {
   auctionId: string;
@@ -112,11 +118,7 @@ export const useQueueRealtime = ({
         };
       });
     });
-  }, [
-    auctionId,
-    enabled,
-    userId,
-  ]);
+  }, [auctionId, enabled, userId]);
 
   // 수동 재연결: 기존 소켓 정리 후 다시 connect
   const reconnect = useCallback(() => {
