@@ -15,8 +15,7 @@ export function SaleMap({ location }: SaleMapProps) {
   const markerRef = useRef<naver.maps.Marker | null>(null);
 
   useEffect(() => {
-    // const clientId = process.env.NEXT_PUBLIC_NAVER_CLIENT_ID;
-    const clientId = null;
+    const clientId = process.env.NEXT_PUBLIC_NAVER_CLIENT_ID;
     if (!clientId) return;
 
     const initOrUpdateMap = () => {

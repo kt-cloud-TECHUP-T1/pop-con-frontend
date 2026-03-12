@@ -22,7 +22,7 @@ export default function useCountdown(
 
       if (diff <= 0) return;
 
-      const msUntilNextSecond = 1000 - (Date.now() % 1000);
+      const msUntilNextSecond = 1000 - (correctedNow % 1000);
       timerRef.current = setTimeout(tick, msUntilNextSecond);
     };
 

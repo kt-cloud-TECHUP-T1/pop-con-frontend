@@ -29,7 +29,11 @@ export function SaleDetailMain({
 }: SaleDetailMainProps) {
   return (
     <div className="flex flex-col">
-      <SaleThumbnail size="lg" src="/images/temp/no-image.png" />
+      <SaleThumbnail
+        size="lg"
+        src="/images/temp/no-image.png"
+        alt="이미지 불러오기 실패"
+      />
       <SaleHeader
         subTitle={subtitle}
         title={title}

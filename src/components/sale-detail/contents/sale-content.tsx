@@ -11,11 +11,7 @@ export default function SaleContent({
   description,
 }: SaleContentProps) {
   return (
-    <section
-      id="content"
-      className={cn('w-full scroll-mt-24 py-l', className)}
-      aria-labelledby="sale-content-heading"
-    >
+    <section id="content" className={cn('w-full scroll-mt-24 py-l', className)}>
       <div>
         <Typography variant="title-1" weight="bold">
           소개

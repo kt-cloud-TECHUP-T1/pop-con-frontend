@@ -1,3 +1,4 @@
+'use client';
 import { Icon } from '@/components/Icon/Icon';
 
 export interface SectionHeaderProps {

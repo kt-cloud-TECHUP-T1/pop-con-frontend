@@ -22,7 +22,7 @@ export default function SaleReview({ reviewCount }: SaleReviewProps) {
         </Button>
       </div>
       {reviewCount > 0 ? (
-        <div>리뷰없음</div>
+        <div>리뷰있음 UI 작업 추후에 진행</div>
       ) : (
         <div className="flex flex-col items-center pt-ms">
           <Typography variant="body-1" weight="bold">

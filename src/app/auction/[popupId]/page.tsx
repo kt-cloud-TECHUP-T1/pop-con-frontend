@@ -2,9 +2,9 @@ import { SaleDetailLayout } from '@/components/layout/sale-detail-layout';
 import { Wrapper } from '@/components/layout/wrapper';
 import { SaleDetailMain } from '@/components/sale-detail/contents/sale-detail-main';
 import SaleTimeCountBar from '@/components/sale-detail/contents/sale-time-count-bar';
-import { SaleDetailSidebar } from '@/components/sale-detail/info/sale-detail-sidebar';
 import { RecommendedPopup } from '@/components/sale-detail/popup/recommended-popup';
 import { RelatedPopup } from '@/components/sale-detail/popup/related-popup';
+import { SaleDetailSidebar } from '@/components/sale-detail/info/sale-detail-sidebar';
 // 'UPCOMING' | 'OPEN' | 'CLOSED'
 //AUCTION / DRAW
 const mockData = {
@@ -20,8 +20,8 @@ const mockData = {
   ],
   subtitle: 'Oneira X POPUP SEOUL',
   title: '오네이라 팝업 스토어',
-  viewCount: 200,
-  likeCount: 200,
+  viewCount: 130,
+  likeCount: 198,
   description: `Lee가 101 라인 101주년을 기념해 더현대 서울에서 팝업을 진행합니다.👖
     오랜 시간 쌓아온 데님 헤리티지와 101 라인의 상징성을 공간 안에 풀어냈습니다.
     다양한 리워드와 팝업 기간동안의 특별한 혜택을 받아보세요!🩵
@@ -51,24 +51,33 @@ const mockData = {
     `,
   location: '서울 영등포구 여의대로 108, 더현대 서울',
   reviewCount: 0,
-  openAt: '2026-02-15',
+  openAt: '2026-03-11',
   closeAt: '2026-03-15',
   weekdayOpen: '11:00',
   weekdayClose: '21:00',
   weekendOpen: '10:00',
   weekendClose: '22:00',
-  auctionOpenAt: '2026-03-13T10:00:00+09:00',
+  auctionOpenAt: '2026-03-12T10:00:00+09:00',
   auctionCloseAt: '2026-03-13T18:00:00+09:00',
   drawOpenAt: '2026-02-14T10:00:00+09:00',
   drawCloseAt: '2026-02-18T18:00:00+09:00',
-  serverTime: '2026-03-10T00:00:00+09:00',
+  serverTime: '2026-03-12T00:00:00+09:00',
   startPrice: 100000,
   currentPrice: 102000,
   extraTicket: 10,
 };
 
-export default function AuctionPage() {
-  const data = mockData;
+const mockDataMap: Record<string, typeof mockData> = {
+  '1': mockData,
+};
+
+export default function AuctionPage({
+  params,
+}: {
+  params: { popupId: string };
+}) {
+  const popupId = params.popupId;
+  const data = mockDataMap[popupId] ?? mockData;
   const hasStickyTopBar = data.phaseStatus !== 'UPCOMING';
 
   return (

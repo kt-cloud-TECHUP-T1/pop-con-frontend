@@ -2,27 +2,28 @@ export function getInitialRemaining(
   targetISOString: string,
   serverNow: string
 ) {
-  return Math.max(
-    0,
-    new Date(targetISOString).getTime() - new Date(serverNow).getTime()
-  );
+  const targetTime = new Date(targetISOString).getTime();
+  const nowTime = new Date(serverNow).getTime();
+
+  if (!Number.isFinite(targetTime) || !Number.isFinite(nowTime)) {
+    return 0;
+  }
+
+  return Math.max(0, targetTime - nowTime);
 }
 
-// export function formatHHMMSS(ms: number) {
-//   const displayMs = Math.max(0, ms - 1);
-//   const totalSeconds = Math.floor(displayMs / 1000);
-
-//   const h = Math.floor(totalSeconds / 3600);
-//   const m = Math.floor((totalSeconds % 3600) / 60);
-//   const s = totalSeconds % 60;
-
-//   return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}:${String(s).padStart(2, '0')}`;
-// }
-
 export function splitRemainingTime(ms: number) {
+  if (!Number.isFinite(ms) || ms <= 0) {
+    return {
+      days: '00',
+      hours: '00',
+      minutes: '00',
+      seconds: '00',
+    };
+  }
+
   const displayMs = Math.max(0, ms - 1);
   const totalSeconds = Math.floor(displayMs / 1000);
-
   const days = Math.floor(totalSeconds / 86400);
   const hours = Math.floor((totalSeconds % 86400) / 3600);
   const minutes = Math.floor((totalSeconds % 3600) / 60);

@@ -39,7 +39,7 @@ export default function SaleHeader({
       <section className="flex gap-xs pt-2xs text-[var(--content-extra-low)]">
         <div className="flex items-center gap-2xs ">
           <Icon name="Heart" size={20}></Icon>
-          <div>{viewCount}</div>
+          <div>{likeCount}</div>
         </div>
         <div className="flex items-center gap-2xs">
           <Icon name="Eyes" size={20}></Icon>
