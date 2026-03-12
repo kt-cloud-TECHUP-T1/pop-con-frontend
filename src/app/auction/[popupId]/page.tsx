@@ -3,6 +3,8 @@ import { Wrapper } from '@/components/layout/wrapper';
 import { SaleDetailMain } from '@/components/sale-detail/contents/sale-detail-main';
 import SaleTimeCountBar from '@/components/sale-detail/contents/sale-time-count-bar';
 import { SaleDetailSidebar } from '@/components/sale-detail/info/sale-detail-sidebar';
+import { RecommendedPopup } from '@/components/sale-detail/popup/recommended-popup';
+import { RelatedPopup } from '@/components/sale-detail/popup/related-popup';
 // 'UPCOMING' | 'OPEN' | 'CLOSED'
 //AUCTION / DRAW
 const mockData = {
@@ -78,7 +80,7 @@ export default function AuctionPage() {
           serverTime={data.serverTime}
         />
       )}
-      <Wrapper className="py-m">
+      <Wrapper className="pt-m pb-3xl">
         <SaleDetailLayout
           hasStickyTopBar={hasStickyTopBar}
           left={
@@ -113,6 +115,12 @@ export default function AuctionPage() {
               serverTime={data.serverTime}
               location={data.location}
             ></SaleDetailSidebar>
+          }
+          bottom={
+            <>
+              <RelatedPopup></RelatedPopup>
+              <RecommendedPopup></RecommendedPopup>
+            </>
           }
         />
       </Wrapper>

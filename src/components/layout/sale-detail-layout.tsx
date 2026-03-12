@@ -6,6 +6,7 @@ interface SaleDetailLayoutProps {
   right: React.ReactNode;
   className?: string;
   hasStickyTopBar: boolean;
+  bottom: React.ReactNode;
 }
 
 export function SaleDetailLayout({
@@ -13,26 +14,30 @@ export function SaleDetailLayout({
   right,
   className,
   hasStickyTopBar = false,
+  bottom,
 }: SaleDetailLayoutProps) {
   return (
-    <main
-      className={cn(
-        'grid gap-[54px] lg:grid-cols-[minmax(0,1fr)_384px] ',
-        className
-      )}
-    >
-      <section className="min-w-0 ">{left}</section>
-
-      <aside
+    <>
+      <main
         className={cn(
-          'h-fit lg:sticky',
-          hasStickyTopBar
-            ? 'lg:top-[calc(var(--sale-time-bar-height)+var(--spacing-s))]'
-            : 'lg:top-s'
+          'grid gap-[54px] lg:grid-cols-[minmax(0,1fr)_384px] ',
+          className
         )}
       >
-        {right}
-      </aside>
-    </main>
+        <section className="min-w-0 ">{left}</section>
+
+        <aside
+          className={cn(
+            'h-fit lg:sticky',
+            hasStickyTopBar
+              ? 'lg:top-[calc(var(--sale-time-bar-height)+var(--spacing-s))]'
+              : 'lg:top-s'
+          )}
+        >
+          {right}
+        </aside>
+      </main>
+      <section className="pt-[64px]">{bottom}</section>
+    </>
   );
 }
