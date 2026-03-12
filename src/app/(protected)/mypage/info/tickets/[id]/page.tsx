@@ -17,7 +17,7 @@ export default async function MyPageTicketDetailPage({
   }
 
   return (
-    <section className="max-w-[920px]">
+    <section>
       <MyPageHeader
         title="내 티켓"
         titleVariant="heading-1"

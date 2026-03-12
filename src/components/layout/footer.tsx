@@ -18,7 +18,7 @@ const FOOTER_LINK: FooterLink[] = [
   },
   {
     label: '고객센터',
-    link: '/customer-service',
+    link: '/support',
   },
   {
     label: '공지사항',

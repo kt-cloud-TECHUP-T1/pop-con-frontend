@@ -4,7 +4,8 @@ import type {
   LikedPopupItem,
   SummaryCard,
   SummaryStat,
-} from '@/app/(protected)/mypage/_main/types';
+} from '@/features/mypage/types/main';
+import type { PaymentMethod } from '@/features/mypage/types/payment-method';
 
 export const summaryCards: SummaryCard[] = [
   { label: '내 티켓', value: '3장', icon: 'Ticket' },
@@ -39,6 +40,8 @@ export const activityItems: Record<ActivityTab, ActivityItem[]> = {
       paidAt: '2026.02.17',
       stateLabel: '결과 확인 대기중',
       stateTone: 'warning',
+      isResultPending: true,
+      pendingResultMock: 'won',
     },
     {
       id: 3,
@@ -107,4 +110,66 @@ export const likedPopups: LikedPopupItem[] = Array.from(
 export const activityTabs = [
   { label: '드로우', value: 'draw' as const },
   { label: '낙찰', value: 'bid' as const },
+];
+
+export const paymentMethods: PaymentMethod[] = [
+  {
+    id: 1,
+    brandCode: 'HYUNDAI',
+    brand: '현대카드',
+    maskedNumber: '****-****-****-1234',
+    isPrimary: true,
+  },
+  {
+    id: 2,
+    brandCode: 'TOSS',
+    brand: '토스카드',
+    maskedNumber: '****-****-****-1234',
+    isPrimary: false,
+  },
+  {
+    id: 3,
+    brandCode: 'HYUNDAI',
+    brand: '현대카드',
+    maskedNumber: '****-****-****-1234',
+    isPrimary: false,
+  },
+  {
+    id: 4,
+    brandCode: 'TOSS',
+    brand: '토스카드',
+    maskedNumber: '****-****-****-1234',
+    isPrimary: false,
+  },
+  {
+    id: 5,
+    brandCode: 'HYUNDAI',
+    brand: '현대카드',
+    maskedNumber: '****-****-****-1234',
+    isPrimary: false,
+  },
+  {
+    id: 6,
+    brandCode: 'TOSS',
+    brand: '토스카드',
+    maskedNumber: '****-****-****-1234',
+    isPrimary: false,
+  },
+];
+
+export type PersonalProfileRow = {
+  label: string;
+  value: string;
+  action?: 'verifyPhone' | 'edit';
+};
+
+export const personalProfileRows: PersonalProfileRow[] = [
+  { label: '이름', value: '이상혁' },
+  { label: '생년월일 / 성별', value: '1996.05.07 / 남' },
+  {
+    label: '휴대폰 번호',
+    value: '010-1234-5678',
+    action: 'verifyPhone',
+  },
+  { label: '이메일', value: 'Account@mail.com', action: 'edit' },
 ];

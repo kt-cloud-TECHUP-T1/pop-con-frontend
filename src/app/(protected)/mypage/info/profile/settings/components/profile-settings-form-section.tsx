@@ -1,7 +1,6 @@
 'use client';
 
 import type { ChangeEvent, RefObject } from 'react';
-import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
 import Image from 'next/image';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
@@ -35,12 +34,7 @@ export function ProfileSettingsFormSection({
 
   return (
     <>
-      <MyPageHeader
-        title="프로필 설정"
-        titleVariant="heading-1"
-        titleWeight="bold"
-      />
-      <Box as="article" radius="ML" border="#0A0A0A14" className="p-8 sm:p-10">
+      <Box as="article" radius="ML" border="#0A0A0A14" padding="ML">
         <div className="grid gap-8">
           <div className="grid gap-3 sm:grid-cols-[160px_minmax(0,400px)] sm:items-center">
             <label htmlFor={nicknameInputId}>
@@ -96,7 +90,7 @@ export function ProfileSettingsFormSection({
                 <Button
                   type="button"
                   variant="tertiary"
-                  size="large"
+                  size="medium"
                   onClick={onImagePickerOpen}
                 >
                   이미지 변경
@@ -104,16 +98,12 @@ export function ProfileSettingsFormSection({
                 <Button
                   type="button"
                   variant="tertiary"
-                  size="large"
+                  size="medium"
                   onClick={onImageRemove}
                 >
                   이미지 삭제
                 </Button>
               </div>
-
-              <Typography variant="label-2" className="text-gray-500">
-                JPG, PNG, WEBP / 최대 5MB
-              </Typography>
 
               {imageErrorMessage && (
                 <Typography variant="label-2" className="text-red-600">
