@@ -63,7 +63,13 @@ export function SaleMap({ location }: SaleMapProps) {
     );
 
     if (existingScript) {
-      window.naver.maps.onJSContentLoaded = initOrUpdateMap;
+      if (window.naver?.maps) {
+        window.naver.maps.onJSContentLoaded = initOrUpdateMap;
+      } else {
+        existingScript.addEventListener('load', () => {
+          naver.maps.onJSContentLoaded = initOrUpdateMap;
+        });
+      }
       return;
     }
 

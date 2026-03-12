@@ -71,12 +71,12 @@ const mockDataMap: Record<string, typeof mockData> = {
   '1': mockData,
 };
 
-export default function AuctionPage({
+export default async function AuctionPage({
   params,
 }: {
-  params: { popupId: string };
+  params: Promise<{ popupId: string }>;
 }) {
-  const popupId = params.popupId;
+  const { popupId } = await params;
   const data = mockDataMap[popupId] ?? mockData;
   const hasStickyTopBar = data.phaseStatus !== 'UPCOMING';
 
