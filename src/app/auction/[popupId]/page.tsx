@@ -2,7 +2,7 @@ import { SaleDetailLayout } from '@/components/layout/sale-detail-layout';
 import { Wrapper } from '@/components/layout/wrapper';
 import { SaleDetailMain } from '@/components/sale-detail/contents/sale-detail-main';
 import SaleTimeCountBar from '@/components/sale-detail/contents/sale-time-count-bar';
-import { SaleDetailSidebar } from '@/components/sale-detail/summary/sale-detail-sidebar';
+import { SaleDetailSidebar } from '@/components/sale-detail/info/sale-detail-sidebar';
 // 'UPCOMING' | 'OPEN' | 'CLOSED'
 //AUCTION / DRAW
 const mockData = {
@@ -63,21 +63,6 @@ const mockData = {
   startPrice: 100000,
   currentPrice: 102000,
   extraTicket: 10,
-};
-
-const auctionData = {
-  auctionId: 1,
-  auctionStatus: 'OPEN',
-  startPrice: 100000,
-  minimumPrice: 30000,
-  currentPrice: 96000,
-  nextPrice: 95000,
-  priceDropUnit: 1000,
-  priceDropIntervalSeconds: 10,
-  secondsUntilNextDrop: 4,
-  openedAt: '2026-03-11T14:48:13',
-  closedAt: '2026-03-11T14:58:53',
-  serverTime: '2026-03-11T14:49:15',
 };
 
 export default function AuctionPage() {

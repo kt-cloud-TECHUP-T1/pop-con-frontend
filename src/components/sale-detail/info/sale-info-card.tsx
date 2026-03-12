@@ -1,7 +1,7 @@
 import { Icon } from '@/components/Icon/Icon';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
-import { cn, formatWon } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import SaleInfoPrice from './sale-info-price';
 
 interface SaleInfoCardProps {
@@ -32,10 +32,6 @@ export default function SaleInfoCard({
   weekendClose,
   location,
   startPrice,
-  currentPrice,
-  extraTicket,
-  serverTime,
-  priceCloseAt,
 }: SaleInfoCardProps) {
   return (
     <div className="border border-[var(--line-3)] rounded-ml p-ms">

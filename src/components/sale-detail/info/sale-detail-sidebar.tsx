@@ -1,8 +1,8 @@
 // auction-detail-sidebar.tsx
-import PaymentRegisterCard from '@/components/sale-detail/summary/payment-register-card';
+import PaymentRegisterCard from '@/components/sale-detail/info/payment-register-card';
 import { AuctionInfoContent } from '@/constants/sale-detail';
 import OpenCountCard from './open-count-card';
-import SaleNoticeCard from '@/components/sale-detail/summary/sale-notice-card';
+import SaleNoticeCard from '@/components/sale-detail/info/sale-notice-card';
 import SaleInfoCard from './sale-info-card';
 
 export interface SaleDetailSidebarProps {
