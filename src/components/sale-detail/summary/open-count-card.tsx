@@ -7,16 +7,16 @@ interface OpenCountCardProps {
   saleOpenAt: string;
   phaseType: string;
   phaseStatus: string;
-  serverNow: string;
+  serverTime: string;
 }
 
 export default function OpenCountCard({
   saleOpenAt,
   phaseType,
   phaseStatus,
-  serverNow,
+  serverTime,
 }: OpenCountCardProps) {
-  const remaining = useCountdown(saleOpenAt, serverNow);
+  const remaining = useCountdown(saleOpenAt, serverTime);
   const { days, hours, minutes, seconds } = splitRemainingTime(remaining);
   // 'UPCOMING' | 'OPEN' | 'CLOSED'
   if (phaseStatus === 'OPEN' || phaseStatus === 'CLOSED') return;

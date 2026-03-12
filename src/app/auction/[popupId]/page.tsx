@@ -4,6 +4,7 @@ import { SaleDetailMain } from '@/components/sale-detail/contents/sale-detail-ma
 import SaleTimeCountBar from '@/components/sale-detail/contents/sale-time-count-bar';
 import { SaleDetailSidebar } from '@/components/sale-detail/summary/sale-detail-sidebar';
 // 'UPCOMING' | 'OPEN' | 'CLOSED'
+//AUCTION / DRAW
 const mockData = {
   phaseType: 'AUCTION',
   phaseStatus: 'OPEN',
@@ -58,10 +59,25 @@ const mockData = {
   auctionCloseAt: '2026-03-13T18:00:00+09:00',
   drawOpenAt: '2026-02-14T10:00:00+09:00',
   drawCloseAt: '2026-02-18T18:00:00+09:00',
-  serverNow: '2026-03-10T00:00:00+09:00',
-  startPrice: 132000,
+  serverTime: '2026-03-10T00:00:00+09:00',
+  startPrice: 100000,
   currentPrice: 102000,
   extraTicket: 10,
+};
+
+const auctionData = {
+  auctionId: 1,
+  auctionStatus: 'OPEN',
+  startPrice: 100000,
+  minimumPrice: 30000,
+  currentPrice: 96000,
+  nextPrice: 95000,
+  priceDropUnit: 1000,
+  priceDropIntervalSeconds: 10,
+  secondsUntilNextDrop: 4,
+  openedAt: '2026-03-11T14:48:13',
+  closedAt: '2026-03-11T14:58:53',
+  serverTime: '2026-03-11T14:49:15',
 };
 
 export default function AuctionPage() {
@@ -70,11 +86,13 @@ export default function AuctionPage() {
 
   return (
     <div>
-      <SaleTimeCountBar
-        phaseStatus={data.phaseStatus} // 'UPCOMING' | 'OPEN' | 'CLOSED'
-        auctionCloseAt={data.auctionCloseAt}
-        serverNow={data.serverNow}
-      />
+      {mockData.phaseType == 'AUCTION' && (
+        <SaleTimeCountBar
+          phaseStatus={data.phaseStatus} // 'UPCOMING' | 'OPEN' | 'CLOSED'
+          auctionCloseAt={data.auctionCloseAt}
+          serverTime={data.serverTime}
+        />
+      )}
       <Wrapper className="py-m">
         <SaleDetailLayout
           hasStickyTopBar={hasStickyTopBar}
@@ -107,7 +125,7 @@ export default function AuctionPage() {
               extraTicket={data.extraTicket}
               phaseType={data.phaseType}
               phaseStatus={data.phaseStatus}
-              serverNow={data.serverNow}
+              serverTime={data.serverTime}
               location={data.location}
             ></SaleDetailSidebar>
           }

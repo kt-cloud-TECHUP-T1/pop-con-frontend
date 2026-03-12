@@ -28,7 +28,7 @@ export interface SaleDetailSidebarProps {
 
   phaseType: string;
   phaseStatus: string;
-  serverNow: string;
+  serverTime: string;
   location: string;
 }
 
@@ -47,7 +47,7 @@ export function SaleDetailSidebar({
   extraTicket,
   phaseType,
   phaseStatus,
-  serverNow,
+  serverTime,
 }: SaleDetailSidebarProps) {
   return (
     <div className="flex flex-col gap-s">
@@ -55,7 +55,7 @@ export function SaleDetailSidebar({
         saleOpenAt={auctionOpenAt}
         phaseType={phaseType}
         phaseStatus={phaseStatus}
-        serverNow={serverNow}
+        serverTime={serverTime}
       ></OpenCountCard>
       <PaymentRegisterCard title="경매" />
       <SaleInfoCard
@@ -72,7 +72,7 @@ export function SaleDetailSidebar({
         startPrice={startPrice}
         currentPrice={currentPrice}
         extraTicket={extraTicket}
-        serverNow={serverNow}
+        serverTime={serverTime}
       ></SaleInfoCard>
 
       <SaleNoticeCard items={AuctionInfoContent} />

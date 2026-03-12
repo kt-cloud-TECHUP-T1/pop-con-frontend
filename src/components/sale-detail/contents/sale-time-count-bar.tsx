@@ -9,15 +9,15 @@ import { splitRemainingTime } from '../utils/sale-detail-utils';
 interface SaleTimeCountBarProps {
   phaseStatus: string;
   auctionCloseAt: string;
-  serverNow: string;
+  serverTime: string;
 }
 
 export default function SaleTimeCountBar({
   phaseStatus,
   auctionCloseAt,
-  serverNow,
+  serverTime,
 }: SaleTimeCountBarProps) {
-  const remaining = useCountdown(auctionCloseAt, serverNow);
+  const remaining = useCountdown(auctionCloseAt, serverTime);
   const { hours, minutes, seconds } = splitRemainingTime(remaining);
 
   if (phaseStatus === 'UPCOMING') return null;
