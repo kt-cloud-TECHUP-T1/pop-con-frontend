@@ -1,10 +1,11 @@
+// 드로우 결과 확인 모달
+
 'use client';
 
+import Modal, { ModalBody, ModalFooter } from '@/components/ui/modal';
 import { Button } from '@/components/ui/button';
-import Modal from '@/components/ui/modal';
-import { ActivityStatusBadge } from '@/app/(protected)/mypage/components/activity-history/activity-status-badge';
 import type { DrawResult } from '@/features/mypage/draws/services/confirm-draw-result';
-import { getResultBadge } from '@/features/mypage/draws/utils/get-result-badge';
+import { Typography } from '@/components/ui/typography';
 
 type DrawResultRevealModalProps = {
   isOpen: boolean;
@@ -25,11 +26,11 @@ export function DrawResultRevealModal({
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title="드로우 결과 확인"
       showClose={false}
       size="sm"
+      srTitle="드로우 결과"
     >
-      <div className="flex flex-col items-center gap-4 py-2">
+      <ModalBody className="flex flex-col items-center">
         {isRevealing ? (
           <>
             <span className="h-10 w-10 rounded-full border-2 border-[var(--line-2)] border-t-[var(--blue-50)] animate-spin" />
@@ -40,32 +41,51 @@ export function DrawResultRevealModal({
         ) : revealError ? (
           <p className="text-sm text-[var(--red-50)]">{revealError}</p>
         ) : (
-          <>
-            {revealedResult && (
-              <ActivityStatusBadge
-                label={getResultBadge(revealedResult).label}
-                tone={getResultBadge(revealedResult).tone}
-                className="animate-in fade-in zoom-in-95 duration-300"
-              />
-            )}
-            <p className="text-sm text-[var(--neutral-30)]">
-              {revealedResult === 'won'
-                ? '축하합니다! 드로우에 당첨되었어요.'
-                : '아쉽지만 이번 드로우는 미당첨이에요.'}
-            </p>
-          </>
+          <div className="flex w-full flex-col items-center">
+            <div className="h-[200px] w-[200px] bg-[#D9D9D9]" aria-hidden />
+            <div className="mt-2 text-center">
+              <Typography
+                variant="title-1"
+                weight="bold"
+                className="leading-[42px] text-[var(--neutral-30)]"
+              >
+                {revealedResult === 'won'
+                  ? '당첨이에요!'
+                  : '아쉽게도 낙첨되었어요'}
+              </Typography>
+              <Typography
+                variant="title-1"
+                weight="bold"
+                className="leading-[42px] text-[var(--neutral-30)]"
+              >
+                {revealedResult === 'won'
+                  ? '상위 0.4%의 운을 가지셨군요'
+                  : '다음 기회를 노려봐요'}
+              </Typography>
+              <Typography
+                variant="body-1"
+                className="mt-2 leading-8 text-[var(--neutral-60)]"
+              >
+                자세한 정보는 마이페이지 {'>'} 내 티켓 또는
+                <br />
+                드로우 내역에서 확인할 수 있어요
+              </Typography>
+            </div>
+          </div>
         )}
+      </ModalBody>
+      <ModalFooter className="mt-8 justify-center">
         <Button
           type="button"
-          size="small"
-          variant="primary"
+          size="large"
+          variant="secondary"
           onClick={onClose}
           disabled={isRevealing}
-          className="mt-2 w-full"
+          className="w-full"
         >
-          확인
+          닫기
         </Button>
-      </div>
+      </ModalFooter>
     </Modal>
   );
 }

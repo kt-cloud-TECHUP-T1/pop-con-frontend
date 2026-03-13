@@ -8,7 +8,7 @@ import {
   AUTH_RESPONSE_CODE,
 } from '@/constants/auth';
 
-export const signupHandler = http.post('/auth/signup', async ({ request }) => {
+export const signupHandler = http.post('/api/auth/signup', async ({ request }) => {
   const body = (await request.json()) as {
     registerToken?: string;
     agreements?: {
@@ -50,11 +50,11 @@ export const signupHandler = http.post('/auth/signup', async ({ request }) => {
         code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
         message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
         data: {
-          'aggrements.isPrivacyPolicyAgreed':
+          'agreements.isPrivacyPolicyAgreed':
             AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED,
-          'aggrements.isIdentifierPolicyAgreed':
+          'agreements.isIdentifierPolicyAgreed':
             AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED,
-          'aggrements.isServicePolicyAgreed':
+          'agreements.isServicePolicyAgreed':
             AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED,
         },
       },
@@ -63,17 +63,17 @@ export const signupHandler = http.post('/auth/signup', async ({ request }) => {
   }
 
   if (agreements.isPrivacyPolicyAgreed !== true) {
-    agreementErrors['aggrements.isPrivacyPolicyAgreed'] =
+    agreementErrors['agreements.isPrivacyPolicyAgreed'] =
       AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED;
   }
 
   if (agreements.isIdentifierPolicyAgreed !== true) {
-    agreementErrors['aggrements.isIdentifierPolicyAgreed'] =
+    agreementErrors['agreements.isIdentifierPolicyAgreed'] =
       AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED;
   }
 
   if (agreements.isServicePolicyAgreed !== true) {
-    agreementErrors['aggrements.isServicePolicyAgreed'] =
+    agreementErrors['agreements.isServicePolicyAgreed'] =
       AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED;
   }
 
@@ -81,7 +81,7 @@ export const signupHandler = http.post('/auth/signup', async ({ request }) => {
     agreements.isMarketingAgreed !== undefined &&
     typeof agreements.isMarketingAgreed !== 'boolean'
   ) {
-    agreementErrors['aggrements.isMarketingAgreed'] =
+    agreementErrors['agreements.isMarketingAgreed'] =
       'boolean 타입이어야 합니다.';
   }
 
@@ -100,7 +100,7 @@ export const signupHandler = http.post('/auth/signup', async ({ request }) => {
   if (registerToken === 'register_already_joined') {
     return HttpResponse.json(
       {
-        code: AUTH_ERROR_CODES.COMMON.ALREADY_REGISTERED,
+        code: AUTH_ERROR_CODES.JOIN.ALREADY_COMPLETED,
         message: AUTH_MESSAGES.TERMS.ERROR.ALREADY_REGISTERED,
         data: null,
       },
@@ -120,7 +120,31 @@ export const signupHandler = http.post('/auth/signup', async ({ request }) => {
     );
   }
 
-  // Case 5: 서버 오류
+  // Case 4: 인증 정보가 유효하지 않음
+  if (registerToken === 'register_invalid_auth') {
+    return HttpResponse.json(
+      {
+        code: AUTH_ERROR_CODES.AUTH.INVALID_AUTH,
+        message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_AUTH,
+        data: null,
+      },
+      { status: 401 }
+    );
+  }
+
+  // Case 5: 가입 세션 소셜 정보 누락
+  if (registerToken === 'register_missing_social') {
+    return HttpResponse.json(
+      {
+        code: AUTH_ERROR_CODES.USER.MISSING_SOCIAL_INFO,
+        message: '가입 세션의 소셜 정보가 누락되었습니다.',
+        data: null,
+      },
+      { status: 400 }
+    );
+  }
+
+  // Case 6: 서버 오류
   if (registerToken === 'register_error') {
     return HttpResponse.json(
       {

@@ -1,8 +1,8 @@
 import Image from 'next/image';
 import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
-import type { CardBrandCode, PaymentMethod } from '../types';
 import { Button } from '@/components/ui/button';
+import { CardBrandCode, PaymentMethod } from '@/features/mypage/types';
 
 const CARD_BRAND_IMAGE: Record<CardBrandCode, string> = {
   HYUNDAI: '/images/temp/hyundai-card.png',

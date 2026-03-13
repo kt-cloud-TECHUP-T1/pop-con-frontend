@@ -1,18 +1,18 @@
 import { Typography, type TypographyVariant } from '@/components/ui/typography';
 
-type MyPageHeaderProps = {
+type PageHeaderProps = {
   title: string;
   description?: string;
   titleVariant?: TypographyVariant;
   titleWeight?: 'regular' | 'medium' | 'bold';
 };
 
-export function MyPageHeader({
+export function PageHeader({
   title,
   description,
   titleVariant = 'heading-2',
   titleWeight = 'medium',
-}: MyPageHeaderProps) {
+}: PageHeaderProps) {
   return (
     <header className="mb-8">
       <Typography variant={titleVariant} weight={titleWeight}>

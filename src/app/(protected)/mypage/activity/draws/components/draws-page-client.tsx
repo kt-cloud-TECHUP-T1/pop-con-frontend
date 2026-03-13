@@ -69,7 +69,10 @@ export function DrawsPageClient() {
                 </Typography>
               </Box>
             ) : (
-              <ActivityStatusBadge label={item.statusLabel} tone={item.statusTone} />
+              <ActivityStatusBadge
+                label={item.statusLabel}
+                tone={item.statusTone}
+              />
             )
           }
         />

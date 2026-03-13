@@ -10,10 +10,9 @@ import { RADIUS, RadiusType } from '@/constants/design-system';
 import { cn } from '@/lib/utils';
 import { Icon, IconName } from '@/components/Icon/Icon';
 
-export interface ModalProps {
+type ModalBaseProps = {
   isOpen: boolean;
   onClose: () => void;
-  title?: string;
   children: React.ReactNode;
   size?: 'sm' | 'md' | 'lg';
   radius?: RadiusType;
@@ -22,12 +21,17 @@ export interface ModalProps {
   icon?: IconName; // 아이콘 이름
   iconSize?: number; // 아이콘 크기
   iconClassName?: string; // 아이콘 스타일
-}
+};
+
+export type ModalProps =
+  | (ModalBaseProps & { title: string; srTitle?: string })
+  | (ModalBaseProps & { title?: undefined; srTitle: string });
 
 export default function Modal({
   isOpen,
   onClose,
   title,
+  srTitle,
   children,
   size = 'md',
   radius = 'LG', // design-system.ts에 맞게 작성 필요
@@ -55,7 +59,7 @@ export default function Modal({
           className
         )}
       >
-        {title && (
+        {title ? (
           <DialogHeader>
             {/* icon prop이 있을 때만 아이콘 표시 */}
             {icon && (
@@ -69,6 +73,8 @@ export default function Modal({
               {title}
             </DialogTitle>
           </DialogHeader>
+        ) : (
+          <DialogTitle className="sr-only">{srTitle}</DialogTitle>
         )}
         <div className="text-[#737373]">{children}</div>
       </DialogContent>

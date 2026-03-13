@@ -1,4 +1,4 @@
-import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
+import { PageHeader } from '@/components/shared/page-header';
 import { ActivityHistoryList } from '@/app/(protected)/mypage/components/activity-history/activity-history-list';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
@@ -46,7 +46,7 @@ const bidHistory: BidHistoryItem[] = [
 export default function MyPageActivityBidsPage() {
   return (
     <>
-      <MyPageHeader
+      <PageHeader
         title="낙찰 내역"
         titleVariant="heading-1"
         titleWeight="bold"
