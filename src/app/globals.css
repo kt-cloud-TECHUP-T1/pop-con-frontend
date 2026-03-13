@@ -1,6 +1,5 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
-
 @custom-variant dark (&:is(.dark *));
 
 @utility container {
@@ -23,7 +22,9 @@
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-family-sans);
+  --font-sans:
+    var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui,
+    sans-serif;
   --font-mono: var(--font-geist-mono);
   --color-sidebar-ring: var(--sidebar-ring);
   --color-sidebar-border: var(--sidebar-border);
@@ -366,6 +367,7 @@
   --size-avatar-2xl: 72px;
   --size-avatar-3xl: 88px;
   /* END 디자인 시스템 설계도에 따른 Avatar 사이즈 */
+  --sale-time-bar-height: 40px;
 }
 
 :root {
@@ -447,9 +449,8 @@
   }
 }
 
-@media (max-width: 768px) {
+/* @media (max-width: 768px) {
   @theme inline {
-    /* Spacing – Mobile */
     --spacing-none: 0px;
 
     --spacing-3xs: 2px;
@@ -466,7 +467,7 @@
 
     --spacing-page: 64px;
   }
-}
+} */
 
 /* =========================
    Tailwind가 인식할 수 있는 클래스
