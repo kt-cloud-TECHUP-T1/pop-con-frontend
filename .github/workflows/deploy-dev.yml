@@ -31,16 +31,20 @@ jobs:
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v2
 
+      - name: Set short SHA
+        id: set-short-sha
+        run: echo "SHORT_SHA=${GITHUB_SHA::10}" >> $GITHUB_OUTPUT
+
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push image to Amazon ECR
+      - name: (dev) Build and push image to Amazon ECR
         uses: docker/build-push-action@v5
         with:
           context: .
           push: true
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:frontend-${{ github.sha }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:frontend-${{ steps.set-short-sha.outputs.SHORT_SHA }}
             ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:frontend-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
@@ -50,6 +54,33 @@ jobs:
             NEXT_PUBLIC_API_MOCKING=${{ secrets.NEXT_PUBLIC_API_MOCKING }}
             NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL }}
 
-      - name: Set image output
-        id: build-image
-        run: echo "image=${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:frontend-${{ github.sha }}" >> $GITHUB_OUTPUT
+      - name: (staging) Build and push image to Amazon ECR
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME_STAGING }}:${{ steps.set-short-sha.outputs.SHORT_SHA }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME_STAGING }}:latest
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            NEXT_PUBLIC_PORTONE_STORE_ID=${{ secrets.NEXT_PUBLIC_PORTONE_STORE_ID }}
+            NEXT_PUBLIC_PORTONE_CHANNEL_KEY=${{ secrets.NEXT_PUBLIC_PORTONE_CHANNEL_KEY }}
+            NEXT_PUBLIC_API_MOCKING=${{ secrets.NEXT_PUBLIC_API_MOCKING }}
+            NEXT_PUBLIC_API_BASE_URL=${{ secrets.NEXT_PUBLIC_API_BASE_URL_STAGING }}
+
+      - name: Update GitOps deployment
+        run: |
+          curl -f -X POST \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.GITOPS_TOKEN }}" \
+            https://api.github.com/repos/kt-cloud-TECHUP-T1/gitops/dispatches \
+            -d '{
+              "event_type": "deploy-staging",
+              "client_payload": {
+                "service": "frontend",
+                "image": "${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME_STAGING }}",
+                "tag": "${{ steps.set-short-sha.outputs.SHORT_SHA }}"
+              }
+            }'

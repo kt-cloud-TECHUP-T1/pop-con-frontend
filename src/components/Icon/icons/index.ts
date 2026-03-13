@@ -59,4 +59,6 @@ export { default as Ticket } from './Ticket';
 export { default as Tune } from './Tune';
 export { default as Video } from './Video';
 export { default as Write } from './Write';
-export { default as Kakao } from './Kakao';
+export { default as CreditCard } from './CreditCard';
+export { default as Copy } from './Copy';
+export { default as Clock } from './Clock';
