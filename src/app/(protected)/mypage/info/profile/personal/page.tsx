@@ -1,4 +1,4 @@
-import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
+import { PageHeader } from '@/components/shared/page-header';
 import { personalProfileRows } from '@/app/(protected)/mypage/data/mock-data';
 import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
@@ -7,7 +7,7 @@ import { PersonalPhoneVerifyAction } from '@/app/(protected)/mypage/info/profile
 export default function MyPagePersonalInfoPage() {
   return (
     <>
-      <MyPageHeader
+      <PageHeader
         title="개인정보 수정"
         titleVariant="heading-1"
         titleWeight="bold"

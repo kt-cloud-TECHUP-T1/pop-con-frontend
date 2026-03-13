@@ -1,10 +1,10 @@
 import { SettingsPageClient } from '@/app/(protected)/mypage/info/profile/settings/components/settings-page-client';
-import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
+import { PageHeader } from '@/components/shared/page-header';
 
 export default function MyPageSettingsPage() {
   return (
     <>
-      <MyPageHeader
+      <PageHeader
         title="프로필 설정"
         titleVariant="heading-1"
         titleWeight="bold"

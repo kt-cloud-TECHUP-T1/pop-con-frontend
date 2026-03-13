@@ -58,7 +58,11 @@ const meta = {
 export default meta;
 
 type Story = StoryObj<typeof meta>;
-type ModalStoryArgs = Omit<ModalProps, 'isOpen' | 'onClose' | 'children'>;
+type ModalWithTitleProps = Extract<ModalProps, { title: string }>;
+type ModalStoryArgs = Omit<
+  ModalWithTitleProps,
+  'isOpen' | 'onClose' | 'children'
+>;
 
 function ModalExample({
   triggerLabel,
@@ -104,12 +108,7 @@ function createSampleStory(triggerLabel: string, args: ModalStoryArgs): Story {
       onClose: () => undefined,
       children: null,
     },
-    render: ({
-      isOpen: _isOpen,
-      onClose: _onClose,
-      children: _children,
-      ...storyArgs
-    }) => <ModalExample {...storyArgs} triggerLabel={triggerLabel} />,
+    render: () => <ModalExample {...args} triggerLabel={triggerLabel} />,
   };
 }
 

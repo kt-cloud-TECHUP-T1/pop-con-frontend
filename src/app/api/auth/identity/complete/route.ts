@@ -8,10 +8,6 @@ type IdentityCompleteRequestBody = {
 const NEXT_PUBLIC_API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://devapi.popcon.store';
 
-if (!NEXT_PUBLIC_API_BASE_URL) {
-  throw new Error('BACKEND_API_BASE_URL is not set');
-}
-
 export async function POST(request: Request) {
   let identityVerificationId = '';
   const deviceId = request.headers.get('X-Device-Id');

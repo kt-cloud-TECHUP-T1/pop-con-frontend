@@ -15,7 +15,7 @@ import { ActivityStatusBadge } from '@/app/(protected)/mypage/components/activit
 import { Icon } from '@/components/Icon/Icon';
 import { DrawResultRevealModal } from '@/features/mypage/draws/components/draw-result-reveal-modal';
 import { useDrawReveal } from '@/features/mypage/draws/hooks/use-draw-reveal';
-import { MyPageHeader } from '../../components/page-header';
+import { PageHeader } from '@/components/shared/page-header';
 
 export function ActivityHistorySection() {
   const [activeTab, setActiveTab] = useState<ActivityTab>('draw');
@@ -51,7 +51,7 @@ export function ActivityHistorySection() {
     <>
       <section>
         <div className="mb-6">
-          <MyPageHeader
+          <PageHeader
             title="활동 내역"
             titleVariant="heading-1"
             titleWeight="bold"
@@ -135,7 +135,10 @@ export function ActivityHistorySection() {
                   </Typography>
                 </Box>
               ) : (
-                <ActivityStatusBadge label={item.stateLabel} tone={item.stateTone} />
+                <ActivityStatusBadge
+                  label={item.stateLabel}
+                  tone={item.stateTone}
+                />
               )
             }
           />

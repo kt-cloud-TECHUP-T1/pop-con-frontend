@@ -1,10 +1,10 @@
 import { DrawsPageClient } from './components/draws-page-client';
-import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
+import { PageHeader } from '@/components/shared/page-header';
 
 export default function MyPageActivityDrawsPage() {
   return (
     <>
-      <MyPageHeader
+      <PageHeader
         title="드로우 응모 내역"
         titleVariant="heading-1"
         titleWeight="bold"

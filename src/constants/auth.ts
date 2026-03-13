@@ -25,7 +25,8 @@ export const AUTH_MESSAGES = {
     ERROR: {
       REQUIRED_NOT_AGREED: '필수 동의 항목입니다.',
       ALREADY_REGISTERED: '이미 약관 동의 및 회원가입이 완료된 회원입니다.',
-      SESSION_EXPIRED: '회원가입 세션이 만료되었습니다.',
+      SESSION_EXPIRED:
+        '회원가입 세션이 만료되었습니다. 다시 가입 절차를 진행해주세요.',
     },
   },
   TOKEN: {
@@ -49,6 +50,7 @@ export const AUTH_ERROR_CODES = {
   // 가입 플로우 (J)
   JOIN: {
     UNDERAGE: 'J001', // 만 14세 미만 가입 제한
+    ALREADY_COMPLETED: 'J002', // 이미 약관 동의/회원가입 완료
   },
 
   // 비즈니스 공통 규칙 (C)
@@ -61,6 +63,7 @@ export const AUTH_ERROR_CODES = {
   // 계정 상태 및 정보 (U)
   USER: {
     DUPLICATE_EMAIL: 'U001', // 이미 가입된 이메일
+    MISSING_SOCIAL_INFO: 'U002', // 가입 세션 소셜 정보 누락
   },
 
   // 인증 및 세션 (A)
@@ -91,19 +94,21 @@ export const TERMS: readonly {
   label: string;
   isRequired: boolean;
 }[] = [
-  { id: 'age',
-    label: '만 14세 이상입니다',
-    isRequired: true 
-  },
   { id: 'privacy',
-     label: '개인정보 수집 및 이용 동의',
-    isRequired: true 
+    label: '개인정보 수집 및 이용 동의',
+    isRequired: true,
+  },
+  {
+    id: 'identifierPolicy',
+    label: '고유식별정보 처리 동의',
+    isRequired: true,
   },
   { id: 'servicePolicy',
-     label: 'Pop-con 서비스 이용약관 동의',
-    isRequired: true 
+    label: 'Pop-con 서비스 이용약관 동의',
+    isRequired: true,
   },
   { id: 'marketing',
     label: '마케팅 수신 동의',
-    isRequired: false },
+    isRequired: false,
+  },
 ];

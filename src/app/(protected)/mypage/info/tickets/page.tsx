@@ -1,4 +1,4 @@
-import { MyPageHeader } from '@/app/(protected)/mypage/components/page-header';
+import { PageHeader } from '@/components/shared/page-header';
 import { Icon } from '@/components/Icon/Icon';
 import { Typography } from '@/components/ui/typography';
 import { Box } from '@/components/ui/box';
@@ -43,7 +43,7 @@ const myTickets: MyTicketItem[] = [
 export default function MyPageInfoTicketsPage() {
   return (
     <section>
-      <MyPageHeader
+      <PageHeader
         title="내 티켓"
         titleVariant="heading-1"
         titleWeight="bold"
