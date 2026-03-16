@@ -1,11 +1,15 @@
 // JOIN-2000, JOIN-4000 약관 동의 및 가입 완료
 
 import { http, HttpResponse } from 'msw';
+import {
+  API_ERROR_CODES,
+  API_MESSAGES,
+  API_RESPONSE_CODE,
+} from '@/constants/api';
 import { generateMockToken } from '@/mocks/utils/token';
 import {
   AUTH_ERROR_CODES,
   AUTH_MESSAGES,
-  AUTH_RESPONSE_CODE,
 } from '@/constants/auth';
 
 export const signupHandler = http.post('/api/auth/signup', async ({ request }) => {
@@ -30,8 +34,8 @@ export const signupHandler = http.post('/api/auth/signup', async ({ request }) =
   if (!registerToken) {
     return HttpResponse.json(
       {
-        code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
-        message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
+        code: API_ERROR_CODES.COMMON.BAD_REQUEST,
+        message: API_MESSAGES.COMMON.INVALID_INPUT,
         data: {
           registerToken: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN,
         },
@@ -47,8 +51,8 @@ export const signupHandler = http.post('/api/auth/signup', async ({ request }) =
   if (!agreements || typeof agreements !== 'object') {
     return HttpResponse.json(
       {
-        code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
-        message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
+        code: API_ERROR_CODES.COMMON.BAD_REQUEST,
+        message: API_MESSAGES.COMMON.INVALID_INPUT,
         data: {
           'agreements.isPrivacyPolicyAgreed':
             AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED,
@@ -88,8 +92,8 @@ export const signupHandler = http.post('/api/auth/signup', async ({ request }) =
   if (Object.keys(agreementErrors).length > 0) {
     return HttpResponse.json(
       {
-        code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
-        message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
+        code: API_ERROR_CODES.COMMON.BAD_REQUEST,
+        message: API_MESSAGES.COMMON.INVALID_INPUT,
         data: agreementErrors,
       },
       { status: 400 }
@@ -148,8 +152,8 @@ export const signupHandler = http.post('/api/auth/signup', async ({ request }) =
   if (registerToken === 'register_error') {
     return HttpResponse.json(
       {
-        code: AUTH_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
-        message: AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR,
+        code: API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
+        message: API_MESSAGES.COMMON.SERVER_ERROR,
         data: null,
       },
       { status: 500 }
@@ -158,7 +162,7 @@ export const signupHandler = http.post('/api/auth/signup', async ({ request }) =
 
   return HttpResponse.json(
     {
-      code: AUTH_RESPONSE_CODE.STATUS.SUCCESS,
+      code: API_RESPONSE_CODE.STATUS.SUCCESS,
       message: AUTH_MESSAGES.TERMS.SUCCESS.JOIN_COMPLETED,
       data: {
         userId: 105,

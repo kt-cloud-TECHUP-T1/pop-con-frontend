@@ -5,6 +5,7 @@ import { Wrapper } from '@/components/layout/wrapper';
 import { Button } from '@/components/ui/button';
 import { snackbar } from '@/components/ui/snackbar';
 import { Typography } from '@/components/ui/typography';
+import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
 import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -22,13 +23,12 @@ const isValidAbsoluteUrl = (value: string) => {
 };
 
 const ERROR_MESSAGE_MAP: Record<string, string> = {
-  [AUTH_ERROR_CODES.COMMON.BAD_REQUEST]:
-    AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
+  [API_ERROR_CODES.COMMON.BAD_REQUEST]: API_MESSAGES.COMMON.INVALID_INPUT,
   [AUTH_ERROR_CODES.AUTH.INVALID_AUTH]:
     AUTH_MESSAGES.IDENTITY.ERROR.INVALID_AUTH,
   [AUTH_ERROR_CODES.AUTH.SESSION_EXPIRED]: AUTH_MESSAGES.TOKEN.ERROR.EXPIRED,
-  [AUTH_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR]:
-    AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR,
+  [API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR]:
+    API_MESSAGES.COMMON.SERVER_ERROR,
 };
 type SocialProvider = 'kakao' | 'naver';
 const REDIRECT_DELAY = 1000;
@@ -62,7 +62,7 @@ export default function Login() {
     if (!errorCode) return;
 
     const errorMessage =
-      ERROR_MESSAGE_MAP[errorCode] ?? AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR;
+      ERROR_MESSAGE_MAP[errorCode] ?? API_MESSAGES.COMMON.SERVER_ERROR;
 
     snackbar.destructive({
       title: '로그인실패',

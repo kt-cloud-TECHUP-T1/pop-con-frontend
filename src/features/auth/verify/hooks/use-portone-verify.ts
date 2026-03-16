@@ -2,7 +2,7 @@ import { useRouter } from 'next/navigation';
 import { requestPortoneIdentityVerification } from '../services/portone';
 import { completeIdentityVerification } from '../services/identity';
 import { useState } from 'react';
-import { AUTH_MESSAGES } from '@/constants/auth';
+import { API_MESSAGES } from '@/constants/api';
 import { setAccessToken } from '@/features/auth/utils/auth-storage';
 import { snackbar } from '@/components/ui/snackbar';
 
@@ -118,7 +118,7 @@ export function usePortoneVerify(options?: UsePortoneVerifyOptions) {
     const message =
       error instanceof Error
         ? error.message
-        : AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR;
+        : API_MESSAGES.COMMON.SERVER_ERROR;
 
     snackbar.destructive({
       title: '오류 발생',

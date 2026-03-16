@@ -4,8 +4,8 @@
 import {
   AUTH_ERROR_CODES,
   AUTH_MESSAGES,
-  AUTH_RESPONSE_CODE,
 } from '@/constants/auth';
+import { API_MESSAGES, API_RESPONSE_CODE } from '@/constants/api';
 import { IdentityCompleteData } from '@/types/api/auth';
 import { ApiResponse } from '@/types/api/common';
 
@@ -30,7 +30,7 @@ function getDeviceId() {
 
 // 실패 응답 포맷을 공통으로 생성
 function createFailedResult(
-  message: string = AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR
+  message: string = API_MESSAGES.COMMON.SERVER_ERROR
 ): CompleteIdentityResult {
   return {
     status: 'failed',
@@ -65,7 +65,7 @@ function parseCompleteResponse(
     };
   }
 
-  if (!res.ok || result.code !== AUTH_RESPONSE_CODE.STATUS.SUCCESS) {
+  if (!res.ok || result.code !== API_RESPONSE_CODE.STATUS.SUCCESS) {
     return createFailedResult(result.message);
   }
 

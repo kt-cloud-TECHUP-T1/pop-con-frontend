@@ -1,6 +1,11 @@
 // JOIN-1001 본인인증 완료
 
 import { http, HttpResponse } from 'msw';
+import {
+  API_ERROR_CODES,
+  API_MESSAGES,
+  API_RESPONSE_CODE,
+} from '@/constants/api';
 import { generateMockToken } from '@/mocks/utils/token';
 import {
   AUTH_ERROR_CODES,
@@ -22,8 +27,8 @@ export const identityCompleteHandler = http.post(
     if (!identityVerificationId) {
       return HttpResponse.json(
         {
-          code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
-          message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
+          code: API_ERROR_CODES.COMMON.BAD_REQUEST,
+          message: API_MESSAGES.COMMON.INVALID_INPUT,
           data: {
             ...(!identityVerificationId
               ? { identityVerificationId: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID }
@@ -81,8 +86,8 @@ export const identityCompleteHandler = http.post(
     if (identityVerificationId === 'iv_error') {
       return HttpResponse.json(
         {
-          code: AUTH_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
-          message: AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR,
+          code: API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
+          message: API_MESSAGES.COMMON.SERVER_ERROR,
           data: null,
         },
         { status: 500 }
@@ -92,7 +97,7 @@ export const identityCompleteHandler = http.post(
     if (identityVerificationId.startsWith('iv_new')) {
       return HttpResponse.json(
         {
-          code: AUTH_RESPONSE_CODE.STATUS.SUCCESS,
+          code: API_RESPONSE_CODE.STATUS.SUCCESS,
           message: AUTH_MESSAGES.IDENTITY.SUCCESS.NEW_USER,
           data: {
             isNewUser: true,
@@ -106,7 +111,7 @@ export const identityCompleteHandler = http.post(
 
     return HttpResponse.json(
       {
-        code: AUTH_RESPONSE_CODE.STATUS.SUCCESS,
+        code: API_RESPONSE_CODE.STATUS.SUCCESS,
         message: AUTH_MESSAGES.IDENTITY.SUCCESS.EXISTING_USER,
         data: {
           isNewUser: false,
