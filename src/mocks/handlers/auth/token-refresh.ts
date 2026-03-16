@@ -1,11 +1,14 @@
 // 토큰 재발급
 
 import { http, HttpResponse } from 'msw';
+import {
+  API_ERROR_CODES,
+  API_RESPONSE_CODE,
+} from '@/constants/api';
 import { generateMockToken, decodeMockToken } from '@/mocks/utils/token';
 import {
   AUTH_ERROR_CODES,
   AUTH_MESSAGES,
-  AUTH_RESPONSE_CODE,
 } from '@/constants/auth';
 
 type RefreshValidationResult = 'valid' | 'invalid' | 'expired';
@@ -70,7 +73,7 @@ export const tokenRefreshHandler = http.post(
     if (!refreshToken) {
       return HttpResponse.json(
         {
-          code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
+          code: API_ERROR_CODES.COMMON.BAD_REQUEST,
           message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
           data: {
             refreshToken: AUTH_MESSAGES.TOKEN.ERROR.REFRESH_TOKEN_REQUIRED,
@@ -111,7 +114,7 @@ export const tokenRefreshHandler = http.post(
     if (refreshToken === 'refresh_error') {
       return HttpResponse.json(
         {
-          code: AUTH_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
+          code: API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
           message: AUTH_MESSAGES.TOKEN.ERROR.SERVER_ERROR_ON_SAVE,
           data: null,
         },
@@ -150,7 +153,7 @@ export const tokenRefreshHandler = http.post(
     // 성공: accessToken 재발급 + refreshToken 회전
     return HttpResponse.json(
       {
-        code: AUTH_RESPONSE_CODE.STATUS.SUCCESS,
+        code: API_RESPONSE_CODE.STATUS.SUCCESS,
         message: AUTH_MESSAGES.TOKEN.SUCCESS.REFRESHED,
         data: {
           accessToken: generateMockToken('access', 105),
