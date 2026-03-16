@@ -1,8 +1,12 @@
 import {
   AUTH_ERROR_CODES,
   AUTH_MESSAGES,
-  AUTH_RESPONSE_CODE,
 } from '@/constants/auth';
+import {
+  API_ERROR_CODES,
+  API_MESSAGES,
+  API_RESPONSE_CODE,
+} from '@/constants/api';
 import { ApiResponse } from '@/types/api/common';
 import { SignupCompleteData, SignupRequest } from '@/types/api/auth';
 
@@ -35,7 +39,7 @@ function buildHeaders(deviceId: string | null) {
 }
 
 function createFailedResult(
-  message: string = AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR
+  message: string = API_MESSAGES.COMMON.SERVER_ERROR
 ): SignupResult {
   return {
     status: 'failed',
@@ -47,7 +51,7 @@ function parseSignupResponse(
   res: Response,
   result: Partial<SignupResponse>
 ): SignupResult {
-  if (result.code === AUTH_ERROR_CODES.COMMON.BAD_REQUEST) {
+  if (result.code === API_ERROR_CODES.COMMON.BAD_REQUEST) {
     return {
       status: 'invalidInput',
       message: result.message ?? AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
@@ -83,7 +87,7 @@ function parseSignupResponse(
     };
   }
 
-  if (!res.ok || result.code !== AUTH_RESPONSE_CODE.STATUS.SUCCESS) {
+  if (!res.ok || result.code !== API_RESPONSE_CODE.STATUS.SUCCESS) {
     return createFailedResult(result.message);
   }
 

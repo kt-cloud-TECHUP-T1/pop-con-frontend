@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
+import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
+import { AUTH_MESSAGES } from '@/constants/auth';
 import { SignupRequest } from '@/types/api/auth';
 
 const NEXT_PUBLIC_API_BASE_URL =
@@ -8,8 +9,8 @@ const NEXT_PUBLIC_API_BASE_URL =
 function buildInvalidInputResponse(fieldErrors: Record<string, string>) {
   return NextResponse.json(
     {
-      code: AUTH_ERROR_CODES.COMMON.BAD_REQUEST,
-      message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_INPUT,
+      code: API_ERROR_CODES.COMMON.BAD_REQUEST,
+      message: API_MESSAGES.COMMON.INVALID_INPUT,
       data: fieldErrors,
     },
     { status: 400 }
@@ -99,8 +100,8 @@ export async function POST(request: Request) {
 
     return NextResponse.json(
       {
-        code: AUTH_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
-        message: AUTH_MESSAGES.COMMON.ERROR.SERVER_ERROR,
+        code: API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
+        message: API_MESSAGES.COMMON.SERVER_ERROR,
         data: null,
       },
       { status: 500 }
