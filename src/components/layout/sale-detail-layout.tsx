@@ -5,8 +5,8 @@ interface SaleDetailLayoutProps {
   left: React.ReactNode;
   right: React.ReactNode;
   className?: string;
-  hasStickyTopBar: boolean;
-  bottom: React.ReactNode;
+  hasStickyTopBar?: boolean;
+  bottom?: React.ReactNode;
 }
 
 export function SaleDetailLayout({
