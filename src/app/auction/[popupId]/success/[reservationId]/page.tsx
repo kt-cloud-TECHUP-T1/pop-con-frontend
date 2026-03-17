@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { formatWon } from '@/lib/utils';
 import Image from 'next/image';
+import Link from 'next/link';
 
 export interface OrderDetail {
   reservationNumber: string;
@@ -50,6 +51,7 @@ export default async function Success({
   params: Promise<{ popupId: string }>;
 }) {
   await params;
+
   return (
     <>
       <Wrapper className="py-3xl max-w-[762px] ">
@@ -166,12 +168,15 @@ export default async function Success({
               </div>
             </Box>
           </div>
+
           <div className="flex gap-xs">
-            <Button className="flex-1" variant="secondary">
-              <Typography variant="label-1" weight="medium">
-                홈으로 돌아가기
-              </Typography>
-            </Button>
+            <Link href="/" className="flex-1">
+              <Button className="w-full" variant="secondary">
+                <Typography variant="label-1" weight="medium">
+                  홈으로 돌아가기
+                </Typography>
+              </Button>
+            </Link>
             <Button className="flex-1">
               <Typography variant="label-1" weight="medium">
                 낙찰 상세 보기
