@@ -1,13 +1,7 @@
-type PhaseType = 'AUCTION' | 'DRAW';
-type PhaseStatus = 'UPCOMING' | 'OPEN' | 'CLOSED';
+export type PhaseType = 'AUCTION' | 'DRAW';
+export type PhaseStatus = 'UPCOMING' | 'OPEN' | 'CLOSED';
 
-interface PopupDetailResponse {
-  code: string;
-  message: string;
-  data: PopupDetailData;
-}
-
-interface PopupDetailData {
+export interface PopupDetailData {
   phaseType: PhaseType;
   phaseStatus: PhaseStatus;
   popupId: number;
@@ -27,4 +21,10 @@ interface PopupDetailData {
   weekdayClose: string;
   weekendOpen: string;
   weekendClose: string;
+}
+
+export interface PopupDetailResponse {
+  code: string;
+  message: string;
+  data: PopupDetailData;
 }
