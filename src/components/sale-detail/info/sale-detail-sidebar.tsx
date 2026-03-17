@@ -1,6 +1,6 @@
 // auction-detail-sidebar.tsx
 import PaymentRegisterCard from '@/components/sale-detail/info/payment-register-card';
-import { AuctionInfoContent } from '@/constants/sale-detail';
+import { AuctionInfoContent, DrawInfoContent } from '@/constants/sale-detail';
 import OpenCountCard from './open-count-card';
 import SaleNoticeCard from '@/components/sale-detail/info/sale-notice-card';
 import SaleInfoCard from './sale-info-card';
@@ -53,13 +53,6 @@ export function SaleDetailSidebar({
 }: SaleDetailSidebarProps) {
   return (
     <div className="flex flex-col gap-s">
-      <OpenCountCard
-        saleOpenAt={auctionOpenAt}
-        phaseType={phaseType}
-        phaseStatus={phaseStatus}
-        serverTime={serverTime}
-      ></OpenCountCard>
-      <PaymentRegisterCard title="경매" />
       <SaleInfoCard
         popupId={popupId}
         phaseType={phaseType}
@@ -78,7 +71,7 @@ export function SaleDetailSidebar({
         serverTime={serverTime}
       ></SaleInfoCard>
 
-      <SaleNoticeCard items={AuctionInfoContent} />
+      <SaleNoticeCard items={DrawInfoContent} />
     </div>
   );
 }
