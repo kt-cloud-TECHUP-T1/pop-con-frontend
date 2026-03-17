@@ -5,6 +5,7 @@ import React from 'react';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
+import { useRouter } from 'next/navigation';
 
 const dummy = Array.from({ length: 10 }).map((_, index) => {
   return {
@@ -20,9 +21,11 @@ const dummy = Array.from({ length: 10 }).map((_, index) => {
 
 export const LuckyDraw = () => {
   const [item, setItems] = React.useState(dummy);
+  const router = useRouter();
 
   const handleClick = (id: number) => {
     console.log('clicked item id: ', id);
+    router.push(`/draw/${1}`);
   };
 
   const handleClickLike = (id: number) => {

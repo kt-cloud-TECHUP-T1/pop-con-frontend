@@ -11,6 +11,10 @@ import {
   type ReserveSchedule,
 } from './reserve-time-slot-section';
 import { Box } from '@/components/ui/box';
+import SaleNoticeCard from '@/components/sale-detail/info/sale-notice-card';
+import { AuctionInfoContent } from '@/constants/sale-detail';
+import SaleInfoPrice from '@/components/sale-detail/info/sale-info-price';
+import ReservePaymentSection from './reserve-payment-section';
 
 interface AuctionReservePageClientProps {
   title: string;
@@ -50,7 +54,7 @@ export function AuctionReservePageClient({
         </Typography>
       </div>
 
-      <div className="grid gap-ms xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="grid gap-[54px] xl:grid-cols-[minmax(0,1fr)_360px]">
         {/* 좌측 메인 패널: 날짜 선택 + 회차 선택 */}
         <Box radius="ML" border="#0A0A0A14" padding="M" className="min-w-0">
           <ReserveCalendarSection
@@ -76,15 +80,17 @@ export function AuctionReservePageClient({
 
         {/* 우측 결제 요약 패널 */}
         <aside className="flex flex-col gap-s">
-          <div className="">
-            <Typography
-              variant="title-2"
-              weight="bold"
-              className="text-[var(--content-high)]"
-            >
-              우측 결제 요약 영역
-            </Typography>
-          </div>
+          <Box radius="ML" border="#0A0A0A14" padding="MS" className="min-w-0">
+            <SaleInfoPrice
+              startPrice={1000}
+              phaseStatus={'OPEN'}
+            ></SaleInfoPrice>
+            <ReservePaymentSection
+              phaseType={'OPEN'}
+              phaseStatus={'AUCTION'}
+            ></ReservePaymentSection>
+          </Box>
+          <SaleNoticeCard items={AuctionInfoContent} />
         </aside>
       </div>
     </section>

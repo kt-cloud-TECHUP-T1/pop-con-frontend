@@ -45,7 +45,7 @@ export const Checkbox = React.forwardRef<
             size={size}
             className={cn(
               'pointer-events-none transition-all duration-150',
-              '[--checkbox-border-color:#F35E11]',
+              '[--checkbox-border-color:#0A0A0A29]',
               'group-hover:[--checkbox-border-color:#D6500B]',
               'group-active:[--checkbox-border-color:#C2410C]',
               'group-data-[visual-state=hover]:[--checkbox-border-color:#D6500B]',

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
 import SaleInfoPrice from './sale-info-price';
+import Link from 'next/link';
 
 interface SaleInfoCardProps {
   phaseType: string;
@@ -19,6 +20,7 @@ interface SaleInfoCardProps {
   extraTicket: number;
   serverTime: string;
   priceCloseAt: string;
+  popupId: string;
 }
 
 export default function SaleInfoCard({
@@ -32,6 +34,7 @@ export default function SaleInfoCard({
   weekendClose,
   location,
   startPrice,
+  popupId,
 }: SaleInfoCardProps) {
   return (
     <div className="border border-[var(--line-3)] rounded-ml p-ms">
@@ -67,11 +70,19 @@ export default function SaleInfoCard({
         </div>
       </div>
       {phaseStatus == 'OPEN' ? (
-        <Button size="large" className="w-full">
-          <Typography variant="label-1">
-            {phaseType == 'AUCTION' ? '프리미엄 경매' : '드로우'} 참여하기
-          </Typography>
-        </Button>
+        <Link
+          href={
+            phaseType === 'AUCTION'
+              ? `/auction/${popupId}/reserve`
+              : `/draw/${popupId}/reserve`
+          }
+        >
+          <Button size="large" className="w-full">
+            <Typography variant="label-1">
+              {phaseType == 'AUCTION' ? '프리미엄 경매' : '드로우'} 참여하기
+            </Typography>
+          </Button>
+        </Link>
       ) : (
         <Button size="large" className="w-full" disabled>
           <Typography variant="label-1">

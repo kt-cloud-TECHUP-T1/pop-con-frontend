@@ -2,6 +2,7 @@ import SaleTimeCountBar from '@/components/sale-detail/contents/sale-time-count-
 import { Wrapper } from '@/components/layout/wrapper';
 import { AuctionReservePageClient } from './components/auction-reserve-page-client';
 import { mockReserveData } from './mock-reserve-data';
+import { mockData } from './mock-reserve-data';
 
 export default async function AuctionReservePage({
   params,
