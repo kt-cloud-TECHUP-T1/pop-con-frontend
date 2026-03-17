@@ -30,6 +30,7 @@ export interface SaleDetailSidebarProps {
   phaseStatus: string;
   serverTime: string;
   location: string;
+  popupId: string;
 }
 
 export function SaleDetailSidebar({
@@ -48,6 +49,7 @@ export function SaleDetailSidebar({
   phaseType,
   phaseStatus,
   serverTime,
+  popupId,
 }: SaleDetailSidebarProps) {
   return (
     <div className="flex flex-col gap-s">
@@ -59,6 +61,7 @@ export function SaleDetailSidebar({
       ></OpenCountCard>
       <PaymentRegisterCard title="경매" />
       <SaleInfoCard
+        popupId={popupId}
         phaseType={phaseType}
         phaseStatus={phaseStatus}
         openAt={openAt}

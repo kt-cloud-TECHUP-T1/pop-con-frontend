@@ -123,6 +123,7 @@ export default async function AuctionPage({
               phaseStatus={data.phaseStatus}
               serverTime={data.serverTime}
               location={data.location}
+              popupId={popupId}
             ></SaleDetailSidebar>
           }
           bottom={

@@ -9,6 +9,7 @@ export { default as Calender } from './Calender';
 export { default as CaretDown } from './CaretDown';
 export { default as CaretUp } from './CaretUp';
 export { default as Check } from './Check';
+export { default as Checkbox } from './Checkbox';
 export { default as ChevronDown } from './ChevronDown';
 export { default as ChevronDownSmall } from './ChevronDownSmall';
 export { default as ChevronLeft } from './ChevronLeft';
