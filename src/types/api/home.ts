@@ -1,17 +1,22 @@
 import type { ApiResponse } from './common';
 
-export type PopupSectionKey = 'BANNERS';
+// ================================================
+// Section
+// ================================================
 
-export type PopupPhaseType = 'DRAW';
+export type PopupSectionKey = 'BANNERS' | 'FEATURED';
 
-export type PopupPhaseStatus = 'OPEN' | 'UPCOMING' | 'ENDED';
-
-export type PopupPhase = {
-  type: PopupPhaseType;
-  status: PopupPhaseStatus;
-  openAt: string;
-  closeAt: string;
+export type PopupSectionResponse = {
+  sectionKey: PopupSectionKey;
+  itemCount: number;
+  items: PopupCardDto[];
 };
+
+export type PopupSectionApiResponse = ApiResponse<PopupSectionResponse>;
+
+// ================================================
+// Card
+// ================================================
 
 export type PopupCardDto = {
   popupId: number;
@@ -21,15 +26,27 @@ export type PopupCardDto = {
   caption: string | null;
   thumbnailUrl: string | null;
   liked: boolean | null;
-  stats: null;
+  stats: PopupCardStats | null;
   overlay: null;
   phase: PopupPhase;
 };
 
-export type PopupSectionResponse = {
-  sectionKey: PopupSectionKey;
-  itemCount: number;
-  items: PopupCardDto[];
+export type PopupCardStats = {
+  likeCount: number;
+  viewCount: number;
 };
 
-export type PopupSectionApiResponse = ApiResponse<PopupSectionResponse>;
+// ================================================
+// Phase
+// ================================================
+
+export type PopupPhaseType = 'AUCTION' | 'DRAW';
+
+export type PopupPhaseStatus = 'OPEN' | 'UPCOMING' | 'CLOSED' | 'ENDED';
+
+export type PopupPhase = {
+  type: PopupPhaseType;
+  status: PopupPhaseStatus;
+  openAt: string;
+  closeAt: string;
+};
