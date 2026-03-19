@@ -6,14 +6,8 @@ import { API_MESSAGES } from '@/constants/api';
 import { setAccessToken } from '@/features/auth/utils/auth-storage';
 import { snackbar } from '@/components/ui/snackbar';
 
-type UsePortoneVerifyOptions = {
-  disableRedirect?: boolean;
-  onVerified?: () => void;
-};
-
-export function usePortoneVerify(options?: UsePortoneVerifyOptions) {
+export function usePortoneVerify() {
   const router = useRouter();
-  const disableRedirect = options?.disableRedirect ?? false;
   // 본인인증 요청 중 중복 클릭/호출을 막기 위한 로딩 상태
   const [isPending, setIsPending] = useState(false);
   // 만 14세 미만 가입 제한 안내 모달 상태 및 메시지
@@ -80,11 +74,6 @@ export function usePortoneVerify(options?: UsePortoneVerifyOptions) {
     }
 
     if (completeResult.data.isNewUser) {
-      if (disableRedirect) {
-        options?.onVerified?.();
-        return;
-      }
-
       if (completeResult.data.nextStep === 'TERMS') {
         router.push('/signup');
         return;
@@ -104,21 +93,13 @@ export function usePortoneVerify(options?: UsePortoneVerifyOptions) {
     }
 
     setAccessToken(completeResult.data.accessToken);
-
-    if (disableRedirect) {
-      options?.onVerified?.();
-      return;
-    }
-
     router.push('/');
   };
 
   // 예기치 못한 런타임 예외를 공통 에러 메시지로 처리
   const handleUnexpectedError = (error: unknown) => {
     const message =
-      error instanceof Error
-        ? error.message
-        : API_MESSAGES.COMMON.SERVER_ERROR;
+      error instanceof Error ? error.message : API_MESSAGES.COMMON.SERVER_ERROR;
 
     snackbar.destructive({
       title: '오류 발생',

@@ -1,6 +1,7 @@
 // portone SDK 호출 래퍼
 
 import * as PortOne from '@portone/browser-sdk/v2';
+import { AUTH_MESSAGES } from '@/constants/auth';
 
 type PortoneVerifyResult =
   | { status: 'success'; identityVerificationId: string }
@@ -9,14 +10,6 @@ type PortoneVerifyResult =
 
 const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
 const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
-const IDENTITY_VERIFICATION_PREFIX = 'identity-verification';
-
-const PORTONE_ERROR_MESSAGES = {
-  MISSING_CONFIG: 'Portone 환경변수가 설정되지 않았습니다.',
-  VERIFY_FAILED: '본인인증에 실패했습니다.',
-  MISSING_VERIFICATION_ID: '본인인증 식별자가 없습니다.',
-  MODULE_ERROR: '인증 모듈 오류가 발생했습니다. 다시 시도해주세요.',
-} as const;
 
 // 포트원 호출에 필요한 공개 환경변수가 모두 있는지 확인
 function getPortoneConfig() {
@@ -31,7 +24,7 @@ function createIdentityVerificationId() {
       ? crypto.randomUUID()
       : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
 
-  return `${IDENTITY_VERIFICATION_PREFIX}-${uniqueId}`;
+  return `identity-verification-${uniqueId}`;
 }
 
 // SDK 응답을 앱에서 사용하는 결과 타입으로 정규화
@@ -41,14 +34,14 @@ function parseVerificationResponse(
   if (response?.code !== undefined) {
     return {
       status: 'failed',
-      message: response.message ?? PORTONE_ERROR_MESSAGES.VERIFY_FAILED,
+      message: response.message ?? AUTH_MESSAGES.IDENTITY.ERROR.VERIFY_FAILED,
     };
   }
 
   if (!response?.identityVerificationId) {
     return {
       status: 'failed',
-      message: PORTONE_ERROR_MESSAGES.MISSING_VERIFICATION_ID,
+      message: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
     };
   }
 
@@ -65,7 +58,7 @@ export async function requestPortoneIdentityVerification(): Promise<PortoneVerif
     if (!config) {
       return {
         status: 'failed',
-        message: PORTONE_ERROR_MESSAGES.MISSING_CONFIG,
+        message: AUTH_MESSAGES.IDENTITY.ERROR.MISSING_CONFIG,
       };
     }
 
@@ -85,14 +78,14 @@ export async function requestPortoneIdentityVerification(): Promise<PortoneVerif
 
       return {
         status: 'failed',
-        message: error.message ?? PORTONE_ERROR_MESSAGES.VERIFY_FAILED,
+        message: error.message ?? AUTH_MESSAGES.IDENTITY.ERROR.VERIFY_FAILED,
       };
     }
 
     // 4) 그 외 예외는 모듈 오류로 통일
     return {
       status: 'failed',
-      message: PORTONE_ERROR_MESSAGES.MODULE_ERROR,
+      message: AUTH_MESSAGES.IDENTITY.ERROR.MODULE_ERROR,
     };
   }
 }

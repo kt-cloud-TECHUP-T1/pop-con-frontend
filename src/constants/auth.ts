@@ -10,6 +10,9 @@ export const AUTH_MESSAGES = {
       INVALID_AUTH: '인증 정보가 유효하지 않습니다.',
       REQUIRED_ID: '본인인증 식별자가 필요합니다.',
       REQUIRED_REGISTER_TOKEN: '가입 진행 토큰이 필요합니다.',
+      MISSING_CONFIG: 'Portone 환경변수가 설정되지 않았습니다.',
+      VERIFY_FAILED: '본인인증에 실패했습니다.',
+      MODULE_ERROR: '인증 모듈 오류가 발생했습니다. 다시 시도해주세요.',
     },
   },
   SIGNUP: {

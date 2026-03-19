@@ -3,7 +3,6 @@
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import Modal, { ModalBody, ModalFooter } from '@/components/ui/modal';
-import { snackbar } from '@/components/ui/snackbar';
 import { Typography } from '@/components/ui/typography';
 import { usePortoneVerify } from '@/features/auth/verify/hooks/use-portone-verify';
 
@@ -14,14 +13,7 @@ export function PersonalPhoneVerifyAction() {
     isUnder14ModalOpen,
     under14Message,
     closeUnder14Modal,
-  } = usePortoneVerify({
-    disableRedirect: true,
-    onVerified: () =>
-      snackbar.success({
-        title: '본인인증 완료',
-        description: '인증이 정상적으로 완료되었습니다.',
-      }),
-  });
+  } = usePortoneVerify();
 
   return (
     <>
