@@ -18,6 +18,18 @@ const CANCELLED_MESSAGE =
   '대기열이 종료되었습니다. 이전 화면으로 돌아가주세요.';
 const MISSING_QUEUE_ID_MESSAGE =
   '대기열 식별값이 없어 상태를 확인할 수 없습니다.';
+const MISSING_REDIRECT_TARGET_MESSAGE =
+  '다음 이동 경로를 확인할 수 없어 진행을 계속할 수 없습니다.';
+
+const getSafeRedirectTarget = (candidate: string | null | undefined) => {
+  if (!candidate) {
+    return null;
+  }
+
+  return candidate.startsWith('/') && !candidate.startsWith('//')
+    ? candidate
+    : null;
+};
 
 export const QueuePageClient = () => {
   const router = useRouter();
@@ -28,7 +40,20 @@ export const QueuePageClient = () => {
   const fallbackRank = initialPosition ? Number(initialPosition) : null;
   const nextPath = searchParams.get('next');
   const { data, error, isLoading, isFetching } = useQueueStatus(queueId);
-  const redirectTarget = data?.nextUrl ?? nextPath;
+  const redirectTarget =
+    getSafeRedirectTarget(data?.nextUrl) ?? getSafeRedirectTarget(nextPath);
+
+  useEffect(() => {
+    if (data?.status !== 'READY' || redirectTarget) {
+      return;
+    }
+
+    console.error('[queue] READY 상태지만 유효한 redirect target이 없습니다.', {
+      queueId,
+      nextUrl: data?.nextUrl,
+      nextPath,
+    });
+  }, [data?.nextUrl, data?.status, nextPath, queueId, redirectTarget]);
 
   useEffect(() => {
     if (data?.status !== 'READY') {
@@ -57,7 +82,9 @@ export const QueuePageClient = () => {
     }
 
     if (data?.status === 'READY') {
-      return data.message ?? READY_MESSAGE;
+      return redirectTarget
+        ? data.message ?? READY_MESSAGE
+        : MISSING_REDIRECT_TARGET_MESSAGE;
     }
 
     if (data?.status === 'EXPIRED') {
@@ -89,7 +116,7 @@ export const QueuePageClient = () => {
     }
 
     if (data?.status === 'READY') {
-      return '입장 준비 완료';
+      return redirectTarget ? '입장 준비 완료' : '이동 경로 확인 필요';
     }
 
     if (data?.status === 'EXPIRED') {

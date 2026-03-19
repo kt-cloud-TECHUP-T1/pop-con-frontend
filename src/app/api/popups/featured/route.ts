@@ -57,7 +57,7 @@ export async function GET(request: Request) {
 }
 
 function buildFeaturedSection(limit: number): PopupSectionResponse {
-  const items = mockFeaturedItems
+  const items = [...mockFeaturedItems]
     .sort((a, b) => b.weightedScore - a.weightedScore)
     .slice(0, limit)
     .map((item) => {

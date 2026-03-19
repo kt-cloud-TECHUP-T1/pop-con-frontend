@@ -3,6 +3,8 @@ import { getQueueStatus } from '@/features/queue/services/get-queue-status';
 import { isQueuePollingStatus } from '@/features/queue/types/queue';
 
 const DEFAULT_QUEUE_POLLING_INTERVAL = 2_000;
+const MIN_QUEUE_POLLING_INTERVAL = 1_000;
+const MAX_QUEUE_POLLING_INTERVAL = 30_000;
 
 export function useQueueStatus(queueId: string | null) {
   return useQuery({
@@ -19,8 +21,18 @@ export function useQueueStatus(queueId: string | null) {
         return DEFAULT_QUEUE_POLLING_INTERVAL;
       }
 
+      const nextInterval =
+        typeof data.pollIntervalMs === 'number' &&
+        Number.isFinite(data.pollIntervalMs) &&
+        data.pollIntervalMs > 0
+          ? data.pollIntervalMs
+          : DEFAULT_QUEUE_POLLING_INTERVAL;
+
       return isQueuePollingStatus(data.status)
-        ? (data.pollIntervalMs ?? DEFAULT_QUEUE_POLLING_INTERVAL)
+        ? Math.min(
+            MAX_QUEUE_POLLING_INTERVAL,
+            Math.max(MIN_QUEUE_POLLING_INTERVAL, nextInterval)
+          )
         : false;
     },
   });

@@ -74,10 +74,15 @@ export const SecurityQuizPageClient = () => {
           </Typography>
 
           <div className="mt-6">
+            <label htmlFor="security-quiz-answer" className="sr-only">
+              보안 퀴즈 답안 입력
+            </label>
             <Input
               placeholder="답을 입력해주세요."
               inputSize="large"
               maxLength={8}
+              id="security-quiz-answer"
+              aria-describedby="security-quiz-help"
             />
           </div>
 
@@ -93,6 +98,7 @@ export const SecurityQuizPageClient = () => {
             className="mr-0.5 shrink-0 text-[var(--content-extra-low)]"
           />
           <Typography
+            id="security-quiz-help"
             variant="caption-1"
             className="text-[var(--content-extra-low)]"
           >
