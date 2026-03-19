@@ -1,4 +1,7 @@
-import type { PopupSectionApiResponse, PopupSectionResponse } from '@/types/api/home';
+import type {
+  PopupSectionApiResponse,
+  PopupSectionResponse,
+} from '@/types/api/home';
 
 const DEFAULT_LIMIT = 5;
 
@@ -7,8 +10,7 @@ export async function getHomeBanners(
   signal?: AbortSignal
 ): Promise<PopupSectionResponse | null> {
   try {
-    const searchParams = new URLSearchParams({ limit: String(limit) });
-    const response = await fetch(`/api/popups/banners?${searchParams.toString()}`, {
+    const response = await fetch(`/api/popups/banners?limit=${limit}`, {
       method: 'GET',
       cache: 'no-store',
       signal,
@@ -22,8 +24,11 @@ export async function getHomeBanners(
 
     return result.data;
   } catch (error) {
-    if (error instanceof DOMException && error.name === 'AbortError') {
-      return null;
+    if (process.env.NODE_ENV === 'development') {
+      console.error(
+        '[getHomeBanners] 배너 데이터를 불러오지 못했습니다.',
+        error
+      );
     }
 
     return null;

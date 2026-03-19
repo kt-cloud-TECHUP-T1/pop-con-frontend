@@ -1,3 +1,11 @@
+// ================================================
+// 관련 파일
+// api route: api/popups/banners/route.ts
+// api mock data: mock-banner-items.ts
+// 조회 서비스 함수: features/home/services/get-home-banners.ts
+// 응답 타입: types/api/home.ts
+// ================================================
+
 'use client';
 
 import { CardOverlay } from '@/components/content/card-overlay';
