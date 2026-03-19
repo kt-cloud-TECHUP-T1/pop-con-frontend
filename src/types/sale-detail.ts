@@ -1,9 +1,9 @@
-export type PhaseType = 'AUCTION' | 'DRAW';
-export type PhaseStatus = 'UPCOMING' | 'OPEN' | 'CLOSED';
+export type PopupPhaseType = 'AUCTION' | 'DRAW';
+export type PopupPhaseStatus = 'UPCOMING' | 'OPEN' | 'CLOSED';
 
 export interface PopupDetailData {
-  phaseType: PhaseType;
-  phaseStatus: PhaseStatus;
+  phaseType: PopupPhaseType;
+  phaseStatus: PopupPhaseStatus;
   popupId: number;
   liked: boolean;
   thumbnailUrl: string;
@@ -24,7 +24,50 @@ export interface PopupDetailData {
 }
 
 export interface PopupDetailResponse {
-  code: string;
+  code: 'SUCCESS';
   message: string;
   data: PopupDetailData;
+}
+
+export interface PopupDetailErrorResponse {
+  code: 'C001' | 'S001' | string;
+  message: string;
+  data: Record<string, string> | null;
+}
+
+export type AuctionStatus = 'SCHEDULED' | 'OPEN' | 'SOLD_OUT' | 'CLOSED';
+
+export type AuctionButtonStatus = 'WAITING' | 'ENABLED' | 'SOLD_OUT' | 'ENDED';
+
+export interface AuctionData {
+  auctionId: number;
+  auctionStatus: AuctionStatus;
+  serverTime: string;
+  auctionOpenAt: string;
+  auctionCloseAt: string;
+  remainingUntilOpenSeconds: number;
+  remainingUntilCloseSeconds: number;
+  startPrice: number;
+  minimumPrice: number;
+  currentPrice: number | null;
+  nextPrice: number | null;
+  discountAmount: number | null;
+  priceDropUnit: number;
+  priceDropIntervalSeconds: number;
+  secondsUntilNextDrop: number;
+  maxPurchaseQuantityPerRound: number;
+  canParticipate: boolean;
+  buttonStatus: AuctionButtonStatus;
+}
+
+export interface AuctionDetailResponse {
+  code: 'SUCCESS';
+  message: string;
+  data: AuctionData;
+}
+
+export interface AuctionErrorResponse {
+  code: 'AU001' | 'C001' | 'S001' | string;
+  message: string;
+  data: Record<string, string> | null;
 }
