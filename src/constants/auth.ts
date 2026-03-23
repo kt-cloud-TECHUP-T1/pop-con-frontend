@@ -82,22 +82,30 @@ export const TERMS: readonly {
   id: string;
   label: string;
   isRequired: boolean;
+  apiKey: string;
 }[] = [
-  { id: 'privacy',
+  {
+    id: 'privacy',
     label: '개인정보 수집 및 이용 동의',
     isRequired: true,
+    apiKey: 'isPrivacyPolicyAgreed',
   },
   {
     id: 'identifierPolicy',
     label: '고유식별정보 처리 동의',
     isRequired: true,
+    apiKey: 'isIdentifierPolicyAgreed',
   },
-  { id: 'servicePolicy',
+  {
+    id: 'servicePolicy',
     label: 'Pop-con 서비스 이용약관 동의',
     isRequired: true,
+    apiKey: 'isServicePolicyAgreed',
   },
-  { id: 'marketing',
+  {
+    id: 'marketing',
     label: '마케팅 수신 동의',
     isRequired: false,
+    apiKey: 'isMarketingAgreed',
   },
 ];
