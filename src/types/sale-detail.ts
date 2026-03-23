@@ -71,3 +71,49 @@ export interface AuctionErrorResponse {
   message: string;
   data: Record<string, string> | null;
 }
+
+export interface DrawData {
+  drawOpenAt: string;
+  drawCloseAt: string;
+  serverTime: string;
+}
+
+export interface DrawDetailResponse {
+  code: 'SUCCESS';
+  message: string;
+  data: DrawData;
+}
+
+export interface DrawErrorResponse {
+  code: 'D001' | 'C001' | 'S001' | string;
+  message: string;
+  data: Record<string, string> | null;
+}
+
+export interface AuctionSidebarProps extends AuctionData {
+  phaseType: 'AUCTION';
+  openAt: string;
+  closeAt: string;
+  weekdayOpen: string;
+  weekdayClose: string;
+  weekendOpen: string;
+  weekendClose: string;
+  location: string;
+  popupId: number;
+  phaseStatus: string;
+}
+
+export interface DrawSidebarProps extends DrawData {
+  phaseType: 'DRAW';
+  openAt: string;
+  closeAt: string;
+  weekdayOpen: string;
+  weekdayClose: string;
+  weekendOpen: string;
+  weekendClose: string;
+  location: string;
+  popupId: number;
+  phaseStatus: string;
+}
+
+export type SaleDetailSidebarProps = AuctionSidebarProps | DrawSidebarProps;

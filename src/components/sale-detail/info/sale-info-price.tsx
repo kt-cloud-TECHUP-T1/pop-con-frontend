@@ -2,10 +2,25 @@ import { Icon } from '@/components/Icon/Icon';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { formatWon } from '@/lib/utils';
+import { AuctionData, AuctionStatus } from '@/types/sale-detail';
 
 interface SaleInfoPriceProps {
+  auctionStatus: AuctionStatus;
+  serverTime: string;
+  auctionOpenAt: string;
+  auctionCloseAt: string;
+  remainingUntilOpenSeconds: number;
+  remainingUntilCloseSeconds: number;
   startPrice: number;
-  phaseStatus: string;
+  minimumPrice: number;
+  currentPrice: number | null;
+  nextPrice: number | null;
+  discountAmount: number | null;
+  priceDropUnit: number;
+  priceDropIntervalSeconds: number;
+  secondsUntilNextDrop: number;
+  maxPurchaseQuantityPerRound: number;
+  canParticipate: boolean;
 }
 
 const mockData = {
@@ -24,12 +39,27 @@ const mockData = {
 };
 
 export default function SaleInfoPrice({
+  auctionStatus,
+  serverTime,
+  auctionOpenAt,
+  auctionCloseAt,
+  remainingUntilOpenSeconds,
+  remainingUntilCloseSeconds,
   startPrice,
-  phaseStatus,
+  minimumPrice,
+  currentPrice,
+  nextPrice,
+  discountAmount,
+  priceDropUnit,
+  priceDropIntervalSeconds,
+  secondsUntilNextDrop,
+  maxPurchaseQuantityPerRound,
+  canParticipate,
 }: SaleInfoPriceProps) {
+  console.log(serverTime, 'SaleInfoPrice ServerTime');
   return (
     <div className="priceInfo flex flex-col pb-ms border-b border-[var(--line-3)]">
-      {phaseStatus == 'UPCOMING' ? (
+      {auctionStatus == 'OPEN' ? (
         <div className="priceInfoBefore">
           <Typography
             variant="label-2"

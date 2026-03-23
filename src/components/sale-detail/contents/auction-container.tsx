@@ -12,7 +12,7 @@ import { RecommendedPopup } from '@/components/sale-detail/popup/recommended-pop
 import { RelatedPopup } from '@/components/sale-detail/popup/related-popup';
 import { getAuctionDetail } from '@/app/api/sale-detail/get-auction-detail';
 import { connectAuctionStream } from '@/app/api/sale-detail/connect-auction-stream';
-import { AuctionData } from '@/types/sale-detail';
+import { AuctionData, AuctionSidebarProps } from '@/types/sale-detail';
 
 type PopupDetailData = Awaited<ReturnType<typeof getPopupDetail>>;
 
@@ -102,6 +102,31 @@ export function AuctionContainer() {
   const auctionData = liveAuctionData ?? initialAuctionData;
   const hasStickyTopBar = saleMainData.phaseStatus !== 'UPCOMING';
 
+  const leftMainProps = {
+    description: saleMainData.description,
+    image: saleMainData.thumbnailUrl,
+    location: saleMainData.location,
+    reviewCount: saleMainData.reviewCount,
+    title: saleMainData.title,
+    subtitle: saleMainData.subtitle,
+    viewCount: saleMainData.viewCount,
+    likeCount: saleMainData.likeCount,
+  };
+
+  const rightSubProps: AuctionSidebarProps = {
+    ...auctionData,
+    phaseType: 'AUCTION',
+    phaseStatus: saleMainData.phaseStatus,
+    openAt: saleMainData.openAt,
+    closeAt: saleMainData.closeAt,
+    weekdayOpen: saleMainData.weekdayOpen,
+    weekdayClose: saleMainData.weekdayClose,
+    weekendOpen: saleMainData.weekendOpen,
+    weekendClose: saleMainData.weekendClose,
+    location: saleMainData.location,
+    popupId: saleMainData.popupId,
+  };
+
   return (
     <div>
       {saleMainData.phaseType === 'AUCTION' && (
@@ -115,19 +140,8 @@ export function AuctionContainer() {
       <Wrapper className="pt-m pb-3xl">
         <SaleDetailLayout
           hasStickyTopBar={hasStickyTopBar}
-          left={
-            <SaleDetailMain
-              description={saleMainData.description}
-              image={saleMainData.thumbnailUrl}
-              location={saleMainData.location}
-              reviewCount={saleMainData.reviewCount}
-              title={saleMainData.title}
-              subtitle={saleMainData.subtitle}
-              viewCount={saleMainData.viewCount}
-              likeCount={saleMainData.likeCount}
-            />
-          }
-          right={<></>}
+          left={<SaleDetailMain {...leftMainProps} />}
+          right={<SaleDetailSidebar {...rightSubProps} />}
           bottom={
             <>
               <RelatedPopup />
@@ -138,26 +152,4 @@ export function AuctionContainer() {
       </Wrapper>
     </div>
   );
-}
-{
-  /* <SaleDetailSidebar
-  openAt={saleMainData.openAt}
-  closeAt={saleMainData.closeAt}
-  weekdayOpen={saleMainData.weekdayOpen}
-  weekdayClose={saleMainData.weekdayClose}
-  weekendOpen={saleMainData.weekendOpen}
-  weekendClose={saleMainData.weekendClose}
-  auctionOpenAt={auctionData.auctionOpenAt}
-  auctionCloseAt={auctionData.auctionCloseAt}
-  drawOpenAt={saleMainData.openAt}
-  drawCloseAt={saleMainData.closeAt}
-  startPrice={auctionData.startPrice}
-  currentPrice={auctionData.currentPrice ?? 0}
-  extraTicket={auctionData.maxPurchaseQuantityPerRound}
-  phaseType={saleMainData.phaseType}
-  phaseStatus={auctionData.auctionStatus}
-  serverTime={auctionData.serverTime}
-  location={saleMainData.location}
-  popupId={popupId}
-/>; */
 }

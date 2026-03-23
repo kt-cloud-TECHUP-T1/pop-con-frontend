@@ -4,44 +4,42 @@ import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
 import SaleInfoPrice from './sale-info-price';
 import Link from 'next/link';
+import { SaleDetailSidebarProps } from '@/types/sale-detail';
 
-interface SaleInfoCardProps {
-  phaseType: string;
-  phaseStatus: string;
-  openAt: string;
-  closeAt: string;
-  weekdayOpen: string;
-  weekdayClose: string;
-  weekendOpen: string;
-  weekendClose: string;
-  location: string;
-  startPrice: number;
-  currentPrice: number;
-  extraTicket: number;
-  serverTime: string;
-  priceCloseAt: string;
-  popupId: string;
-}
+export default function SaleInfoCard(props: SaleDetailSidebarProps) {
+  const {
+    phaseType,
+    phaseStatus,
+    openAt,
+    closeAt,
+    weekdayOpen,
+    weekdayClose,
+    weekendOpen,
+    weekendClose,
+    location,
+    popupId,
+  } = props;
 
-export default function SaleInfoCard({
-  phaseType,
-  phaseStatus,
-  openAt,
-  closeAt,
-  weekdayOpen,
-  weekdayClose,
-  weekendOpen,
-  weekendClose,
-  location,
-  startPrice,
-  popupId,
-}: SaleInfoCardProps) {
   return (
     <div className="border border-[var(--line-3)] rounded-ml p-ms">
       {phaseType === 'AUCTION' && (
         <SaleInfoPrice
-          startPrice={startPrice}
-          phaseStatus={phaseStatus}
+          auctionStatus={props.auctionStatus}
+          serverTime={props.serverTime}
+          auctionOpenAt={props.auctionOpenAt}
+          auctionCloseAt={props.auctionCloseAt}
+          remainingUntilOpenSeconds={props.remainingUntilOpenSeconds}
+          remainingUntilCloseSeconds={props.remainingUntilCloseSeconds}
+          startPrice={props.startPrice}
+          minimumPrice={props.minimumPrice}
+          currentPrice={props.currentPrice}
+          nextPrice={props.nextPrice}
+          discountAmount={props.discountAmount}
+          priceDropUnit={props.priceDropUnit}
+          priceDropIntervalSeconds={props.priceDropIntervalSeconds}
+          secondsUntilNextDrop={props.secondsUntilNextDrop}
+          maxPurchaseQuantityPerRound={props.maxPurchaseQuantityPerRound}
+          canParticipate={props.canParticipate}
         ></SaleInfoPrice>
       )}
 
