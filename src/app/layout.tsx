@@ -5,6 +5,7 @@ import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { SnackbarToaster } from '@/components/ui/snackbar';
 import { AppProviders } from './providers';
+import AuthSessionRestore from '@/components/auth/auth-session-restore';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -26,6 +27,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${pretendard.variable} antialiased`}>
+        <AuthSessionRestore />
         <Header />
         <AppProviders>{children}</AppProviders>
         <Footer />
