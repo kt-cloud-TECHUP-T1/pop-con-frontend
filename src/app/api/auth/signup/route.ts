@@ -74,34 +74,31 @@ function appendSetCookieHeaders(
   response: Response,
   nextResponse: NextResponse
 ) {
-  const setCookies =
-    typeof response.headers.getSetCookie === 'function'
-      ? response.headers.getSetCookie()
-      : [];
-
-  if (setCookies.length > 0) {
-    setCookies.forEach((value) => {
-      nextResponse.headers.append('Set-Cookie', value);
-    });
+  if (typeof response.headers.getSetCookie !== 'function') {
+    console.error(
+      '[auth/signup/appendSetCookieHeaders] getSetCookie는 지원되지 않습니다.'
+    );
     return;
   }
 
-  // 예외 대비용 폴백
-  const setCookie = response.headers.get('set-cookie');
-  if (setCookie) {
-    nextResponse.headers.append('Set-Cookie', setCookie);
-  }
+  response.headers.getSetCookie().forEach((value) => {
+    nextResponse.headers.append('Set-Cookie', value);
+  });
 }
 
 export async function POST(request: NextRequest) {
   const cookieHeader = request.headers.get('cookie');
   const registerToken = request.cookies.get('register_token')?.value;
 
-  let body: SignupRequest;
+  let body: unknown;
 
   try {
-    body = (await request.json()) as SignupRequest;
+    body = await request.json();
   } catch {
+    body = null;
+  }
+
+  if (!body || typeof body !== 'object') {
     return createInvalidInputResponse({
       'agreements.isPrivacyPolicyAgreed':
         AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED,
@@ -112,7 +109,7 @@ export async function POST(request: NextRequest) {
     });
   }
 
-  const fieldErrors = validateSignupRequest(body);
+  const fieldErrors = validateSignupRequest(body as Partial<SignupRequest>);
 
   if (Object.keys(fieldErrors).length > 0) {
     return createInvalidInputResponse(fieldErrors);
@@ -131,7 +128,7 @@ export async function POST(request: NextRequest) {
       },
       body: JSON.stringify({
         registerToken,
-        agreements: body.agreements,
+        agreements: (body as Partial<SignupRequest>).agreements,
       }),
       cache: 'no-store',
     });

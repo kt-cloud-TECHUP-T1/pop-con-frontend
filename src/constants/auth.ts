@@ -69,6 +69,13 @@ export const AUTH_ERROR_CODES = {
     INVALID_AUTH: 'A002', // 인증 정보 유효하지 않음
     LOGIN_REQUIRED: 'A003', // 재로그인 필요
   },
+
+  // 포트원 연동 (I, E)
+  PORTONE: {
+    FETCH_FAILED: 'I001', // 포트원 본인인증 정보 조회 실패
+    VERIFY_FAILED: 'I002', // 본인인증 검증 실패
+    ENCRYPT_FAILED: 'E001', // 데이터 암호화 실패
+  },
 } as const;
 
 export const AUTH_RESPONSE_CODE = {

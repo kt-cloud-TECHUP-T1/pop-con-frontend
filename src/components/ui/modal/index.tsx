@@ -110,17 +110,12 @@ export function ModalBody({
 export function ModalFooter({
   children,
   className,
-  onClick,
 }: {
   children: React.ReactNode;
   className?: string;
-  onClick?: () => void;
 }) {
   return (
-    <div
-      className={cn('flex gap-3 justify-end mt-4', className)}
-      onClick={onClick}
-    >
+    <div className={cn('flex gap-3 justify-end mt-4', className)}>
       {children}
     </div>
   );

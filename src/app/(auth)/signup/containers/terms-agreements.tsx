@@ -13,6 +13,30 @@ import { useAuthStore } from '@/features/auth/stores/auth-store';
 
 const initialTerms = TERMS.map((term) => ({ ...term, isAgreed: false }));
 
+// 회원가입 API 에러 코드 → 스낵바 메시지 매핑
+// C001과 S001은 별도 처리되므로 여기 포함하지 않음 (동적 메시지)
+const SIGNUP_ERROR_SNACKBAR: Record<
+  string,
+  { title: string; description?: string }
+> = {
+  [AUTH_ERROR_CODES.JOIN.ALREADY_COMPLETED]: {
+    title: API_MESSAGES.COMMON.INVALID_INPUT,
+    description: AUTH_MESSAGES.TERMS.ERROR.ALREADY_REGISTERED,
+  },
+  [AUTH_ERROR_CODES.AUTH.SESSION_EXPIRED]: {
+    title: '회원가입 세션이 만료되었습니다.',
+    description: '다시 가입 절차를 진행해주세요.',
+  },
+  [AUTH_ERROR_CODES.AUTH.INVALID_AUTH]: {
+    title: '인증 정보가 유효하지 않습니다.',
+    description: '다시 가입 절차를 진행해주세요.',
+  },
+  [AUTH_ERROR_CODES.USER.MISSING_SOCIAL_INFO]: {
+    title: '가입 세션의 소셜 정보가 누락되었습니다.',
+    description: '다시 가입 절차를 진행해주세요.',
+  },
+};
+
 export default function TermsAgreements() {
   const [terms, setTerms] = useState(initialTerms);
   const [isPending, setIsPending] = useState(false);
@@ -70,7 +94,7 @@ export default function TermsAgreements() {
 
       // HTTP 요청이 실패했는지 확인
       if (!signupResponse.ok) {
-        // C001 입력값 오류(agreements 누락/타입 오류/필수 약관 false)
+        // C001: 입력값 오류 → 동적 메시지 포함
         if (result.code === API_ERROR_CODES.COMMON.BAD_REQUEST) {
           snackbar.destructive({
             title: API_MESSAGES.COMMON.INVALID_INPUT,
@@ -78,44 +102,19 @@ export default function TermsAgreements() {
           });
           return;
         }
-        // J002 이미 가입이 완료된 회원이 다시 요청한 경우
-        if (result.code === AUTH_ERROR_CODES.JOIN.ALREADY_COMPLETED) {
-          snackbar.destructive({
-            title: API_MESSAGES.COMMON.INVALID_INPUT,
-            description: AUTH_MESSAGES.TERMS.ERROR.ALREADY_REGISTERED,
-          });
-          return;
-        }
-        // A001 회원 가입 세션 만료/토큰 만료
-        if (result.code === AUTH_ERROR_CODES.AUTH.SESSION_EXPIRED) {
-          snackbar.destructive({
-            title: '회원가입 세션이 만료되었습니다.',
-            description: '다시 가입 절차를 진행해주세요.',
-          });
-          return;
-        }
-        // A002 인증 정보가 유효하지 않음(본인인증 결과 미반영(ciHash 누락) 등)
-        if (result.code === AUTH_ERROR_CODES.AUTH.INVALID_AUTH) {
-          snackbar.destructive({
-            title: '인증 정보가 유효하지 않습니다.',
-            description: '다시 가입 절차를 진행해주세요.',
-          });
-          return;
-        }
-        // U002 가입 세션 소셜 정보 누락/유저 생성 시 누락(provider/providerUserId 누락)
-        if (result.code === AUTH_ERROR_CODES.USER.MISSING_SOCIAL_INFO) {
-          snackbar.destructive({
-            title: '가입 세션의 소셜 정보가 누락되었습니다.',
-            description: '다시 가입 절차를 진행해주세요.',
-          });
-          return;
-        }
-        // S001 서버 오류
+
+        // S001: 서버 오류 → 동적 메시지 포함
         if (result.code === API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR) {
           snackbar.destructive({
             title: '회원가입에 실패했습니다.',
             description: result.message ?? '잠시 후 다시 시도해주세요.',
           });
+          return;
+        }
+
+        const errorEntry = SIGNUP_ERROR_SNACKBAR[result.code];
+        if (errorEntry) {
+          snackbar.destructive(errorEntry);
           return;
         }
       }

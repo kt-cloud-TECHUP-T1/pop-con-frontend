@@ -26,23 +26,16 @@ function appendSetCookieHeaders(
   response: Response,
   nextResponse: NextResponse
 ) {
-  const setCookies =
-    typeof response.headers.getSetCookie === 'function'
-      ? response.headers.getSetCookie()
-      : [];
-
-  if (setCookies.length > 0) {
-    setCookies.forEach((value) => {
-      nextResponse.headers.append('Set-Cookie', value);
-    });
+  if (typeof response.headers.getSetCookie !== 'function') {
+    console.error(
+      '[auth/identity/complete/appendSetCookieHeaders] getSetCookie는 지원되지 않습니다.'
+    );
     return;
   }
 
-  // 예외 대비용 폴백
-  const setCookie = response.headers.get('set-cookie');
-  if (setCookie) {
-    nextResponse.headers.append('Set-Cookie', setCookie);
-  }
+  response.headers.getSetCookie().forEach((value) => {
+    nextResponse.headers.append('Set-Cookie', value);
+  });
 }
 
 async function safeParseResponseBody(response: Response) {

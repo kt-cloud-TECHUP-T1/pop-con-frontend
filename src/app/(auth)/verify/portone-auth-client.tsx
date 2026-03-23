@@ -14,9 +14,41 @@ import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
 import Modal, { ModalBody, ModalFooter } from '@/components/ui/modal';
 import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
+import { Button } from '@/components/ui/button';
 
 // 본인인증 연동 참고 사이트 (SDK v2 기준)
 // https://developers.portone.io/opi/ko/extra/identity-verification/readme-v2?v=v2
+
+// 본인인증 완료 API 에러 코드 → 스낵바 메시지 매핑
+// J001(만 14세 미만)과 S001(서버 오류)은 별도 처리되므로 여기 포함하지 않음
+const IDENTITY_COMPLETE_ERROR_SNACKBAR: Record<
+  string,
+  { title: string; description?: string }
+> = {
+  [API_ERROR_CODES.COMMON.BAD_REQUEST]: {
+    title: API_MESSAGES.COMMON.INVALID_INPUT,
+    description: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
+  },
+  [AUTH_ERROR_CODES.AUTH.SESSION_EXPIRED]: {
+    title: '회원가입 세션이 만료되었습니다.',
+    description: '처음부터 다시 진행해주세요.',
+  },
+  [AUTH_ERROR_CODES.AUTH.INVALID_AUTH]: {
+    title: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_AUTH,
+    description: '다시 본인인증을 진행해주세요.',
+  },
+  [AUTH_ERROR_CODES.PORTONE.FETCH_FAILED]: {
+    title: '본인인증 정보 조회에 실패했습니다.',
+    description: '다시 본인인증을 진행해주세요.',
+  },
+  [AUTH_ERROR_CODES.PORTONE.VERIFY_FAILED]: {
+    title: '본인인증 검증에 실패했습니다.',
+    description: '다시 본인인증을 진행해주세요.',
+  },
+  [AUTH_ERROR_CODES.PORTONE.ENCRYPT_FAILED]: {
+    title: '데이터 암호화에 실패했습니다.',
+  },
+};
 
 const storeId = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
 const channelKey = process.env.NEXT_PUBLIC_PORTONE_CHANNEL_KEY;
@@ -63,8 +95,8 @@ export default function PortoneAuthClient() {
 
       // code가 있으면 실패 케이스 (취소 포함 일부 PG는 여기서 처리될 수도 있음)
       if (response.code !== undefined) {
-        snackbar.destructive({
-          title: '본인인증에 실패했습니다.',
+        snackbar.informative({
+          title: '본인인증이 취소되었습니다.',
           description: response.message ?? '다시 시도해주세요.',
         });
         return;
@@ -95,64 +127,24 @@ export default function PortoneAuthClient() {
 
       // HTTP 요청이 실패했는지 확인
       if (!completeResponse.ok) {
-        // Case 1: C001 입력값 오류
-        if (result.code === API_ERROR_CODES.COMMON.BAD_REQUEST) {
-          snackbar.destructive({
-            title: API_MESSAGES.COMMON.INVALID_INPUT,
-            description: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
-          });
-          return;
-        }
-        // Case 2: A001 회원가입 세션 만료 / 가입 진행 토큰 누락
-        if (result.code === AUTH_ERROR_CODES.AUTH.SESSION_EXPIRED) {
-          snackbar.destructive({
-            title: '회원가입 세션이 만료되었습니다.',
-            description: '처음부터 다시 진행해주세요.',
-          });
-          return;
-        }
-        // Case 3: A002 인증 정보가 유효하지 않음(포트원 검증 실패/위변조/조회 불가)
-        if (result.code === AUTH_ERROR_CODES.AUTH.INVALID_AUTH) {
-          snackbar.destructive({
-            title: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_AUTH,
-            description: '다시 본인인증을 진행해주세요.',
-          });
-          return;
-        }
-        // Case 4: I001 포트원 본인인증 정보 조회 실패
-        if (result.code === 'I001') {
-          snackbar.destructive({
-            title: '본인인증 정보 조회에 실패했습니다.',
-            description: '다시 본인인증을 진행해주세요.',
-          });
-          return;
-        }
-        // Case 5: I002 본인인증 검증 실패
-        if (result.code === 'I002') {
-          snackbar.destructive({
-            title: '본인인증 검증에 실패했습니다.',
-            description: '다시 본인인증을 진행해주세요.',
-          });
-          return;
-        }
-        // Case 6: I002 본인인증 검증 실패
-        if (result.code === 'E001') {
-          snackbar.destructive({
-            title: '데이터 암호화에 실패했습니다.',
-          });
-          return;
-        }
-        // Case 7: J001 만 14세 미만 가입 제한
+        // J001: 만 14세 미만 → 모달 표시
         if (result.code === AUTH_ERROR_CODES.JOIN.UNDERAGE) {
           setIsUnder14(true);
           return;
         }
-        // Case 8: S001 서버 오류
+
+        // S001: 서버 오류 → 동적 메시지 포함
         if (result.code === API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR) {
           snackbar.destructive({
             title: '본인인증에 실패했습니다.',
             description: result.message ?? '잠시 후 다시 시도해주세요.',
           });
+          return;
+        }
+
+        const errorEntry = IDENTITY_COMPLETE_ERROR_SNACKBAR[result.code];
+        if (errorEntry) {
+          snackbar.destructive(errorEntry);
           return;
         }
 
@@ -193,8 +185,6 @@ export default function PortoneAuthClient() {
         return;
       }
     } catch (error) {
-      console.log('portone error', error);
-
       if (
         isIdentityVerificationError(error) &&
         error.code === GrpcErrorCode.Cancelled
@@ -246,12 +236,20 @@ export default function PortoneAuthClient() {
       <Modal
         isOpen={isUnder14}
         onClose={() => setIsUnder14(false)}
+        showClose={false}
         title="만 14세 이하 가입 제한"
         size="md"
       >
         <ModalBody>만 14세 이하는 가입이 제한 되어있습니다.</ModalBody>
-        <ModalFooter onClick={handleUnder14CloseModal}>
-          메인으로 돌아가기
+        <ModalFooter>
+          <Button
+            variant="primary"
+            className="w-full"
+            size="large"
+            onClick={handleUnder14CloseModal}
+          >
+            메인으로 돌아가기
+          </Button>
         </ModalFooter>
       </Modal>
     </Wrapper>
