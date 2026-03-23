@@ -1,6 +1,9 @@
 'use client';
 
-import PortOne from '@portone/browser-sdk/v2';
+import PortOne, {
+  GrpcErrorCode,
+  isIdentityVerificationError,
+} from '@portone/browser-sdk/v2';
 import { Wrapper } from '@/components/layout/wrapper';
 import { Box } from '@/components/ui/box';
 import { snackbar } from '@/components/ui/snackbar';
@@ -53,7 +56,22 @@ export default function PortoneAuthClient() {
         identityVerificationId: createIdentityVerificationId(),
       });
 
-      if (!response || !response.identityVerificationId) {
+      // 사용자가 팝업을 닫거나 취소한 경우
+      if (response === undefined) {
+        return;
+      }
+
+      // code가 있으면 실패 케이스 (취소 포함 일부 PG는 여기서 처리될 수도 있음)
+      if (response.code !== undefined) {
+        snackbar.destructive({
+          title: '본인인증에 실패했습니다.',
+          description: response.message ?? '다시 시도해주세요.',
+        });
+        return;
+      }
+
+      // identityVerificationId 없는 경우 (방어 코드)
+      if (!response.identityVerificationId) {
         snackbar.destructive({
           title: '본인인증 결과를 확인할 수 없습니다.',
           description: '다시 시도해주세요.',
@@ -175,6 +193,15 @@ export default function PortoneAuthClient() {
         return;
       }
     } catch (error) {
+      console.log('portone error', error);
+
+      if (
+        isIdentityVerificationError(error) &&
+        error.code === GrpcErrorCode.Cancelled
+      ) {
+        return;
+      }
+
       snackbar.destructive({
         title: '본인인증 중 문제가 발생했습니다.',
         description: '잠시 후 다시 시도해주세요.',

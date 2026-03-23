@@ -6,13 +6,16 @@ const NEXT_PUBLIC_API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://devapi.popcon.store';
 
 function createInvalidInputResponse() {
-  return NextResponse.json({
-    code: API_ERROR_CODES.COMMON.BAD_REQUEST,
-    message: API_MESSAGES.COMMON.INVALID_INPUT,
-    data: {
-      refreshToken: AUTH_MESSAGES.TOKEN.ERROR.REFRESH_TOKEN_REQUIRED,
+  return NextResponse.json(
+    {
+      code: API_ERROR_CODES.COMMON.BAD_REQUEST,
+      message: API_MESSAGES.COMMON.INVALID_INPUT,
+      data: {
+        refreshToken: AUTH_MESSAGES.TOKEN.ERROR.REFRESH_TOKEN_REQUIRED,
+      },
     },
-  });
+    { status: 400 }
+  );
 }
 
 function appendSetCookieHeaders(
@@ -28,6 +31,7 @@ function appendSetCookieHeaders(
     setCookies.forEach((value) => {
       nextResponse.headers.append('Set-Cookie', value);
     });
+    return;
   }
 
   // 예외 대비용 폴백
