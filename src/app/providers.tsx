@@ -1,8 +1,9 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-export function MSWProvider({ children }: { children: React.ReactNode }) {
+function MSWProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const init = async () => {
       if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
@@ -17,4 +18,24 @@ export function MSWProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return <>{children}</>;
+}
+
+export function AppProviders({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: 1,
+            refetchOnWindowFocus: false,
+          },
+        },
+      })
+  );
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <MSWProvider>{children}</MSWProvider>
+    </QueryClientProvider>
+  );
 }

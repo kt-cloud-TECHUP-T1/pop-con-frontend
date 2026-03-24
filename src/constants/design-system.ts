@@ -37,6 +37,7 @@ export const BACKGROUND = {
 
 export const PADDING = {
   NONE: 'p-[var(--spacing-none)]',
+  _3XS: 'p-[var(--spacing-3xs)]',
   _2XS: 'p-[var(--spacing-2xs)]',
   XS: 'p-[var(--spacing-xs)]',
   S: 'p-[var(--spacing-s)]',
@@ -51,6 +52,7 @@ export const PADDING = {
 
 export const PADDING_X = {
   NONE: 'px-[var(--spacing-none)]',
+  _3XS: 'px-[var(--spacing-3xs)]',
   _2XS: 'px-[var(--spacing-2xs)]',
   XS: 'px-[var(--spacing-xs)]',
   S: 'px-[var(--spacing-s)]',

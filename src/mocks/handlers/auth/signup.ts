@@ -1,6 +1,6 @@
 // JOIN-2000, JOIN-4000 약관 동의 및 가입 완료
 
-import { http, HttpResponse } from 'msw';
+import { HttpResponse, http } from 'msw';
 import {
   API_ERROR_CODES,
   API_MESSAGES,
@@ -12,7 +12,7 @@ import {
   AUTH_MESSAGES,
 } from '@/constants/auth';
 
-export const signupHandler = http.post('/api/auth/signup', async ({ request }) => {
+export const signupHandler = http.post('/api/auth/signup', async ({ request, cookies }) => {
   const body = (await request.json()) as {
     registerToken?: string;
     agreements?: {
@@ -28,19 +28,18 @@ export const signupHandler = http.post('/api/auth/signup', async ({ request }) =
   // ---- API 명세 순서대로 작성됐습니다 ---- //
   // --------------------------------- //
 
-  const registerToken = body.registerToken?.trim();
+  const registerToken =
+    cookies.register_token ?? body.registerToken?.trim();
 
   // Case 4: 인증 정보가 유효하지 않음(토큰 오류)
   if (!registerToken) {
     return HttpResponse.json(
       {
-        code: API_ERROR_CODES.COMMON.BAD_REQUEST,
-        message: API_MESSAGES.COMMON.INVALID_INPUT,
-        data: {
-          registerToken: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN,
-        },
+        code: AUTH_ERROR_CODES.AUTH.SESSION_EXPIRED,
+        message: AUTH_MESSAGES.TERMS.ERROR.SESSION_EXPIRED,
+        data: null,
       },
-      { status: 400 }
+      { status: 401 }
     );
   }
 

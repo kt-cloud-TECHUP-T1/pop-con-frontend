@@ -10,6 +10,9 @@ export const AUTH_MESSAGES = {
       INVALID_AUTH: '인증 정보가 유효하지 않습니다.',
       REQUIRED_ID: '본인인증 식별자가 필요합니다.',
       REQUIRED_REGISTER_TOKEN: '가입 진행 토큰이 필요합니다.',
+      MISSING_CONFIG: 'Portone 환경변수가 설정되지 않았습니다.',
+      VERIFY_FAILED: '본인인증에 실패했습니다.',
+      MODULE_ERROR: '인증 모듈 오류가 발생했습니다. 다시 시도해주세요.',
     },
   },
   SIGNUP: {
@@ -66,6 +69,13 @@ export const AUTH_ERROR_CODES = {
     INVALID_AUTH: 'A002', // 인증 정보 유효하지 않음
     LOGIN_REQUIRED: 'A003', // 재로그인 필요
   },
+
+  // 포트원 연동 (I, E)
+  PORTONE: {
+    FETCH_FAILED: 'I001', // 포트원 본인인증 정보 조회 실패
+    VERIFY_FAILED: 'I002', // 본인인증 검증 실패
+    ENCRYPT_FAILED: 'E001', // 데이터 암호화 실패
+  },
 } as const;
 
 export const AUTH_RESPONSE_CODE = {
@@ -79,22 +89,30 @@ export const TERMS: readonly {
   id: string;
   label: string;
   isRequired: boolean;
+  apiKey: string;
 }[] = [
-  { id: 'privacy',
+  {
+    id: 'privacy',
     label: '개인정보 수집 및 이용 동의',
     isRequired: true,
+    apiKey: 'isPrivacyPolicyAgreed',
   },
   {
     id: 'identifierPolicy',
     label: '고유식별정보 처리 동의',
     isRequired: true,
+    apiKey: 'isIdentifierPolicyAgreed',
   },
-  { id: 'servicePolicy',
+  {
+    id: 'servicePolicy',
     label: 'Pop-con 서비스 이용약관 동의',
     isRequired: true,
+    apiKey: 'isServicePolicyAgreed',
   },
-  { id: 'marketing',
+  {
+    id: 'marketing',
     label: '마케팅 수신 동의',
     isRequired: false,
+    apiKey: 'isMarketingAgreed',
   },
 ];

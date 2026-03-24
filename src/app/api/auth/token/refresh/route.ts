@@ -1,10 +1,6 @@
-import { NextResponse } from 'next/server';
 import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
 import { AUTH_MESSAGES } from '@/constants/auth';
-
-type IdentityCompleteRequestBody = {
-  identityVerificationId?: string;
-};
+import { NextRequest, NextResponse } from 'next/server';
 
 const NEXT_PUBLIC_API_BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://devapi.popcon.store';
@@ -15,7 +11,7 @@ function createInvalidInputResponse() {
       code: API_ERROR_CODES.COMMON.BAD_REQUEST,
       message: API_MESSAGES.COMMON.INVALID_INPUT,
       data: {
-        identityVerificationId: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
+        refreshToken: AUTH_MESSAGES.TOKEN.ERROR.REFRESH_TOKEN_REQUIRED,
       },
     },
     { status: 400 }
@@ -26,16 +22,23 @@ function appendSetCookieHeaders(
   response: Response,
   nextResponse: NextResponse
 ) {
-  if (typeof response.headers.getSetCookie !== 'function') {
-    console.error(
-      '[auth/identity/complete/appendSetCookieHeaders] getSetCookie는 지원되지 않습니다.'
-    );
+  const setCookies =
+    typeof response.headers.getSetCookie === 'function'
+      ? response.headers.getSetCookie()
+      : [];
+
+  if (setCookies.length > 0) {
+    setCookies.forEach((value) => {
+      nextResponse.headers.append('Set-Cookie', value);
+    });
     return;
   }
 
-  response.headers.getSetCookie().forEach((value) => {
-    nextResponse.headers.append('Set-Cookie', value);
-  });
+  // 예외 대비용 폴백
+  const setCookie = response.headers.get('set-cookie');
+  if (setCookie) {
+    nextResponse.headers.append('Set-Cookie', setCookie);
+  }
 }
 
 async function safeParseResponseBody(response: Response) {
@@ -60,32 +63,23 @@ async function safeParseResponseBody(response: Response) {
   }
 }
 
-export async function POST(request: Request) {
-  let identityVerificationId = '';
-  const cookieHeader = request.headers.get('cookie');
+export async function POST(request: NextRequest) {
+  const refreshToken = request.cookies.get('refresh_token')?.value;
 
-  try {
-    const body = (await request.json()) as IdentityCompleteRequestBody;
-    identityVerificationId = body.identityVerificationId?.trim() ?? '';
-  } catch {
-    return createInvalidInputResponse();
-  }
-
-  if (!identityVerificationId) {
+  if (!refreshToken) {
     return createInvalidInputResponse();
   }
 
   try {
     const response = await fetch(
-      `${NEXT_PUBLIC_API_BASE_URL}/auth/identity/complete`,
+      `${NEXT_PUBLIC_API_BASE_URL}/auth/token/refresh`,
       {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          ...(cookieHeader ? { Cookie: cookieHeader } : {}),
         },
         body: JSON.stringify({
-          identityVerificationId,
+          refreshToken,
         }),
         cache: 'no-store',
       }
@@ -95,6 +89,7 @@ export async function POST(request: Request) {
     const nextResponse = NextResponse.json(responseBody, {
       status: response.status,
     });
+
     appendSetCookieHeaders(response, nextResponse);
     return nextResponse;
   } catch (error) {

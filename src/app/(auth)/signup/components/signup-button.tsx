@@ -1,21 +1,23 @@
-
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
 
 export default function SignupButton({
   disabled,
-  isPending = false,
+  onClick,
+  isPending,
 }: {
   disabled: boolean;
-  isPending?: boolean;
+  onClick: () => void;
+  isPending: boolean;
 }) {
   return (
     <Button
-      type="submit"
+      type="button"
       className="w-full"
       size="large"
       variant="primary"
-      disabled={disabled || isPending}
+      disabled={disabled}
+      onClick={onClick}
     >
       <Typography variant="label-1" weight="medium">
         {isPending ? '처리 중...' : '회원가입'}
