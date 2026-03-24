@@ -22,7 +22,7 @@ export default function SaleInfoCard(props: SaleDetailSidebarProps) {
     popupId,
   } = props;
 
-  const [drawData, setDrawData] = useState<Awaited<
+  const [ConnectedDrawData, setDrawData] = useState<Awaited<
     ReturnType<typeof getDrawDetail>
   > | null>(null);
 
@@ -50,7 +50,7 @@ export default function SaleInfoCard(props: SaleDetailSidebarProps) {
           auctionOpenAt: props.auctionOpenAt,
           auctionStatus: props.auctionStatus,
           buttonStatus: props.buttonStatus,
-          connetedDrawOpenAt: drawData?.drawOpenAt ?? null,
+          connetedDrawOpenAt: ConnectedDrawData?.drawOpenAt ?? null,
         }
       : {
           phaseType: 'DRAW',

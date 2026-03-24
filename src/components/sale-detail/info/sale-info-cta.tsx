@@ -12,6 +12,7 @@ export default function SaleInfoCTA(props: SaleInfoCTAProps) {
   if (phaseType === 'AUCTION') {
     const { auctionOpenAt, auctionStatus, buttonStatus, connetedDrawOpenAt } =
       props;
+    console.log(connetedDrawOpenAt, 'connetedDrawOpenAt');
     switch (buttonStatus) {
       case 'ENABLED':
         return (
@@ -23,7 +24,7 @@ export default function SaleInfoCTA(props: SaleInfoCTAProps) {
         return (
           <Button size="large" disabled className="w-full">
             <Typography variant="label-1">
-              {formatDateWithWeekdayTime(auctionOpenAt)}
+              {formatDateWithWeekdayTime(auctionOpenAt)} 경매오픈
             </Typography>
           </Button>
         );

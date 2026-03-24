@@ -43,7 +43,7 @@ function createAuctionPayload(seconds: number): AuctionData {
       remainingUntilCloseSeconds > 0 ? secondsUntilNextDrop : 0,
     maxPurchaseQuantityPerRound: 10,
     canParticipate: remainingUntilCloseSeconds > 0,
-    buttonStatus: remainingUntilCloseSeconds > 0 ? 'ENABLED' : 'ENDED',
+    buttonStatus: 'ENDED',
   };
 }
 

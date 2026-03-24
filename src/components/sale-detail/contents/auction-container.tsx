@@ -39,7 +39,6 @@ export function AuctionContainer() {
       setIsLoading(false);
       return;
     }
-
     let isMounted = true;
     let disconnectStream: (() => void) | undefined;
 
@@ -104,7 +103,9 @@ export function AuctionContainer() {
   }
 
   const auctionData = liveAuctionData ?? initialAuctionData;
-  const hasStickyTopBar = saleMainData.phaseStatus !== 'UPCOMING';
+  const hasStickyTopBar =
+    saleMainData.phaseStatus !== 'UPCOMING' &&
+    saleMainData.phaseType == 'AUCTION';
 
   const leftMainProps = {
     description: saleMainData.description,
@@ -115,6 +116,7 @@ export function AuctionContainer() {
     subtitle: saleMainData.subtitle,
     viewCount: saleMainData.viewCount,
     likeCount: saleMainData.likeCount,
+    hasStickyTopBar,
   };
 
   const rightSubProps: AuctionSidebarProps = {

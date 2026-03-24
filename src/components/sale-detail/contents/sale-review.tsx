@@ -1,14 +1,25 @@
 import { Icon } from '@/components/Icon/Icon';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
+import { cn } from '@/lib/utils';
 
 interface SaleReviewProps {
   reviewCount: number;
+  hasStickyTopBar: boolean;
 }
 
-export default function SaleReview({ reviewCount }: SaleReviewProps) {
+export default function SaleReview({
+  reviewCount,
+  hasStickyTopBar,
+}: SaleReviewProps) {
   return (
-    <section id="review" className="w-full scroll-mt-24 flex flex-col">
+    <section
+      id="review"
+      className={cn(
+        'w-full flex flex-col',
+        hasStickyTopBar ? 'scroll-mt-20' : 'scroll-mt-8'
+      )}
+    >
       <div className="flex items-center justify-between">
         <Typography variant="title-1" weight="bold">
           리뷰 <span className="text-[var(--content-low)]">{reviewCount}</span>

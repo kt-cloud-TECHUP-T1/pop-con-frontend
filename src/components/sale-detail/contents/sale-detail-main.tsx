@@ -15,6 +15,7 @@ export interface SaleDetailMainProps {
   reviewCount: number;
   viewCount: number;
   likeCount: number;
+  hasStickyTopBar: boolean;
 }
 
 export function SaleDetailMain({
@@ -26,6 +27,7 @@ export function SaleDetailMain({
   reviewCount,
   viewCount,
   likeCount,
+  hasStickyTopBar,
 }: SaleDetailMainProps) {
   return (
     <div className="flex flex-col">
@@ -40,10 +42,13 @@ export function SaleDetailMain({
         viewCount={viewCount}
         likeCount={likeCount}
       />
-      <SaleTab reviewCount={reviewCount} />
-      <SaleContent description={description} />
+      <SaleTab reviewCount={reviewCount} hasStickyTopBar={hasStickyTopBar} />
+      <SaleContent
+        description={description}
+        hasStickyTopBar={hasStickyTopBar}
+      />
       <SaleMap location={location} />
-      <SaleReview reviewCount={reviewCount} />
+      <SaleReview reviewCount={reviewCount} hasStickyTopBar={hasStickyTopBar} />
     </div>
   );
 }

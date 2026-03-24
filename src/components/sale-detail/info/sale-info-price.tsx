@@ -56,7 +56,6 @@ export default function SaleInfoPrice({
   maxPurchaseQuantityPerRound,
   canParticipate,
 }: SaleInfoPriceProps) {
-  console.log(serverTime, 'SaleInfoPrice ServerTime');
   return (
     <div className="priceInfo flex flex-col pb-ms border-b border-[var(--line-3)]">
       {auctionStatus == 'OPEN' ? (
