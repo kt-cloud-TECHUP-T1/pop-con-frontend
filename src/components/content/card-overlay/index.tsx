@@ -16,7 +16,7 @@ const thumbnailVariants = cva('w-full object-cover', {
 });
 
 export interface CardOverlayProps {
-  thumbnailUrl: string;
+  thumbnailUrl?: string;
   thumbnailAlt?: string;
   thumbnailRatio?: '3/4' | '16/9';
   title?: string;
@@ -60,7 +60,7 @@ export const CardOverlay: React.FC<CardOverlayProps> = ({
           'thumbnail',
           thumbnailVariants({ ratio: thumbnailRatio })
         )}
-        src={thumbnailUrl}
+        src={thumbnailUrl ?? '/images/temp/no-image.png'}
         alt={thumbnailAlt || title || ''}
       />
 

@@ -22,7 +22,7 @@ const thumbnailVariants = cva(
 );
 
 export interface CardThumbnailProps {
-  thumbnailUrl: string;
+  thumbnailUrl?: string;
   thumbnailAlt?: string;
   thumbnailRatio?: '1/1' | '3/4' | '16/9';
   title?: string;
@@ -94,7 +94,7 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
               'thumbnail',
               thumbnailVariants({ ratio: thumbnailRatio })
             )}
-            src={thumbnailUrl}
+            src={thumbnailUrl ?? '/images/temp/no-image.png'}
             alt={thumbnailAlt || title || ''}
           />
           {showButtonLike && (
@@ -106,7 +106,9 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
               className={cn(
                 'button-like',
                 'right-0 top-0 p-4 absolute text-white',
-                isLikeInteractive ? 'cursor-pointer' : 'cursor-default opacity-70'
+                isLikeInteractive
+                  ? 'cursor-pointer'
+                  : 'cursor-default opacity-70'
               )}
               onClick={handleLike}
             >
