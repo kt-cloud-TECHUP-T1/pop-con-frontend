@@ -26,6 +26,8 @@ const popupDetailMockData = {
   weekdayClose: '21:00',
   weekendOpen: '10:00',
   weekendClose: '22:00',
+  auctionId: 100,
+  drawId: 100,
 };
 
 export const popupDetailHandlers = [

@@ -33,10 +33,6 @@ export function AuctionContainer() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  console.log(initialAuctionData, 'initialAuctionData');
-  console.log(liveAuctionData, 'liveAuctionData');
-  console.log(saleMainData, 'saleMainData');
-
   useEffect(() => {
     if (!popupId || Number.isNaN(popupIdNumber)) {
       setError('유효하지 않은 popupId입니다.');
@@ -49,24 +45,32 @@ export function AuctionContainer() {
 
     const fetchData = async () => {
       try {
-        const [popupDetail, auctionDetail] = await Promise.all([
-          getPopupDetail(popupIdNumber),
-          getAuctionDetail(popupIdNumber),
-        ]);
+        const popupDetail = await getPopupDetail(popupIdNumber);
 
         if (!isMounted) return;
 
         setSaleMainData(popupDetail);
+
+        const auctionId = popupDetail.auctionId;
+
+        if (!auctionId) {
+          throw new Error('경매 ID가 없습니다.');
+        }
+
+        const auctionDetail = await getAuctionDetail(auctionId);
+
+        if (!isMounted) return;
+
         setInitialAuctionData(auctionDetail);
 
         disconnectStream = connectAuctionStream({
-          auctionId: popupIdNumber,
+          auctionId,
           onAuctionPrice: (data) => {
             if (!isMounted) return;
             setLiveAuctionData(data);
           },
           onError: () => {
-            console.error('경매 SSE 연결 중 오류가 발생했습니다.');
+            throw new Error('SSE 연결 중 오류가 발생했습니다.');
           },
         });
       } catch (err) {
@@ -89,7 +93,7 @@ export function AuctionContainer() {
       isMounted = false;
       disconnectStream?.();
     };
-  }, [popupId, popupIdNumber]);
+  }, [popupIdNumber, popupId]);
 
   if (isLoading) {
     return <div>로딩중...</div>;
@@ -125,6 +129,7 @@ export function AuctionContainer() {
     weekendClose: saleMainData.weekendClose,
     location: saleMainData.location,
     popupId: saleMainData.popupId,
+    connetedDrawId: saleMainData.drawId,
   };
 
   return (

@@ -1,10 +1,12 @@
+'use client';
 import { Icon } from '@/components/Icon/Icon';
-import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
 import SaleInfoPrice from './sale-info-price';
-import Link from 'next/link';
-import { SaleDetailSidebarProps } from '@/types/sale-detail';
+import { SaleDetailSidebarProps, SaleInfoCTAProps } from '@/types/sale-detail';
+import SaleInfoCTA from './sale-info-cta';
+import { useEffect, useState } from 'react';
+import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
 
 export default function SaleInfoCard(props: SaleDetailSidebarProps) {
   const {
@@ -19,6 +21,44 @@ export default function SaleInfoCard(props: SaleDetailSidebarProps) {
     location,
     popupId,
   } = props;
+
+  const [drawData, setDrawData] = useState<Awaited<
+    ReturnType<typeof getDrawDetail>
+  > | null>(null);
+
+  useEffect(() => {
+    if (phaseType !== 'DRAW' || !popupId) return;
+
+    const fetchDraw = async () => {
+      try {
+        const data = await getDrawDetail(popupId);
+        setDrawData(data);
+      } catch (error) {
+        throw new Error('DRAW 조회 중 오류가 발생했습니다.');
+      }
+    };
+
+    fetchDraw();
+  }, [phaseType, popupId]);
+
+  const ctaProps: SaleInfoCTAProps =
+    phaseType === 'AUCTION'
+      ? {
+          phaseType: 'AUCTION',
+          phaseStatus: phaseStatus,
+          serverTime: props.serverTime,
+          auctionOpenAt: props.auctionOpenAt,
+          auctionStatus: props.auctionStatus,
+          buttonStatus: props.buttonStatus,
+          connetedDrawOpenAt: drawData?.drawOpenAt ?? null,
+        }
+      : {
+          phaseType: 'DRAW',
+          phaseStatus: phaseStatus,
+          serverTime: props.serverTime,
+          drawOpenAt: props.drawOpenAt,
+          drawCloseAt: props.drawCloseAt,
+        };
 
   return (
     <div className="border border-[var(--line-3)] rounded-ml p-ms">
@@ -67,28 +107,7 @@ export default function SaleInfoCard(props: SaleDetailSidebarProps) {
           </Typography>
         </div>
       </div>
-      {phaseStatus == 'OPEN' ? (
-        <Link
-          href={
-            phaseType === 'AUCTION'
-              ? `/auction/${popupId}/reserve`
-              : `/draw/${popupId}/reserve`
-          }
-        >
-          <Button size="large" className="w-full">
-            <Typography variant="label-1">
-              {phaseType == 'AUCTION' ? '프리미엄 경매' : '드로우'} 참여하기
-            </Typography>
-          </Button>
-        </Link>
-      ) : (
-        <Button size="large" className="w-full" disabled>
-          <Typography variant="label-1">
-            26.02.09 (월) 10:00 {phaseType == 'AUCTION' ? '경매' : '드로우'}{' '}
-            오픈
-          </Typography>
-        </Button>
-      )}
+      <SaleInfoCTA {...ctaProps}></SaleInfoCTA>
     </div>
   );
 }

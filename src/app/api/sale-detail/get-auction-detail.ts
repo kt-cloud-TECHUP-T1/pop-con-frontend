@@ -10,7 +10,7 @@ export async function getAuctionDetail(
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '');
 
   if (!baseUrl) {
-    throw new Error('NEXT_PUBLIC_API_BASE_URL이 설정되지 않았어');
+    throw new Error('NEXT_PUBLIC_API_BASE_URL이 설정되지 않았습니다.');
   }
 
   const url = `${baseUrl}/auctions/${auctionId}`;

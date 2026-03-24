@@ -21,6 +21,8 @@ export interface PopupDetailData {
   weekdayClose: string;
   weekendOpen: string;
   weekendClose: string;
+  auctionId: number | null;
+  drawId: number | null;
 }
 
 export interface PopupDetailResponse {
@@ -101,6 +103,7 @@ export interface AuctionSidebarProps extends AuctionData {
   location: string;
   popupId: number;
   phaseStatus: string;
+  connetedDrawId: number | null;
 }
 
 export interface DrawSidebarProps extends DrawData {
@@ -117,3 +120,24 @@ export interface DrawSidebarProps extends DrawData {
 }
 
 export type SaleDetailSidebarProps = AuctionSidebarProps | DrawSidebarProps;
+
+interface BaseSaleInfoCTAProps {
+  phaseStatus: string;
+  serverTime: string;
+}
+
+interface AuctionSaleInfoCTAProps extends BaseSaleInfoCTAProps {
+  phaseType: 'AUCTION';
+  auctionOpenAt: string;
+  auctionStatus: string;
+  buttonStatus: AuctionButtonStatus;
+  connetedDrawOpenAt: string | null;
+}
+
+export interface DrawSaleInfoCTAProps extends BaseSaleInfoCTAProps {
+  phaseType: 'DRAW';
+  drawOpenAt: string;
+  drawCloseAt: string;
+}
+
+export type SaleInfoCTAProps = AuctionSaleInfoCTAProps | DrawSaleInfoCTAProps;
