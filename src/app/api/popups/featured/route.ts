@@ -1,73 +1,45 @@
 import {
-  createInternalServerErrorResponse,
-  createInvalidLimitResponse,
-  createPopupSectionSuccessResponse,
-  parseLimit,
-  proxyPopupSectionRequest,
-} from '@/app/api/popups/shared/route-helpers';
-import { mockFeaturedItems } from '@/app/api/popups/featured/data/mock-featured-items';
-import type { PopupSectionResponse } from '@/types/api/home';
+  createBadRequestResponse,
+  createServerErrorResponse,
+  handleProxyResponse,
+} from '../../shared/route-helpers';
 
-const DEFAULT_LIMIT = 10;
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
 const MIN_LIMIT = 1;
+const MAX_LIMIT = 10;
 
 export async function GET(request: Request) {
-  try {
-    const { searchParams } = new URL(request.url);
-    const limit = parseLimit({
-      searchParams,
-      defaultLimit: DEFAULT_LIMIT,
-      minLimit: MIN_LIMIT,
-    });
+  if (!API_BASE_URL) {
+    return createServerErrorResponse();
+  }
 
-    if (limit === null) {
-      return createInvalidLimitResponse({
-        message: '요청 파라미터가 올바르지 않습니다.',
-        limitMessage: 'limit는 1 이상이어야 합니다.',
-      });
-    }
+  const authorization = request.headers.get('Authorization');
+  const { searchParams } = new URL(request.url);
 
-    const proxiedResponse = await proxyPopupSectionRequest({
-      request,
-      searchParams,
-      endpoint: '/popups/featured',
-      missingBaseUrlMessage:
-        '[popups/featured] NEXT_PUBLIC_API_BASE_URL가 설정되지 않았습니다. 목 주목할만한 팝업 데이터로 대체합니다.',
-      unavailableResponseMessage:
-        '[popups/featured] 응답이 비어 있거나 사용할 수 없습니다. 목 주목할만한 팝업 데이터로 대체합니다.',
-      requestFailureMessage:
-        '[popups/featured] 주목할만한 팝업 데이터를 가져오지 못했습니다. 목 데이터로 대체합니다.',
-    });
+  const rawLimit = searchParams.get('limit') ?? String(MAX_LIMIT);
+  const limit = Number(rawLimit);
 
-    if (proxiedResponse) {
-      return proxiedResponse;
-    }
-
-    return createPopupSectionSuccessResponse({
-      message: '주목할만한 팝업 조회 성공',
-      data: buildFeaturedSection(limit),
-    });
-  } catch (error) {
-    console.error(error);
-
-    return createInternalServerErrorResponse({
-      message: '서버 내부 오류가 발생했습니다.',
+  if (!Number.isInteger(limit) || limit < MIN_LIMIT || limit > MAX_LIMIT) {
+    return createBadRequestResponse({
+      limit: `limit는 ${MIN_LIMIT} 이상 ${MAX_LIMIT} 이하여야 합니다.`,
     });
   }
-}
 
-function buildFeaturedSection(limit: number): PopupSectionResponse {
-  const items = [...mockFeaturedItems]
-    .sort((a, b) => b.weightedScore - a.weightedScore)
-    .slice(0, limit)
-    .map((item) => {
-      const { weightedScore: _weightedScore, ...featuredItem } = item;
-      return featuredItem;
-    });
+  searchParams.set('limit', String(limit));
 
-  return {
-    sectionKey: 'FEATURED',
-    itemCount: items.length,
-    items,
-  };
+  try {
+    const response = await fetch(
+      `${API_BASE_URL}/popups/featured?${searchParams}`,
+      {
+        headers: {
+          ...(authorization && { Authorization: authorization }),
+        },
+        cache: 'no-store',
+      }
+    );
+    return handleProxyResponse(response);
+  } catch (error) {
+    console.error('[GET /api/popups/featured]', error);
+    return createServerErrorResponse('서버 내부 오류가 발생했습니다.');
+  }
 }
