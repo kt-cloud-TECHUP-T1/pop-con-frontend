@@ -21,8 +21,9 @@ function createAuctionPayload(seconds: number): AuctionData {
   const secondsUntilNextDrop =
     currentPrice === minimumPrice
       ? 0
-      : priceDropIntervalSeconds -
-        (seconds % priceDropIntervalSeconds || priceDropIntervalSeconds);
+      : seconds % priceDropIntervalSeconds === 0
+        ? priceDropIntervalSeconds
+        : priceDropIntervalSeconds - (seconds % priceDropIntervalSeconds);
 
   return {
     auctionId: 100,
@@ -43,7 +44,7 @@ function createAuctionPayload(seconds: number): AuctionData {
       remainingUntilCloseSeconds > 0 ? secondsUntilNextDrop : 0,
     maxPurchaseQuantityPerRound: 10,
     canParticipate: remainingUntilCloseSeconds > 0,
-    buttonStatus: 'ENDED',
+    buttonStatus: 'ENABLED',
   };
 }
 

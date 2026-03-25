@@ -9,6 +9,12 @@ import { SaleDetailSidebarProps } from '@/types/sale-detail';
 export function SaleDetailSidebar(props: SaleDetailSidebarProps) {
   return (
     <div className="flex flex-col gap-s">
+      <OpenCountCard
+        serverTime={props.serverTime}
+        phaseType="AUCTION"
+        phaseStatus={props.phaseStatus}
+        saleOpenAt={props.openAt}
+      ></OpenCountCard>
       <SaleInfoCard {...props}></SaleInfoCard>
       <SaleNoticeCard items={DrawInfoContent} />
     </div>

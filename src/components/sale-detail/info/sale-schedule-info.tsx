@@ -16,8 +16,7 @@ export default function SaleScheduleInfo({
   return (
     <div
       className={cn(
-        'flex flex-col gap-2xs text-[var(--content-extra-low)]',
-        phaseType === 'AUCTION' ? 'py-ms' : 'pb-ms'
+        'flex flex-col gap-2xs pb-ms text-[var(--content-extra-low)]'
       )}
     >
       <div className="flex items-center gap-2xs">

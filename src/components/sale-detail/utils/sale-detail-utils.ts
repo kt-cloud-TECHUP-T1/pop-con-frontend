@@ -36,3 +36,11 @@ export function splitRemainingTime(ms: number) {
     seconds: String(seconds).padStart(2, '0'),
   };
 }
+
+export function formatSecondsToMMSS(seconds: number) {
+  const safeSeconds = Math.max(0, seconds);
+  const minutes = String(Math.floor(safeSeconds / 60)).padStart(2, '0');
+  const remainSeconds = String(safeSeconds % 60).padStart(2, '0');
+
+  return `${minutes}:${remainSeconds}`;
+}

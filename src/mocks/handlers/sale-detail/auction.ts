@@ -4,7 +4,7 @@ import type { AuctionData } from '@/types/sale-detail';
 
 const mockAuctionData: AuctionData = {
   auctionId: 100,
-  auctionStatus: 'CLOSED',
+  auctionStatus: 'OPEN',
   serverTime: '2026-03-11T14:49:15',
   auctionOpenAt: '2026-03-11T14:48:13',
   auctionCloseAt: '2026-03-11T14:58:53',
