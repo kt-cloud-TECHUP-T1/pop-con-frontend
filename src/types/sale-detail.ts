@@ -141,3 +141,14 @@ export interface DrawSaleInfoCTAProps extends BaseSaleInfoCTAProps {
 }
 
 export type SaleInfoCTAProps = AuctionSaleInfoCTAProps | DrawSaleInfoCTAProps;
+
+export interface SaleScheduleInfoProps {
+  phaseType: PopupPhaseType;
+  openAt: string;
+  closeAt: string;
+  weekdayOpen: string;
+  weekdayClose: string;
+  weekendOpen: string;
+  weekendClose: string;
+  location: string;
+}

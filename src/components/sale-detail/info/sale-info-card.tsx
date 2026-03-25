@@ -7,20 +7,10 @@ import { SaleDetailSidebarProps, SaleInfoCTAProps } from '@/types/sale-detail';
 import SaleInfoCTA from './sale-info-cta';
 import { useEffect, useState } from 'react';
 import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
+import SaleScheduleInfo from './sale-schedule-info';
 
 export default function SaleInfoCard(props: SaleDetailSidebarProps) {
-  const {
-    phaseType,
-    phaseStatus,
-    openAt,
-    closeAt,
-    weekdayOpen,
-    weekdayClose,
-    weekendOpen,
-    weekendClose,
-    location,
-    popupId,
-  } = props;
+  const { phaseType, phaseStatus, popupId } = props;
 
   const [ConnectedDrawData, setDrawData] = useState<Awaited<
     ReturnType<typeof getDrawDetail>
@@ -31,7 +21,8 @@ export default function SaleInfoCard(props: SaleDetailSidebarProps) {
 
     const fetchDraw = async () => {
       try {
-        const data = await getDrawDetail(popupId);
+        if (!props.connetedDrawId) return;
+        const data = await getDrawDetail(String(props.connetedDrawId));
         setDrawData(data);
       } catch (error) {
         throw new Error('DRAW 조회 중 오류가 발생했습니다.');
@@ -83,30 +74,7 @@ export default function SaleInfoCard(props: SaleDetailSidebarProps) {
         ></SaleInfoPrice>
       )}
 
-      <div
-        className={cn(
-          'flex flex-col gap-2xs text-[var(--content-extra-low)]',
-          phaseType === 'AUCTION' ? 'py-ms' : 'pb-ms'
-        )}
-      >
-        <div className="flex items-center gap-2xs">
-          <Icon name="Pin" size={20}></Icon>
-          <Typography variant="body-2">{location}</Typography>
-        </div>
-        <div className="flex items-center gap-2xs">
-          <Icon name="Calender" size={20}></Icon>
-          <Typography variant="body-2">
-            {openAt.replaceAll('-', '.')} - {closeAt.replaceAll('-', '.')}
-          </Typography>
-        </div>
-        <div className="flex items-center gap-2xs">
-          <Icon name="Clock" size={20}></Icon>
-          <Typography variant="body-2">
-            평일 {weekdayOpen} - {weekdayClose} / 주말 {weekendOpen} -{' '}
-            {weekendClose}
-          </Typography>
-        </div>
-      </div>
+      <SaleScheduleInfo {...props}></SaleScheduleInfo>
       <SaleInfoCTA {...ctaProps}></SaleInfoCTA>
     </div>
   );
