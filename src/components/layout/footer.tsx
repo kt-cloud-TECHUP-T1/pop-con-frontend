@@ -1,9 +1,15 @@
 import Link from 'next/link';
 import { Box } from '@/components/ui/box';
 import { Typography } from '../ui/typography';
+import { Icon, IconName } from '../Icon/Icon';
 
 type FooterLink = {
   label: string;
+  link: string;
+};
+
+type FooterSocialLink = {
+  label: IconName;
   link: string;
 };
 
@@ -32,15 +38,14 @@ const FOOTER_COMPANY_INFO = [
   ['사업자등록번호: 123-45-67890', '통신판매번호: 2025-서울강남-1234'],
 ] as const;
 
-// TODO 실제 아이콘 삽입하기
-const FOOTER_SOCIAL_LINKS: FooterLink[] = [
-  { label: '인스타그램 아이콘', link: 'https://www.instagram.com/' },
+const FOOTER_SOCIAL_LINKS: FooterSocialLink[] = [
+  { label: 'LogoInstagram', link: 'https://www.instagram.com/' },
   {
-    label: '유튜브 아이콘',
+    label: 'LogoYouTube',
     link: 'https://www.youtube.com/?app=desktop&hl=ko&gl=KR',
   },
   {
-    label: '블로그 아이콘',
+    label: 'LogoNaverBlog',
     link: 'https://section.blog.naver.com/BlogHome.naver?directoryNo=0&currentPage=1&groupId=0',
   },
 ];
@@ -88,7 +93,9 @@ export const Footer = () => {
             <ul className="flex gap-4">
               {FOOTER_SOCIAL_LINKS.map((socials) => (
                 <li key={socials.label}>
-                  <Link href={socials.link}>{socials.label}</Link>
+                  <Link href={socials.link} target="_blank">
+                    <Icon name={socials.label} />
+                  </Link>
                 </li>
               ))}
             </ul>
