@@ -31,7 +31,7 @@ export async function GET(
 
     return handleProxyResponse(response);
   } catch (error) {
-    console.error('[auctions/[auctionId]/dates/entryDate/options]', error);
+    console.error('[auctions/[auctionId]/dates/[entryDate]/options]', error);
     return createServerErrorResponse();
   }
 }

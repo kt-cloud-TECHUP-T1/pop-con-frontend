@@ -93,7 +93,11 @@ export const Footer = () => {
             <ul className="flex gap-4">
               {FOOTER_SOCIAL_LINKS.map((socials) => (
                 <li key={socials.label}>
-                  <Link href={socials.link} target="_blank">
+                  <Link
+                    href={socials.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <Icon name={socials.label} />
                   </Link>
                 </li>
