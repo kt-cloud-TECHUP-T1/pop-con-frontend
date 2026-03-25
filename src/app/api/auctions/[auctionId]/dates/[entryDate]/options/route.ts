@@ -8,10 +8,10 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
 
 export async function GET(
   request: Request,
-  { params }: { params: { auctionId: string; entryDate: string } }
+  { params }: { params: Promise<{ auctionId: string; entryDate: string }> }
 ) {
   const authorization = request.headers.get('Authorization');
-  const { auctionId, entryDate } = params;
+  const { auctionId, entryDate } = await params;
 
   if (!authorization) {
     return createUnauthorizedResponse();
