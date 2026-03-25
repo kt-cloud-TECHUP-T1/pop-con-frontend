@@ -20,32 +20,23 @@ export type BrowserFingerprint = {
   timezone: string;
   screenResolution: { width: number; height: number };
   colorDepth: number;
-  touchSupport: boolean;
-  maxTouchPoints: number;
   hardwareConcurrency: number;
   deviceMemory: number | undefined;
   components: Record<string, unknown>;
 };
 
-// --- Point / Click / Touch ---
+// --- Point / Click ---
 export type PointEvent = {
   x: number;
   y: number;
   timestamp: number;
   isTrusted: boolean;
-  type: 'mouse' | 'touch';
 };
 
 export type ClickEvent = PointEvent & {
   targetSelector: string;
   /** 클릭 좌표와 버튼 정중앙까지의 거리 (px). 버튼 클릭이 아니면 null */
   centerDistance: number | null;
-};
-
-export type TouchPath = {
-  points: PointEvent[];
-  startTimestamp: number;
-  endTimestamp: number;
 };
 
 // --- Timing ---
@@ -62,16 +53,6 @@ export type HoneypotData = {
   fieldValue: string | null;
 };
 
-// --- Device detection ---
-export type DeviceType = 'mobile' | 'desktop' | 'unknown';
-
-export type DeviceDetection = {
-  uaIsMobile: boolean;
-  hasTouchSupport: boolean;
-  resolved: DeviceType;
-  mismatch: boolean;
-};
-
 // --- Page payload ---
 export type PageType = 'login' | 'popup-detail' | 'draw-application';
 
@@ -82,14 +63,12 @@ export type PageSignalPayload = {
   rawData: {
     clicks?: ClickEvent[];
     mouseMovements?: PointEvent[];
-    touchPaths?: TouchPath[];
     hasUntrustedEvent?: boolean;
     timing?: TimingData;
     honeypot?: HoneypotData;
     environment?: {
       timezone: string;
       language: string;
-      device: DeviceDetection;
     };
   };
 };

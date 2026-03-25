@@ -33,7 +33,6 @@ export function createClickBehaviorCollector(): SignalCollector & {
       y: e.clientY,
       timestamp: Date.now(),
       isTrusted: e.isTrusted,
-      type: 'mouse',
       targetSelector: selector,
       centerDistance,
     });

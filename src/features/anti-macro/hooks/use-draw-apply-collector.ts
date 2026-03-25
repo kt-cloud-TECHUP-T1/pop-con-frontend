@@ -2,20 +2,20 @@
 
 import { useMemo } from 'react';
 import { createClickBehaviorCollector } from '../collectors/click-behavior';
-import { createMouseTouchCollector } from '../collectors/mouse-touch';
+import { createMouseCollector } from '../collectors/mouse-touch';
 import { createTimingCollector } from '../collectors/timing';
 import { useAntiMacro } from './use-anti-macro';
 
 export function useDrawApplyCollector() {
-  const { clickCollector, mouseTouchCollector, collectors } = useMemo(() => {
+  const { clickCollector, mouseCollector, collectors } = useMemo(() => {
     const click = createClickBehaviorCollector();
-    const mt = createMouseTouchCollector();
+    const mouse = createMouseCollector();
     const timing = createTimingCollector();
 
     return {
       clickCollector: click,
-      mouseTouchCollector: mt,
-      collectors: [click, mt, timing],
+      mouseCollector: mouse,
+      collectors: [click, mouse, timing],
     };
   }, []);
 
@@ -30,7 +30,6 @@ export function useDrawApplyCollector() {
     isSubmitting,
     lastResponse,
     getClicks: () => clickCollector.getClicks(),
-    getTouchPaths: () => mouseTouchCollector.getTouchPaths(),
-    getMovements: () => mouseTouchCollector.getMovements(),
+    getMovements: () => mouseCollector.getMovements(),
   };
 }

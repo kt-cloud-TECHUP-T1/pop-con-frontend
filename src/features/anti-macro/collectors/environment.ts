@@ -1,5 +1,4 @@
 import type { SignalCollector } from '../types';
-import { detectDevice } from '../utils/device-detect';
 
 export function createEnvironmentCollector(): SignalCollector {
   return {
@@ -13,7 +12,6 @@ export function createEnvironmentCollector(): SignalCollector {
       return {
         timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
         language: navigator.language,
-        device: detectDevice(),
       };
     },
 

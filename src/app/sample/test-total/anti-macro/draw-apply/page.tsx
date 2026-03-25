@@ -24,7 +24,6 @@ export default function AntiMacroDrawApplyTest() {
     lastResponse,
     getClicks,
     getMovements,
-    getTouchPaths,
   } = useDrawApplyCollector();
 
   const [selectedDate, setSelectedDate] = useState<number | null>(null);
@@ -188,7 +187,7 @@ export default function AntiMacroDrawApplyTest() {
         <div className="mt-8 bg-gray-900 text-green-400 rounded-lg shadow-sm p-6 font-mono text-xs overflow-auto max-h-96">
           <h2 className="text-white text-lg font-bold mb-4">Debug Panel</h2>
 
-          <div className="grid grid-cols-3 gap-4">
+          <div className="grid grid-cols-2 gap-4">
             <section>
               <h3 className="text-yellow-400 font-bold mb-2">
                 Clicks ({getClicks().length})
@@ -214,21 +213,6 @@ export default function AntiMacroDrawApplyTest() {
               </pre>
             </section>
 
-            <section>
-              <h3 className="text-yellow-400 font-bold mb-2">
-                Touch Paths ({getTouchPaths().length})
-              </h3>
-              <pre className="whitespace-pre-wrap">
-                {JSON.stringify(
-                  getTouchPaths().map((tp) => ({
-                    points: tp.points.length,
-                    duration: tp.endTimestamp - tp.startTimestamp,
-                  })),
-                  null,
-                  2,
-                )}
-              </pre>
-            </section>
           </div>
 
           <section className="mt-4">

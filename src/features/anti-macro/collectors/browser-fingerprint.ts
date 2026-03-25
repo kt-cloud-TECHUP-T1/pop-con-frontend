@@ -32,8 +32,6 @@ async function collectFingerprint(): Promise<BrowserFingerprint> {
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
     screenResolution: { width: screen.width, height: screen.height },
     colorDepth: screen.colorDepth,
-    touchSupport: 'ontouchstart' in window || navigator.maxTouchPoints > 0,
-    maxTouchPoints: navigator.maxTouchPoints,
     hardwareConcurrency: navigator.hardwareConcurrency,
     deviceMemory: (navigator as unknown as { deviceMemory?: number }).deviceMemory,
     components: Object.fromEntries(

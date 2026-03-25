@@ -4,7 +4,7 @@ import { useMemo } from 'react';
 import { createBrowserFingerprintCollector } from '../collectors/browser-fingerprint';
 import { createClickBehaviorCollector } from '../collectors/click-behavior';
 import { createHoneypotCollector } from '../collectors/honeypot';
-import { createMouseTouchCollector } from '../collectors/mouse-touch';
+import { createMouseCollector } from '../collectors/mouse-touch';
 import { createEnvironmentCollector } from '../collectors/environment';
 import { createTimingCollector } from '../collectors/timing';
 import { useAntiMacro } from './use-anti-macro';
@@ -15,14 +15,14 @@ export function useLoginCollector() {
       const fp = createBrowserFingerprintCollector();
       const click = createClickBehaviorCollector();
       const honeypot = createHoneypotCollector();
-      const mt = createMouseTouchCollector();
+      const mouse = createMouseCollector();
       const env = createEnvironmentCollector();
       const timing = createTimingCollector();
 
       return {
         fingerprintCollector: fp,
         honeypotCollector: honeypot,
-        collectors: [fp, click, honeypot, mt, env, timing],
+        collectors: [fp, click, honeypot, mouse, env, timing],
         getFingerprint: () => fp.getFingerprint(),
       };
     }, []);

@@ -18,7 +18,7 @@ export default function AntiMacroDashboard() {
             <div className="text-3xl mb-2">1</div>
             <h2 className="font-bold text-lg mb-1">로그인</h2>
             <p className="text-sm text-gray-500">
-              fingerprint + honeypot + mouse-touch + environment + click + timing
+              fingerprint + honeypot + mouse + environment + click + timing
             </p>
           </a>
           <a
@@ -28,7 +28,7 @@ export default function AntiMacroDashboard() {
             <div className="text-3xl mb-2">2</div>
             <h2 className="font-bold text-lg mb-1">팝업 상세</h2>
             <p className="text-sm text-gray-500">
-              click-behavior + timing + mouse-touch
+              click-behavior + timing + mouse
             </p>
           </a>
           <a
@@ -38,7 +38,7 @@ export default function AntiMacroDashboard() {
             <div className="text-3xl mb-2">3</div>
             <h2 className="font-bold text-lg mb-1">드로우 신청</h2>
             <p className="text-sm text-gray-500">
-              click-behavior + mouse-touch + timing
+              click-behavior + mouse + timing
             </p>
           </a>
         </div>

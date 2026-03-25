@@ -3,18 +3,18 @@
 import { useMemo } from 'react';
 import { createClickBehaviorCollector } from '../collectors/click-behavior';
 import { createTimingCollector } from '../collectors/timing';
-import { createMouseTouchCollector } from '../collectors/mouse-touch';
+import { createMouseCollector } from '../collectors/mouse-touch';
 import { useAntiMacro } from './use-anti-macro';
 
 export function usePopupDetailCollector() {
   const { clickCollector, collectors } = useMemo(() => {
     const click = createClickBehaviorCollector();
     const timing = createTimingCollector();
-    const mt = createMouseTouchCollector();
+    const mouse = createMouseCollector();
 
     return {
       clickCollector: click,
-      collectors: [click, timing, mt],
+      collectors: [click, timing, mouse],
     };
   }, []);
 

@@ -13,7 +13,7 @@ const SIGNAL_WEIGHTS: Record<string, { tier: SignalTier; weight: number }> = {
   // Hard (30-50)
   webdriver_detected: { tier: 'hard', weight: 50 },
   honeypot_triggered: { tier: 'hard', weight: 40 },
-  zero_mouse_touch_events: { tier: 'hard', weight: 30 },
+  zero_mouse_events: { tier: 'hard', weight: 30 },
   untrusted_event: { tier: 'hard', weight: 50 },
   click_speed_inhuman: { tier: 'hard', weight: 40 },
 
@@ -21,7 +21,6 @@ const SIGNAL_WEIGHTS: Record<string, { tier: SignalTier; weight: number }> = {
   click_button_center: { tier: 'medium', weight: 20 },
   click_interval_uniform: { tier: 'medium', weight: 15 },
   timezone_language_mismatch: { tier: 'medium', weight: 10 },
-  ua_touch_mismatch: { tier: 'medium', weight: 15 },
   abnormal_webgl: { tier: 'medium', weight: 15 },
 
   // Soft (3-7)
@@ -145,9 +144,8 @@ function analyzeRawData(payload: AntiMacroSubmission['payload']): DetectedSignal
     }
   }
 
-  // === 마우스/터치 시그널 ===
+  // === 마우스 시그널 ===
   const movements = rawData.mouseMovements ?? [];
-  const touchPaths = rawData.touchPaths ?? [];
 
   // Hard: untrusted 이벤트
   if (rawData.hasUntrustedEvent) {
@@ -158,12 +156,12 @@ function analyzeRawData(payload: AntiMacroSubmission['payload']): DetectedSignal
     });
   }
 
-  // Hard: 마우스/터치 이벤트 0건
-  if (movements.length === 0 && touchPaths.length === 0) {
+  // Hard: 마우스 이벤트 0건
+  if (movements.length === 0) {
     detected.push({
-      ...SIGNAL_WEIGHTS.zero_mouse_touch_events,
-      name: 'zero_mouse_touch_events',
-      value: { mouseEvents: 0, touchPaths: 0 },
+      ...SIGNAL_WEIGHTS.zero_mouse_events,
+      name: 'zero_mouse_events',
+      value: { mouseEvents: 0 },
     });
   }
 
@@ -224,17 +222,6 @@ function analyzeRawData(payload: AntiMacroSubmission['payload']): DetectedSignal
       });
     }
 
-    // Medium: UA-터치 불일치
-    if (env.device?.mismatch) {
-      detected.push({
-        ...SIGNAL_WEIGHTS.ua_touch_mismatch,
-        name: 'ua_touch_mismatch',
-        value: {
-          uaIsMobile: env.device.uaIsMobile,
-          hasTouchSupport: env.device.hasTouchSupport,
-        },
-      });
-    }
   }
 
   return detected;
