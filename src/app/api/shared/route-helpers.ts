@@ -1,5 +1,17 @@
 import { NextResponse } from 'next/server';
 import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
+import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
+
+export function createUnauthorizedResponse() {
+  return NextResponse.json(
+    {
+      code: AUTH_ERROR_CODES.AUTH.INVALID_AUTH,
+      message: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_AUTH,
+      data: null,
+    },
+    { status: 401 }
+  );
+}
 
 export function createBadRequestResponse(data: Record<string, string>) {
   return NextResponse.json(
