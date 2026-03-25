@@ -1,55 +1,92 @@
 'use client';
 
-import React from 'react';
-
+import { useEffect, useState } from 'react';
 import { CardOverlay } from '@/components/content/card-overlay';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
+import { useRouter } from 'next/navigation';
+import { ApiResponse } from '@/types/api/common';
 
-const dummy = Array.from({ length: 10 }).map((_, index) => {
-  return {
-    id: index,
-    title: `Title ${index}`,
-    description: `Sub Text ${index}`,
-    thumbnailUrl: 'https://placehold.co/300x300',
-    caption: `Caption ${index}`,
-    countView: 0,
-    countLike: 0,
-  };
-});
+interface MagazineCard {
+  magazineId: number;
+  title: string | null;
+  supportingText: string | null;
+  thumbnailUrl: string | null;
+}
+
+interface MagazineCardResponse {
+  sectionKey: 'MAGAZINES';
+  itemCount: number;
+  items: MagazineCard[];
+}
+
+const MAGAZINE_LIMIT = 3;
 
 export const Magazine = () => {
-  const [item, setItems] = React.useState(dummy);
+  const [magazineCards, setMagazineCards] = useState<MagazineCard[] | null>(
+    null
+  );
+  const router = useRouter();
 
-  const handleClick = (id: number) => {
-    console.log('clicked item id: ', id);
-  };
+  useEffect(() => {
+    const fetchNotable = async () => {
+      try {
+        const response = await fetch(
+          `/api/popups/magazines?limit=${MAGAZINE_LIMIT}`,
+          {
+            method: 'GET',
+          }
+        );
 
-  const handleClickMore = () => {
-    console.log('more');
+        if (!response.ok) return;
+
+        const result =
+          (await response.json()) as ApiResponse<MagazineCardResponse>;
+        setMagazineCards(result.data?.items ?? []);
+      } catch (error) {
+        console.error('[magazine] 매거진 조회 실패', error);
+      }
+    };
+    fetchNotable();
+  }, []);
+
+  if (magazineCards === null) return;
+
+  const handleClick = (magazineId: number) => {
+    router.push(`/magazines/${magazineId}`);
   };
 
   return (
-    <Section title="매거진" showButtonMore onClickMore={handleClickMore}>
-      <GridCarousel
-        gridSize={{
-          default: 1,
-          md: 2,
-          lg: 4,
-        }}
-        carouselOpts={{ align: 'start' }}
-        items={item.map((item) => (
-          <CardOverlay
-            key={item.id}
-            thumbnailUrl={item.thumbnailUrl}
-            thumbnailRatio="16/9"
-            title={item.title}
-            description={item.description}
-            caption={item.caption}
-            onClick={() => handleClick(item.id)}
-          />
-        ))}
-      />
+    <Section
+      title="매거진"
+      showButtonMore
+      // TODO 더보기 작업 필요
+      //onClickMore={handleClickMore}
+    >
+      {magazineCards.length === 0 ? (
+        <div className="min-h-[250px] flex items-center justify-center">
+          현재 매거진이 없어요.
+        </div>
+      ) : (
+        <GridCarousel
+          gridSize={{
+            default: 1,
+            md: 2,
+            lg: 4,
+          }}
+          carouselOpts={{ align: 'start' }}
+          items={magazineCards.map((magazineCard) => (
+            <CardOverlay
+              key={magazineCard.magazineId}
+              thumbnailUrl={magazineCard.thumbnailUrl ?? undefined}
+              thumbnailRatio="16/9"
+              title={magazineCard.title ?? undefined}
+              description={magazineCard.supportingText ?? undefined}
+              onClick={() => handleClick(magazineCard.magazineId)}
+            />
+          ))}
+        />
+      )}
     </Section>
   );
 };
