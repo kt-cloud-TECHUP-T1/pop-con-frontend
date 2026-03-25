@@ -27,7 +27,7 @@ export default function SaleInfoCard(props: SaleDetailSidebarProps) {
   > | null>(null);
 
   useEffect(() => {
-    if (phaseType !== 'DRAW' || !popupId) return;
+    if (phaseType !== 'AUCTION' || !popupId) return;
 
     const fetchDraw = async () => {
       try {
