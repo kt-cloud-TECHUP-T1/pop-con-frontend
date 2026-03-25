@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
 import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
+import {
+  createBadRequestResponse,
+  createServerErrorResponse,
+  handleProxyResponse,
+} from '@/app/api/shared/route-helpers';
 
-const NEXT_PUBLIC_API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://devapi.popcon.store';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
 
 type SignupAgreements = {
   isPrivacyPolicyAgreed: boolean;
@@ -15,17 +18,6 @@ type SignupAgreements = {
 type SignupRequest = {
   agreements: SignupAgreements;
 };
-
-function createInvalidInputResponse(fieldErrors: Record<string, string>) {
-  return NextResponse.json(
-    {
-      code: API_ERROR_CODES.COMMON.BAD_REQUEST,
-      message: API_MESSAGES.COMMON.INVALID_INPUT,
-      data: fieldErrors,
-    },
-    { status: 400 }
-  );
-}
 
 function createSessionExpiredResponse() {
   return NextResponse.json(
@@ -70,22 +62,6 @@ function validateSignupRequest(body: Partial<SignupRequest>) {
   return fieldErrors;
 }
 
-function appendSetCookieHeaders(
-  response: Response,
-  nextResponse: NextResponse
-) {
-  if (typeof response.headers.getSetCookie !== 'function') {
-    console.error(
-      '[auth/signup/appendSetCookieHeaders] getSetCookie는 지원되지 않습니다.'
-    );
-    return;
-  }
-
-  response.headers.getSetCookie().forEach((value) => {
-    nextResponse.headers.append('Set-Cookie', value);
-  });
-}
-
 export async function POST(request: NextRequest) {
   const cookieHeader = request.headers.get('cookie');
   const registerToken = request.cookies.get('register_token')?.value;
@@ -99,7 +75,7 @@ export async function POST(request: NextRequest) {
   }
 
   if (!body || typeof body !== 'object') {
-    return createInvalidInputResponse({
+    return createBadRequestResponse({
       'agreements.isPrivacyPolicyAgreed':
         AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED,
       'agreements.isIdentifierPolicyAgreed':
@@ -112,7 +88,7 @@ export async function POST(request: NextRequest) {
   const fieldErrors = validateSignupRequest(body as Partial<SignupRequest>);
 
   if (Object.keys(fieldErrors).length > 0) {
-    return createInvalidInputResponse(fieldErrors);
+    return createBadRequestResponse(fieldErrors);
   }
 
   if (!registerToken) {
@@ -120,7 +96,7 @@ export async function POST(request: NextRequest) {
   }
 
   try {
-    const response = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/auth/signup`, {
+    const response = await fetch(`${API_BASE_URL}/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -133,22 +109,9 @@ export async function POST(request: NextRequest) {
       cache: 'no-store',
     });
 
-    const responseBody = await response.json();
-    const nextResponse = NextResponse.json(responseBody, {
-      status: response.status,
-    });
-    appendSetCookieHeaders(response, nextResponse);
-    return nextResponse;
+    return handleProxyResponse(response, { withCookies: true });
   } catch (error) {
-    console.error(error);
-
-    return NextResponse.json(
-      {
-        code: API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
-        message: API_MESSAGES.COMMON.SERVER_ERROR,
-        data: null,
-      },
-      { status: 500 }
-    );
+    console.error('[auth/signup]', error);
+    return createServerErrorResponse();
   }
 }

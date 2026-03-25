@@ -1,112 +1,66 @@
-import { NextResponse } from 'next/server';
-import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
-import { AUTH_MESSAGES } from '@/constants/auth';
+import { NextRequest, NextResponse } from 'next/server';
+import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
+import {
+  createBadRequestResponse,
+  createServerErrorResponse,
+  handleProxyResponse,
+} from '@/app/api/shared/route-helpers';
 
 type IdentityCompleteRequestBody = {
   identityVerificationId?: string;
 };
 
-const NEXT_PUBLIC_API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://devapi.popcon.store';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
 
-function createInvalidInputResponse() {
+function createSessionExpiredResponse() {
   return NextResponse.json(
     {
-      code: API_ERROR_CODES.COMMON.BAD_REQUEST,
-      message: API_MESSAGES.COMMON.INVALID_INPUT,
-      data: {
-        identityVerificationId: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
-      },
+      code: AUTH_ERROR_CODES.AUTH.SESSION_EXPIRED,
+      message: AUTH_MESSAGES.TERMS.ERROR.SESSION_EXPIRED,
+      data: null,
     },
-    { status: 400 }
+    { status: 401 }
   );
 }
 
-function appendSetCookieHeaders(
-  response: Response,
-  nextResponse: NextResponse
-) {
-  if (typeof response.headers.getSetCookie !== 'function') {
-    console.error(
-      '[auth/identity/complete/appendSetCookieHeaders] getSetCookie는 지원되지 않습니다.'
-    );
-    return;
-  }
-
-  response.headers.getSetCookie().forEach((value) => {
-    nextResponse.headers.append('Set-Cookie', value);
-  });
-}
-
-async function safeParseResponseBody(response: Response) {
-  const responseText = await response.text();
-
-  if (!responseText) {
-    return {
-      code: API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
-      message: API_MESSAGES.COMMON.SERVER_ERROR,
-      data: null,
-    };
-  }
-
-  try {
-    return JSON.parse(responseText) as unknown;
-  } catch {
-    return {
-      code: API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
-      message: API_MESSAGES.COMMON.SERVER_ERROR,
-      data: null,
-    };
-  }
-}
-
-export async function POST(request: Request) {
-  let identityVerificationId = '';
+export async function POST(request: NextRequest) {
   const cookieHeader = request.headers.get('cookie');
+  const registerToken = request.cookies.get('register_token')?.value;
+  let identityVerificationId = '';
 
   try {
     const body = (await request.json()) as IdentityCompleteRequestBody;
     identityVerificationId = body.identityVerificationId?.trim() ?? '';
   } catch {
-    return createInvalidInputResponse();
+    return createBadRequestResponse({
+      identityVerificationId: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
+    });
   }
 
   if (!identityVerificationId) {
-    return createInvalidInputResponse();
+    return createBadRequestResponse({
+      identityVerificationId: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_ID,
+    });
+  }
+
+  if (!registerToken) {
+    return createSessionExpiredResponse();
   }
 
   try {
-    const response = await fetch(
-      `${NEXT_PUBLIC_API_BASE_URL}/auth/identity/complete`,
-      {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          ...(cookieHeader ? { Cookie: cookieHeader } : {}),
-        },
-        body: JSON.stringify({
-          identityVerificationId,
-        }),
-        cache: 'no-store',
-      }
-    );
-
-    const responseBody = await safeParseResponseBody(response);
-    const nextResponse = NextResponse.json(responseBody, {
-      status: response.status,
-    });
-    appendSetCookieHeaders(response, nextResponse);
-    return nextResponse;
-  } catch (error) {
-    console.error(error);
-
-    return NextResponse.json(
-      {
-        code: API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
-        message: API_MESSAGES.COMMON.SERVER_ERROR,
-        data: null,
+    const response = await fetch(`${API_BASE_URL}/auth/identity/complete`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(cookieHeader ? { Cookie: cookieHeader } : {}),
       },
-      { status: 500 }
-    );
+      body: JSON.stringify({ identityVerificationId }),
+      cache: 'no-store',
+    });
+
+    return handleProxyResponse(response, { withCookies: true });
+  } catch (error) {
+    console.error('[identity/complete]', error);
+    return createServerErrorResponse();
   }
 }
