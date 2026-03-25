@@ -20,8 +20,7 @@ export async function POST(request: NextRequest) {
   try {
     const response = await fetch(`${API_BASE_URL}/auth/token/refresh`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ refreshToken }),
+      headers: { Cookie: `refresh_token=${refreshToken}` },
       cache: 'no-store',
     });
 
