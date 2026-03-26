@@ -7,6 +7,7 @@ import { Section } from '../components/section';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { useRouter } from 'next/navigation';
 import { ApiResponse } from '@/types/api/common';
+import { EndingSoonSkeleton } from '../components/skeletons';
 
 interface EndingSoonCard {
   popupId: number;
@@ -45,30 +46,42 @@ export const EndingSoon = () => {
   const router = useRouter();
 
   useEffect(() => {
-    const fetchNotable = async () => {
+    const controller = new AbortController();
+
+    const fetchEndingSoon = async () => {
       try {
         const response = await fetch(
           `/api/popups/ending-soon?limit=${ENDING_SOON_LIMIT}`,
           {
             method: 'GET',
+            signal: controller.signal,
             headers: {
               ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
             },
           }
         );
 
+        if (!response.ok) {
+          setEndingSoonCards([]);
+          return;
+        }
+
         const result =
           (await response.json()) as ApiResponse<EndingSoonCardResponse>;
         setEndingSoonCards(result.data?.items ?? []);
       } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
         console.error('[ending-soon] 곧 종료되는 팝업 조회 실패', error);
+        setEndingSoonCards([]);
       }
     };
-    fetchNotable();
+    fetchEndingSoon();
     // NOTE 좋아요 기능 붙을 때를 위해 대비
+    return () => controller.abort();
   }, [accessToken]);
 
-  if (endingSoonCards === null) return;
+  if (endingSoonCards === null) return <EndingSoonSkeleton />;
 
   const handleClick = (popupId: number) => {
     router.push(`/ending-soon/${popupId}`);
