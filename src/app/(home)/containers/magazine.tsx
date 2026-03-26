@@ -6,6 +6,7 @@ import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
 import { useRouter } from 'next/navigation';
 import { ApiResponse } from '@/types/api/common';
+import { MagazineSkeleton } from '../components/skeletons';
 
 interface MagazineCard {
   magazineId: number;
@@ -50,7 +51,7 @@ export const Magazine = () => {
     fetchNotable();
   }, []);
 
-  if (magazineCards === null) return;
+  if (magazineCards === null) return <MagazineSkeleton />;
 
   const handleClick = (magazineId: number) => {
     router.push(`/magazines/${magazineId}`);

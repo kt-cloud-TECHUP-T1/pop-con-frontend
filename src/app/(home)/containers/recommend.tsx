@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
 import { ApiResponse } from '@/types/api/common';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { RecommendSkeleton } from '../components/skeletons';
+import { useRouter } from 'next/navigation';
 
 interface RecommendedCard {
   popupId: number;
@@ -39,12 +41,16 @@ export const Recommend = () => {
     RecommendedCard[] | null
   >(null);
   const accessToken = useAuthStore((state) => state.accessToken);
+  const router = useRouter();
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchRecommended = async () => {
       try {
         const response = await fetch('/api/popups/recommended', {
           method: 'GET',
+          signal: controller.signal,
           headers: {
             ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
           },
@@ -59,14 +65,21 @@ export const Recommend = () => {
           (await response.json()) as ApiResponse<RecommendedCardResponse>;
         setRecommendedCards(result.data?.items ?? []);
       } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
         console.error('[recommend] 추천 팝업 조회 실패', error);
       }
     };
     fetchRecommended();
     // NOTE 좋아요 기능 붙을 때를 위해 대비
+    return () => controller.abort();
   }, [accessToken]);
 
-  if (recommendedCards === null) return;
+  const handleClick = (popupId: number) => {
+    router.push(`/auction/${popupId}`);
+  };
+
+  if (recommendedCards === null) return <RecommendSkeleton />;
 
   return (
     <Section
@@ -103,6 +116,7 @@ export const Recommend = () => {
               showButtonLike
               showCountView
               showCountLike
+              onClick={() => handleClick(recommendedCard.popupId)}
             />
           ))}
         />

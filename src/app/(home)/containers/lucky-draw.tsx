@@ -1,69 +1,208 @@
 'use client';
 
-import React from 'react';
-
+import { useEffect, useState } from 'react';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { ApiResponse } from '@/types/api/common';
+import { LuckyDrawSkeleton } from '../components/skeletons';
+import { Typography } from '@/components/ui/typography';
+import { Box } from '@/components/ui/box';
 
-const dummy = Array.from({ length: 10 }).map((_, index) => {
-  return {
-    id: index,
-    title: `Title ${index}`,
-    description: `Sub Text ${index}`,
-    thumbnailUrl: 'https://placehold.co/300x300',
-    caption: `Caption ${index}`,
-    countView: 0,
-    countLike: 0,
+type DrawTab = 'OPEN' | 'UPCOMING';
+
+interface LuckyDrawCard {
+  popupId: number;
+  title: string;
+  supportingText: null;
+  subText: string | null;
+  caption: string | null;
+  thumbnailUrl: string | null;
+  liked: boolean | null;
+  stats: {
+    likeCount: number;
+    viewCount: number;
   };
-});
+  overlay: {
+    type: 'DRAW_OPEN_AT';
+    rank: null;
+  } | null;
+  phase: {
+    type: 'DRAW';
+    status: 'UPCOMING' | 'OPEN' | 'CLOSED';
+    openAt: string;
+    closeAt: string;
+  };
+}
+
+interface LuckyDrawCardResponse {
+  sectionKey: 'DRAWS_OPEN' | 'DRAWS_UPCOMING';
+  itemCount: number;
+  items: LuckyDrawCard[];
+}
+
+const formatOpenAt = (openAt: string) => {
+  const date = new Date(openAt);
+  const datePart = new Intl.DateTimeFormat('ko-KR', {
+    month: 'numeric',
+    day: 'numeric',
+    weekday: 'short',
+  }).format(date);
+  const timePart = new Intl.DateTimeFormat('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(date);
+  return { datePart, timePart };
+};
 
 export const LuckyDraw = () => {
-  const [item, setItems] = React.useState(dummy);
+  const [activeTab, setActiveTab] = useState<DrawTab>('OPEN');
+  const [openCards, setOpenCards] = useState<LuckyDrawCard[] | null>(null);
+  const [upcomingCards, setUpcomingCards] = useState<LuckyDrawCard[] | null>(
+    null
+  );
+  const accessToken = useAuthStore((state) => state.accessToken);
   const router = useRouter();
 
-  const handleClick = (id: number) => {
-    console.log('clicked item id: ', id);
-    router.push(`/draw/${1}`);
-  };
+  useEffect(() => {
+    const controller = new AbortController();
 
-  const handleClickLike = (id: number) => {
-    console.log('liked item id: ', id);
-  };
+    const fetchDraws = async () => {
+      const headers: HeadersInit = {
+        'Content-Type': 'application/json',
+        ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+      };
 
-  const handleClickMore = () => {
-    console.log('more');
+      try {
+        const [openResponse, upcomingResponse] = await Promise.all([
+          fetch('/api/popups?phaseType=DRAW&phaseStatus=OPEN&limit=10', {
+            signal: controller.signal,
+            headers,
+          }),
+          fetch(
+            '/api/popups?phaseType=DRAW&phaseStatus=UPCOMING&sort=SOONEST_OPEN&limit=10',
+            { signal: controller.signal, headers }
+          ),
+        ]);
+
+        if (openResponse.ok) {
+          const result =
+            (await openResponse.json()) as ApiResponse<LuckyDrawCardResponse>;
+          setOpenCards(result.data?.items ?? []);
+        } else {
+          setOpenCards([]);
+        }
+
+        if (upcomingResponse.ok) {
+          const result =
+            (await upcomingResponse.json()) as ApiResponse<LuckyDrawCardResponse>;
+          setUpcomingCards(result.data?.items ?? []);
+        } else {
+          setUpcomingCards([]);
+        }
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
+        console.error('[lucky-draw] 드로우 조회 실패', error);
+      }
+    };
+
+    fetchDraws();
+
+    return () => controller.abort();
+  }, [accessToken]);
+
+  if (openCards === null || upcomingCards === null)
+    return <LuckyDrawSkeleton />;
+
+  const activeDrawCards = activeTab === 'OPEN' ? openCards : upcomingCards;
+
+  const handleClick = (popupId: number) => {
+    router.push(`/draw/${popupId}`);
   };
 
   return (
-    <Section title="드로우" showButtonMore onClickMore={handleClickMore}>
-      <GridCarousel
-        gridSize={{
-          default: 2,
-          md: 3,
-          lg: 4,
-        }}
-        carouselOpts={{ align: 'start' }}
-        alignArrowToRatio="3/4"
-        items={item.map((item) => (
-          <CardThumbnail
-            key={item.id}
-            thumbnailUrl={item.thumbnailUrl}
-            thumbnailRatio="3/4"
-            title={item.title}
-            description={item.description}
-            caption={item.caption}
-            countView={item.countView}
-            countLike={item.countLike}
-            showButtonLike
-            showCountView
-            showCountLike
-            onClick={() => handleClick(item.id)}
-            onClickLike={() => handleClickLike(item.id)}
-          />
+    <Section
+      title="드로우"
+      showButtonMore
+      // TODO 더보기 작업 필요
+      // onClickMore={handleClickMore}
+    >
+      <div className="flex gap-2 mb-6">
+        {(
+          [
+            { tab: 'UPCOMING', label: '오픈 예정' },
+            { tab: 'OPEN', label: '드로우 진행중' },
+          ] as { tab: DrawTab; label: string }[]
+        ).map(({ tab, label }) => (
+          <button
+            key={tab}
+            type="button"
+            onClick={() => setActiveTab(tab)}
+            className={`px-4 py-1.5 rounded-full text-sm font-medium transition-colors ${
+              activeTab === tab
+                ? 'bg-black text-white'
+                : 'bg-[var(--neutral-95)] text-[var(--neutral-40)]'
+            }`}
+          >
+            {label}
+          </button>
         ))}
-      />
+      </div>
+
+      {activeDrawCards.length === 0 ? (
+        <div className="min-h-[250px] flex items-center justify-center">
+          {activeTab === 'OPEN'
+            ? '진행 중인 드로우가 없어요.'
+            : '오픈 예정 드로우가 없어요.'}
+        </div>
+      ) : (
+        <GridCarousel
+          gridSize={{ default: 2, md: 3, lg: 4 }}
+          carouselOpts={{ align: 'start' }}
+          alignArrowToRatio="3/4"
+          items={activeDrawCards.map((activeDrawCard) => {
+            const { datePart, timePart } =
+              activeDrawCard.overlay?.type === 'DRAW_OPEN_AT'
+                ? formatOpenAt(activeDrawCard.phase.openAt)
+                : { datePart: null, timePart: null };
+
+            return (
+              <CardThumbnail
+                key={activeDrawCard.popupId}
+                thumbnailUrl={activeDrawCard.thumbnailUrl ?? undefined}
+                thumbnailRatio="3/4"
+                title={activeDrawCard.title}
+                description={activeDrawCard.subText ?? undefined}
+                caption={activeDrawCard.caption ?? undefined}
+                countView={activeDrawCard.stats.viewCount}
+                countLike={activeDrawCard.stats.likeCount}
+                showButtonLike
+                showCountView
+                showCountLike
+                onClick={() => handleClick(activeDrawCard.popupId)}
+                // TODO 좋아요 작업 필요
+                // onClickLike={() => handleClickLike(activeDrawCard.popupId)}
+                overlayBadge={
+                  datePart && timePart ? (
+                    <Typography
+                      variant="label-2"
+                      weight="medium"
+                      className="text-white"
+                    >
+                      {datePart} {timePart} 오픈
+                    </Typography>
+                  ) : undefined
+                }
+                overlayBadgeBackground="var(--orange-50)"
+              />
+            );
+          })}
+        />
+      )}
     </Section>
   );
 };
