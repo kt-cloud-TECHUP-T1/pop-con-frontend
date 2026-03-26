@@ -95,10 +95,10 @@ export const Ranking = () => {
           }}
           carouselOpts={{ align: 'start' }}
           alignArrowToRatio="3/4"
-          items={rankingCards.map((rankingCard, index) => (
+          items={rankingCards.map((rankingCard) => (
             <CardThumbnail
               key={rankingCard.popupId}
-              index={index + 1}
+              index={rankingCard.overlay.rank}
               thumbnailUrl={rankingCard.thumbnailUrl ?? undefined}
               thumbnailRatio="3/4"
               title={rankingCard.title}
