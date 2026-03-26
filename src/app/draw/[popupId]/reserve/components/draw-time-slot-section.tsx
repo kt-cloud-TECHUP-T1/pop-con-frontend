@@ -1,27 +1,26 @@
 'use client';
 
 import { Typography } from '@/components/ui/typography';
-import { ReserveTimeSlotCard } from './reserve-time-slot-card';
-import type { AuctionSlot } from './auction-reserve-page-client';
+import { DrawTimeSlotCard } from './draw-time-slot-card';
+import type { DrawSlot } from './draw-reserve-page-client';
 
-interface ReserveTimeSlotSectionProps {
+interface DrawTimeSlotSectionProps {
   selectedDate: string | null;
   selectedOptionId: number | null;
-  slots: AuctionSlot[];
+  slots: DrawSlot[];
   onSelectSlot: (optionId: number) => void;
   errorMessage?: string | null;
 }
 
-export function ReserveTimeSlotSection({
+export function DrawTimeSlotSection({
   selectedDate,
   selectedOptionId,
   slots,
   onSelectSlot,
   errorMessage,
-}: ReserveTimeSlotSectionProps) {
+}: DrawTimeSlotSectionProps) {
   return (
     <section>
-      {/* 회차 섹션 제목 */}
       <div className="flex flex-col gap-xs">
         <Typography variant="heading-2" weight="bold">
           회차를 선택해주세요
@@ -40,7 +39,7 @@ export function ReserveTimeSlotSection({
           </Typography>
         </div>
       ) : errorMessage ? (
-        // AU001 / AU002 / AU003 에러
+        // D001 / D002 / D003 에러
         <div className="flex min-h-[250px] items-center justify-center mt-6">
           <Typography
             variant="label-2"
@@ -62,7 +61,7 @@ export function ReserveTimeSlotSection({
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-s md:grid-cols-3">
           {slots.map((slot) => (
-            <ReserveTimeSlotCard
+            <DrawTimeSlotCard
               key={slot.optionId}
               slot={slot}
               isSelected={selectedOptionId === slot.optionId}

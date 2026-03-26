@@ -1,9 +1,11 @@
+// 드로우
+
 import SaleTimeCountBar from '@/components/sale-detail/contents/sale-time-count-bar';
 import { Wrapper } from '@/components/layout/wrapper';
-import { AuctionReservePageClient } from './components/auction-reserve-page-client';
-import { mockReserveData } from './mock-reserve-data';
+import { DrawReservePageClient } from './components/draw-reserve-page-client';
+import { mockReserveData } from '@/app/auction/[popupId]/reserve/mock-reserve-data';
 
-export default async function AuctionReservePage({
+export default async function DrawReservePage({
   params,
 }: {
   params: Promise<{ popupId: string }>;
@@ -12,16 +14,14 @@ export default async function AuctionReservePage({
 
   return (
     <>
-      {/* 상단 남은 시간 바 재활용 */}
       <SaleTimeCountBar
         phaseStatus={mockReserveData.phaseStatus}
         auctionCloseAt={mockReserveData.auctionCloseAt}
         serverTime={mockReserveData.serverTime}
       />
 
-      {/* 날짜/회차 선택 상태는 아래 컴포넌트에서 관리 */}
       <Wrapper className="pt-8 pb-3xl">
-        <AuctionReservePageClient auctionId={popupId} />
+        <DrawReservePageClient drawId={popupId} />
       </Wrapper>
     </>
   );

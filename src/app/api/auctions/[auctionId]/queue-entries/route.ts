@@ -1,45 +1,44 @@
+// NOTE 대충 틀만 잡아둔 것
+
 import {
-  // TODO 테스트 후 주석 제거
-  // createUnauthorizedResponse,
   createServerErrorResponse,
+  createUnauthorizedResponse,
   handleProxyResponse,
 } from '@/app/api/shared/route-helpers';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
 
-export async function GET(
-  _request: Request,
+export async function POST(
+  request: Request,
   { params }: { params: Promise<{ auctionId: string }> }
 ) {
   if (!API_BASE_URL) {
     return createServerErrorResponse();
   }
 
-  // TODO 테스트 후 주석 제거
-  // const authorization = request.headers.get('Authorization');
   const { auctionId } = await params;
 
-  // TODO 테스트 후 주석 제거
-  // if (!authorization) {
-  //   return createUnauthorizedResponse();
-  // }
+  const authorization = request.headers.get('Authorization');
+
+  if (!authorization) {
+    return createUnauthorizedResponse();
+  }
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/auctions/${auctionId}/dates`,
+      `${API_BASE_URL}/auctions/${auctionId}/queue-entries`,
       {
-        method: 'GET',
+        method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          // TODO 테스트 후 주석 제거
-          // Authorization: authorization,
+          Authorization: authorization,
         },
       }
     );
 
     return handleProxyResponse(response);
   } catch (error) {
-    console.error('[GET /api/auctions/[auctionId]/dates]', error);
+    console.error('[POST /api/auctions/[auctionId]/queue-entries]', error);
     return createServerErrorResponse();
   }
 }
