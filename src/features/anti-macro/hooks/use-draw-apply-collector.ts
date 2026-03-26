@@ -6,7 +6,11 @@ import { createMouseCollector } from '../collectors/mouse-touch';
 import { createTimingCollector } from '../collectors/timing';
 import { useAntiMacro } from './use-anti-macro';
 
-export function useDrawApplyCollector() {
+type UseDrawApplyCollectorOptions = {
+  userId: string;
+};
+
+export function useDrawApplyCollector({ userId }: UseDrawApplyCollectorOptions) {
   const { clickCollector, mouseCollector, collectors } = useMemo(() => {
     const click = createClickBehaviorCollector();
     const mouse = createMouseCollector();
@@ -19,16 +23,16 @@ export function useDrawApplyCollector() {
     };
   }, []);
 
-  const { getPayload, submitSignals, isSubmitting, lastResponse } = useAntiMacro({
+  // 신청: userId만 전송
+  const { getPayload, submitSignals } = useAntiMacro({
     page: 'draw-application',
     collectors,
+    userId,
   });
 
   return {
     getPayload,
     submitSignals,
-    isSubmitting,
-    lastResponse,
     getClicks: () => clickCollector.getClicks(),
     getMovements: () => mouseCollector.getMovements(),
   };

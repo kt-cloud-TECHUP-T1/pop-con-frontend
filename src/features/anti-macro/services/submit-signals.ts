@@ -1,34 +1,31 @@
-import type { AntiMacroSubmission, PageSignalPayload, SignalSubmitResponse } from '../types';
-import { fetchNonce } from './nonce';
-import { signPayload } from '../utils/signing';
+import type { PageSignalPayload } from '../types';
+import { ANTI_MACRO_API_BASE } from '../constants';
 
-export async function submitSignals(
+type SubmitOptions = {
+  visitorId?: string;
+  userId?: string;
+};
+
+/**
+ * fire-and-forget 시그널 전송
+ * Next.js 프록시를 거치므로 서버가 백엔드 전달 보장
+ */
+export function submitSignals(
   payload: PageSignalPayload,
-): Promise<SignalSubmitResponse> {
-  const { nonce, challenge } = await fetchNonce();
-  const signature = await signPayload(payload, nonce, challenge);
-  const deviceId = localStorage.getItem('deviceId') ?? '';
-
-  const submission: AntiMacroSubmission = {
-    nonce,
+  options: SubmitOptions = {},
+): void {
+  const submission = {
     timestamp: Date.now(),
     payload,
-    signature,
-    deviceId,
+    ...(options.visitorId && { visitorId: options.visitorId }),
+    ...(options.userId && { userId: options.userId }),
   };
 
-  const res = await fetch('/api/anti-macro/signals', {
+  fetch(`${ANTI_MACRO_API_BASE}/signals`, {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'X-Device-Id': deviceId,
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(submission),
+  }).catch(() => {
+    // 실패해도 무시 (사일런트)
   });
-
-  if (!res.ok) {
-    throw new Error(`Failed to submit signals: ${res.status}`);
-  }
-
-  return res.json();
 }

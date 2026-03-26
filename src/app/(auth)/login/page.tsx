@@ -7,6 +7,7 @@ import { snackbar } from '@/components/ui/snackbar';
 import { Typography } from '@/components/ui/typography';
 import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
 import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
+import { useLoginCollector } from '@/features/anti-macro';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -38,9 +39,12 @@ export default function Login() {
   const params = useSearchParams();
   const errorCode = params.get('error');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+  const { submitSignals, honeypotProps, honeypotOverlayProps, honeypotWrapperProps } =
+    useLoginCollector();
 
-  const socialLoginHandler = (provider: SocialProvider) => {
+  const socialLoginHandler = async (provider: SocialProvider) => {
     if (isLoggingIn) return;
+console.log(normalizedBaseUrl);
 
     if (!normalizedBaseUrl || !isValidAbsoluteUrl(normalizedBaseUrl)) {
       snackbar.destructive({
@@ -50,6 +54,10 @@ export default function Login() {
       return;
     }
     setIsLoggingIn(true);
+
+    // 안티매크로 시그널 전송 (fire-and-forget)
+    submitSignals();
+
     window.location.href = `${normalizedBaseUrl}/auth/oauth/${provider}`;
   };
 
@@ -81,6 +89,12 @@ export default function Login() {
       <Typography weight="bold" variant="heading-1" className="text-center">
         로그인
       </Typography>
+
+      {/* 허니팟: 봇만 채우는 숨겨진 필드 */}
+      <div {...honeypotWrapperProps}>
+        <input {...honeypotProps} />
+        <div {...honeypotOverlayProps} />
+      </div>
 
       <div className="btn-group w-full max-w-[360px] mx-auto flex flex-col gap-3 pt-ml">
         <Button

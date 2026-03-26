@@ -27,17 +27,20 @@ export function useLoginCollector() {
       };
     }, []);
 
-  const { getPayload, submitSignals, isSubmitting, lastResponse } = useAntiMacro({
+  // 로그인: visitorId(핑거프린트)만 전송, userId 없음
+  // submit 시점에 동적으로 가져옴 (비동기 로딩 완료 후)
+  const getVisitorId = () => fingerprintCollector.getFingerprint()?.visitorId;
+
+  const { getPayload, submitSignals } = useAntiMacro({
     page: 'login',
     collectors,
     getFingerprint,
+    getVisitorId,
   });
 
   return {
     getPayload,
     submitSignals,
-    isSubmitting,
-    lastResponse,
     /** 허니팟 input에 적용할 props */
     honeypotProps: honeypotCollector.getHoneypotProps(),
     /** 허니팟을 덮는 overlay props */

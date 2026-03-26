@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useCallback } from 'react';
 import type {
   PageType,
   PageSignalPayload,
   SignalCollector,
-  SignalSubmitResponse,
 } from '../types';
 import { submitSignals as submitSignalsService } from '../services/submit-signals';
 
@@ -14,22 +13,25 @@ type UseAntiMacroOptions = {
   collectors: SignalCollector[];
   /** 핑거프린트 collector에서 가져올 때 사용 */
   getFingerprint?: () => import('../types').BrowserFingerprint | null;
+  /** visitorId를 동적으로 가져오는 함수 (submit 시점에 호출) */
+  getVisitorId?: () => string | undefined;
+  /** userId (로그인 후 사용) */
+  userId?: string;
 };
 
 type UseAntiMacroReturn = {
   getPayload: () => PageSignalPayload;
-  submitSignals: () => Promise<SignalSubmitResponse>;
-  isSubmitting: boolean;
-  lastResponse: SignalSubmitResponse | null;
+  /** fire-and-forget 시그널 전송 */
+  submitSignals: () => void;
 };
 
 export function useAntiMacro({
   page,
   collectors,
   getFingerprint,
+  getVisitorId,
+  userId,
 }: UseAntiMacroOptions): UseAntiMacroReturn {
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [lastResponse, setLastResponse] = useState<SignalSubmitResponse | null>(null);
   const collectorsRef = useRef(collectors);
   collectorsRef.current = collectors;
 
@@ -44,7 +46,6 @@ export function useAntiMacro({
   const getPayload = useCallback((): PageSignalPayload => {
     const allRaw = collectorsRef.current.map((c) => c.getRawData());
 
-    // rawData 병합
     const rawData: PageSignalPayload['rawData'] = {};
     for (const raw of allRaw) {
       if (raw && typeof raw === 'object') {
@@ -60,25 +61,20 @@ export function useAntiMacro({
     };
   }, [page, getFingerprint]);
 
-  const submitSignals = useCallback(async (): Promise<SignalSubmitResponse> => {
-    setIsSubmitting(true);
-    try {
-      // fingerprintjs 등 비동기 collector 완료 대기
-      await Promise.all(
-        collectorsRef.current.map((c) =>
-          'loadAsync' in c && typeof c.loadAsync === 'function'
-            ? (c as { loadAsync(): Promise<void> }).loadAsync()
-            : Promise.resolve(),
-        ),
-      );
+  const submitSignals = useCallback((): void => {
+    // fingerprint 등 비동기 collector 완료 후 전송
+    Promise.all(
+      collectorsRef.current.map((c) =>
+        'loadAsync' in c && typeof c.loadAsync === 'function'
+          ? (c as { loadAsync(): Promise<void> }).loadAsync()
+          : Promise.resolve(),
+      ),
+    ).then(() => {
       const payload = getPayload();
-      const response = await submitSignalsService(payload);
-      setLastResponse(response);
-      return response;
-    } finally {
-      setIsSubmitting(false);
-    }
-  }, [getPayload]);
+      const visitorId = getVisitorId?.();
+      submitSignalsService(payload, { visitorId, userId });
+    });
+  }, [getPayload, getVisitorId, userId]);
 
-  return { getPayload, submitSignals, isSubmitting, lastResponse };
+  return { getPayload, submitSignals };
 }
