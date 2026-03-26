@@ -2,31 +2,22 @@
 
 import { Typography } from '@/components/ui/typography';
 import { ReserveTimeSlotCard } from './reserve-time-slot-card';
-
-export interface ReserveSlot {
-  id: string;
-  label: string;
-  time: string;
-  remaining: number;
-}
-
-export interface ReserveSchedule {
-  date: string;
-  slots: ReserveSlot[];
-}
+import type { AuctionSlot } from './auction-reserve-page-client';
 
 interface ReserveTimeSlotSectionProps {
   selectedDate: string | null;
-  selectedSlotId: string | null;
-  schedule: ReserveSchedule | null;
-  onSelectSlot: (slotId: string) => void;
+  selectedOptionId: number | null;
+  slots: AuctionSlot[];
+  onSelectSlot: (optionId: number) => void;
+  errorMessage?: string | null;
 }
 
 export function ReserveTimeSlotSection({
   selectedDate,
-  selectedSlotId,
-  schedule,
+  selectedOptionId,
+  slots,
   onSelectSlot,
+  errorMessage,
 }: ReserveTimeSlotSectionProps) {
   return (
     <section>
@@ -37,25 +28,44 @@ export function ReserveTimeSlotSection({
         </Typography>
       </div>
 
-      {!selectedDate || !schedule ? (
-        // 날짜 선택 전에는 회차 대신 안내 문구만 보여준다.
+      {!selectedDate ? (
+        // 날짜 선택 전 안내
         <div className="flex min-h-[250px] items-center justify-center mt-6">
           <Typography
-            variant="body-1"
-            className="text-center whitespace-pre-line text-[var(--content-placeholder)]"
+            variant="label-2"
+            className="text-center whitespace-pre-line text-[var(--content-extra-low)]"
           >
             원하는 날짜를 선택하면{'\n'}이용 가능한 회차 정보를 확인할 수
             있습니다.
           </Typography>
         </div>
+      ) : errorMessage ? (
+        // AU001 / AU002 / AU003 에러
+        <div className="flex min-h-[250px] items-center justify-center mt-6">
+          <Typography
+            variant="label-2"
+            className="text-center text-[var(--content-extra-low)]"
+          >
+            {errorMessage}
+          </Typography>
+        </div>
+      ) : slots.length === 0 ? (
+        // 날짜 선택 후 조회 가능한 회차 없음
+        <div className="flex min-h-[250px] items-center justify-center mt-6">
+          <Typography
+            variant="label-2"
+            className="text-center text-[var(--content-extra-low)]"
+          >
+            해당 날짜에 이용 가능한 회차가 없습니다.
+          </Typography>
+        </div>
       ) : (
-        // 날짜 선택 후에는 해당 날짜의 회차 카드 목록을 grid로 렌더링한다.
         <div className="mt-6 grid grid-cols-2 gap-s md:grid-cols-3">
-          {schedule.slots.map((slot) => (
+          {slots.map((slot) => (
             <ReserveTimeSlotCard
-              key={slot.id}
+              key={slot.optionId}
               slot={slot}
-              isSelected={selectedSlotId === slot.id}
+              isSelected={selectedOptionId === slot.optionId}
               onSelect={onSelectSlot}
             />
           ))}

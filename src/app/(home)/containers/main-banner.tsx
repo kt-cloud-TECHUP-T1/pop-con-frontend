@@ -3,7 +3,9 @@
 import { CardOverlay } from '@/components/content/card-overlay';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import type { ApiResponse } from '@/types/api/common';
+import { useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { MainBannerSkeleton } from '../components/skeletons';
 
 interface BannerCard {
   popupId: number;
@@ -33,6 +35,7 @@ const BANNER_LIMIT = 5;
 
 export const MainBanner = () => {
   const [bannerCards, setBannerCards] = useState<BannerCard[] | null>(null);
+  const router = useRouter();
 
   useEffect(() => {
     const fetchBanners = async () => {
@@ -44,21 +47,36 @@ export const MainBanner = () => {
           }
         );
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          setBannerCards([]);
+          return;
+        }
 
         const result =
           (await response.json()) as ApiResponse<BannerCardResponse>;
         setBannerCards(result.data?.items ?? []);
       } catch (error) {
         console.error('[banner] 배너 조회 실패', error);
+        setBannerCards([]);
       }
     };
     fetchBanners();
   }, []);
 
-  if (bannerCards === null) return null;
+  if (bannerCards === null) return <MainBannerSkeleton />;
 
   if (bannerCards.length === 0) return null;
+
+  const handleBannersClick = (
+    popupId: number,
+    phaseType: 'AUCTION' | 'DRAW'
+  ) => {
+    if (phaseType === 'AUCTION') {
+      router.push(`/auction/${popupId}`);
+    } else {
+      router.push(`/draw/${popupId}`);
+    }
+  };
 
   return (
     <GridCarousel
@@ -67,14 +85,15 @@ export const MainBanner = () => {
       showIndexes
       items={bannerCards.map((bannerCard) => (
         <div key={bannerCard.popupId} className="w-[384px]">
-          {/* TODO 카드 클릭 작업 필요 */}
           <CardOverlay
             thumbnailUrl={bannerCard.thumbnailUrl ?? undefined}
             thumbnailAlt={bannerCard.title}
             title={bannerCard.title}
             description={bannerCard.supportingText ?? undefined}
             caption={bannerCard.caption ?? undefined}
-            onClick={() => {}}
+            onClick={() =>
+              handleBannersClick(bannerCard.popupId, bannerCard.phase.type)
+            }
           />
         </div>
       ))}

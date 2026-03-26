@@ -7,6 +7,7 @@ import { Section } from '../components/section';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { ApiResponse } from '@/types/api/common';
 import { useRouter } from 'next/navigation';
+import { NotableSkeleton } from '../components/skeletons';
 
 interface NotableCard {
   popupId: number;
@@ -43,12 +44,15 @@ export const Notable = () => {
   const router = useRouter();
 
   useEffect(() => {
+    const controller = new AbortController();
+
     const fetchNotable = async () => {
       try {
         const response = await fetch(
           `/api/popups/featured?limit=${NOTABLE_LIMIT}`,
           {
             method: 'GET',
+            signal: controller.signal,
             headers: {
               ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
             },
@@ -61,14 +65,17 @@ export const Notable = () => {
           (await response.json()) as ApiResponse<NotableCardResponse>;
         setNotableCards(result.data?.items ?? []);
       } catch (error) {
-        console.error('[recommend] 추천 팝업 조회 실패', error);
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        console.error('[notable] 주목할 만한 팝업 조회 실패', error);
+        setNotableCards([]);
       }
     };
     fetchNotable();
     // NOTE 좋아요 기능 붙을 때를 위해 대비
+    return () => controller.abort();
   }, [accessToken]);
 
-  if (notableCards === null) return;
+  if (notableCards === null) return <NotableSkeleton />;
 
   const handleClick = (popupId: number) => {
     router.push(`/featured/${popupId}`);

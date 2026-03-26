@@ -4,6 +4,7 @@ import { cn } from '@/lib/utils';
 import { Icon } from '@/components/Icon/Icon';
 
 import { cva, type VariantProps } from 'class-variance-authority';
+import { Box } from '@/components/ui/box';
 
 const thumbnailVariants = cva(
   'w-full rounded-ml border border-Line-Line-3/10 object-cover',
@@ -36,6 +37,9 @@ export interface CardThumbnailProps {
   showCountView?: boolean;
   showCountLike?: boolean;
   isLiked?: boolean;
+  overlayBadge?: React.ReactNode;
+  overlayBadgeBackground?: string;
+  overlayBadgeClassName?: string;
   onClickLike?: () => void;
   onClick?: () => void;
 }
@@ -55,6 +59,9 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
   showCountLike,
   index,
   isLiked,
+  overlayBadge,
+  overlayBadgeBackground,
+  overlayBadgeClassName,
   onClickLike,
   onClick,
 }) => {
@@ -119,6 +126,17 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
             <div className="w-10 h-10 p-2.5 bg-orange-500 rounded-ms inline-flex flex-col justify-center items-center text-white text-2xl font-bold absolute bottom-4 left-4">
               {index}
             </div>
+          )}
+          {overlayBadge && (
+            <Box
+              className={cn('overflow-hidden', overlayBadgeClassName)}
+              paddingY="_2XS"
+              paddingX="S"
+              radius="S"
+              background={overlayBadgeBackground}
+            >
+              {overlayBadge}
+            </Box>
           )}
         </div>
         <div

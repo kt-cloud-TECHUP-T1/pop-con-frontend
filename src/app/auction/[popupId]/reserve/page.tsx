@@ -8,7 +8,7 @@ export default async function AuctionReservePage({
 }: {
   params: Promise<{ popupId: string }>;
 }) {
-  await params;
+  const { popupId } = await params;
 
   return (
     <>
@@ -21,11 +21,7 @@ export default async function AuctionReservePage({
 
       {/* 날짜/회차 선택 상태는 아래 컴포넌트에서 관리 */}
       <Wrapper className="pt-8 pb-3xl">
-        <AuctionReservePageClient
-          title={mockReserveData.title}
-          description={mockReserveData.description}
-          schedules={mockReserveData.schedules}
-        />
+        <AuctionReservePageClient auctionId={popupId} />
       </Wrapper>
     </>
   );
