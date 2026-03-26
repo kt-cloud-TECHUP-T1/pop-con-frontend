@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
 import SaleInfoPrice from './sale-info-price';
-import Link from 'next/link';
+import { DrawParticipateButton } from './draw-participate-button';
 
 interface SaleInfoCardProps {
   phaseType: string;
@@ -70,19 +70,7 @@ export default function SaleInfoCard({
         </div>
       </div>
       {phaseStatus == 'OPEN' ? (
-        <Link
-          href={
-            phaseType === 'AUCTION'
-              ? `/auction/${popupId}/reserve`
-              : `/draw/${popupId}/reserve`
-          }
-        >
-          <Button size="large" className="w-full">
-            <Typography variant="label-1">
-              {phaseType == 'AUCTION' ? '프리미엄 경매' : '드로우'} 참여하기
-            </Typography>
-          </Button>
-        </Link>
+        <DrawParticipateButton popupId={popupId} phaseType={phaseType} />
       ) : (
         <Button size="large" className="w-full" disabled>
           <Typography variant="label-1">
