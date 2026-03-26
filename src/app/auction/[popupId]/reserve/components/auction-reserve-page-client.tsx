@@ -23,6 +23,11 @@ interface AuctionReservePageClientProps {
   auctionId: string;
 }
 
+const DEFAULT_DATES_ERROR =
+  '예약 가능 날짜를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+const DEFAULT_SLOTS_ERROR =
+  '회차 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+
 export function AuctionReservePageClient({
   auctionId,
 }: AuctionReservePageClientProps) {
@@ -59,9 +64,14 @@ export function AuctionReservePageClient({
 
         if (!response.ok) {
           const AU_ERROR_CODES = ['AU001', 'AU002', 'AU003'];
-          if (AU_ERROR_CODES.includes(result.code)) {
-            setDatesErrorMessage(result.message);
-          }
+
+          setAvailableDates([]);
+          setDatesErrorMessage(
+            AU_ERROR_CODES.includes(result.code)
+              ? result.message
+              : DEFAULT_DATES_ERROR
+          );
+
           return;
         }
 
@@ -72,6 +82,8 @@ export function AuctionReservePageClient({
         );
       } catch (error) {
         console.error('[auction/fetchDates]', error);
+        setAvailableDates([]);
+        setDatesErrorMessage(DEFAULT_DATES_ERROR);
       } finally {
         setIsDatesLoading(false);
       }
@@ -99,9 +111,14 @@ export function AuctionReservePageClient({
 
         if (!response.ok) {
           const AU_ERROR_CODES = ['AU001', 'AU002', 'AU003'];
-          if (AU_ERROR_CODES.includes(result.code)) {
-            setSlotsErrorMessage(result.message);
-          }
+
+          setAvailableDates([]);
+          setDatesErrorMessage(
+            AU_ERROR_CODES.includes(result.code)
+              ? result.message
+              : DEFAULT_SLOTS_ERROR
+          );
+
           return;
         }
 

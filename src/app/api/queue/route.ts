@@ -29,6 +29,10 @@ export async function DELETE(request: Request) {
       },
     });
 
+    if (response.status === 204) {
+      return new Response(null, { status: 204 });
+    }
+
     return handleProxyResponse(response);
   } catch (error) {
     console.error('[DELETE /api/queue]', error);

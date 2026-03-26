@@ -56,9 +56,12 @@ export function DrawReservePageClient({ drawId }: DrawReservePageClientProps) {
 
         if (!response.ok) {
           const D_ERROR_CODES = ['D001', 'D002', 'D003'];
-          if (D_ERROR_CODES.includes(result.code)) {
-            setDatesErrorMessage(result.message);
-          }
+          setAvailableDates([]);
+          setDatesErrorMessage(
+            D_ERROR_CODES.includes(result.code)
+              ? result.message
+              : '예약 가능 날짜를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.'
+          );
           return;
         }
 
@@ -69,6 +72,7 @@ export function DrawReservePageClient({ drawId }: DrawReservePageClientProps) {
         );
       } catch (error) {
         console.error('[draw/fetchDates]', error);
+        setDatesErrorMessage('날짜 정보를 불러오는 중 오류가 발생했습니다.');
       } finally {
         setIsDatesLoading(false);
       }
@@ -106,6 +110,7 @@ export function DrawReservePageClient({ drawId }: DrawReservePageClientProps) {
         setSlots(result.data ?? []);
       } catch (error) {
         console.error('[draw/fetchDatesOptions]', error);
+        setSlotsErrorMessage('회차 정보를 불러오는 중 오류가 발생했습니다.');
       }
     };
     fetchDatesOptions();

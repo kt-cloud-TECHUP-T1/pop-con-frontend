@@ -1,12 +1,14 @@
 'use client';
 
-import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+
+const DEFAULT_SUBMIT_ERROR =
+  '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
 
 interface DrawApplySectionProps {
   drawId: string;
@@ -18,6 +20,8 @@ export default function DrawApplySection({
   selectedOptionId,
 }: DrawApplySectionProps) {
   const [checks, setChecks] = useState([false, false]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
   const handleCheck = (index: number, checked: boolean) => {
@@ -28,8 +32,35 @@ export default function DrawApplySection({
     });
   };
 
-  const handleSubmit = () => {
-    router.push(`/draw/${drawId}/success`);
+  const handleSubmit = async () => {
+    if (selectedOptionId === null) return;
+
+    setIsSubmitting(true);
+    setErrorMessage(null);
+
+    try {
+      const response = await fetch(`/api/draws/${drawId}/queue-entries`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          // TODO 테스트 후 주석 제거
+          // Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.ok) {
+        const result = await response.json();
+        setErrorMessage(result.message ?? DEFAULT_SUBMIT_ERROR);
+        return;
+      }
+
+      router.push(`/draw/${drawId}/success`);
+    } catch (error) {
+      console.error('[draw/handleSubmit]', error);
+      setErrorMessage(DEFAULT_SUBMIT_ERROR);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const isAllChecked = checks.every(Boolean);
@@ -71,11 +102,17 @@ export default function DrawApplySection({
         </div>
       </div>
 
+      {errorMessage && (
+        <Typography variant="body-2" className="text-[var(--status-negative)]">
+          {errorMessage}
+        </Typography>
+      )}
+
       <Button
-        disabled={!isAllChecked || selectedOptionId === null}
+        disabled={!isAllChecked || selectedOptionId === null || isSubmitting}
         onClick={handleSubmit}
       >
-        드로우 신청하기
+        {isSubmitting ? '신청 중...' : '드로우 신청하기'}
       </Button>
     </div>
   );
