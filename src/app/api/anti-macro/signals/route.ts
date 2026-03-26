@@ -1,4 +1,4 @@
-const API_BASE = process.env.ANTI_MACRO_BACKEND_URL?.replace(/\/+$/, '') ?? 'http://localhost:8084';
+const API_BASE = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '') ?? 'http://localhost:8084';
 
 export async function POST(request: Request) {
   try {
