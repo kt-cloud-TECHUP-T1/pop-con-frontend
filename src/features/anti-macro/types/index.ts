@@ -1,4 +1,4 @@
-// --- Collector interface ---
+// --- 수집기 인터페이스 ---
 export interface SignalCollector {
   start(): void;
   stop(): void;
@@ -6,7 +6,7 @@ export interface SignalCollector {
   reset(): void;
 }
 
-// --- Browser fingerprint ---
+// --- 브라우저 핑거프린트 ---
 export type BrowserFingerprint = {
   visitorId: string;
   confidence: number;
@@ -25,7 +25,7 @@ export type BrowserFingerprint = {
   components: Record<string, unknown>;
 };
 
-// --- Point / Click ---
+// --- 포인트 / 클릭 ---
 export type PointEvent = {
   x: number;
   y: number;
@@ -39,7 +39,7 @@ export type ClickEvent = PointEvent & {
   centerDistance: number | null;
 };
 
-// --- Timing ---
+// --- 타이밍 ---
 export type TimingData = {
   pageLoadTimestamp: number;
   firstInteractionTimestamp: number | null;
@@ -47,13 +47,13 @@ export type TimingData = {
   tabFocusedDuringClicks: boolean;
 };
 
-// --- Honeypot ---
+// --- 허니팟 ---
 export type HoneypotData = {
   triggered: boolean;
   fieldValue: string | null;
 };
 
-// --- Page payload ---
+// --- 페이지 페이로드 ---
 export type PageType = 'login' | 'popup-detail' | 'draw-application';
 
 export type PageSignalPayload = {
@@ -73,7 +73,7 @@ export type PageSignalPayload = {
   };
 };
 
-// --- Submission ---
+// --- 제출 ---
 export type AntiMacroSubmission = {
   timestamp: number;
   payload: PageSignalPayload;

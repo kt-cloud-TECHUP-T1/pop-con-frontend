@@ -45,7 +45,7 @@ export function createMouseCollector(): SignalCollector & {
     },
 
     getRawData() {
-      return { movements, hasUntrustedEvent };
+      return { mouseMovements: movements, hasUntrustedEvent };
     },
 
     getMovements() {
@@ -55,6 +55,11 @@ export function createMouseCollector(): SignalCollector & {
     reset() {
       movements = [];
       hasUntrustedEvent = false;
+      pendingEvent = null;
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+        rafId = null;
+      }
     },
   };
 }

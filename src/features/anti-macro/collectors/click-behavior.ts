@@ -9,6 +9,7 @@ export function createClickBehaviorCollector(): SignalCollector & {
 
   function onClick(e: MouseEvent) {
     if (clicks.length >= COLLECTION.MAX_EVENTS) return;
+    if (!e.target) return;
 
     const target = e.target as HTMLElement;
     const selector =

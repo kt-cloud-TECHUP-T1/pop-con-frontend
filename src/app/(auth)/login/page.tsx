@@ -44,7 +44,6 @@ export default function Login() {
 
   const socialLoginHandler = async (provider: SocialProvider) => {
     if (isLoggingIn) return;
-console.log(normalizedBaseUrl);
 
     if (!normalizedBaseUrl || !isValidAbsoluteUrl(normalizedBaseUrl)) {
       snackbar.destructive({

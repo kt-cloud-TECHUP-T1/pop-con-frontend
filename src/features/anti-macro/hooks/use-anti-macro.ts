@@ -62,18 +62,23 @@ export function useAntiMacro({
   }, [page, getFingerprint]);
 
   const submitSignals = useCallback((): void => {
-    // fingerprint 등 비동기 collector 완료 후 전송
-    Promise.all(
-      collectorsRef.current.map((c) =>
-        'loadAsync' in c && typeof c.loadAsync === 'function'
-          ? (c as { loadAsync(): Promise<void> }).loadAsync()
-          : Promise.resolve(),
-      ),
-    ).then(() => {
-      const payload = getPayload();
-      const visitorId = getVisitorId?.();
-      submitSignalsService(payload, { visitorId, userId });
-    });
+    void (async () => {
+      try {
+        // 비동기 collector 완료 대기 후 전송
+        await Promise.all(
+          collectorsRef.current.map((c) =>
+            'loadAsync' in c && typeof c.loadAsync === 'function'
+              ? (c as { loadAsync(): Promise<void> }).loadAsync()
+              : Promise.resolve(),
+          ),
+        );
+        const payload = getPayload();
+        const visitorId = getVisitorId?.();
+        submitSignalsService(payload, { visitorId, userId });
+      } catch {
+        // 시그널 수집 실패는 UX 영향 없이 무시
+      }
+    })();
   }, [getPayload, getVisitorId, userId]);
 
   return { getPayload, submitSignals };

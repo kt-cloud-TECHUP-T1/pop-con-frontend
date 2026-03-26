@@ -1,4 +1,4 @@
-// Types
+// 타입
 export type {
   SignalCollector,
   BrowserFingerprint,
@@ -12,10 +12,10 @@ export type {
   SignalSubmitResponse,
 } from './types';
 
-// Constants
+// 상수
 export { COLLECTION } from './constants';
 
-// Hooks
+// 훅
 export { useLoginCollector } from './hooks/use-login-collector';
 export { usePopupDetailCollector } from './hooks/use-popup-detail-collector';
 export { useDrawApplyCollector } from './hooks/use-draw-apply-collector';

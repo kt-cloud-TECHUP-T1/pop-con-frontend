@@ -5,8 +5,6 @@ async function collectFingerprint(): Promise<BrowserFingerprint> {
   const fp = await FingerprintJS.load();
   const result = await fp.get();
 
-  console.log(result)
-
   const components = result.components as Record<string, { value: unknown }>;
 
   // WebGL renderer/vendor 추출
@@ -65,7 +63,7 @@ export function createBrowserFingerprintCollector(): SignalCollector & {
     },
 
     stop() {
-      // static collection, nothing to clean up
+      // 정적 수집이므로 정리할 항목 없음
     },
 
     getRawData() {
