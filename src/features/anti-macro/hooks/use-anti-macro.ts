@@ -64,8 +64,8 @@ export function useAntiMacro({
   const submitSignals = useCallback((): void => {
     void (async () => {
       try {
-        // 비동기 collector 완료 대기 후 전송
-        await Promise.all(
+        // 비동기 collector 완료 대기 (일부 실패해도 나머지 데이터는 전송)
+        await Promise.allSettled(
           collectorsRef.current.map((c) =>
             'loadAsync' in c && typeof c.loadAsync === 'function'
               ? (c as { loadAsync(): Promise<void> }).loadAsync()
