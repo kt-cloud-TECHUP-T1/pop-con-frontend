@@ -1,12 +1,21 @@
 'use client';
 
 import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { usePathname } from 'next/navigation';
 import { useEffect } from 'react';
 
 export default function AuthSessionRestore() {
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const pathname = usePathname();
 
   useEffect(() => {
+    if (
+      pathname.startsWith('/login') ||
+      pathname.startsWith('/signup') ||
+      pathname.startsWith('/verify')
+    )
+      return;
+
     const { accessToken } = useAuthStore.getState();
 
     if (accessToken) return;
@@ -29,7 +38,7 @@ export default function AuthSessionRestore() {
     };
 
     void restoreSession();
-  }, [setAccessToken]);
+  }, [setAccessToken, pathname]);
 
   return null;
 }
