@@ -47,13 +47,17 @@ export const MainBanner = () => {
           }
         );
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          setBannerCards([]);
+          return;
+        }
 
         const result =
           (await response.json()) as ApiResponse<BannerCardResponse>;
         setBannerCards(result.data?.items ?? []);
       } catch (error) {
         console.error('[banner] 배너 조회 실패', error);
+        setBannerCards([]);
       }
     };
     fetchBanners();

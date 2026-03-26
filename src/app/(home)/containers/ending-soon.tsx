@@ -61,13 +61,17 @@ export const EndingSoon = () => {
           }
         );
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          setEndingSoonCards([]);
+          return;
+        }
 
         const result =
           (await response.json()) as ApiResponse<EndingSoonCardResponse>;
         setEndingSoonCards(result.data?.items ?? []);
       } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
         console.error('[ending-soon] 곧 종료되는 팝업 조회 실패', error);
         setEndingSoonCards([]);
       }

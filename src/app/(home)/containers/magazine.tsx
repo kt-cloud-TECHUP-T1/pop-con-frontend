@@ -39,13 +39,17 @@ export const Magazine = () => {
           }
         );
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          setMagazineCards([]);
+          return;
+        }
 
         const result =
           (await response.json()) as ApiResponse<MagazineCardResponse>;
         setMagazineCards(result.data?.items ?? []);
       } catch (error) {
         console.error('[magazine] 매거진 조회 실패', error);
+        setMagazineCards([]);
       }
     };
     fetchNotable();

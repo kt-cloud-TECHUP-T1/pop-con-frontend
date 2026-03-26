@@ -58,7 +58,10 @@ export const Ranking = () => {
           },
         });
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          setRankingCards([]);
+          return;
+        }
 
         const result =
           (await response.json()) as ApiResponse<RankingCardResponse>;
@@ -67,6 +70,7 @@ export const Ranking = () => {
         if (error instanceof DOMException && error.name === 'AbortError')
           return;
         console.error('[ranking] 랭킹 조회 실패', error);
+        setRankingCards([]);
       }
     };
     fetchRanking();

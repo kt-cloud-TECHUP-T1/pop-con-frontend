@@ -107,6 +107,8 @@ export const LuckyDraw = () => {
         if (error instanceof DOMException && error.name === 'AbortError')
           return;
         console.error('[lucky-draw] 드로우 조회 실패', error);
+        setOpenCards([]);
+        setUpcomingCards([]);
       }
     };
 

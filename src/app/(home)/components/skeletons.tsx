@@ -42,7 +42,7 @@ export const RecommendSkeleton = () => (
     <SectionTitleSkeleton />
     <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
       {Array.from({ length: 4 }).map((_, i) => (
-        <CardSkeleton key={i} ratio="16/9" />
+        <CardSkeleton key={i} ratio="3/4" />
       ))}
     </div>
   </section>

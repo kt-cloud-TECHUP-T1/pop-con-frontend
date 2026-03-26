@@ -34,7 +34,7 @@ interface DutchAuctionCard {
   };
 }
 
-interface DucthAuctionCardResponse {
+interface DutchAuctionCardResponse {
   sectionKey: 'AUCTIONS';
   itemCount: number;
   items: DutchAuctionCard[];
@@ -65,7 +65,7 @@ export const DutchAuction = () => {
   useEffect(() => {
     const controller = new AbortController();
 
-    const fetchDucthAuctions = async () => {
+    const fetchDutchAuctions = async () => {
       try {
         const response = await fetch(
           '/api/popups?phaseType=AUCTION&phaseStatus=OPEN,UPCOMING&limit=10',
@@ -81,15 +81,16 @@ export const DutchAuction = () => {
         if (!response.ok) return;
 
         const result =
-          (await response.json()) as ApiResponse<DucthAuctionCardResponse>;
+          (await response.json()) as ApiResponse<DutchAuctionCardResponse>;
         setDutchAuctionCards(result.data?.items ?? []);
       } catch (error) {
         if (error instanceof DOMException && error.name === 'AbortError')
           return;
-        console.error('[ducth-auction] 더치 경매 조회 실패', error);
+        console.error('[dutch-auction] 더치 경매 조회 실패', error);
+        setDutchAuctionCards([]);
       }
     };
-    fetchDucthAuctions();
+    fetchDutchAuctions();
 
     return () => controller.abort();
   }, [accessToken]);

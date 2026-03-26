@@ -68,6 +68,7 @@ export const Recommend = () => {
         if (error instanceof DOMException && error.name === 'AbortError')
           return;
         console.error('[recommend] 추천 팝업 조회 실패', error);
+        setRecommendedCards([]);
       }
     };
     fetchRecommended();

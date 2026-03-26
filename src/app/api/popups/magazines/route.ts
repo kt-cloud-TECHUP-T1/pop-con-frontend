@@ -27,12 +27,9 @@ export async function GET(request: Request) {
   searchParams.set('limit', String(limit));
 
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/popups/magazines?${searchParams}`,
-      {
-        cache: 'no-store',
-      }
-    );
+    const response = await fetch(`${API_BASE_URL}/magazines?${searchParams}`, {
+      cache: 'no-store',
+    });
     return handleProxyResponse(response);
   } catch (error) {
     console.error('[GET /api/popups/magazines]', error);

@@ -15,6 +15,7 @@ export async function GET(request: Request) {
   if (!API_BASE_URL) {
     return createServerErrorResponse();
   }
+  const authorization = request.headers.get('Authorization');
 
   const { searchParams } = new URL(request.url);
 
@@ -65,6 +66,9 @@ export async function GET(request: Request) {
 
   try {
     const response = await fetch(`${API_BASE_URL}/popups?${searchParams}`, {
+      headers: {
+        ...(authorization && { Authorization: authorization }),
+      },
       cache: 'no-store',
     });
     return handleProxyResponse(response);
