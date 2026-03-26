@@ -2,11 +2,11 @@
 
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
-import type { AuctionSlot } from './auction-reserve-page-client';
 import { Box } from '@/components/ui/box';
+import type { DrawSlot } from './draw-reserve-page-client';
 
-interface ReserveTimeSlotCardProps {
-  slot: AuctionSlot;
+interface DrawTimeSlotCardProps {
+  slot: DrawSlot;
   isSelected: boolean;
   onSelect: (optionId: number) => void;
 }
@@ -23,13 +23,11 @@ const formatSlotTime = (time: string) => {
   return `${period} ${displayHour.toString().padStart(2, '0')}:${minute}`;
 };
 
-export function ReserveTimeSlotCard({
+export function DrawTimeSlotCard({
   slot,
   isSelected,
   onSelect,
-}: ReserveTimeSlotCardProps) {
-  const isSoldOut = slot.remainingStock <= 0 || !slot.selectable;
-
+}: DrawTimeSlotCardProps) {
   return (
     <Box
       as="button"
@@ -37,38 +35,18 @@ export function ReserveTimeSlotCard({
       border="#0A0A0A14"
       radius="ML"
       padding="S"
-      disabled={isSoldOut}
       onClick={() => onSelect(slot.optionId)}
       className={cn(
         'flex flex-col items-center justify-center text-center transition-all',
-        isSelected && 'border-[var(--orange-50)] bg-[var(--orange-50)]',
-        isSoldOut && 'border-[var(--neutral-90)] bg-[var(--neutral-99)]'
+        isSelected && 'border-[var(--orange-50)] bg-[var(--orange-50)]'
       )}
     >
       <Typography
         variant="label-1"
         weight="medium"
-        className={cn(
-          isSelected
-            ? 'text-white'
-            : isSoldOut
-              ? 'text-[var(--content-placeholder)]'
-              : 'text-[var(--content-high)]'
-        )}
+        className={isSelected ? 'text-white' : 'text-[var(--content-high)]'}
       >
         {formatSlotTime(slot.entryTime)}
-      </Typography>
-      <Typography
-        variant="caption-1"
-        className={cn(
-          isSelected
-            ? 'text-white'
-            : isSoldOut
-              ? 'text-[var(--content-disabled)]'
-              : 'text-[var(--content-extra-low)]'
-        )}
-      >
-        {isSoldOut ? '매진' : `잔여 ${slot.remainingStock}`}
       </Typography>
     </Box>
   );
