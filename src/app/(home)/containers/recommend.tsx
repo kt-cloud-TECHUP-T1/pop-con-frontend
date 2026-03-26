@@ -76,8 +76,10 @@ export const Recommend = () => {
     return () => controller.abort();
   }, [accessToken]);
 
-  const handleClick = (popupId: number) => {
-    router.push(`/auction/${popupId}`);
+  const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
+    router.push(
+      phaseType === 'DRAW' ? `/draw/${popupId}` : `/auction/${popupId}`
+    );
   };
 
   if (recommendedCards === null) return <RecommendSkeleton />;
@@ -117,7 +119,9 @@ export const Recommend = () => {
               showButtonLike
               showCountView
               showCountLike
-              onClick={() => handleClick(recommendedCard.popupId)}
+              onClick={() =>
+                handleClick(recommendedCard.popupId, recommendedCard.phase.type)
+              }
             />
           ))}
         />
