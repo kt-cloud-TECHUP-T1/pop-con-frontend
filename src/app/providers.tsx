@@ -26,3 +26,23 @@ export function MSWProvider({ children }: { children: React.ReactNode }) {
 
   return <>{children}</>;
 }
+
+export function AppProviders({ children }: { children: React.ReactNode }) {
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: {
+          queries: {
+            retry: 1,
+            refetchOnWindowFocus: false,
+          },
+        },
+      })
+  );
+
+  return (
+    <QueryClientProvider client={queryClient}>
+      <MSWProvider>{children}</MSWProvider>
+    </QueryClientProvider>
+  );
+}

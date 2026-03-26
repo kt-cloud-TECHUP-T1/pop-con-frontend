@@ -1,70 +1,119 @@
 'use client';
 
-import React from 'react';
-
+import { useEffect, useState } from 'react';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { useRouter } from 'next/navigation';
+import { ApiResponse } from '@/types/api/common';
 
-const dummy = Array.from({ length: 10 }).map((_, index) => {
-  return {
-    id: index,
-    title: `Title ${index}`,
-    description: `Sub Text ${index}`,
-    thumbnailUrl: 'https://placehold.co/300x300',
-    caption: `Caption ${index}`,
-    countView: 0,
-    countLike: 0,
+interface EndingSoonCard {
+  popupId: number;
+  title: string;
+  supportingText: string | null;
+  subText: string | null;
+  caption: string | null;
+  thumbnailUrl: string | null;
+  liked: boolean | null;
+  stats: {
+    likeCount: number;
+    viewCount: number;
   };
-});
+  overlay: null;
+  phase: {
+    type: 'AUCTION' | 'DRAW';
+    status: 'UPCOMING' | 'OPEN' | 'CLOSED';
+    openAt: string;
+    closeAt: string;
+  };
+}
+
+interface EndingSoonCardResponse {
+  sectionKey: 'ENDING_SOON';
+  itemCount: number;
+  items: EndingSoonCard[];
+}
+
+const ENDING_SOON_LIMIT = 10;
 
 export const EndingSoon = () => {
-  const [item, setItems] = React.useState(dummy);
+  const [endingSoonCards, setEndingSoonCards] = useState<
+    EndingSoonCard[] | null
+  >(null);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const router = useRouter();
 
-  const handleClick = (id: number) => {
-    console.log('clicked item id: ', id);
-  };
+  useEffect(() => {
+    const fetchNotable = async () => {
+      try {
+        const response = await fetch(
+          `/api/popups/ending-soon?limit=${ENDING_SOON_LIMIT}`,
+          {
+            method: 'GET',
+            headers: {
+              ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+            },
+          }
+        );
 
-  const handleClickLike = (id: number) => {
-    console.log('liked item id: ', id);
-  };
+        const result =
+          (await response.json()) as ApiResponse<EndingSoonCardResponse>;
+        setEndingSoonCards(result.data?.items ?? []);
+      } catch (error) {
+        console.error('[ending-soon] 곧 종료되는 팝업 조회 실패', error);
+      }
+    };
+    fetchNotable();
+    // NOTE 좋아요 기능 붙을 때를 위해 대비
+  }, [accessToken]);
 
-  const handleClickMore = () => {
-    console.log('more');
+  if (endingSoonCards === null) return;
+
+  const handleClick = (popupId: number) => {
+    router.push(`/ending-soon/${popupId}`);
   };
 
   return (
     <Section
       title="곧 종료되는 팝업"
       showButtonMore
-      onClickMore={handleClickMore}
+      // TODO 더보기 작업 필요
+      // onClickMore={handleClickMore}
     >
-      <GridCarousel
-        gridSize={{
-          default: 2,
-          md: 3,
-          lg: 5,
-        }}
-        carouselOpts={{ align: 'start' }}
-        alignArrowToRatio="3/4"
-        items={item.map((item) => (
-          <CardThumbnail
-            key={item.id}
-            thumbnailUrl={item.thumbnailUrl}
-            thumbnailRatio="3/4"
-            title={item.title}
-            description={item.description}
-            caption={item.caption}
-            countView={item.countView}
-            countLike={item.countLike}
-            showButtonLike
-            showCountView
-            showCountLike
-            onClick={() => handleClick(item.id)}
-            onClickLike={() => handleClickLike(item.id)}
-          />
-        ))}
-      />
+      {endingSoonCards.length === 0 ? (
+        <div className="min-h-[250px] flex items-center justify-center">
+          곧 종료되는 팝업이 없어요.
+        </div>
+      ) : (
+        <GridCarousel
+          gridSize={{
+            default: 2,
+            md: 3,
+            lg: 5,
+          }}
+          carouselOpts={{ align: 'start' }}
+          alignArrowToRatio="3/4"
+          items={endingSoonCards.map((endingSoonCard) => (
+            <CardThumbnail
+              key={endingSoonCard.popupId}
+              thumbnailUrl={endingSoonCard.thumbnailUrl ?? undefined}
+              thumbnailRatio="3/4"
+              title={endingSoonCard.title}
+              description={endingSoonCard.subText ?? undefined}
+              caption={endingSoonCard.caption ?? undefined}
+              countView={endingSoonCard.stats.viewCount}
+              countLike={endingSoonCard.stats.likeCount}
+              showButtonLike
+              showCountView
+              showCountLike
+              onClick={() => handleClick(endingSoonCard.popupId)}
+              // TODO 좋아요 작업 필요
+              // onClickLike={() => handleClickLike(item.id)}
+            />
+          ))}
+        />
+      )}
     </Section>
   );
 };

@@ -1,29 +1,37 @@
-import { NextResponse } from 'next/server';
-import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
-import { AUTH_MESSAGES } from '@/constants/auth';
-import { SignupRequest } from '@/types/api/auth';
+import { NextRequest, NextResponse } from 'next/server';
+import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
+import {
+  createBadRequestResponse,
+  createServerErrorResponse,
+  handleProxyResponse,
+} from '@/app/api/shared/route-helpers';
 
-const NEXT_PUBLIC_API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? 'https://devapi.popcon.store';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
 
-function buildInvalidInputResponse(fieldErrors: Record<string, string>) {
+type SignupAgreements = {
+  isPrivacyPolicyAgreed: boolean;
+  isIdentifierPolicyAgreed: boolean;
+  isServicePolicyAgreed: boolean;
+  isMarketingAgreed?: boolean;
+};
+
+type SignupRequest = {
+  agreements: SignupAgreements;
+};
+
+function createSessionExpiredResponse() {
   return NextResponse.json(
     {
-      code: API_ERROR_CODES.COMMON.BAD_REQUEST,
-      message: API_MESSAGES.COMMON.INVALID_INPUT,
-      data: fieldErrors,
+      code: AUTH_ERROR_CODES.AUTH.SESSION_EXPIRED,
+      message: AUTH_MESSAGES.TERMS.ERROR.SESSION_EXPIRED,
+      data: null,
     },
-    { status: 400 }
+    { status: 401 }
   );
 }
 
 function validateSignupRequest(body: Partial<SignupRequest>) {
   const fieldErrors: Record<string, string> = {};
-
-  if (!body.registerToken?.trim()) {
-    fieldErrors.registerToken =
-      AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN;
-  }
 
   if (!body.agreements || typeof body.agreements !== 'object') {
     fieldErrors['agreements.isPrivacyPolicyAgreed'] =
@@ -51,60 +59,59 @@ function validateSignupRequest(body: Partial<SignupRequest>) {
       AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED;
   }
 
-  if (
-    body.agreements.isMarketingAgreed !== undefined &&
-    typeof body.agreements.isMarketingAgreed !== 'boolean'
-  ) {
-    fieldErrors['agreements.isMarketingAgreed'] = 'boolean 타입이어야 합니다.';
-  }
-
   return fieldErrors;
 }
 
-export async function POST(request: Request) {
-  const deviceId = request.headers.get('X-Device-Id');
-  const cookie = request.headers.get('cookie');
+export async function POST(request: NextRequest) {
+  const cookieHeader = request.headers.get('cookie');
+  const registerToken = request.cookies.get('register_token')?.value;
 
-  let body: SignupRequest;
+  let body: unknown;
 
   try {
-    body = (await request.json()) as SignupRequest;
+    body = await request.json();
   } catch {
-    return buildInvalidInputResponse({
-      registerToken: AUTH_MESSAGES.IDENTITY.ERROR.REQUIRED_REGISTER_TOKEN,
+    body = null;
+  }
+
+  if (!body || typeof body !== 'object') {
+    return createBadRequestResponse({
+      'agreements.isPrivacyPolicyAgreed':
+        AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED,
+      'agreements.isIdentifierPolicyAgreed':
+        AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED,
+      'agreements.isServicePolicyAgreed':
+        AUTH_MESSAGES.TERMS.ERROR.REQUIRED_NOT_AGREED,
     });
   }
 
-  const fieldErrors = validateSignupRequest(body);
+  const fieldErrors = validateSignupRequest(body as Partial<SignupRequest>);
 
   if (Object.keys(fieldErrors).length > 0) {
-    return buildInvalidInputResponse(fieldErrors);
+    return createBadRequestResponse(fieldErrors);
+  }
+
+  if (!registerToken) {
+    return createSessionExpiredResponse();
   }
 
   try {
-    const response = await fetch(`${NEXT_PUBLIC_API_BASE_URL}/auth/signup`, {
+    const response = await fetch(`${API_BASE_URL}/auth/signup`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(deviceId ? { 'X-Device-Id': deviceId } : {}),
-        ...(cookie ? { Cookie: cookie } : {}),
+        ...(cookieHeader ? { Cookie: cookieHeader } : {}),
       },
-      body: JSON.stringify(body),
+      body: JSON.stringify({
+        registerToken,
+        agreements: (body as Partial<SignupRequest>).agreements,
+      }),
       cache: 'no-store',
     });
 
-    const responseBody = await response.json();
-    return NextResponse.json(responseBody, { status: response.status });
+    return handleProxyResponse(response, { withCookies: true });
   } catch (error) {
-    console.error(error);
-
-    return NextResponse.json(
-      {
-        code: API_ERROR_CODES.SYSTEM.INTERNAL_SERVER_ERROR,
-        message: API_MESSAGES.COMMON.SERVER_ERROR,
-        data: null,
-      },
-      { status: 500 }
-    );
+    console.error('[auth/signup]', error);
+    return createServerErrorResponse();
   }
 }

@@ -1,70 +1,112 @@
 'use client';
 
-import React from 'react';
-
+import React, { useEffect, useState } from 'react';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
+import { ApiResponse } from '@/types/api/common';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
 
-const dummy = Array.from({ length: 10 }).map((_, index) => {
-  return {
-    id: index,
-    title: `Title ${index}`,
-    description: `Sub Text ${index}`,
-    thumbnailUrl: 'https://placehold.co/300x300',
-    caption: `Caption ${index}`,
-    countView: 0,
-    countLike: 0,
+interface RecommendedCard {
+  popupId: number;
+  title: string;
+  supportingText: string | null;
+  subText: string | null;
+  caption: string | null;
+  thumbnailUrl: string | null;
+  liked: boolean | null;
+  stats: {
+    likeCount: number;
+    viewCount: number;
   };
-});
+  overlay: null;
+  phase: {
+    type: 'AUCTION' | 'DRAW';
+    status: 'UPCOMING' | 'OPEN' | 'CLOSED';
+    openAt: string;
+    closeAt: string;
+  };
+}
+
+interface RecommendedCardResponse {
+  sectionKey: 'RECOMMENDED';
+  itemCount: number;
+  items: RecommendedCard[];
+}
 
 export const Recommend = () => {
-  const [item, setItems] = React.useState(dummy);
+  const [recommendedCards, setRecommendedCards] = useState<
+    RecommendedCard[] | null
+  >(null);
+  const accessToken = useAuthStore((state) => state.accessToken);
 
-  const handleClick = (id: number) => {
-    console.log('clicked item id: ', id);
-  };
+  useEffect(() => {
+    const fetchRecommended = async () => {
+      try {
+        const response = await fetch('/api/popups/recommended', {
+          method: 'GET',
+          headers: {
+            ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+          },
+        });
 
-  const handleClickLike = (id: number) => {
-    console.log('liked item id: ', id);
-  };
+        if (!response.ok) {
+          setRecommendedCards([]);
+          return;
+        }
 
-  const handleClickMore = () => {
-    console.log('more');
-  };
+        const result =
+          (await response.json()) as ApiResponse<RecommendedCardResponse>;
+        setRecommendedCards(result.data?.items ?? []);
+      } catch (error) {
+        console.error('[recommend] 추천 팝업 조회 실패', error);
+      }
+    };
+    fetchRecommended();
+    // NOTE 좋아요 기능 붙을 때를 위해 대비
+  }, [accessToken]);
+
+  if (recommendedCards === null) return;
 
   return (
     <Section
       title="팝콘님을 위한 팝업 추천"
       showButtonMore
-      onClickMore={handleClickMore}
+      // TODO 더보기 작업 필요
+      // onClickMore={handleClickMore}
     >
-      <GridCarousel
-        gridSize={{
-          default: 2,
-          md: 3,
-          lg: 4,
-        }}
-        carouselOpts={{ align: 'start' }}
-        alignArrowToRatio="3/4"
-        items={item.map((item) => (
-          <CardThumbnail
-            key={item.id}
-            thumbnailUrl={item.thumbnailUrl}
-            thumbnailRatio="3/4"
-            title={item.title}
-            description={item.description}
-            caption={item.caption}
-            countView={item.countView}
-            countLike={item.countLike}
-            showButtonLike
-            showCountView
-            showCountLike
-            onClick={() => handleClick(item.id)}
-            onClickLike={() => handleClickLike(item.id)}
-          />
-        ))}
-      />
+      {recommendedCards.length === 0 ? (
+        <div className="min-h-[250px] flex items-center justify-center">
+          추천 팝업이 없어요.
+        </div>
+      ) : (
+        <GridCarousel
+          gridSize={{
+            default: 2,
+            md: 3,
+            lg: 4,
+          }}
+          carouselOpts={{ align: 'start' }}
+          alignArrowToRatio="3/4"
+          items={recommendedCards.map((recommendedCard) => (
+            // TODO 좋아요, 카드 클릭 작업 필요
+            <CardThumbnail
+              key={recommendedCard.popupId}
+              thumbnailUrl={recommendedCard.thumbnailUrl ?? undefined}
+              thumbnailAlt={recommendedCard.caption ?? undefined}
+              thumbnailRatio="3/4"
+              title={recommendedCard.title}
+              description={recommendedCard.supportingText ?? undefined}
+              caption={recommendedCard.caption ?? undefined}
+              countView={recommendedCard.stats.viewCount}
+              countLike={recommendedCard.stats.likeCount}
+              showButtonLike
+              showCountView
+              showCountLike
+            />
+          ))}
+        />
+      )}
     </Section>
   );
 };
