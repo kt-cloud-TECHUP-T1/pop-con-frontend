@@ -54,8 +54,8 @@ export default function Login() {
     }
     setIsLoggingIn(true);
 
-    // 안티매크로 시그널 전송 (fire-and-forget)
-    submitSignals();
+    // 안티매크로 시그널 전송 후 페이지 이동
+    await submitSignals();
 
     window.location.href = `${normalizedBaseUrl}/auth/oauth/${provider}`;
   };

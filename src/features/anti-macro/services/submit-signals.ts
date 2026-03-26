@@ -7,13 +7,13 @@ type SubmitOptions = {
 };
 
 /**
- * fire-and-forget 시그널 전송
- * Next.js 프록시를 거치므로 서버가 백엔드 전달 보장
+ * 시그널 전송 (프록시 경유)
+ * 프록시 서버에 도달하면 백엔드 전달은 서버가 보장
  */
-export function submitSignals(
+export async function submitSignals(
   payload: PageSignalPayload,
   options: SubmitOptions = {},
-): void {
+): Promise<void> {
   const submission = {
     timestamp: Date.now(),
     payload,
@@ -21,11 +21,13 @@ export function submitSignals(
     ...(options.userId && { userId: options.userId }),
   };
 
-  fetch(`${ANTI_MACRO_API_BASE}/signals`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(submission),
-  }).catch(() => {
+  try {
+    await fetch(`${ANTI_MACRO_API_BASE}/signals`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(submission),
+    });
+  } catch {
     // 실패해도 무시 (사일런트)
-  });
+  }
 }

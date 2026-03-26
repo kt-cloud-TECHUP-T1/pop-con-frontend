@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { usePopupDetailCollector } from '@/features/anti-macro';
@@ -11,6 +11,7 @@ interface DrawParticipateButtonProps {
 }
 
 export function DrawParticipateButton({ popupId, phaseType }: DrawParticipateButtonProps) {
+  const router = useRouter();
   const { submitSignals } = usePopupDetailCollector();
 
   const href =
@@ -20,15 +21,14 @@ export function DrawParticipateButton({ popupId, phaseType }: DrawParticipateBut
 
   const label = phaseType === 'AUCTION' ? '프리미엄 경매' : '드로우';
 
-  const handleClick = () => {
-    submitSignals();
+  const handleClick = async () => {
+    await submitSignals();
+    router.push(href);
   };
 
   return (
-    <Link href={href}>
-      <Button size="large" className="w-full" onClick={handleClick}>
-        <Typography variant="label-1">{label} 참여하기</Typography>
-      </Button>
-    </Link>
+    <Button size="large" className="w-full" onClick={handleClick}>
+      <Typography variant="label-1">{label} 참여하기</Typography>
+    </Button>
   );
 }
