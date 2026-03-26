@@ -136,14 +136,11 @@ export function AuctionContainer() {
 
   return (
     <div>
-      {saleMainData.phaseType === 'AUCTION' && (
-        <SaleTimeCountBar
-          phaseStatus={auctionData.auctionStatus}
-          auctionCloseAt={auctionData.auctionCloseAt}
-          serverTime={auctionData.serverTime}
-        />
-      )}
-
+      <SaleTimeCountBar
+        phaseStatus={auctionData.auctionStatus}
+        auctionCloseAt={auctionData.auctionCloseAt}
+        serverTime={auctionData.serverTime}
+      />
       <Wrapper className="pt-m pb-3xl">
         <SaleDetailLayout
           hasStickyTopBar={hasStickyTopBar}

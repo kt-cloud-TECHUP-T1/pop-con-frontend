@@ -1,10 +1,10 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-export function MSWProvider({ children }: { children: React.ReactNode }) {
+function MSWProvider({ children }: { children: React.ReactNode }) {
   const [isReady, setIsReady] = useState(false);
-
   useEffect(() => {
     const init = async () => {
       if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {

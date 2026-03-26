@@ -81,10 +81,7 @@ export function AuctionReservePageClient({
         {/* 우측 결제 요약 패널 */}
         <aside className="flex flex-col gap-s">
           <Box radius="ML" border="#0A0A0A14" padding="MS" className="min-w-0">
-            <SaleInfoPrice
-              startPrice={1000}
-              phaseStatus={'OPEN'}
-            ></SaleInfoPrice>
+            <SaleInfoPrice startPrice={1000} phaseStatus="OPEN"></SaleInfoPrice>
             <ReservePaymentSection
               phaseType={'OPEN'}
               phaseStatus={'AUCTION'}
