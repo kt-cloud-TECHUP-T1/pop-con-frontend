@@ -9,7 +9,6 @@ export type {
   PageType,
   PageSignalPayload,
   AntiMacroSubmission,
-  NonceResponse,
   SignalSubmitResponse,
 } from './types';
 

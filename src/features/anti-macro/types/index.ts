@@ -73,20 +73,12 @@ export type PageSignalPayload = {
   };
 };
 
-// --- Submission (signed) ---
+// --- Submission ---
 export type AntiMacroSubmission = {
-  nonce: string;
   timestamp: number;
   payload: PageSignalPayload;
-  signature: string;
-  deviceId: string;
-};
-
-// --- Server responses ---
-export type NonceResponse = {
-  nonce: string;
-  expiresAt: number;
-  challenge?: string;
+  visitorId?: string;
+  userId?: string;
 };
 
 export type SignalSubmitResponse = {
