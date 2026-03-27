@@ -9,7 +9,6 @@ export default function AuthCallbackPage() {
   const router = useRouter();
   const requestedRef = useRef(false);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
-  console.log('콜백페이지 실행');
 
   useEffect(() => {
     if (requestedRef.current) return;
