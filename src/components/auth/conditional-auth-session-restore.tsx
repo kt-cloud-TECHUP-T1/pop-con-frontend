@@ -3,7 +3,7 @@
 import { usePathname } from 'next/navigation';
 import AuthSessionRestore from './auth-session-restore';
 
-const AUTH_PATHS = ['/login', '/signup', '/verify'];
+const AUTH_PATHS = ['/login', '/signup', '/verify', '/callback'];
 
 export default function ConditionalAuthSessionRestore() {
   const pathname = usePathname();
