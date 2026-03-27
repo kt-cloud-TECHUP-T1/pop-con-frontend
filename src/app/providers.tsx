@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 function MSWProvider({ children }: { children: React.ReactNode }) {
+  const [isReady, setIsReady] = useState(false);
   useEffect(() => {
     const init = async () => {
       if (process.env.NEXT_PUBLIC_API_MOCKING === 'enabled') {
@@ -12,10 +13,16 @@ function MSWProvider({ children }: { children: React.ReactNode }) {
           onUnhandledRequest: 'bypass',
         });
       }
+
+      setIsReady(true);
     };
 
     init();
   }, []);
+
+  if (!isReady) {
+    return null;
+  }
 
   return <>{children}</>;
 }

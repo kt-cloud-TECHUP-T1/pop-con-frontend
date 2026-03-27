@@ -1,84 +1,82 @@
+'use client';
 import { Icon } from '@/components/Icon/Icon';
-import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
 import SaleInfoPrice from './sale-info-price';
+import { SaleDetailSidebarProps, SaleInfoCTAProps } from '@/types/sale-detail';
+import SaleInfoCTA from './sale-info-cta';
+import { useEffect, useState } from 'react';
+import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
+import SaleScheduleInfo from './sale-schedule-info';
 import { DrawParticipateButton } from './draw-participate-button';
 
-interface SaleInfoCardProps {
-  phaseType: string;
-  phaseStatus: string;
-  openAt: string;
-  closeAt: string;
-  weekdayOpen: string;
-  weekdayClose: string;
-  weekendOpen: string;
-  weekendClose: string;
-  location: string;
-  startPrice: number;
-  currentPrice: number;
-  extraTicket: number;
-  serverTime: string;
-  priceCloseAt: string;
-  popupId: string;
-}
+export default function SaleInfoCard(props: SaleDetailSidebarProps) {
+  const { phaseType, phaseStatus, popupId } = props;
 
-export default function SaleInfoCard({
-  phaseType,
-  phaseStatus,
-  openAt,
-  closeAt,
-  weekdayOpen,
-  weekdayClose,
-  weekendOpen,
-  weekendClose,
-  location,
-  startPrice,
-  popupId,
-}: SaleInfoCardProps) {
+  const [ConnectedDrawData, setDrawData] = useState<Awaited<
+    ReturnType<typeof getDrawDetail>
+  > | null>(null);
+
+  useEffect(() => {
+    if (phaseType !== 'AUCTION' || !popupId) return;
+
+    const fetchDraw = async () => {
+      try {
+        if (!props.connetedDrawId) return;
+        const data = await getDrawDetail(String(props.connetedDrawId));
+        setDrawData(data);
+      } catch (error) {
+        throw new Error('DRAW 조회 중 오류가 발생했습니다.');
+      }
+    };
+
+    fetchDraw();
+  }, [phaseType, popupId]);
+
+  const ctaProps: SaleInfoCTAProps =
+    phaseType === 'AUCTION'
+      ? {
+          phaseType: 'AUCTION',
+          phaseStatus: phaseStatus,
+          serverTime: props.serverTime,
+          auctionOpenAt: props.auctionOpenAt,
+          auctionStatus: props.auctionStatus,
+          buttonStatus: props.buttonStatus,
+          connetedDrawOpenAt: ConnectedDrawData?.drawOpenAt ?? null,
+        }
+      : {
+          phaseType: 'DRAW',
+          phaseStatus: phaseStatus,
+          serverTime: props.serverTime,
+          drawOpenAt: props.drawOpenAt,
+          drawCloseAt: props.drawCloseAt,
+        };
+
   return (
     <div className="border border-[var(--line-3)] rounded-ml p-ms">
       {phaseType === 'AUCTION' && (
         <SaleInfoPrice
-          startPrice={startPrice}
-          phaseStatus={phaseStatus}
+          auctionStatus={props.auctionStatus}
+          serverTime={props.serverTime}
+          auctionOpenAt={props.auctionOpenAt}
+          auctionCloseAt={props.auctionCloseAt}
+          remainingUntilOpenSeconds={props.remainingUntilOpenSeconds}
+          remainingUntilCloseSeconds={props.remainingUntilCloseSeconds}
+          startPrice={props.startPrice}
+          minimumPrice={props.minimumPrice}
+          currentPrice={props.currentPrice}
+          nextPrice={props.nextPrice}
+          discountAmount={props.discountAmount}
+          priceDropUnit={props.priceDropUnit}
+          priceDropIntervalSeconds={props.priceDropIntervalSeconds}
+          secondsUntilNextDrop={props.secondsUntilNextDrop}
+          maxPurchaseQuantityPerRound={props.maxPurchaseQuantityPerRound}
+          canParticipate={props.canParticipate}
         ></SaleInfoPrice>
       )}
 
-      <div
-        className={cn(
-          'flex flex-col gap-2xs text-[var(--content-extra-low)]',
-          phaseType === 'AUCTION' ? 'py-ms' : 'pb-ms'
-        )}
-      >
-        <div className="flex items-center gap-2xs">
-          <Icon name="Pin" size={20}></Icon>
-          <Typography variant="body-2">{location}</Typography>
-        </div>
-        <div className="flex items-center gap-2xs">
-          <Icon name="Calender" size={20}></Icon>
-          <Typography variant="body-2">
-            {openAt.replaceAll('-', '.')} - {closeAt.replaceAll('-', '.')}
-          </Typography>
-        </div>
-        <div className="flex items-center gap-2xs">
-          <Icon name="Clock" size={20}></Icon>
-          <Typography variant="body-2">
-            평일 {weekdayOpen} - {weekdayClose} / 주말 {weekendOpen} -{' '}
-            {weekendClose}
-          </Typography>
-        </div>
-      </div>
-      {phaseStatus == 'OPEN' ? (
-        <DrawParticipateButton popupId={popupId} phaseType={phaseType} />
-      ) : (
-        <Button size="large" className="w-full" disabled>
-          <Typography variant="label-1">
-            26.02.09 (월) 10:00 {phaseType == 'AUCTION' ? '경매' : '드로우'}{' '}
-            오픈
-          </Typography>
-        </Button>
-      )}
+      <SaleScheduleInfo {...props}></SaleScheduleInfo>
+      <SaleInfoCTA {...ctaProps}></SaleInfoCTA>
     </div>
   );
 }

@@ -4,73 +4,18 @@ import { AuctionInfoContent, DrawInfoContent } from '@/constants/sale-detail';
 import OpenCountCard from './open-count-card';
 import SaleNoticeCard from '@/components/sale-detail/info/sale-notice-card';
 import SaleInfoCard from './sale-info-card';
+import { SaleDetailSidebarProps } from '@/types/sale-detail';
 
-export interface SaleDetailSidebarProps {
-  openAt: string;
-  closeAt: string;
-
-  weekdayOpen: string;
-  weekdayClose: string;
-
-  weekendOpen: string;
-  weekendClose: string;
-
-  auctionOpenAt: string;
-  auctionCloseAt: string;
-
-  drawOpenAt: string;
-  drawCloseAt: string;
-
-  startPrice: number;
-  currentPrice: number;
-
-  extraTicket: number;
-
-  phaseType: string;
-  phaseStatus: string;
-  serverTime: string;
-  location: string;
-  popupId: string;
-}
-
-export function SaleDetailSidebar({
-  location,
-  openAt,
-  closeAt,
-  weekdayOpen,
-  weekdayClose,
-  weekendOpen,
-  weekendClose,
-  auctionOpenAt,
-  auctionCloseAt,
-  startPrice,
-  currentPrice,
-  extraTicket,
-  phaseType,
-  phaseStatus,
-  serverTime,
-  popupId,
-}: SaleDetailSidebarProps) {
+export function SaleDetailSidebar(props: SaleDetailSidebarProps) {
   return (
     <div className="flex flex-col gap-s">
-      <SaleInfoCard
-        popupId={popupId}
-        phaseType={phaseType}
-        phaseStatus={phaseStatus}
-        openAt={openAt}
-        closeAt={closeAt}
-        weekdayOpen={weekdayOpen}
-        weekdayClose={weekdayClose}
-        weekendOpen={weekendOpen}
-        weekendClose={weekendClose}
-        location={location}
-        priceCloseAt={auctionCloseAt}
-        startPrice={startPrice}
-        currentPrice={currentPrice}
-        extraTicket={extraTicket}
-        serverTime={serverTime}
-      ></SaleInfoCard>
-
+      <OpenCountCard
+        serverTime={props.serverTime}
+        phaseType="AUCTION"
+        phaseStatus={props.phaseStatus}
+        saleOpenAt={props.openAt}
+      ></OpenCountCard>
+      <SaleInfoCard {...props}></SaleInfoCard>
       <SaleNoticeCard items={DrawInfoContent} />
     </div>
   );

@@ -150,7 +150,7 @@ export function AuctionReservePageClient({
         </Typography>
       </div>
 
-      <div className="grid gap-[54px] xl:grid-cols-[minmax(0,1fr)_360px]">
+      <div className="grid gap-[54px] xl:grid-cols-[minmax(0,1fr)_384px]">
         {/* 좌측 메인 패널: 날짜 선택 + 회차 선택 */}
         <Box radius="ML" border="#0A0A0A14" padding="M" className="min-w-0">
           {isDatesLoading ? (
@@ -187,10 +187,7 @@ export function AuctionReservePageClient({
         {/* 우측 결제 요약 패널 */}
         <aside className="flex flex-col gap-s">
           <Box radius="ML" border="#0A0A0A14" padding="MS" className="min-w-0">
-            <SaleInfoPrice
-              startPrice={1000}
-              phaseStatus={'OPEN'}
-            ></SaleInfoPrice>
+            <SaleInfoPrice startPrice={1000} phaseStatus="OPEN"></SaleInfoPrice>
             <ReservePaymentSection
               phaseType={'OPEN'}
               phaseStatus={'AUCTION'}

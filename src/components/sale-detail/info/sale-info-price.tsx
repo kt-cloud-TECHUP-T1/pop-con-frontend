@@ -2,55 +2,83 @@ import { Icon } from '@/components/Icon/Icon';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { formatWon } from '@/lib/utils';
+import { AuctionData, AuctionStatus } from '@/types/sale-detail';
+import { formatSecondsToMMSS } from '../utils/sale-detail-utils';
 
 interface SaleInfoPriceProps {
+  auctionStatus: AuctionStatus;
+  serverTime: string;
+  auctionOpenAt: string;
+  auctionCloseAt: string;
+  remainingUntilOpenSeconds: number;
+  remainingUntilCloseSeconds: number;
   startPrice: number;
-  phaseStatus: string;
+  minimumPrice: number;
+  currentPrice: number | null;
+  nextPrice: number | null;
+  discountAmount: number | null;
+  priceDropUnit: number;
+  priceDropIntervalSeconds: number;
+  secondsUntilNextDrop: number;
+  maxPurchaseQuantityPerRound: number;
+  canParticipate: boolean;
 }
 
-const mockData = {
-  auctionId: 1,
-  auctionStatus: 'OPEN',
-  startPrice: 100000,
-  minimumPrice: 30000,
-  currentPrice: 96000,
-  nextPrice: 95000,
-  priceDropUnit: 1000,
-  priceDropIntervalSeconds: 10,
-  secondsUntilNextDrop: 4,
-  openedAt: '2026-03-11T14:48:13',
-  closedAt: '2026-03-11T14:58:53',
-  serverTime: '2026-03-11T14:49:15',
-};
+export default function SaleInfoPrice(props: SaleInfoPriceProps) {
+  return <>{renderPriceSection({ ...props })}</>;
+}
 
-export default function SaleInfoPrice({
+function renderPriceSection({
+  auctionStatus,
+  serverTime,
+  auctionOpenAt,
+  auctionCloseAt,
+  remainingUntilOpenSeconds,
+  remainingUntilCloseSeconds,
   startPrice,
-  phaseStatus,
+  minimumPrice,
+  currentPrice,
+  nextPrice,
+  discountAmount,
+  priceDropUnit,
+  priceDropIntervalSeconds,
+  secondsUntilNextDrop,
+  maxPurchaseQuantityPerRound,
+  canParticipate,
 }: SaleInfoPriceProps) {
-  return (
-    <div className="priceInfo flex flex-col pb-ms border-b border-[var(--line-3)]">
-      {phaseStatus == 'UPCOMING' ? (
-        <div className="priceInfoBefore">
-          <Typography
-            variant="label-2"
-            className="text-[var(--content-extra-low)]"
-          >
-            시작 가격
-          </Typography>
-          <Typography
-            variant="heading-1"
-            className="text-[var(--content-high)]"
-            weight="bold"
-          >
-            {formatWon(startPrice)}
-          </Typography>
-        </div>
-      ) : (
+  console.log(secondsUntilNextDrop, 'secondsUntilNextDrop');
+  switch (auctionStatus) {
+    case 'SCHEDULED':
+      return (
+        <>
+          <div className="priceInfoBefore">
+            <Typography
+              variant="label-2"
+              className="text-[var(--content-extra-low)]"
+            >
+              시작 가격
+            </Typography>
+            <Typography
+              variant="heading-1"
+              className="text-[var(--content-high)]"
+              weight="bold"
+            >
+              {formatWon(startPrice)}
+            </Typography>
+          </div>
+          <div className="py-ms">
+            <div className="w-full h-[1px] bg-[var(--line-3)]" />
+          </div>
+        </>
+      );
+
+    case 'OPEN':
+      return (
         <div className="priceInfoAfter">
           <div className="flex items-center gap-2xs">
             <Icon name="Ticket" size={24}></Icon>
             <Typography variant="label-1" weight="bold">
-              한 회차당 N장
+              한 회차당 {maxPurchaseQuantityPerRound}장
             </Typography>
             <Icon
               className="text-[var(--content-extra-low)]"
@@ -63,7 +91,7 @@ export default function SaleInfoPrice({
               variant="label-2"
               className="text-[var(--content-extra-low)]"
             >
-              시작 가격 {formatWon(mockData.startPrice)}
+              시작 가격 {formatWon(startPrice)}
             </Typography>
             <div className="flex items-center gap-2xs">
               <Typography
@@ -71,13 +99,12 @@ export default function SaleInfoPrice({
                 className="text-[var(--content-high)]"
                 weight="bold"
               >
-                {formatWon(mockData.currentPrice)}
+                {formatWon(currentPrice as number)}
               </Typography>
               <div className="flex items-center text-[var(--status-warning)]">
                 <Icon size={32} name="CaretDown"></Icon>
                 <Typography variant="label-2" weight="bold">
-                  총 {formatWon(mockData.startPrice - mockData.currentPrice)}원
-                  할인중
+                  {formatWon(startPrice - (currentPrice as number))}총 할인중
                 </Typography>
               </div>
             </div>
@@ -100,12 +127,23 @@ export default function SaleInfoPrice({
                 weight="bold"
                 className="text-black"
               >
-                02:00
+                {formatSecondsToMMSS(secondsUntilNextDrop)}
               </Typography>
             </div>
           </Button>
+          <div className="py-ms">
+            <div className="w-full h-[1px] bg-[var(--line-3)]" />
+          </div>
         </div>
-      )}
-    </div>
-  );
+      );
+
+    case 'SOLD_OUT':
+      return null;
+
+    case 'CLOSED':
+      return null;
+
+    default:
+      return null;
+  }
 }

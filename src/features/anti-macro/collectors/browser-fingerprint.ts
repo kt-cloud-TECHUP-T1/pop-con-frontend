@@ -31,9 +31,10 @@ async function collectFingerprint(): Promise<BrowserFingerprint> {
     screenResolution: { width: screen.width, height: screen.height },
     colorDepth: screen.colorDepth,
     hardwareConcurrency: navigator.hardwareConcurrency,
-    deviceMemory: (navigator as unknown as { deviceMemory?: number }).deviceMemory,
+    deviceMemory: (navigator as unknown as { deviceMemory?: number })
+      .deviceMemory,
     components: Object.fromEntries(
-      Object.entries(components).map(([k, v]) => [k, v.value]),
+      Object.entries(components).map(([k, v]) => [k, v.value])
     ),
   };
 }
