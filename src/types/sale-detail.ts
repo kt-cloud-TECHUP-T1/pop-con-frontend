@@ -117,6 +117,7 @@ export interface DrawSidebarProps extends DrawData {
   location: string;
   popupId: number;
   phaseStatus: string;
+  drawId: number | null;
 }
 
 export type SaleDetailSidebarProps = AuctionSidebarProps | DrawSidebarProps;
