@@ -172,7 +172,6 @@ export function DrawReservePageClient({ drawId }: DrawReservePageClientProps) {
         {/* 우측 신청 요약 패널 */}
         <aside className="flex flex-col gap-s">
           <Box radius="ML" border="#0A0A0A14" padding="MS" className="min-w-0">
-            <SaleInfoPrice startPrice={1000} phaseStatus={'OPEN'} />
             <DrawApplySection
               drawId={drawId}
               selectedOptionId={selectedOptionId}
