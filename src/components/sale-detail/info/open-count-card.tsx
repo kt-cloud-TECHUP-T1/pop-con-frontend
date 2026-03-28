@@ -5,14 +5,12 @@ import { splitRemainingTime } from '../utils/sale-detail-utils';
 
 interface OpenCountCardProps {
   saleOpenAt: string;
-  phaseType: string;
   phaseStatus: string;
   serverTime: string;
 }
 
 export default function OpenCountCard({
   saleOpenAt,
-  phaseType,
   phaseStatus,
   serverTime,
 }: OpenCountCardProps) {
@@ -25,7 +23,7 @@ export default function OpenCountCard({
       {phaseStatus == 'UPCOMING' && (
         <div className="p-ms bg-[var(--neutral-20)] text-[var(--white)] rounded-ml flex flex-col gap-xs items-center">
           <Typography variant="body-2" weight="regular">
-            {phaseType == 'AUCTION' ? '경매' : '드로우'} 오픈까지
+            경매 오픈까지
           </Typography>
           <div className="flex items-start justify-center gap-xs text-white">
             <CountItem value={days} label="일" />

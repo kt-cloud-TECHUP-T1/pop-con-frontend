@@ -7,7 +7,7 @@ import { Wrapper } from '@/components/layout/wrapper';
 import { SaleDetailLayout } from '@/components/layout/sale-detail-layout';
 import { SaleDetailMain } from '@/components/sale-detail/contents/sale-detail-main';
 import SaleTimeCountBar from '@/components/sale-detail/contents/sale-time-count-bar';
-import { SaleDetailSidebar } from '@/components/sale-detail/info/sale-detail-sidebar';
+import { SaleAuctionSidebar } from '@/components/sale-detail/info/sale-auction-sidebar';
 import { RecommendedPopup } from '@/components/sale-detail/popup/recommended-popup';
 import { RelatedPopup } from '@/components/sale-detail/popup/related-popup';
 import { getAuctionDetail } from '@/app/api/sale-detail/get-auction-detail';
@@ -145,7 +145,7 @@ export function AuctionContainer() {
         <SaleDetailLayout
           hasStickyTopBar={hasStickyTopBar}
           left={<SaleDetailMain {...leftMainProps} />}
-          right={<SaleDetailSidebar {...rightSubProps} />}
+          right={<SaleAuctionSidebar {...rightSubProps} />}
           bottom={
             <>
               <RelatedPopup />
