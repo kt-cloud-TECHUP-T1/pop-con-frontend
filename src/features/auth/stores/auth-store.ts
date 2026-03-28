@@ -1,5 +1,4 @@
-('use client');
-
+'use client';
 import { create } from 'zustand';
 
 export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';

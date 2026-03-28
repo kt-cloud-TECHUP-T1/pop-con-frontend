@@ -6,6 +6,7 @@ import { Footer } from '@/components/layout/footer';
 import { SnackbarToaster } from '@/components/ui/snackbar';
 import { AppProviders } from './providers';
 import ConditionalAuthSessionRestore from '@/components/auth/conditional-auth-session-restore';
+import LoginRequiredModal from '@/components/common/login-required-modal';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -31,6 +32,7 @@ export default function RootLayout({
         <Header />
         <AppProviders>{children}</AppProviders>
         <Footer />
+        <LoginRequiredModal></LoginRequiredModal>
         <SnackbarToaster />
       </body>
     </html>
