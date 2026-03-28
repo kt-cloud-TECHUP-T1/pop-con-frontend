@@ -4,6 +4,11 @@ import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { RefreshTokenResponse } from '@/types/auth/auth';
+import { LOGIN_REDIRECT_KEY } from '@/constants/auth';
+
+const isValidRedirectPath = (value: string | null): value is string => {
+  return typeof value === 'string' && value.startsWith('/');
+};
 
 export default function AuthCallbackPage() {
   const router = useRouter();
@@ -36,6 +41,15 @@ export default function AuthCallbackPage() {
         }
 
         setAccessToken(accessToken);
+
+        const redirect = sessionStorage.getItem(LOGIN_REDIRECT_KEY);
+        sessionStorage.removeItem(LOGIN_REDIRECT_KEY);
+
+        if (isValidRedirectPath(redirect)) {
+          router.replace(redirect);
+          return;
+        }
+
         router.replace('/');
       } catch (error) {
         console.error('[AuthCallbackPage] refresh failed:', error);

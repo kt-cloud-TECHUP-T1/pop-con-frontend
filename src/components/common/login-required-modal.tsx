@@ -4,13 +4,20 @@ import { useLoginRequiredModalStore } from '@/features/auth/stores/login-require
 import { Box } from '../ui/box';
 import { Typography } from '../ui/typography';
 import { Button } from '../ui/button';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function LoginRequiredModal() {
   const isOpen = useLoginRequiredModalStore((state) => state.isOpen);
   const close = useLoginRequiredModalStore((state) => state.close);
   // const isOpen = true;
-
+  const router = useRouter();
+  const pathname = usePathname();
   if (!isOpen) return null;
+
+  const handleLogin = () => {
+    close();
+    router.push(`/login?redirect=${pathname}`);
+  };
 
   return (
     <Box className="fixed inset-0 flex items-center justify-center bg-black/50 ">
@@ -31,7 +38,7 @@ export default function LoginRequiredModal() {
           <Button variant="secondary" className="flex-1" onClick={close}>
             <Typography variant="label-1">취소</Typography>
           </Button>
-          <Button className="flex-1">
+          <Button className="flex-1" onClick={handleLogin}>
             <Typography variant="label-1">로그인하기</Typography>
           </Button>
         </div>
