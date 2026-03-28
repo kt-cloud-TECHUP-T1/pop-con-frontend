@@ -2,17 +2,21 @@ import Image from 'next/image';
 import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
-import { CardBrandCode, PaymentMethod } from '@/features/mypage/types';
+
+// TODO PaymentAvatar PR 승인되면 해당 컴포넌트에 맞게 교체 필요 #68
+export type CardBrandCode = 'HYUNDAI' | 'TOSS';
+
+export type PaymentMethod = {
+  id: number;
+  brandCode: CardBrandCode;
+  brand: string;
+  maskedNumber: string;
+  isPrimary: boolean;
+};
 
 const CARD_BRAND_IMAGE: Record<CardBrandCode, string> = {
   HYUNDAI: '/images/temp/hyundai-card.png',
   TOSS: '/images/temp/toss-card.png',
-};
-
-type PaymentMethodCardProps = PaymentMethod;
-type PaymentMethodCardActionProps = {
-  onSetPrimary: (paymentMethodId: number) => void;
-  onDelete: (paymentMethodId: number) => void;
 };
 
 export function PaymentMethodCard({
@@ -23,7 +27,10 @@ export function PaymentMethodCard({
   isPrimary,
   onSetPrimary,
   onDelete,
-}: PaymentMethodCardProps & PaymentMethodCardActionProps) {
+}: PaymentMethod & {
+  onSetPrimary: (paymentMethodId: number) => void;
+  onDelete: (paymentMethodId: number) => void;
+}) {
   return (
     <Box as="article" radius="ML" border="#0A0A0A14" paddingY="MS" paddingX="M">
       <div className="flex items-center justify-between gap-3">
@@ -55,20 +62,26 @@ export function PaymentMethodCard({
         </div>
 
         {isPrimary ? (
-          <Box radius="XS" paddingX="XS" background="#CDEFD7" className="pb-1">
+          <Box
+            radius="XS"
+            paddingX="XS"
+            background="var(--orange-95)"
+            className="pb-1"
+          >
             <Typography
               variant="label-3"
               weight="medium"
-              className="text-[#0C8A4A]"
+              className="text-[var(--orange-45)]"
             >
-              메인 결제수단
+              주 사용
             </Typography>
           </Box>
         ) : (
-          <div className="flex shrink-0 items-center gap-4">
+          <div className="flex shrink-0 items-center">
             <Button
               type="button"
               size="xsmall"
+              variant="secondary"
               className="bg-[#E6E6E6] px-3 py-1 transition-colors hover:bg-[#dcdcdc]"
               onClick={() => onSetPrimary(id)}
             >
@@ -77,16 +90,15 @@ export function PaymentMethodCard({
                 weight="medium"
                 className="text-[var(--neutral-30)]"
               >
-                메인 결제수단으로 변경
+                주 결제수단으로 변경
               </Typography>
             </Button>
-            <Box
-              as="button"
+            <Button
               type="button"
+              size="xsmall"
+              variant="primary"
               onClick={() => onDelete(id)}
-              paddingY="_2XS"
-              paddingX="XS"
-              className="transition-opacity hover:opacity-70"
+              className="bg-transparent hover:bg-transparent active:bg-transparent"
             >
               <Typography
                 variant="label-3"
@@ -95,7 +107,7 @@ export function PaymentMethodCard({
               >
                 삭제
               </Typography>
-            </Box>
+            </Button>
           </div>
         )}
       </div>

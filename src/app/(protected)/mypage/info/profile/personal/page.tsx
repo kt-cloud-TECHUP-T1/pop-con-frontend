@@ -1,8 +1,24 @@
 import { PageHeader } from '@/components/shared/page-header';
-import { personalProfileRows } from '@/app/(protected)/mypage/data/mock-data';
 import { Box } from '@/components/ui/box';
+import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
-import { PersonalPhoneVerifyAction } from '@/app/(protected)/mypage/info/profile/personal/components/personal-phone-verify-action';
+
+type PersonalProfileRow = {
+  label: string;
+  value: string;
+  action?: 'verifyPhone' | 'edit';
+};
+
+const personalProfileRows: PersonalProfileRow[] = [
+  { label: '이름', value: '이상혁' },
+  { label: '생년월일 / 성별', value: '1996.05.07 / 남' },
+  { label: '이메일', value: 'Account@mail.com' },
+  {
+    label: '휴대폰 번호',
+    value: '010-1234-5678',
+    action: 'verifyPhone',
+  },
+];
 
 export default function MyPagePersonalInfoPage() {
   return (
@@ -17,7 +33,7 @@ export default function MyPagePersonalInfoPage() {
           {personalProfileRows.map((item) => (
             <div
               key={item.label}
-              className="grid items-center gap-3 md:grid-cols-[120px_minmax(0,1fr)_78px] md:gap-[80px]"
+              className="grid items-center gap-3 min-h-[48px] md:grid-cols-[120px_minmax(0,1fr)_78px] md:gap-[80px]"
             >
               <dt className="text-[var(--neutral-20)]">
                 <Typography variant="body-1" as="span">
@@ -30,17 +46,8 @@ export default function MyPagePersonalInfoPage() {
                 </Typography>
               </dd>
               <div className="md:justify-self-end">
-                {item.action === 'verifyPhone' ? (
-                  <PersonalPhoneVerifyAction />
-                ) : item.action === 'edit' ? (
-                  <Box
-                    as="button"
-                    type="button"
-                    paddingY="S"
-                    paddingX="M"
-                    border="#0A0A0A29"
-                    radius="MS"
-                  >
+                {item.action && (
+                  <Button type="button" size="large" variant="tertiary">
                     <Typography
                       variant="label-1"
                       weight="medium"
@@ -48,8 +55,8 @@ export default function MyPagePersonalInfoPage() {
                     >
                       변경
                     </Typography>
-                  </Box>
-                ) : null}
+                  </Button>
+                )}
               </div>
             </div>
           ))}

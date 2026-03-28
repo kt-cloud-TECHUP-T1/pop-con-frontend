@@ -42,12 +42,8 @@ const myTickets: MyTicketItem[] = [
 
 export default function MyPageInfoTicketsPage() {
   return (
-    <section>
-      <PageHeader
-        title="내 티켓"
-        titleVariant="heading-1"
-        titleWeight="bold"
-      />
+    <section className="max-w-[760px] mx-auto">
+      <PageHeader title="내 티켓" titleVariant="heading-1" titleWeight="bold" />
 
       <ul className="space-y-3">
         {myTickets.map((ticket) => (
@@ -87,7 +83,7 @@ export default function MyPageInfoTicketsPage() {
                 </Typography>
               </div>
 
-              <Icon name="ChevronRight" size={32} className="shrink-0 " />
+              <Icon name="ChevronRight" size={24} className="shrink-0 " />
             </Box>
           </li>
         ))}
