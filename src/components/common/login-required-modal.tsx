@@ -9,7 +9,6 @@ import { usePathname, useRouter } from 'next/navigation';
 export default function LoginRequiredModal() {
   const isOpen = useLoginRequiredModalStore((state) => state.isOpen);
   const close = useLoginRequiredModalStore((state) => state.close);
-  // const isOpen = true;
   const router = useRouter();
   const pathname = usePathname();
   if (!isOpen) return null;

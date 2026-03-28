@@ -9,6 +9,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { useLoginRequiredModalStore } from '@/features/auth/stores/login-required-modal-store';
 import { requireAuth } from '../utils/require-auth';
+import { usePaymentRequiredModalStore } from '@/features/auth/stores/payment-required-modal-store';
 
 export default function SaleInfoCTA(props: SaleInfoCTAProps) {
   const { phaseType, phaseStatus, serverTime } = props;
@@ -17,7 +18,12 @@ export default function SaleInfoCTA(props: SaleInfoCTAProps) {
   const openLoginRequiredModal = useLoginRequiredModalStore(
     (state) => state.open
   );
-
+  const isPaymentRegistered = useAuthStore(
+    (state) => state.isPaymentRegistered
+  );
+  const openPaymentRequiredModal = usePaymentRequiredModalStore(
+    (state) => state.open
+  );
   if (phaseType === 'AUCTION') {
     const {
       auctionOpenAt,
@@ -31,6 +37,13 @@ export default function SaleInfoCTA(props: SaleInfoCTAProps) {
       requireAuth({
         authStatus,
         onAuthenticated: () => {
+          if (isPaymentRegistered === null) return;
+
+          if (!isPaymentRegistered) {
+            openPaymentRequiredModal();
+            return;
+          }
+
           router.push(`/auction/${auctionId}/reserve`);
         },
         onUnauthenticated: () => {

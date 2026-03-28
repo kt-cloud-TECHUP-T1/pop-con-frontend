@@ -14,7 +14,9 @@ export default function AuthCallbackPage() {
   const router = useRouter();
   const requestedRef = useRef(false);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
-
+  const setPaymentRegistered = useAuthStore(
+    (state) => state.setPaymentRegistered
+  );
   useEffect(() => {
     if (requestedRef.current) return;
     requestedRef.current = true;
@@ -41,6 +43,25 @@ export default function AuthCallbackPage() {
         }
 
         setAccessToken(accessToken);
+
+        try {
+          const billingList = await getBillingList(accessToken);
+
+          setPaymentRegistered(billingList.length > 0);
+        } catch (error: unknown) {
+          console.error('[billing] error:', error);
+
+          const errorCode = error instanceof Error ? error.message : 'UNKNOWN';
+
+          if (errorCode === 'A002' || errorCode === 'A003') {
+            setAccessToken(null);
+            setPaymentRegistered(false);
+            router.replace('/login');
+            return;
+          }
+
+          setPaymentRegistered(false);
+        }
 
         const redirect = sessionStorage.getItem(LOGIN_REDIRECT_KEY);
         sessionStorage.removeItem(LOGIN_REDIRECT_KEY);

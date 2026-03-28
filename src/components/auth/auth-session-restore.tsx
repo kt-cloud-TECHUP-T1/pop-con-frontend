@@ -9,7 +9,9 @@ export default function AuthSessionRestore() {
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
   const setAuthLoading = useAuthStore((state) => state.setAuthLoading);
-
+  const setPaymentRegistered = useAuthStore(
+    (state) => state.setPaymentRegistered
+  );
   useEffect(() => {
     if (requestedRef.current) return;
     requestedRef.current = true;
@@ -41,6 +43,24 @@ export default function AuthSessionRestore() {
         }
 
         setAccessToken(accessToken);
+
+        try {
+          const billingList = await getBillingList(accessToken);
+          setPaymentRegistered(billingList.length > 0);
+        } catch (error: unknown) {
+          console.error('[billing] error:', error);
+
+          const errorCode = error instanceof Error ? error.message : 'UNKNOWN';
+
+          // 인증 에러 → 로그아웃
+          if (errorCode === 'A002' || errorCode === 'A003') {
+            clearAccessToken();
+            setPaymentRegistered(false);
+            return;
+          }
+
+          setPaymentRegistered(false);
+        }
       } catch (error) {
         console.error('[AuthSessionRestore] restore failed:', error);
         clearAccessToken();
