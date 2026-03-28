@@ -15,8 +15,9 @@ export function SaleDetailSidebar(props: SaleDetailSidebarProps) {
         phaseStatus={props.phaseStatus}
         saleOpenAt={props.openAt}
       ></OpenCountCard>
+      <PaymentRegisterCard></PaymentRegisterCard>
       <SaleInfoCard {...props}></SaleInfoCard>
-      <SaleNoticeCard items={DrawInfoContent} />
+      <SaleNoticeCard items={AuctionInfoContent} />
     </div>
   );
 }
