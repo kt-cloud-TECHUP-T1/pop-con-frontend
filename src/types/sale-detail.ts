@@ -78,6 +78,7 @@ export interface DrawData {
   drawOpenAt: string;
   drawCloseAt: string;
   serverTime: string;
+  drawId: number;
 }
 
 export interface DrawDetailResponse {
@@ -117,7 +118,6 @@ export interface DrawSidebarProps extends DrawData {
   location: string;
   popupId: number;
   phaseStatus: string;
-  drawId: number | null;
 }
 
 export type SaleDetailSidebarProps = AuctionSidebarProps | DrawSidebarProps;
@@ -133,12 +133,14 @@ interface AuctionSaleInfoCTAProps extends BaseSaleInfoCTAProps {
   auctionStatus: string;
   buttonStatus: AuctionButtonStatus;
   connetedDrawOpenAt: string | null;
+  auctionId: number;
 }
 
 export interface DrawSaleInfoCTAProps extends BaseSaleInfoCTAProps {
   phaseType: 'DRAW';
   drawOpenAt: string;
   drawCloseAt: string;
+  drawId: number;
 }
 
 export type SaleInfoCTAProps = AuctionSaleInfoCTAProps | DrawSaleInfoCTAProps;

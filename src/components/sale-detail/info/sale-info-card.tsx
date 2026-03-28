@@ -43,6 +43,7 @@ export default function SaleInfoCard(props: SaleDetailSidebarProps) {
           auctionStatus: props.auctionStatus,
           buttonStatus: props.buttonStatus,
           connetedDrawOpenAt: ConnectedDrawData?.drawOpenAt ?? null,
+          auctionId: props.auctionId,
         }
       : {
           phaseType: 'DRAW',
@@ -50,6 +51,7 @@ export default function SaleInfoCard(props: SaleDetailSidebarProps) {
           serverTime: props.serverTime,
           drawOpenAt: props.drawOpenAt,
           drawCloseAt: props.drawCloseAt,
+          drawId: props.drawId,
         };
 
   return (
