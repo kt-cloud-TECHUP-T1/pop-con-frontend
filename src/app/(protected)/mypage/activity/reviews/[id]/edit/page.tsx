@@ -156,12 +156,6 @@ export default function ReviewEditPage({ params }: { params: { id: string } }) {
     router.push('/mypage/activity/reviews');
   };
 
-  useEffect(() => {
-    return () => {
-      images.forEach((url) => URL.revokeObjectURL(url));
-    };
-  }, [images]);
-
   return (
     <section>
       <PageHeader

@@ -94,7 +94,13 @@ function ImagePreviewGrid({
   );
 }
 
-export default function ReviewNewPage() {
+// TODO: 실제 API 연동 시 bidId로 해당 입찰 정보 fetch
+export default function ReviewNewPage({
+  searchParams,
+}: {
+  searchParams: { bidId?: string };
+}) {
+  // searchParams.bidId는 API 연동 시 사용
   const router = useRouter();
 
   const [rating, setRating] = useState(0);
