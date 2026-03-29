@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/Icon/Icon';
 import { PageHeader } from '@/components/shared/page-header';
@@ -104,7 +104,8 @@ function ImagePreviewGrid({
   );
 }
 
-export default function ReviewEditPage() {
+export default function ReviewEditPage({ params }: { params: { id: string } }) {
+  // params.id는 API 연동 시 사용
   const router = useRouter();
 
   const [rating, setRating] = useState(MOCK_REVIEW.rating);
@@ -112,15 +113,38 @@ export default function ReviewEditPage() {
   const [body, setBody] = useState(MOCK_REVIEW.body);
   const [images, setImages] = useState<string[]>(MOCK_REVIEW.photos);
 
+  const imagesRef = useRef<string[]>(images);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // 이미지가 변경될 떄마다 Ref 업데이트
+  useEffect(() => {
+    imagesRef.current = images;
+  }, [images]);
+
+  // 컴포넌트 언마운트 시 모든 Blob URL 해제
+  useEffect(() => {
+    return () => {
+      imagesRef.current.forEach((url) => {
+        if (url.startsWith('blob:')) {
+          URL.revokeObjectURL(url);
+        }
+      });
+    };
+  }, []);
+
   const handleRemoveImage = (index: number) => {
+    const urlToRemove = images[index];
+    // 삭제할 때도 blob URL인 경우에만 해제
+    if (urlToRemove && urlToRemove.startsWith('blob:')) {
+      URL.revokeObjectURL(urlToRemove);
+    }
     setImages((prev) => prev.filter((_, i) => i !== index));
   };
 
   const handleAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
     if (!files) return;
+
     const urls = Array.from(files).map((file) => URL.createObjectURL(file));
     setImages((prev) => [...prev, ...urls]);
     e.target.value = '';
@@ -129,8 +153,14 @@ export default function ReviewEditPage() {
   const handleSave = () => {
     // TODO: 실제 API 연동
     snackbar.success({ title: '리뷰가 수정되었습니다.' });
-    router.back();
+    router.push('/mypage/activity/reviews');
   };
+
+  useEffect(() => {
+    return () => {
+      images.forEach((url) => URL.revokeObjectURL(url));
+    };
+  }, [images]);
 
   return (
     <section>

@@ -137,7 +137,9 @@ function ReviewCard({
             <button
               type="button"
               className="hover:text-[var(--content-high)] transition-colors cursor-pointer"
-              onClick={() => router.push(`/mypage/activity/reviews/${review.id}/edit`)}
+              onClick={() =>
+                router.push(`/mypage/activity/reviews/${review.id}/edit`)
+              }
             >
               수정
             </button>
@@ -252,7 +254,10 @@ function ReviewDeleteModal({
         >
           리뷰를 삭제하시겠어요?
         </Typography>
-        <Typography variant="body-1" className="mt-2 text-[var(--extra-low)]">
+        <Typography
+          variant="body-1"
+          className="mt-2 text-[var(--content-extra-low)]"
+        >
           삭제된 리뷰는 다시 복구할 수 없어요
         </Typography>
       </div>

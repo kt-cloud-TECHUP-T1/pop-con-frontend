@@ -48,7 +48,8 @@ export function PaymentMethodsPageClient({
         ))}
       </div>
 
-      <Button size="large" variant="tertiary">
+      {/* TODO 새 결제수단 등록 기능 구현 필요 */}
+      <Button size="large" variant="tertiary" disabled>
         <Icon name="Plus" size={20} />
         <Typography variant="label-1" weight="medium">
           새 결제수단 등록

@@ -43,7 +43,7 @@ export function ProfileSummaryCard({
 
         <dl className="grid w-full max-w-[420px] grid-cols-[100px_1fr] gap-x-4 gap-y-2">
           {infoItems.map((item) => (
-            <div key={item.label} className="contents">
+            <div key={`${item.label}-${item.value}`} className="contents">
               <dt>
                 <Typography variant="label-1" weight="regular">
                   {item.label}
@@ -61,13 +61,22 @@ export function ProfileSummaryCard({
           ))}
         </dl>
         <div className="flex flex-wrap gap-2">
-          <Link href="/mypage/info/profile/settings" className={buttonVariants({ variant: 'tertiary', size: 'small' })}>
+          <Link
+            href="/mypage/info/profile/settings"
+            className={buttonVariants({ variant: 'tertiary', size: 'small' })}
+          >
             프로필 설정
           </Link>
-          <Link href="/mypage/info/profile/personal" className={buttonVariants({ variant: 'tertiary', size: 'small' })}>
+          <Link
+            href="/mypage/info/profile/personal"
+            className={buttonVariants({ variant: 'tertiary', size: 'small' })}
+          >
             개인정보 수정
           </Link>
-          <Link href="/mypage/info/profile/login/settings" className={buttonVariants({ variant: 'tertiary', size: 'small' })}>
+          <Link
+            href="/mypage/info/profile/login/settings"
+            className={buttonVariants({ variant: 'tertiary', size: 'small' })}
+          >
             로그인 설정
           </Link>
         </div>

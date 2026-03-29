@@ -53,7 +53,7 @@ export default function SocialLoginSettingsPage() {
                   </Typography>
                 </div>
                 {provider.connected ? (
-                  <Button variant="ghost" size="small">
+                  <Button variant="ghost" size="small" disabled>
                     연결 해제
                   </Button>
                 ) : (
@@ -61,6 +61,7 @@ export default function SocialLoginSettingsPage() {
                     variant="ghost"
                     size="small"
                     className="text-[var(--orange-50)]"
+                    disabled
                   >
                     연결하기
                   </Button>

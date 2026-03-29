@@ -9,6 +9,7 @@ type PersonalProfileRow = {
   action?: 'verifyPhone' | 'edit';
 };
 
+// TODO API 연동하여 실제 데이터로 교체 필요
 const personalProfileRows: PersonalProfileRow[] = [
   { label: '이름', value: '이상혁' },
   { label: '생년월일 / 성별', value: '1996.05.07 / 남' },
@@ -46,8 +47,14 @@ export default function MyPagePersonalInfoPage() {
                 </Typography>
               </dd>
               <div className="md:justify-self-end">
+                {/* TODO action에 따른 버튼 활성화 및 기능 구현 필요 */}
                 {item.action && (
-                  <Button type="button" size="large" variant="tertiary">
+                  <Button
+                    type="button"
+                    size="large"
+                    variant="tertiary"
+                    disabled
+                  >
                     <Typography
                       variant="label-1"
                       weight="medium"

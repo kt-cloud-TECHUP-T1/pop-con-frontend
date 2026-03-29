@@ -10,4 +10,5 @@ export type ActivityItem = {
   stateLabel: string;
   stateTone: ActivityStatusTone;
   isResultPending?: boolean;
+  drawResult?: 'lucky' | 'won' | 'notWon';
 };

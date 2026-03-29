@@ -18,6 +18,7 @@ export const activityItems: Record<ActivityTab, ActivityItem[]> = {
       stateLabel: '결과 확인 대기중',
       stateTone: 'warning',
       isResultPending: true,
+      drawResult: 'lucky',
     },
     {
       id: 3,
