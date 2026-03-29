@@ -24,7 +24,9 @@ export function AuctionContainer() {
   const { setPopupData, resetPopupData } = usePopupStore();
   const { setInitialAuctionData, setLiveAuctionData, resetAuctionData } =
     useAuctionStore();
-  const auctionData = useAuctionLatestData(); // liveData ?? initialData
+  const auctionStatus = useAuctionStore(
+    (state) => state.initialData?.auctionStatus
+  );
   const popupData = usePopupStore((state) => state.data);
 
   const [isLoading, setIsLoading] = useState(true);
@@ -101,12 +103,11 @@ export function AuctionContainer() {
     return <div>로딩중...</div>;
   }
 
-  if (error || !popupData || !popupId || !auctionData) {
+  if (error || !popupData || !popupId || !auctionStatus) {
     return <div>{error ?? '데이터를 불러오지 못했습니다.'}</div>;
   }
 
-  const hasStickyTopBar =
-    popupData.phaseStatus !== 'UPCOMING' && popupData.phaseType == 'AUCTION';
+  const hasStickyTopBar = auctionStatus !== 'SCHEDULED';
 
   return (
     <div>

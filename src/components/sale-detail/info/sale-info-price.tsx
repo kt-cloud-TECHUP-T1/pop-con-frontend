@@ -2,51 +2,22 @@ import { Icon } from '@/components/Icon/Icon';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { formatWon } from '@/lib/utils';
-import { AuctionData, AuctionStatus } from '@/types/sale-detail';
 import { formatSecondsToMMSS } from '../utils/sale-detail-utils';
+import { useAuctionLatestData } from '../stores/auction-store';
 
-interface SaleInfoPriceProps {
-  auctionStatus: AuctionStatus;
-  serverTime: string;
-  auctionOpenAt: string;
-  auctionCloseAt: string;
-  remainingUntilOpenSeconds: number;
-  remainingUntilCloseSeconds: number;
-  startPrice: number;
-  minimumPrice: number;
-  currentPrice: number | null;
-  nextPrice: number | null;
-  discountAmount: number | null;
-  priceDropUnit: number;
-  priceDropIntervalSeconds: number;
-  secondsUntilNextDrop: number;
-  maxPurchaseQuantityPerRound: number;
-  canParticipate: boolean;
-}
+export default function SaleInfoPrice() {
+  const auctionData = useAuctionLatestData();
 
-export default function SaleInfoPrice(props: SaleInfoPriceProps) {
-  return <>{renderPriceSection({ ...props })}</>;
-}
+  if (!auctionData) return null;
 
-function renderPriceSection({
-  auctionStatus,
-  serverTime,
-  auctionOpenAt,
-  auctionCloseAt,
-  remainingUntilOpenSeconds,
-  remainingUntilCloseSeconds,
-  startPrice,
-  minimumPrice,
-  currentPrice,
-  nextPrice,
-  discountAmount,
-  priceDropUnit,
-  priceDropIntervalSeconds,
-  secondsUntilNextDrop,
-  maxPurchaseQuantityPerRound,
-  canParticipate,
-}: SaleInfoPriceProps) {
-  console.log(secondsUntilNextDrop, 'secondsUntilNextDrop');
+  const {
+    auctionStatus,
+    startPrice,
+    currentPrice,
+    secondsUntilNextDrop,
+    maxPurchaseQuantityPerRound,
+  } = auctionData;
+
   switch (auctionStatus) {
     case 'SCHEDULED':
       return (
@@ -112,7 +83,7 @@ function renderPriceSection({
           <Button
             size="large"
             disabled
-            className="w-full disabled:bg-[var(--component-default)] "
+            className="w-full disabled:bg-[var(--component-default)]"
           >
             <div className="w-full flex items-center justify-between p-ms">
               <Typography
@@ -138,11 +109,7 @@ function renderPriceSection({
       );
 
     case 'SOLD_OUT':
-      return null;
-
     case 'CLOSED':
-      return null;
-
     default:
       return null;
   }
