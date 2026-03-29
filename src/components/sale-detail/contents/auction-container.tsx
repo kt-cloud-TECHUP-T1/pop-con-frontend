@@ -12,33 +12,35 @@ import { RecommendedPopup } from '@/components/sale-detail/popup/recommended-pop
 import { RelatedPopup } from '@/components/sale-detail/popup/related-popup';
 import { getAuctionDetail } from '@/app/api/sale-detail/get-auction-detail';
 import { connectAuctionStream } from '@/app/api/sale-detail/connect-auction-stream';
-import { AuctionData, AuctionSidebarProps } from '@/types/sale-detail';
-
-type PopupDetailData = Awaited<ReturnType<typeof getPopupDetail>>;
+import { AuctionData } from '@/types/sale-detail';
+import { usePopupStore } from '../stores/popup-store';
+import { useAuctionLatestData, useAuctionStore } from '../stores/auction-store';
 
 export function AuctionContainer() {
   const params = useParams<{ popupId: string }>();
   const popupId = params.popupId;
   const popupIdNumber = Number(popupId);
 
-  const [saleMainData, setSaleMainData] = useState<PopupDetailData | null>(
-    null
-  );
-  const [initialAuctionData, setInitialAuctionData] =
-    useState<AuctionData | null>(null);
-  const [liveAuctionData, setLiveAuctionData] = useState<AuctionData | null>(
-    null
-  );
+  const { setPopupData, resetPopupData } = usePopupStore();
+  const { setInitialAuctionData, setLiveAuctionData, resetAuctionData } =
+    useAuctionStore();
+  const auctionData = useAuctionLatestData(); // liveData ?? initialData
+  const popupData = usePopupStore((state) => state.data);
 
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    //기존 스토어 데이터 삭제
+    resetAuctionData();
+    resetPopupData();
+
     if (!popupId || Number.isNaN(popupIdNumber)) {
       setError('유효하지 않은 popupId입니다.');
       setIsLoading(false);
       return;
     }
+
     let isMounted = true;
     let disconnectStream: (() => void) | undefined;
 
@@ -48,7 +50,7 @@ export function AuctionContainer() {
 
         if (!isMounted) return;
 
-        setSaleMainData(popupDetail);
+        setPopupData(popupDetail); //main Popup 데이터 저장
 
         const auctionId = popupDetail.auctionId;
 
@@ -56,11 +58,10 @@ export function AuctionContainer() {
           throw new Error('경매 ID가 없습니다.');
         }
 
-        const auctionDetail = await getAuctionDetail(auctionId);
+        const auctionDetail: AuctionData = await getAuctionDetail(auctionId);
 
         if (!isMounted) return;
-
-        setInitialAuctionData(auctionDetail);
+        setInitialAuctionData(auctionDetail); //auction 초기 데이터 저장
 
         disconnectStream = connectAuctionStream({
           auctionId,
@@ -91,6 +92,8 @@ export function AuctionContainer() {
     return () => {
       isMounted = false;
       disconnectStream?.();
+      resetAuctionData();
+      resetPopupData();
     };
   }, [popupIdNumber, popupId]);
 
@@ -98,54 +101,21 @@ export function AuctionContainer() {
     return <div>로딩중...</div>;
   }
 
-  if (error || !saleMainData || !popupId || !initialAuctionData) {
+  if (error || !popupData || !popupId || !auctionData) {
     return <div>{error ?? '데이터를 불러오지 못했습니다.'}</div>;
   }
 
-  const auctionData = liveAuctionData ?? initialAuctionData;
   const hasStickyTopBar =
-    saleMainData.phaseStatus !== 'UPCOMING' &&
-    saleMainData.phaseType == 'AUCTION';
-
-  const leftMainProps = {
-    description: saleMainData.description,
-    image: saleMainData.thumbnailUrl,
-    location: saleMainData.location,
-    reviewCount: saleMainData.reviewCount,
-    title: saleMainData.title,
-    subtitle: saleMainData.subtitle,
-    viewCount: saleMainData.viewCount,
-    likeCount: saleMainData.likeCount,
-    hasStickyTopBar,
-  };
-
-  const rightSubProps: AuctionSidebarProps = {
-    ...auctionData,
-    phaseType: 'AUCTION',
-    phaseStatus: saleMainData.phaseStatus,
-    openAt: saleMainData.openAt,
-    closeAt: saleMainData.closeAt,
-    weekdayOpen: saleMainData.weekdayOpen,
-    weekdayClose: saleMainData.weekdayClose,
-    weekendOpen: saleMainData.weekendOpen,
-    weekendClose: saleMainData.weekendClose,
-    location: saleMainData.location,
-    popupId: saleMainData.popupId,
-    connetedDrawId: saleMainData.drawId,
-  };
+    popupData.phaseStatus !== 'UPCOMING' && popupData.phaseType == 'AUCTION';
 
   return (
     <div>
-      <SaleTimeCountBar
-        auctionStatus={auctionData.auctionStatus}
-        auctionCloseAt={auctionData.auctionCloseAt}
-        serverTime={auctionData.serverTime}
-      />
+      <SaleTimeCountBar />
       <Wrapper className="pt-m pb-3xl">
         <SaleDetailLayout
           hasStickyTopBar={hasStickyTopBar}
-          left={<SaleDetailMain {...leftMainProps} />}
-          right={<SaleAuctionSidebar {...rightSubProps} />}
+          left={<SaleDetailMain hasStickyTopBar={hasStickyTopBar} />}
+          right={<SaleAuctionSidebar />}
           bottom={
             <>
               <RelatedPopup />

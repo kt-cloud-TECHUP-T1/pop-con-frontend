@@ -2,16 +2,15 @@ import { Icon } from '@/components/Icon/Icon';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
+import { usePopupStore } from '../stores/popup-store';
 
 interface SaleReviewProps {
-  reviewCount: number;
   hasStickyTopBar: boolean;
 }
 
-export default function SaleReview({
-  reviewCount,
-  hasStickyTopBar,
-}: SaleReviewProps) {
+export default function SaleReview({ hasStickyTopBar }: SaleReviewProps) {
+  const reviewCount = usePopupStore((state) => state.data?.reviewCount ?? 0);
+
   return (
     <section
       id="review"

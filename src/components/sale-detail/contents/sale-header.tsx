@@ -1,21 +1,13 @@
 import { Icon } from '@/components/Icon/Icon';
 import { Typography } from '@/components/ui/typography';
+import { usePopupStore } from '../stores/popup-store';
 
-interface SaleHeaderProps {
-  title: string;
-  subTitle?: string;
-  viewCount?: number;
-  likeCount?: number;
-  className?: string;
-}
+export default function SaleHeader() {
+  const popupData = usePopupStore((state) => state.data);
 
-export default function SaleHeader({
-  title,
-  subTitle,
-  viewCount = 0,
-  likeCount = 0,
-  className,
-}: SaleHeaderProps) {
+  if (!popupData) return null;
+
+  const { title, subtitle, viewCount = 0, likeCount = 0 } = popupData;
   return (
     <div className="py-m">
       <section className="flex justify-between">
@@ -24,7 +16,7 @@ export default function SaleHeader({
           weight="medium"
           className="text-[var(--content-extra-low)]"
         >
-          {subTitle}
+          {subtitle}
         </Typography>
         <div className="flex gap-xs text-[var(--content-extra-low)]">
           <Icon name="Heart" size={24}></Icon>

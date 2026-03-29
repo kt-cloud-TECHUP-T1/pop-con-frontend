@@ -1,17 +1,19 @@
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
+import { usePopupStore } from '../stores/popup-store';
 
 interface SaleContentProps {
   className?: string;
-  description: string;
+
   hasStickyTopBar: boolean;
 }
 
 export default function SaleContent({
   className,
-  description,
   hasStickyTopBar,
 }: SaleContentProps) {
+  const description = usePopupStore((state) => state.data?.description);
+
   return (
     <section
       id="content"

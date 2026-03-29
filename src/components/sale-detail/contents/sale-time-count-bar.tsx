@@ -3,26 +3,22 @@
 import { Typography } from '@/components/ui/typography';
 import useCountdown from '../hooks/use-countdown';
 import { splitRemainingTime } from '../utils/sale-detail-utils';
+import { useAuctionLatestData } from '../stores/auction-store';
 
-interface SaleTimeCountBarProps {
-  auctionStatus: string;
-  auctionCloseAt: string;
-  serverTime: string;
-}
-
-export default function SaleTimeCountBar({
-  auctionStatus,
-  auctionCloseAt,
-  serverTime,
-}: SaleTimeCountBarProps) {
-  const remaining = useCountdown(auctionCloseAt, serverTime);
+export default function SaleTimeCountBar() {
+  const auctionData = useAuctionLatestData();
+  const remaining = useCountdown(
+    auctionData?.auctionCloseAt ?? '',
+    auctionData?.serverTime ?? ''
+  );
   const { hours, minutes, seconds } = splitRemainingTime(remaining);
 
-  if (auctionStatus === 'SCHEDULED') return null;
+  if (!auctionData) return null;
+  if (auctionData.auctionStatus === 'SCHEDULED') return null;
 
   return (
     <div className="sticky top-0 z-50 bg-[var(--content-high)] py-xs text-center">
-      {auctionStatus === 'CLOSED' ? (
+      {auctionData.auctionStatus === 'CLOSED' ? (
         <Typography variant="body-1" weight="bold" className="text-white">
           경매가 종료되었습니다.
         </Typography>
