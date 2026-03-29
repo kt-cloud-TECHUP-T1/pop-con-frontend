@@ -2,6 +2,7 @@
 import { delay, http, HttpResponse } from 'msw';
 
 const mockDrawData = {
+  drawId: 100,
   drawOpenAt: '2026-03-23T10:00:00',
   drawCloseAt: '2026-03-29T18:00:00',
   serverTime: '2026-03-24T12:10:00',

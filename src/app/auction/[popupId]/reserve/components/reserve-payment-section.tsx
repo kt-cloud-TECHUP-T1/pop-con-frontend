@@ -1,3 +1,4 @@
+'use client';
 import { Icon } from '@/components/Icon/Icon';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
@@ -6,20 +7,52 @@ import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
 import Link from 'next/link';
 import { Router } from 'next/router';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
 
 const popupId = 1;
 const reservationId = 'TKT50434728';
+
+type BillingCard = {
+  id: number;
+  cardName: string;
+  cardNumber: string;
+  isDefault: boolean;
+  registeredAt: string; // ISO 날짜 문자열
+};
+
 export default function ReservePaymentSection({
-  phaseType,
-  phaseStatus,
+  selectedOptionId,
+  bidPrice,
 }: {
-  phaseType: string;
-  phaseStatus: string;
+  selectedOptionId: number | null;
+  bidPrice: number | null;
 }) {
   const [checks, setChecks] = useState([false, false, false]);
   const router = useRouter();
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  const [billingDefault, setBillingDefault] = useState<BillingCard | null>(
+    null
+  );
+  useEffect(() => {
+    const fetchBilling = async () => {
+      try {
+        const data = await getBillingList(accessToken as string);
+        const defaultCard =
+          data.find((card: BillingCard) => card.isDefault) ?? null;
+        setBillingDefault(defaultCard);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    if (accessToken) {
+      fetchBilling();
+    }
+  }, [accessToken]);
+
   const handleCheck = (index: number, checked: boolean) => {
     setChecks((prev) => {
       const next = [...prev];
@@ -28,10 +61,10 @@ export default function ReservePaymentSection({
     });
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     router.push(`/auction/${popupId}/success/${reservationId}`);
   };
-  const isAllChecked = checks.every(Boolean);
+  const isAllChecked = checks.every(Boolean) && selectedOptionId !== null;
   return (
     <div className="pt-ms flex flex-col gap-ms">
       <div className="payment flex flex-col gap-s">
@@ -48,10 +81,10 @@ export default function ReservePaymentSection({
         >
           <div className="flex flex-col gap-2xs">
             <Typography variant="label-2" weight="bold">
-              현대카드
+              {billingDefault?.cardName ?? '기본 결제수단 없음'}
             </Typography>
             <Typography variant="caption-2" weight="regular">
-              ****-****-****-1234
+              {billingDefault?.cardNumber ?? ''}
             </Typography>
           </div>
           <Icon

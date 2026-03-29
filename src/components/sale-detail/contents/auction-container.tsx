@@ -137,7 +137,7 @@ export function AuctionContainer() {
   return (
     <div>
       <SaleTimeCountBar
-        phaseStatus={auctionData.auctionStatus}
+        auctionStatus={auctionData.auctionStatus}
         auctionCloseAt={auctionData.auctionCloseAt}
         serverTime={auctionData.serverTime}
       />

@@ -5,8 +5,11 @@ import OpenCountCard from './open-count-card';
 import SaleNoticeCard from '@/components/sale-detail/info/sale-notice-card';
 import SaleInfoCard from './sale-info-card';
 import { SaleDetailSidebarProps } from '@/types/sale-detail';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
 
 export function SaleAuctionSidebar(props: SaleDetailSidebarProps) {
+  const authStatus = useAuthStore((state) => state.authStatus);
+
   return (
     <div className="flex flex-col gap-s">
       <OpenCountCard
@@ -14,7 +17,9 @@ export function SaleAuctionSidebar(props: SaleDetailSidebarProps) {
         phaseStatus={props.phaseStatus}
         saleOpenAt={props.openAt}
       ></OpenCountCard>
-      <PaymentRegisterCard></PaymentRegisterCard>
+      {authStatus === 'unauthenticated' && (
+        <PaymentRegisterCard></PaymentRegisterCard>
+      )}
       <SaleInfoCard {...props}></SaleInfoCard>
       <SaleNoticeCard items={AuctionInfoContent} />
     </div>

@@ -30,7 +30,7 @@ function createAuctionPayload(seconds: number): AuctionData {
     auctionStatus: remainingUntilCloseSeconds > 0 ? 'OPEN' : 'CLOSED',
     serverTime: new Date().toISOString(),
     auctionOpenAt: '2026-03-23T11:00:00',
-    auctionCloseAt: '2026-03-26T14:58:10',
+    auctionCloseAt: '2026-03-30T14:58:10',
     remainingUntilOpenSeconds: 0,
     remainingUntilCloseSeconds,
     startPrice,
