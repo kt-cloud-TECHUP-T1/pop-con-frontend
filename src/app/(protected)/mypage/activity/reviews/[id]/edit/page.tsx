@@ -142,12 +142,16 @@ export default function ReviewEditPage({ params }: { params: { id: string } }) {
   };
 
   const handleAddImage = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files;
-    if (!files) return;
+    try {
+      const files = e.target.files;
+      if (!files) return;
 
-    const urls = Array.from(files).map((file) => URL.createObjectURL(file));
-    setImages((prev) => [...prev, ...urls]);
-    e.target.value = '';
+      const urls = Array.from(files).map((file) => URL.createObjectURL(file));
+      setImages((prev) => [...prev, ...urls]);
+      e.target.value = '';
+    } catch {
+      snackbar.destructive({ title: '이미지 추가 중 오류가 발생했습니다.' });
+    }
   };
 
   const handleSave = () => {
