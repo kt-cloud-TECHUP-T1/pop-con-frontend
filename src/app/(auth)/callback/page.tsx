@@ -46,7 +46,7 @@ export default function AuthCallbackPage() {
 
         try {
           const billingList = await getBillingList(accessToken);
-
+          //간편결제 리스트 조회 결과로 등록여부 t/f판단
           setPaymentRegistered(billingList.length > 0);
         } catch (error: unknown) {
           console.error('[billing] error:', error);

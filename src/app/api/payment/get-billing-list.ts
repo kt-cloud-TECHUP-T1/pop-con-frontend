@@ -1,3 +1,4 @@
+//엑세스 토큰을 통해 등록된 간편 결제 리스트 조회
 const getBillingList = async (accessToken: string) => {
   const res = await fetch('/api/billing/my', {
     headers: {

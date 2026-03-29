@@ -6,7 +6,7 @@ type RequireAuthParams = {
   onUnauthenticated: () => void;
   onLoading?: () => void;
 };
-
+//로그인 여부에 따른 콜백함수 전달
 export function requireAuth({
   authStatus,
   onAuthenticated,

@@ -2,7 +2,7 @@ import PortOne from '@portone/browser-sdk/v2';
 
 const STORE_ID = process.env.NEXT_PUBLIC_PORTONE_STORE_ID;
 const BILLING_CHANNEL_KEY = process.env.NEXT_PUBLIC_PORTONE_BILLING_CHANNEL_KEY;
-
+//포트원을 통해서 카드 등록후 최종 빌링키 반환
 export async function requestBillingKey(): Promise<string> {
   if (!STORE_ID) {
     throw new Error('포트원 storeId가 설정되지 않았습니다.');
