@@ -12,6 +12,8 @@ import { usePaymentRequiredModalStore } from '@/features/auth/stores/payment-req
 import { usePopupStore } from '../stores/popup-store';
 import { useAuctionLatestData } from '../stores/auction-store';
 import { useDrawStore } from '../stores/draw-store';
+import { enterAuctionQueue } from '@/lib/api/enter-auction-queue';
+import { QUEUE_ERROR_MESSAGES } from '@/constants/queue';
 
 export default function SaleInfoCTA() {
   const phaseType = usePopupStore((state) => state.data?.phaseType);
@@ -26,6 +28,7 @@ function AuctionCTA() {
   const drawOpenAt = useDrawStore((state) => state.data?.drawOpenAt);
   const router = useRouter();
   const authStatus = useAuthStore((state) => state.authStatus);
+  const accessToken = useAuthStore((state) => state.accessToken);
   const openLoginRequiredModal = useLoginRequiredModalStore(
     (state) => state.open
   );
@@ -40,16 +43,53 @@ function AuctionCTA() {
 
   const { buttonStatus, auctionOpenAt, auctionId } = auctionData;
 
-  const handleAuctionParticipate = () => {
+  const handleAuctionParticipate = async () => {
     requireAuth({
       authStatus,
-      onAuthenticated: () => {
+      onAuthenticated: async () => {
         if (isPaymentRegistered === null) return;
         if (!isPaymentRegistered) {
           openPaymentRequiredModal();
           return;
         }
-        router.push(`/auction/${auctionId}/reserve`);
+
+        // 대기열 진입 api 추가
+        const result = await enterAuctionQueue(auctionId, accessToken ?? '');
+
+        switch (result.code) {
+          case 'SUCCESS': {
+            //queueToken 저장
+            sessionStorage.setItem('queueToken', result.data.queueToken);
+
+            if (result.data.status === 'ACTIVE') {
+              //보안퀴즈 제공 페이지로 이동??
+              router.push(`/auction/${auctionId}/reserve`);
+              return;
+            }
+
+            if (result.data.status === 'WAITING') {
+              router.push(`/queue`);
+              // 대기열 페이지 이동
+              return;
+            }
+
+            return;
+          }
+
+          case 'Q001': {
+            console.log(result.data.blockedUntil);
+            console.log(QUEUE_ERROR_MESSAGES[result.code]);
+            return;
+          }
+
+          case 'C001':
+          case 'A002':
+          case 'A003':
+          case 'S001': {
+            console.log(QUEUE_ERROR_MESSAGES[result.code]);
+            return;
+          }
+        }
       },
       onUnauthenticated: () => openLoginRequiredModal(),
       onLoading: () => {},
