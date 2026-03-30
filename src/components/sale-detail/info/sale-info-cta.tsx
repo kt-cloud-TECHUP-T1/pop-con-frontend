@@ -47,8 +47,8 @@ function AuctionCTA() {
     requireAuth({
       authStatus,
       onAuthenticated: async () => {
-        if (isPaymentRegistered === null) return;
         if (!isPaymentRegistered) {
+          //간편결제 등록모달 오픈
           openPaymentRequiredModal();
           return;
         }
@@ -91,6 +91,7 @@ function AuctionCTA() {
           }
         }
       },
+      //로그인 유도 모달 오픈
       onUnauthenticated: () => openLoginRequiredModal(),
       onLoading: () => {},
     });

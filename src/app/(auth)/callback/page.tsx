@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { RefreshTokenResponse } from '@/types/auth/auth';
 import { LOGIN_REDIRECT_KEY } from '@/constants/auth';
+import { getBillingList } from '@/app/api/payment/get-billing-list';
 
 const isValidRedirectPath = (value: string | null): value is string => {
   return typeof value === 'string' && value.startsWith('/');

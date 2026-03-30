@@ -15,6 +15,7 @@ export default function PaymentRequiredModal() {
   );
 
   const handleRegisterClick = () => {
+    console.log('PaymentRequiredModal open');
     close();
     openPaymentRegisterModal();
   };
@@ -23,7 +24,11 @@ export default function PaymentRequiredModal() {
 
   return (
     <Box className="fixed inset-0 flex items-center justify-center  ">
-      <Box radius="LG" className="py-s bg-[var(--bg-default)] w-[480px]">
+      <Box
+        radius="LG"
+        className="py-s bg-[var(--bg-default)] w-[480px]"
+        shadow="M"
+      >
         <div className="flex flex-col items-center gap-xs py-s px-ms">
           <Typography variant="title-1" weight="bold">
             등록된 카드가 없습니다.

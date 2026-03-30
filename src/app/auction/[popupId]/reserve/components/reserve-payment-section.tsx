@@ -10,6 +10,7 @@ import { Router } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { getBillingList } from '@/app/api/payment/get-billing-list';
 
 const popupId = 1;
 const reservationId = 'TKT50434728';

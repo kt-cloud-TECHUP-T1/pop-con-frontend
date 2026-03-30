@@ -1,12 +1,17 @@
 'use client';
 
+import { getBillingList } from '@/app/api/payment/get-billing-list';
 import { requestBillingKey } from '@/app/api/payment/request-billing-key';
+import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { snackbar } from '@/components/ui/snackbar';
 import { Typography } from '@/components/ui/typography';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { usePaymentRegisterModalStore } from '@/features/auth/stores/payment-register-modal-store';
-import { Box } from 'lucide-react';
+import { cn } from '@/lib/utils';
+
+const BASE_URL =
+  process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '') ?? '';
 
 export default function PaymentRegisterModal() {
   const isOpen = usePaymentRegisterModalStore((state) => state.isOpen);
@@ -38,7 +43,7 @@ export default function PaymentRegisterModal() {
       const billingKey = await requestBillingKey();
 
       // 2. 빌링키 등록 route.ts 호출
-      const res = await fetch('/api/billing/keys', {
+      const res = await fetch(`${BASE_URL}/billing/keys`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,7 +60,6 @@ export default function PaymentRegisterModal() {
 
       // 3. 간편결제 리스트 조회
       const billingCards = await getBillingList(accessToken);
-
       // 4. 조회 리스트를 store에 저장해서 화면 반영
       setBillingCards(billingCards);
 
@@ -109,6 +113,7 @@ export default function PaymentRegisterModal() {
   return (
     <Box className="fixed inset-0 flex items-center justify-center  ">
       <Box
+        shadow="M"
         radius="LG"
         className="flex flex-col py-s bg-[var(--bg-default)] w-[480px]"
       >
@@ -118,51 +123,62 @@ export default function PaymentRegisterModal() {
           </Typography>
         </div>
 
-        <div className="flex flex-col gap-s py-s px-ms">
-          {isPaymentRegistered ? (
-            <div className="w-full flex items-center justify-center  ">
-              <Typography
-                variant="body-2"
-                className="text-[var(--content-extra-low)]"
+        {!isPaymentRegistered ? (
+          <div className="w-full h-[120px] flex items-center justify-center text-center  ">
+            <Typography
+              variant="body-2"
+              className="text-[var(--content-extra-low)]"
+            >
+              경매에 참여하기 위해 간편결제를 등록해야 합니다.
+            </Typography>
+          </div>
+        ) : (
+          <div className="flex flex-col gap-s py-s px-ms">
+            {billingCards.map((card) => (
+              <div
+                key={card.id}
+                className={cn(
+                  'rounded-ml border px-4 py-3 text-left',
+                  card.isDefault
+                    ? //나중에 물어보기
+                      'border-[var(--orange-50)]'
+                    : 'border-[var(--line-3)]'
+                )}
               >
-                경매에 참여하기 위해 간편결제를 등록해야 합니다.
-              </Typography>
-            </div>
-          ) : (
-            <div>
-              {billingCards.map((card) => (
-                <div
-                  key={card.id}
-                  className="rounded-[16px] border border-[var(--line-3)] px-4 py-3 text-left"
-                >
-                  <div className="flex items-center justify-between">
-                    <Typography variant="label-1" weight="bold">
-                      {card.cardName}
-                    </Typography>
-
-                    {card.isDefault && (
-                      <span className="rounded-full bg-[var(--background-secondary)] px-2 py-1 text-xs">
-                        기본
-                      </span>
-                    )}
-                  </div>
-
-                  <Typography
-                    variant="body-2"
-                    className="mt-1 text-[var(--content-medium)]"
-                  >
-                    {card.cardNumber}
+                <div className="flex items-center justify-between">
+                  <Typography variant="label-1" weight="bold">
+                    {card.cardName}
                   </Typography>
+
+                  {card.isDefault && (
+                    <span className="rounded-ml bg-[var(--background-secondary)] px-2 py-1 text-xs">
+                      기본
+                    </span>
+                  )}
                 </div>
-              ))}
-            </div>
-          )}
-          <Button variant="tertiary" onClick={handleRegisterClick}>
+
+                <Typography
+                  variant="body-2"
+                  className="mt-1 text-[var(--content-medium)]"
+                >
+                  {card.cardNumber}
+                </Typography>
+              </div>
+            ))}
+          </div>
+        )}
+
+        <div className="py-s px-ms">
+          <Button
+            variant="tertiary"
+            className="w-full"
+            onClick={handleRegisterClick}
+          >
             <Typography variant="label-1">간편결제 등록하기</Typography>
           </Button>
         </div>
         <div className="py-s px-ms">
-          <Button onClick={close}>
+          <Button className="w-full" onClick={close}>
             <Typography variant="label-1">확인</Typography>
           </Button>
         </div>
