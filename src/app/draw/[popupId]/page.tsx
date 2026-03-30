@@ -1,4 +1,4 @@
-import { SaleDetailSidebar } from '@/components/sale-detail/info/sale-auction-sidebar';
+import { SaleDetailSidebar } from '@/components/sale-detail/info/sale-auction-detail-sidebar';
 import SaleNoticeCard from '@/components/sale-detail/info/sale-notice-card';
 import { DrawInfoContent } from '@/constants/sale-detail';
 

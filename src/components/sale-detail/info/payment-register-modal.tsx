@@ -9,6 +9,8 @@ import { Typography } from '@/components/ui/typography';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { usePaymentRegisterModalStore } from '@/features/auth/stores/payment-register-modal-store';
 import { cn } from '@/lib/utils';
+import { useAuctionStore } from '../stores/auction-store';
+import { useRouter } from 'next/navigation';
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '') ?? '';
@@ -22,6 +24,11 @@ export default function PaymentRegisterModal() {
   const billingCards = useAuthStore((state) => state.billingCards);
   const isPaymentRegistered = useAuthStore(
     (state) => state.isPaymentRegistered
+  );
+  //예약페이지 임시 이동용 추후 삭제
+  const router = useRouter();
+  const auctionIdTemp = useAuctionStore(
+    (state) => state.initialData?.auctionId ?? null
   );
   if (!isOpen) return null;
 
@@ -180,6 +187,20 @@ export default function PaymentRegisterModal() {
         <div className="py-s px-ms">
           <Button className="w-full" onClick={close}>
             <Typography variant="label-1">확인</Typography>
+          </Button>
+        </div>
+        <div className="py-s px-ms">
+          <Button
+            variant="destructive"
+            className="w-full"
+            onClick={() => {
+              router.push(`/auction/${auctionIdTemp}/reserve`);
+              close();
+            }}
+          >
+            <Typography variant="label-1">
+              예약페이지 바로가기 (임시)
+            </Typography>
           </Button>
         </div>
       </Box>

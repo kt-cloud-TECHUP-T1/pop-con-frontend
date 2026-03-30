@@ -4,9 +4,7 @@ import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
-import { cn } from '@/lib/utils';
 import Link from 'next/link';
-import { Router } from 'next/router';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
@@ -25,10 +23,8 @@ type BillingCard = {
 
 export default function ReservePaymentSection({
   selectedOptionId,
-  bidPrice,
 }: {
   selectedOptionId: number | null;
-  bidPrice: number | null;
 }) {
   const [checks, setChecks] = useState([false, false, false]);
   const router = useRouter();
@@ -37,6 +33,8 @@ export default function ReservePaymentSection({
   const [billingDefault, setBillingDefault] = useState<BillingCard | null>(
     null
   );
+
+  //혹시 민중님이 작성하신 코드인가...??
   useEffect(() => {
     const fetchBilling = async () => {
       try {
@@ -65,9 +63,9 @@ export default function ReservePaymentSection({
   const handleSubmit = async () => {
     router.push(`/auction/${popupId}/success/${reservationId}`);
   };
-  const isAllChecked = checks.every(Boolean) && selectedOptionId !== null;
+  const isAllChecked = checks.every(Boolean) && selectedOptionId;
   return (
-    <div className="pt-ms flex flex-col gap-ms">
+    <div className="flex flex-col gap-ms">
       <div className="payment flex flex-col gap-s">
         <Typography variant="body-1" weight="bold">
           결제수단

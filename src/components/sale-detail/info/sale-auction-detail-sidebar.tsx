@@ -7,7 +7,7 @@ import SaleInfoCard from './sale-info-card';
 import { SaleDetailSidebarProps } from '@/types/sale-detail';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 
-export function SaleAuctionSidebar() {
+export function SaleAuctionDetailSidebar() {
   const authStatus = useAuthStore((state) => state.authStatus);
 
   return (

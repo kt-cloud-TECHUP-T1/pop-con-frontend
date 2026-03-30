@@ -12,6 +12,7 @@ import { AuctionInfoContent } from '@/constants/sale-detail';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { ReservePanelSkeleton } from '@/components/sale-detail/reserve-panel-skeleton';
 import { AuctionData } from '@/types/sale-detail';
+import SaleAuctionReserveSidebar from '@/components/sale-detail/info/SaleAuctionReserveSidebar';
 
 export interface AuctionSlot {
   optionId: number;
@@ -21,7 +22,7 @@ export interface AuctionSlot {
 }
 
 interface AuctionReservePageClientProps {
-  auctionId: string;
+  auctionId: number;
 }
 
 const DEFAULT_DATES_ERROR =
@@ -29,8 +30,9 @@ const DEFAULT_DATES_ERROR =
 const DEFAULT_SLOTS_ERROR =
   '회차 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
 
-export function AuctionReservePageClient(props: AuctionData) {
-  const { auctionId } = props;
+export function AuctionReservePageClient({
+  auctionId,
+}: AuctionReservePageClientProps) {
   const accessToken = useAuthStore((state) => state.accessToken);
   // 첫 진입 시에는 아무 날짜도 선택하지 않은 상태로 시작
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
@@ -187,11 +189,10 @@ export function AuctionReservePageClient(props: AuctionData) {
         {/* 우측 결제 요약 패널 */}
         <aside className="flex flex-col gap-s">
           <Box radius="ML" border="#0A0A0A14" padding="MS" className="min-w-0">
-            <SaleInfoPrice {...props}></SaleInfoPrice>
-            <ReservePaymentSection
+            <SaleAuctionReserveSidebar
+              auctionId={auctionId}
               selectedOptionId={selectedOptionId}
-              bidPrice={props.currentPrice}
-            ></ReservePaymentSection>
+            ></SaleAuctionReserveSidebar>
           </Box>
           <SaleNoticeCard items={AuctionInfoContent} />
         </aside>

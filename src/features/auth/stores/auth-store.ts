@@ -31,7 +31,9 @@ type AuthState = {
 
 export const useAuthStore = create<AuthState>()((set) => ({
   accessToken: 'tempAccessToken',
+  // accessToken: null,
   authStatus: 'authenticated',
+  // authStatus: 'loading',
   isPaymentRegistered: null,
   billingCards: [],
 
