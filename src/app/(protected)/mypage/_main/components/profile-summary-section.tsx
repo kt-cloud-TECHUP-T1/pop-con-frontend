@@ -1,12 +1,29 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import type { IconName } from '@/components/Icon/Icon';
 import { Icon } from '@/components/Icon/Icon';
 import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
-import {
-  summaryCards,
-  summaryStats,
-} from '@/app/(protected)/mypage/data/mock-data';
+
+const summaryCards: {
+  label: string;
+  value: string;
+  icon: IconName;
+}[] = [
+  { label: '내 티켓', value: '3', icon: 'Ticket' },
+  { label: '드로우 내역', value: '6', icon: 'Blank' },
+  { label: '낙찰 내역', value: '2', icon: 'Blank' },
+  { label: '작성한 리뷰', value: '2', icon: 'Like' },
+];
+
+const summaryStats: { label: string; value: number }[] = [
+  { label: '드로우 당첨', value: 1 },
+  { label: '드로우 미당첨', value: 1 },
+  { label: '진행중인 드로우', value: 1 },
+  { label: '결과 확인 대기중', value: 3 },
+  { label: '낙찰 수', value: 2 },
+  { label: '찜한 수', value: 12 },
+];
 
 export function ProfileSummarySection() {
   return (
@@ -90,7 +107,7 @@ export function ProfileSummarySection() {
       </div>
       {/* 활동 내역 2(드로우 당첨/미당첨, 진행중인 드로우 등) */}
       <Box
-        border="#0A0A0A14"
+        border="var(--component-disabled)"
         padding="S"
         radius="ML"
         className="grid gap-4 overflow-hidden md:grid-cols-3 xl:grid-cols-6"
@@ -106,16 +123,17 @@ export function ProfileSummarySection() {
               after:w-px after:h-full
               after:bg-[#0A0A0A]/8
               last:after:hidden
+              text-right
             "
           >
             <Typography variant="label-2" weight="bold">
               {stat.label}
             </Typography>
             <Typography
-              variant="label-2"
-              weight="medium"
+              variant="title-2"
+              weight="bold"
               as="p"
-              className="mt-1 text-[var(--neutral-60)]"
+              className="mt-1 text-[var(--content-extra-low)]"
             >
               {stat.value}
             </Typography>

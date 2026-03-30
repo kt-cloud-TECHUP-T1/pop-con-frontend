@@ -1,8 +1,15 @@
 import Link from 'next/link';
 import { Icon } from '@/components/Icon/Icon';
 import { LikedPopupCard } from '@/app/(protected)/mypage/components/liked-popup-card';
-import { likedPopups } from '@/app/(protected)/mypage/data/mock-data';
 import { PageHeader } from '@/components/shared/page-header';
+
+const likedPopups = Array.from({ length: 8 }, (_, index) => ({
+  id: index + 1,
+  title: `POP-CON STORE ${index + 1}`,
+  description: '지금 가장 인기 있는 팝업',
+  caption: '서울 성동구 성수동',
+  thumbnailUrl: '/images/temp/no-image.png',
+}));
 
 export function LikedPopupsSection() {
   return (

@@ -1,27 +1,4 @@
-import type {
-  ActivityItem,
-  ActivityTab,
-  LikedPopupItem,
-  SummaryCard,
-  SummaryStat,
-} from '@/features/mypage/types/main';
-import type { PaymentMethod } from '@/features/mypage/types/payment-method';
-
-export const summaryCards: SummaryCard[] = [
-  { label: '내 티켓', value: '3장', icon: 'Ticket' },
-  { label: '드로우 내역', value: '6개', icon: 'Blank' },
-  { label: '낙찰 내역', value: '2개', icon: 'Blank' },
-  { label: '작성한 리뷰', value: '2개', icon: 'Like' },
-];
-
-export const summaryStats: SummaryStat[] = [
-  { label: '드로우 당첨', value: 1 },
-  { label: '드로우 미당첨', value: 1 },
-  { label: '진행중인 드로우', value: 1 },
-  { label: '결과 확인 대기중', value: 3 },
-  { label: '낙찰 수', value: 2 },
-  { label: '찜한 수', value: 12 },
-];
+import type { ActivityItem, ActivityTab } from '@/app/(protected)/mypage/types';
 
 export const activityItems: Record<ActivityTab, ActivityItem[]> = {
   draw: [
@@ -41,7 +18,7 @@ export const activityItems: Record<ActivityTab, ActivityItem[]> = {
       stateLabel: '결과 확인 대기중',
       stateTone: 'warning',
       isResultPending: true,
-      pendingResultMock: 'won',
+      drawResult: 'lucky',
     },
     {
       id: 3,
@@ -96,80 +73,7 @@ export const activityItems: Record<ActivityTab, ActivityItem[]> = {
   ],
 };
 
-export const likedPopups: LikedPopupItem[] = Array.from(
-  { length: 8 },
-  (_, index) => ({
-    id: index + 1,
-    title: `POP-CON STORE ${index + 1}`,
-    description: '지금 가장 인기 있는 팝업',
-    caption: '서울 성동구 성수동',
-    thumbnailUrl: '/images/temp/no-image.png',
-  })
-);
-
 export const activityTabs = [
   { label: '드로우', value: 'draw' as const },
   { label: '낙찰', value: 'bid' as const },
-];
-
-export const paymentMethods: PaymentMethod[] = [
-  {
-    id: 1,
-    brandCode: 'HYUNDAI',
-    brand: '현대카드',
-    maskedNumber: '****-****-****-1234',
-    isPrimary: true,
-  },
-  {
-    id: 2,
-    brandCode: 'TOSS',
-    brand: '토스카드',
-    maskedNumber: '****-****-****-1234',
-    isPrimary: false,
-  },
-  {
-    id: 3,
-    brandCode: 'HYUNDAI',
-    brand: '현대카드',
-    maskedNumber: '****-****-****-1234',
-    isPrimary: false,
-  },
-  {
-    id: 4,
-    brandCode: 'TOSS',
-    brand: '토스카드',
-    maskedNumber: '****-****-****-1234',
-    isPrimary: false,
-  },
-  {
-    id: 5,
-    brandCode: 'HYUNDAI',
-    brand: '현대카드',
-    maskedNumber: '****-****-****-1234',
-    isPrimary: false,
-  },
-  {
-    id: 6,
-    brandCode: 'TOSS',
-    brand: '토스카드',
-    maskedNumber: '****-****-****-1234',
-    isPrimary: false,
-  },
-];
-
-export type PersonalProfileRow = {
-  label: string;
-  value: string;
-  action?: 'verifyPhone' | 'edit';
-};
-
-export const personalProfileRows: PersonalProfileRow[] = [
-  { label: '이름', value: '이상혁' },
-  { label: '생년월일 / 성별', value: '1996.05.07 / 남' },
-  {
-    label: '휴대폰 번호',
-    value: '010-1234-5678',
-    action: 'verifyPhone',
-  },
-  { label: '이메일', value: 'Account@mail.com', action: 'edit' },
 ];
