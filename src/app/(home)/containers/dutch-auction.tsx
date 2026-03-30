@@ -9,6 +9,9 @@ import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { ApiResponse } from '@/types/api/common';
 import { DutchAuctionSkeleton } from '../components/skeletons';
 import { Typography } from '@/components/ui/typography';
+import { formatOpenAt } from '@/lib/utils';
+
+const DUTCH_AUCTION_LIMIT = 10;
 
 interface DutchAuctionCard {
   popupId: number;
@@ -40,21 +43,6 @@ interface DutchAuctionCardResponse {
   items: DutchAuctionCard[];
 }
 
-const formatOpenAt = (openAt: string) => {
-  const date = new Date(openAt);
-  const datePart = new Intl.DateTimeFormat('ko-KR', {
-    month: 'numeric',
-    day: 'numeric',
-    weekday: 'short',
-  }).format(date);
-  const timePart = new Intl.DateTimeFormat('ko-KR', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }).format(date);
-  return { datePart, timePart };
-};
-
 export const DutchAuction = () => {
   const [dutchAuctionCards, setDutchAuctionCards] = useState<
     DutchAuctionCard[] | null
@@ -68,7 +56,7 @@ export const DutchAuction = () => {
     const fetchDutchAuctions = async () => {
       try {
         const response = await fetch(
-          '/api/popups?phaseType=AUCTION&phaseStatus=OPEN,UPCOMING&limit=10',
+          `/api/popups?phaseType=AUCTION&phaseStatus=OPEN,UPCOMING&limit=${DUTCH_AUCTION_LIMIT}`,
           {
             signal: controller.signal,
             headers: {
@@ -78,7 +66,10 @@ export const DutchAuction = () => {
           }
         );
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          setDutchAuctionCards([]);
+          return;
+        }
 
         const result =
           (await response.json()) as ApiResponse<DutchAuctionCardResponse>;
@@ -134,8 +125,8 @@ export const DutchAuction = () => {
                 showCountView
                 showCountLike
                 onClick={() => handleClick(dutchAuctionCard.popupId)}
-                // TODO 좋아요 작업 필요
-                // onClickLike={() => handleClickLike(dutchAuctionCard.popupId)}
+                // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
+                isLiked={dutchAuctionCard.liked ?? false}
                 overlayBadge={
                   dutchAuctionCard.overlay.type === 'AUCTION_IN_PROGRESS' ? (
                     <Typography

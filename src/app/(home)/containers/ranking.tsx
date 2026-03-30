@@ -117,10 +117,9 @@ export const Ranking = () => {
               showButtonLike
               showCountView
               showCountLike
+              // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
               isLiked={rankingCard.liked ?? false}
               onClick={() => handleClick(rankingCard.popupId)}
-              // TODO 좋아요 작업 필요
-              // onClickLike={() => handleClickLike(rankingCard.popupId)}
             />
           ))}
         />

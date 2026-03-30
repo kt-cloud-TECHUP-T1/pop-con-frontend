@@ -146,12 +146,9 @@ export const GridCarousel: React.FC<GridCarouselProps> = ({
 
   return (
     <Carousel className="w-full" opts={carouselOpts} setApi={setApi}>
-      <CarouselContent className="justify-center">
+      <CarouselContent>
         {items.map((item, index) => (
-          <CarouselItem
-            key={index}
-            className={cn('pl-[var(--spacing-ms)]', basisClass)}
-          >
+          <CarouselItem key={index} className={cn('', basisClass)}>
             <div className="pl-0">{item}</div>
           </CarouselItem>
         ))}

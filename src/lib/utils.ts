@@ -24,3 +24,18 @@ export function formatDateWithWeekdayTime(dateString: string) {
 
   return `${year}.${month}.${day} (${weekday}) ${hours}:${minutes}`;
 }
+
+export function formatOpenAt(openAt: string) {
+  const date = new Date(openAt);
+  const datePart = new Intl.DateTimeFormat('ko-KR', {
+    month: 'numeric',
+    day: 'numeric',
+    weekday: 'short',
+  }).format(date);
+  const timePart = new Intl.DateTimeFormat('ko-KR', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  }).format(date);
+  return { datePart, timePart };
+}
