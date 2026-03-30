@@ -14,7 +14,7 @@ export function SaleAuctionSidebar() {
     <div className="flex flex-col gap-s">
       <OpenCountCard />
       {authStatus === 'unauthenticated' && <PaymentRegisterCard />}
-      <SaleInfoCard {...props}></SaleInfoCard>
+      <SaleInfoCard></SaleInfoCard>
       <SaleNoticeCard items={AuctionInfoContent} />
     </div>
   );
