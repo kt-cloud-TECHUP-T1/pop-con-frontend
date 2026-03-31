@@ -40,7 +40,7 @@ export function DrawReservePageClient({ drawId }: DrawReservePageClientProps) {
   // ====================== 페이지 진입 시 선택 가능한 날짜 목록 조회
   useEffect(() => {
     // TODO 테스트 후 주석 제거
-    // if (!accessToken) return;
+    if (!accessToken) return;
 
     const fetchDates = async () => {
       setIsDatesLoading(true);
@@ -48,7 +48,7 @@ export function DrawReservePageClient({ drawId }: DrawReservePageClientProps) {
         const response = await fetch(`/api/draws/${drawId}/dates`, {
           headers: {
             // TODO 테스트 후 주석 제거
-            // Authorization: `Bearer ${accessToken}`,
+            Authorization: `Bearer ${accessToken}`,
           },
         });
 
@@ -83,7 +83,7 @@ export function DrawReservePageClient({ drawId }: DrawReservePageClientProps) {
   // ====================== 날짜 선택 시 해당 날짜의 회차 목록 조회
   useEffect(() => {
     // TODO 테스트 후 주석 제거
-    // if (!accessToken || !selectedDate) return;
+    if (!accessToken || !selectedDate) return;
     if (!selectedDate) return;
 
     const fetchDatesOptions = async () => {
@@ -91,9 +91,9 @@ export function DrawReservePageClient({ drawId }: DrawReservePageClientProps) {
       setSlotsErrorMessage(null);
       try {
         const response = await fetch(
-          `/api/draws/${drawId}/dates/${selectedDate}/options`
+          `/api/draws/${drawId}/dates/${selectedDate}/options`,
           // TODO 테스트 후 주석 제거
-          // { headers: { Authorization: `Bearer ${accessToken}` } }
+          { headers: { Authorization: `Bearer ${accessToken}` } }
         );
 
         const result = await response.json();

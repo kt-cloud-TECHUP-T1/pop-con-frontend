@@ -6,6 +6,10 @@ import { Typography } from '@/components/ui/typography';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { snackbar } from '@/components/ui/snackbar';
+import { DRAW_ENTRY_ERROR_MESSAGE } from '@/constants/draw-apply';
+import { postDrawEntry } from '@/lib/api/draw-apply';
 
 const DEFAULT_SUBMIT_ERROR =
   '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
@@ -23,6 +27,7 @@ export default function DrawApplySection({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
+  const accessToken = useAuthStore((state) => state.accessToken);
 
   const handleCheck = (index: number, checked: boolean) => {
     setChecks((prev) => {
@@ -33,30 +38,64 @@ export default function DrawApplySection({
   };
 
   const handleSubmit = async () => {
-    if (selectedOptionId === null) return;
+    if (!accessToken) {
+      snackbar.destructive({
+        title: '로그인이 필요합니다.',
+      });
+      return;
+    }
+
+    if (selectedOptionId === null) {
+      setErrorMessage('응모할 회차를 선택해주세요.');
+      return;
+    }
 
     setIsSubmitting(true);
     setErrorMessage(null);
 
     try {
-      const response = await fetch(`/api/draws/${drawId}/queue-entries`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // TODO 테스트 후 주석 제거
-          // Authorization: `Bearer ${accessToken}`,
+      const result = await postDrawEntry(
+        Number(drawId),
+        selectedOptionId,
+        {
+          isPrivacyAgreed: checks[1],
+          isTermsAgreed: checks[0],
         },
-      });
+        accessToken
+      );
 
-      if (!response.ok) {
-        const result = await response.json();
-        setErrorMessage(result.message ?? DEFAULT_SUBMIT_ERROR);
+      if (result.code === 'SUCCESS') {
+        snackbar.success({
+          title: '응모 완료',
+          description: result.message,
+        });
+        router.push(`/draw/${drawId}/success`);
         return;
       }
 
-      router.push(`/draw/${drawId}/success`);
+      if (result.code === 'C001') {
+        const validationMessage =
+          result.data.isTermsAgreed ??
+          result.data.isPrivacyAgreed ??
+          result.message;
+
+        setErrorMessage(validationMessage);
+        return;
+      }
+
+      const mappedMessage =
+        DRAW_ENTRY_ERROR_MESSAGE[result.code] ?? DEFAULT_SUBMIT_ERROR;
+
+      setErrorMessage(mappedMessage);
+
+      if (result.code === 'A002') {
+        snackbar.destructive({
+          title: '인증 오류',
+          description: mappedMessage,
+        });
+      }
     } catch (error) {
-      console.error('[draw/handleSubmit]', error);
+      console.error('[DrawApplySection/handleSubmit]', error);
       setErrorMessage(DEFAULT_SUBMIT_ERROR);
     } finally {
       setIsSubmitting(false);

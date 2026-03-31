@@ -2,7 +2,10 @@ import {
   AUCTION_BID_ERROR_MESSAGES,
   AuctionBidErrorCode,
 } from '@/constants/sale-bid';
-import { AuctionBidRequest, AuctionBidResult } from '@/types/bid/auction-bid';
+import {
+  AuctionBidRequest,
+  AuctionBidResult,
+} from '@/types/applay/auction-bid';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
