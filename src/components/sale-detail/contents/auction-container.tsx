@@ -16,6 +16,7 @@ import { AuctionData } from '@/types/sale-detail';
 import { usePopupStore } from '../stores/popup-store';
 import { useAuctionLatestData, useAuctionStore } from '../stores/auction-store';
 
+//Auction Data 복구
 export function AuctionContainer() {
   const params = useParams<{ popupId: string }>();
   const popupId = params.popupId;

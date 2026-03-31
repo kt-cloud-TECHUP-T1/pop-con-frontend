@@ -47,8 +47,12 @@ function AuctionCTA() {
     requireAuth({
       authStatus,
       onAuthenticated: async () => {
-        if (!isPaymentRegistered) {
-          //간편결제 등록모달 오픈
+        //간편결제 상태 모름
+        if (isPaymentRegistered === null) {
+          return;
+        }
+        //간편결제 등록 안됐을경우 결제모달 오픈
+        if (isPaymentRegistered === false) {
           openPaymentRequiredModal();
           return;
         }
@@ -60,9 +64,12 @@ function AuctionCTA() {
           case 'SUCCESS': {
             //queueToken 저장
             sessionStorage.setItem('queueToken', result.data.queueToken);
+            sessionStorage.setItem('identifyType', String(auctionId));
+
+            //Todo 최초진입 store에서 상태값 ture로 바꾸기 추가
 
             if (result.data.status === 'ACTIVE') {
-              //보안퀴즈 제공 페이지로 이동??
+              //예약페이지 페이지로 이동
               router.push(`/auction/${auctionId}/reserve`);
               return;
             }
