@@ -1,6 +1,5 @@
 import * as React from 'react';
 import type { SVGProps } from 'react';
-
 const SvgClock = (props: SVGProps<SVGSVGElement>) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -12,9 +11,8 @@ const SvgClock = (props: SVGProps<SVGSVGElement>) => (
   >
     <path
       fill="currentColor"
-      d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20m0 2a8 8 0 1 1 0 16 8 8 0 0 1 0-16m.5 4a1 1 0 0 0-2 0v4.586l3.707 3.707a1 1 0 0 0 1.414-1.414L12.5 11.586z"
+      d="M12 2c5.523 0 10 4.477 10 10s-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2m0 2a8 8 0 1 0 0 16 8 8 0 0 0 0-16m-.5 2.5a1 1 0 0 1 1 1v5.105l2.73 2.91a1 1 0 0 1-1.46 1.369l-3-3.2A1 1 0 0 1 10.5 13V7.5a1 1 0 0 1 1-1"
     />
   </svg>
 );
-
 export default SvgClock;

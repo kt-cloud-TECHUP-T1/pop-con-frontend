@@ -9,9 +9,9 @@ import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { ApiResponse } from '@/types/api/common';
 import { LuckyDrawSkeleton } from '../components/skeletons';
 import { Typography } from '@/components/ui/typography';
-import { Box } from '@/components/ui/box';
+import { formatOpenAt } from '@/lib/utils';
 
-type DrawTab = 'OPEN' | 'UPCOMING';
+type DrawTab = 'UPCOMING' | 'OPEN';
 
 interface LuckyDrawCard {
   popupId: number;
@@ -43,23 +43,8 @@ interface LuckyDrawCardResponse {
   items: LuckyDrawCard[];
 }
 
-const formatOpenAt = (openAt: string) => {
-  const date = new Date(openAt);
-  const datePart = new Intl.DateTimeFormat('ko-KR', {
-    month: 'numeric',
-    day: 'numeric',
-    weekday: 'short',
-  }).format(date);
-  const timePart = new Intl.DateTimeFormat('ko-KR', {
-    hour: '2-digit',
-    minute: '2-digit',
-    hour12: false,
-  }).format(date);
-  return { datePart, timePart };
-};
-
 export const LuckyDraw = () => {
-  const [activeTab, setActiveTab] = useState<DrawTab>('OPEN');
+  const [activeTab, setActiveTab] = useState<DrawTab>('UPCOMING');
   const [openCards, setOpenCards] = useState<LuckyDrawCard[] | null>(null);
   const [upcomingCards, setUpcomingCards] = useState<LuckyDrawCard[] | null>(
     null
@@ -186,8 +171,8 @@ export const LuckyDraw = () => {
                 showCountView
                 showCountLike
                 onClick={() => handleClick(activeDrawCard.popupId)}
-                // TODO 좋아요 작업 필요
-                // onClickLike={() => handleClickLike(activeDrawCard.popupId)}
+                // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
+                isLiked={activeDrawCard.liked ?? false}
                 overlayBadge={
                   datePart && timePart ? (
                     <Typography

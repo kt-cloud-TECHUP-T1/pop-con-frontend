@@ -105,7 +105,6 @@ export const Recommend = () => {
           carouselOpts={{ align: 'start' }}
           alignArrowToRatio="3/4"
           items={recommendedCards.map((recommendedCard) => (
-            // TODO 좋아요, 카드 클릭 작업 필요
             <CardThumbnail
               key={recommendedCard.popupId}
               thumbnailUrl={recommendedCard.thumbnailUrl ?? undefined}
@@ -119,6 +118,8 @@ export const Recommend = () => {
               showButtonLike
               showCountView
               showCountLike
+              // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
+              isLiked={recommendedCard.liked ?? false}
               onClick={() =>
                 handleClick(recommendedCard.popupId, recommendedCard.phase.type)
               }
