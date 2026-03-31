@@ -14,6 +14,11 @@ export function useQueue({ queueToken, onActive }: UseQueueOptions) {
       const response = await fetch('/api/queue/status', {
         headers: { 'X-Queue-Token': queueToken },
       });
+
+      if (!response.ok) {
+        throw new Error(`Queue status fetch failed: ${response.status}`);
+      }
+
       return response.json() as Promise<QueueStatusResponse>;
     },
     refetchInterval: (query) => {

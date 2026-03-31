@@ -79,7 +79,7 @@ export const QueuePageClient = () => {
           weight="bold"
           className="tracking-[-0.03em] text-[var(--neutral-30)] mb-2"
         >
-          {position}번째
+          {position ?? '-'}번째
         </Typography>
         {estimatedWaitSeconds !== null && (
           <Typography variant="body-2" className="text-[var(--neutral-60)]">
