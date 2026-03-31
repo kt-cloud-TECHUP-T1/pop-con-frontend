@@ -45,8 +45,8 @@ jobs:
           context: .
           push: true
           tags: |
-            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME_STAGING }}:${{ steps.set-short-sha.outputs.SHORT_SHA }}
-            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME_STAGING }}:latest
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:${{ steps.set-short-sha.outputs.SHORT_SHA }}
+            ${{ steps.login-ecr.outputs.registry }}/${{ secrets.ECR_REPOSITORY_NAME }}:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
