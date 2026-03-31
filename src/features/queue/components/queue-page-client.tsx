@@ -1,20 +1,100 @@
 'use client';
 
+import Lottie from 'react-lottie-player';
+import Hourglass from '../../../../public/lottie/Hourglass.json';
 import { useRouter } from 'next/navigation';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Wrapper } from '@/components/layout/wrapper';
 import { Typography } from '@/components/ui/typography';
+import { useQueue } from '../hooks/use-queue';
+import { queueTokenStorage } from '../utils/queue-token';
+import { useQueueStore } from '../stores/queue-store';
+import { useEffect, useState } from 'react';
+import { QueueEntryResponse } from '../types/queue';
 
-// TODO: 대기열 로직 연결 필요
 export const QueuePageClient = () => {
+  const [token, setToken] = useState(queueTokenStorage.get() ?? '');
   const router = useRouter();
+  const drawId = useQueueStore((state) => state.drawId);
+  const setDrawId = useQueueStore((state) => state.setDrawId);
+  const clearDrawId = useQueueStore((state) => state.clearDrawId);
+
+  const clearQueueState = () => {
+    queueTokenStorage.remove();
+    sessionStorage.removeItem('queue_draw_id');
+    setToken('');
+    clearDrawId();
+  };
+
+  // 드로우 대기열 진입 -> 새로고침 복구
+  useEffect(() => {
+    // drawId null(zustand 휘발) + token 있음 = 새로고침으로 판별
+    if (!drawId && token) {
+      const savedDrawId = sessionStorage.getItem('queue_draw_id');
+      if (!savedDrawId) {
+        router.replace('/');
+        return;
+      }
+
+      const rejoinQueue = async () => {
+        try {
+          const response = await fetch(`/api/queue/draws/${savedDrawId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              // Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            queueTokenStorage.remove();
+            sessionStorage.removeItem('queue_draw_id');
+            router.replace('/');
+            return;
+          }
+
+          const result = (await response.json()) as QueueEntryResponse;
+
+          if (result.data && 'queueToken' in result.data) {
+            queueTokenStorage.save(result.data.queueToken);
+            setDrawId(savedDrawId);
+            setToken(result.data.queueToken);
+          } else {
+            // BLOCKED 등 queueToken이 없는 케이스
+            clearQueueState();
+            router.replace('/');
+          }
+        } catch {
+          clearQueueState();
+          router.replace('/');
+        }
+      };
+
+      void rejoinQueue();
+    }
+  }, [drawId, router, setDrawId]);
+  // END 드로우 대기열 진입 -> 새로고침 복구
+
+  const { position, estimatedWaitSeconds, progress } = useQueue({
+    queueToken: token,
+    onActive: () => router.push('/security-quiz'),
+  });
+
+  const handleBack = () => {
+    clearQueueState();
+    router.back();
+  };
 
   return (
     <Wrapper>
       <section className="mx-auto w-full max-w-[720px] h-screen flex items-center flex-col justify-center px-6 py-10 text-center">
-        {/* 상단 일러스트 영역(현재는 더미 박스) */}
-        <div className="h-[248px] w-[200px] mx-auto bg-[var(--neutral-95)] p-4 sm:p-5"></div>
+        <Lottie
+          loop
+          animationData={Hourglass}
+          play
+          style={{ width: 200, height: 250 }}
+        />
 
         {/* 순번 */}
         <Typography variant="title-1" weight="bold" className="mt-8">
@@ -25,11 +105,17 @@ export const QueuePageClient = () => {
           weight="bold"
           className="tracking-[-0.03em] text-[var(--neutral-30)] mb-2"
         >
-          -번째
+          {position ?? '-'}번째
         </Typography>
+        {estimatedWaitSeconds !== null && (
+          <Typography variant="body-2" className="text-[var(--neutral-60)]">
+            예상 대기 시간 {Math.floor(estimatedWaitSeconds / 60)}분{' '}
+            {estimatedWaitSeconds % 60}초
+          </Typography>
+        )}
 
         <Progress
-          value={8}
+          value={progress}
           minVisualPercent={8}
           className="mx-auto mt-10 max-w-[480px]"
         />
@@ -38,9 +124,9 @@ export const QueuePageClient = () => {
           variant="body-2"
           className="mt-10 whitespace-pre-line leading-7 text-[var(--neutral-60)]"
         >
-          접속 인원이 많아 참여 전 대기열에서 순서를 확인하고 있습니다.
+          잠시만 기다리시면 대기번호에 따라 자동으로 접속됩니다.
           <br />
-          순서가 되면 다음 단계로 이동합니다.
+          새로고침하면 대기시간이 길어질 수 있습니다.
         </Typography>
 
         <div className="mt-10">
@@ -48,7 +134,7 @@ export const QueuePageClient = () => {
             variant="tertiary"
             size="large"
             className="border border-[var(--line-4)]"
-            onClick={() => router.back()}
+            onClick={handleBack}
           >
             <Typography variant="label-1">이전으로 돌아가기</Typography>
           </Button>

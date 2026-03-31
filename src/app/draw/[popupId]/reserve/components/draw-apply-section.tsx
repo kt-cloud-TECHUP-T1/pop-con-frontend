@@ -1,11 +1,16 @@
 'use client';
 
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
-import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+// TODO 테스트 후 주석 제거
+// import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { queueTokenStorage } from '@/features/queue/utils/queue-token';
+import { useQueueStore } from '@/features/queue/stores/queue-store';
+import { QueueEntryResponse } from '@/features/queue/types/queue';
 
 const DEFAULT_SUBMIT_ERROR =
   '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
@@ -22,7 +27,10 @@ export default function DrawApplySection({
   const [checks, setChecks] = useState([false, false]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // TODO 테스트 후 주석 제거
+  // const accessToken = useAuthStore((state) => state.accessToken);
   const router = useRouter();
+  const setDrawId = useQueueStore((state) => state.setDrawId);
 
   const handleCheck = (index: number, checked: boolean) => {
     setChecks((prev) => {
@@ -33,13 +41,14 @@ export default function DrawApplySection({
   };
 
   const handleSubmit = async () => {
+    // TODO 테스트 후 주석 제거
     if (selectedOptionId === null) return;
 
     setIsSubmitting(true);
     setErrorMessage(null);
 
     try {
-      const response = await fetch(`/api/draws/${drawId}/queue-entries`, {
+      const response = await fetch(`/api/queue/draws/${drawId}`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -48,15 +57,42 @@ export default function DrawApplySection({
         },
       });
 
-      if (!response.ok) {
-        const result = await response.json();
+      const result = (await response.json()) as QueueEntryResponse;
+
+      if (!response.ok || !result.data) {
         setErrorMessage(result.message ?? DEFAULT_SUBMIT_ERROR);
         return;
       }
 
-      router.push(`/draw/${drawId}/success`);
+      const { status } = result.data;
+
+      if (status !== 'BLOCKED' && 'queueToken' in result.data) {
+        queueTokenStorage.save(result.data.queueToken);
+      }
+
+      const statusHandler: Record<string, () => void> = {
+        ACTIVE: () => router.push('/security-quiz'),
+        WAITING: () => {
+          sessionStorage.setItem('queue_draw_id', drawId);
+          setDrawId(drawId);
+          router.push('/queue');
+        },
+        BLOCKED: () => {
+          const msg =
+            result.data?.status === 'BLOCKED' ? result.data.blockedUntil : null;
+          setErrorMessage(
+            msg ? `${msg}까지 접근이 제한되었습니다.` : result.message
+          );
+        },
+      };
+      const handler = statusHandler[status];
+      if (handler) {
+        handler();
+      } else {
+        setErrorMessage(DEFAULT_SUBMIT_ERROR);
+      }
     } catch (error) {
-      console.error('[draw/handleSubmit]', error);
+      console.error('[draw-apply-section]', error);
       setErrorMessage(DEFAULT_SUBMIT_ERROR);
     } finally {
       setIsSubmitting(false);
@@ -109,6 +145,7 @@ export default function DrawApplySection({
       )}
 
       <Button
+        // TODO 테스트를 위하여 임시 주석
         disabled={!isAllChecked || selectedOptionId === null || isSubmitting}
         onClick={handleSubmit}
       >
