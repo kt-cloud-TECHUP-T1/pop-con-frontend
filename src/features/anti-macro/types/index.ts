@@ -54,7 +54,7 @@ export type HoneypotData = {
 };
 
 // --- 페이지 페이로드 ---
-export type PageType = 'login' | 'popup-detail' | 'draw-application';
+export type PageType = 'login' | 'popup-detail' | 'draw-application' | 'dutch-auction-detail' | 'dutch-auction-application';
 
 export type PageSignalPayload = {
   page: PageType;
@@ -81,9 +81,11 @@ export type AntiMacroSubmission = {
   userId?: string;
 };
 
+export type VqaLevel = 1 | 2 | 3 | 4;
+
 export type SignalSubmitResponse = {
   received: boolean;
   score?: number;
-  vqaDifficulty?: 'easy' | 'medium' | 'hard';
+  vqaLevel?: VqaLevel;
   drawResult?: 'pass' | 'fail';
 };
