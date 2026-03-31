@@ -1,11 +1,5 @@
-import { SaleDetailSidebar } from '@/components/sale-detail/info/sale-auction-detail-sidebar';
-import SaleNoticeCard from '@/components/sale-detail/info/sale-notice-card';
-import { DrawInfoContent } from '@/constants/sale-detail';
+import DrawContainer from '@/components/sale-detail/contents/draw-container';
 
-export default async function DrawPage({
-  params,
-}: {
-  params: Promise<{ popupId: string }>;
-}) {
-  return <div>드로우</div>;
+export default function DrawPage() {
+  return <DrawContainer></DrawContainer>;
 }

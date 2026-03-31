@@ -42,6 +42,7 @@ export default function ReservePaymentSection({
   };
   const closeSoldOutModal = () => {
     setIsSoldOutModalOpen(false);
+    //추후 날짜 재조회 api 호출
   };
 
   //혹시 민중님이 작성하신 코드인가...??

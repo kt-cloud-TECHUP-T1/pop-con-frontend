@@ -14,11 +14,11 @@ export default async function DrawReservePage({
 
   return (
     <>
-      <SaleTimeCountBar
+      {/* <SaleTimeCountBar
         phaseStatus={mockReserveData.phaseStatus}
         auctionCloseAt={mockReserveData.auctionCloseAt}
         serverTime={mockReserveData.serverTime}
-      />
+      /> */}
 
       <Wrapper className="pt-8 pb-3xl">
         <DrawReservePageClient drawId={popupId} />
