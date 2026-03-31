@@ -10,6 +10,7 @@ import { useRouter } from 'next/navigation';
 // import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { queueTokenStorage } from '@/features/queue/utils/queue-token';
 import { useQueueStore } from '@/features/queue/stores/queue-store';
+import { QueueEntryResponse } from '@/features/queue/types/queue';
 
 const DEFAULT_SUBMIT_ERROR =
   '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
@@ -56,16 +57,17 @@ export default function DrawApplySection({
         },
       });
 
-      const result = await response.json();
-      const { status, queueToken, blockedUntil, message } = result.data;
+      const result = (await response.json()) as QueueEntryResponse;
 
-      if (!response.ok) {
-        setErrorMessage(message ?? DEFAULT_SUBMIT_ERROR);
+      if (!response.ok || !result.data) {
+        setErrorMessage(result.message ?? DEFAULT_SUBMIT_ERROR);
         return;
       }
 
-      if (status !== 'BLOCKED') {
-        queueTokenStorage.save(queueToken);
+      const { status } = result.data;
+
+      if (status !== 'BLOCKED' && 'queueToken' in result.data) {
+        queueTokenStorage.save(result.data.queueToken);
       }
 
       const statusHandler: Record<string, () => void> = {
@@ -76,14 +78,19 @@ export default function DrawApplySection({
           router.push('/queue');
         },
         BLOCKED: () => {
+          const msg =
+            result.data?.status === 'BLOCKED' ? result.data.blockedUntil : null;
           setErrorMessage(
-            blockedUntil
-              ? `${blockedUntil}까지 접근이 제한되었습니다.`
-              : message
+            msg ? `${msg}까지 접근이 제한되었습니다.` : result.message
           );
         },
       };
-      statusHandler[status]?.();
+      const handler = statusHandler[status];
+      if (handler) {
+        handler();
+      } else {
+        setErrorMessage(DEFAULT_SUBMIT_ERROR);
+      }
     } catch (error) {
       console.error('[draw-apply-section]', error);
       setErrorMessage(DEFAULT_SUBMIT_ERROR);

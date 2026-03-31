@@ -11,12 +11,14 @@ import { useQueue } from '../hooks/use-queue';
 import { queueTokenStorage } from '../utils/queue-token';
 import { useQueueStore } from '../stores/queue-store';
 import { useEffect, useState } from 'react';
+import { QueueEntryResponse } from '../types/queue';
 
 export const QueuePageClient = () => {
   const [token, setToken] = useState(queueTokenStorage.get() ?? '');
   const router = useRouter();
   const drawId = useQueueStore((state) => state.drawId);
   const setDrawId = useQueueStore((state) => state.setDrawId);
+  const clearDrawId = useQueueStore((state) => state.clearDrawId);
 
   // 드로우 대기열 진입 -> 새로고침 복구
   useEffect(() => {
@@ -29,22 +31,37 @@ export const QueuePageClient = () => {
       }
 
       const rejoinQueue = async () => {
-        const response = await fetch(`/api/queue/draws/${savedDrawId}`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            // Authorization: `Bearer ${accessToken}`,
-          },
-        });
-        const result = await response.json();
-        if (result.data?.queueToken) {
-          queueTokenStorage.save(result.data.queueToken);
-          setDrawId(savedDrawId);
-          setToken(result.data.queueToken);
+        try {
+          const response = await fetch(`/api/queue/draws/${savedDrawId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              // Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          if (!response.ok) {
+            queueTokenStorage.remove();
+            sessionStorage.removeItem('queue_draw_id');
+            router.replace('/');
+            return;
+          }
+
+          const result = (await response.json()) as QueueEntryResponse;
+
+          if (result.data && 'queueToken' in result.data) {
+            queueTokenStorage.save(result.data.queueToken);
+            setDrawId(savedDrawId);
+            setToken(result.data.queueToken);
+          }
+        } catch {
+          queueTokenStorage.remove();
+          sessionStorage.removeItem('queue_draw_id');
+          router.replace('/');
         }
       };
 
-      rejoinQueue();
+      void rejoinQueue();
     }
   }, [drawId, router, setDrawId]);
   // END 드로우 대기열 진입 -> 새로고침 복구
@@ -57,6 +74,8 @@ export const QueuePageClient = () => {
   const handleBack = () => {
     queueTokenStorage.remove();
     sessionStorage.removeItem('queue_draw_id');
+    setToken('');
+    clearDrawId();
     router.back();
   };
 
