@@ -44,3 +44,19 @@ export type EnterAuctionQueueResponse =
   | EnterAuctionQueueSuccessResponse
   | EnterAuctionQueueBlockedResponse
   | EnterAuctionQueueErrorResponse;
+
+export interface LeaveQueueSuccessResponse {
+  code: 'SUCCESS';
+  message: string;
+  data: null;
+}
+
+export interface LeaveQueueErrorResponse {
+  code: 'Q002' | 'Q003' | 'S001';
+  message: string;
+  data: null;
+}
+
+export type LeaveQueueResponse =
+  | LeaveQueueSuccessResponse
+  | LeaveQueueErrorResponse;

@@ -5,10 +5,53 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Wrapper } from '@/components/layout/wrapper';
 import { Typography } from '@/components/ui/typography';
+import { leaveQueue, leaveQueueBeacon } from '@/lib/api/leave-queue';
+import { QUEUE_ERROR_MESSAGES } from '@/constants/queue';
+import { useEffect, useRef } from 'react';
 
 // TODO: 대기열 로직 연결 필요
 export const QueuePageClient = () => {
   const router = useRouter();
+  const isManualLeave = useRef(false); // 대기열 이탈 api 중복호출 방지
+
+  useEffect(() => {
+    const handlePopState = () => {
+      // 버튼 클릭으로 인한 popstate면 스킵
+      if (isManualLeave.current) {
+        isManualLeave.current = false;
+        return;
+      }
+
+      const queueToken = sessionStorage.getItem('queueToken');
+      if (!queueToken) return;
+
+      leaveQueueBeacon(queueToken);
+      sessionStorage.removeItem('queueToken');
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleBack = async () => {
+    const queueToken = sessionStorage.getItem('queueToken') ?? '';
+    const result = await leaveQueue(queueToken);
+
+    switch (result.code) {
+      case 'SUCCESS':
+      case 'Q002':
+      case 'Q003': {
+        sessionStorage.removeItem('queueToken');
+        isManualLeave.current = true;
+        router.back();
+        return;
+      }
+      case 'S001': {
+        console.log(QUEUE_ERROR_MESSAGES[result.code]);
+        return;
+      }
+    }
+  };
 
   return (
     <Wrapper>
@@ -48,7 +91,7 @@ export const QueuePageClient = () => {
             variant="tertiary"
             size="large"
             className="border border-[var(--line-4)]"
-            onClick={() => router.back()}
+            onClick={handleBack}
           >
             <Typography variant="label-1">이전으로 돌아가기</Typography>
           </Button>
