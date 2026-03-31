@@ -76,7 +76,7 @@ export const QueuePageClient = () => {
   }, [drawId, router, setDrawId]);
   // END 드로우 대기열 진입 -> 새로고침 복구
 
-  const { position, estimatedWaitSeconds } = useQueue({
+  const { position, estimatedWaitSeconds, progress } = useQueue({
     queueToken: token,
     onActive: () => router.push('/security-quiz'),
   });
@@ -115,7 +115,7 @@ export const QueuePageClient = () => {
         )}
 
         <Progress
-          value={8}
+          value={progress}
           minVisualPercent={8}
           className="mx-auto mt-10 max-w-[480px]"
         />

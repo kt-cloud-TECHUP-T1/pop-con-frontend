@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import type { QueueStatusResponse } from '@/features/queue/types/queue';
 
 interface UseQueueOptions {
@@ -8,6 +8,9 @@ interface UseQueueOptions {
 }
 
 export function useQueue({ queueToken, onActive }: UseQueueOptions) {
+  const initialPositionRef = useRef<number | null>(null);
+  const [progress, setProgress] = useState(0);
+
   const { data } = useQuery({
     queryKey: ['queue-status', queueToken],
     queryFn: async () => {
@@ -40,5 +43,22 @@ export function useQueue({ queueToken, onActive }: UseQueueOptions) {
   const estimatedWaitSeconds =
     queueData?.status === 'WAITING' ? queueData.estimatedWaitSeconds : null;
 
-  return { position, estimatedWaitSeconds };
+  // 최초 position 저장
+  useEffect(() => {
+    if (position !== null) {
+      if (initialPositionRef.current === null) {
+        initialPositionRef.current = position;
+      }
+      setProgress(
+        ((initialPositionRef.current - position) / initialPositionRef.current) *
+          100
+      );
+    }
+
+    if (data?.data?.status === 'ACTIVE') {
+      setProgress(100);
+    }
+  }, [data, position]);
+
+  return { position, estimatedWaitSeconds, progress };
 }
