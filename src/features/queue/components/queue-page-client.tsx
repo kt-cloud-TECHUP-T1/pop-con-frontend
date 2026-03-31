@@ -20,6 +20,13 @@ export const QueuePageClient = () => {
   const setDrawId = useQueueStore((state) => state.setDrawId);
   const clearDrawId = useQueueStore((state) => state.clearDrawId);
 
+  const clearQueueState = () => {
+    queueTokenStorage.remove();
+    sessionStorage.removeItem('queue_draw_id');
+    setToken('');
+    clearDrawId();
+  };
+
   // 드로우 대기열 진입 -> 새로고침 복구
   useEffect(() => {
     // drawId null(zustand 휘발) + token 있음 = 새로고침으로 판별
@@ -53,10 +60,13 @@ export const QueuePageClient = () => {
             queueTokenStorage.save(result.data.queueToken);
             setDrawId(savedDrawId);
             setToken(result.data.queueToken);
+          } else {
+            // BLOCKED 등 queueToken이 없는 케이스
+            clearQueueState();
+            router.replace('/');
           }
         } catch {
-          queueTokenStorage.remove();
-          sessionStorage.removeItem('queue_draw_id');
+          clearQueueState();
           router.replace('/');
         }
       };
@@ -72,10 +82,7 @@ export const QueuePageClient = () => {
   });
 
   const handleBack = () => {
-    queueTokenStorage.remove();
-    sessionStorage.removeItem('queue_draw_id');
-    setToken('');
-    clearDrawId();
+    clearQueueState();
     router.back();
   };
 
