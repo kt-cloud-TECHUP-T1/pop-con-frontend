@@ -1,6 +1,7 @@
 import { authHandlers } from './auth';
 import { billingMyHandlers } from './billing/get-billingList';
 import { billingKeyHandlers } from './billing/set-billing-keys';
+import { auctionQueueHandlers } from './queue/auction-queue';
 import { auctionHandlers } from './sale-detail/auction';
 import { auctionStreamHandlers } from './sale-detail/auction-stream';
 import { drawHandlers } from './sale-detail/draw';
@@ -14,4 +15,5 @@ export const handlers = [
   ...drawHandlers,
   ...billingKeyHandlers,
   ...billingMyHandlers,
+  ...auctionQueueHandlers,
 ];

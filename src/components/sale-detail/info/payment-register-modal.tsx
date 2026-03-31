@@ -11,6 +11,8 @@ import { usePaymentRegisterModalStore } from '@/features/auth/stores/payment-reg
 import { cn } from '@/lib/utils';
 import { useAuctionStore } from '../stores/auction-store';
 import { useRouter } from 'next/navigation';
+import { QUEUE_ERROR_MESSAGES } from '@/constants/queue';
+import { enterAuctionQueue } from '@/lib/api/enter-auction-queue';
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '') ?? '';
@@ -117,6 +119,53 @@ export default function PaymentRegisterModal() {
     }
   };
 
+  //임시 대기열 진입 핸들러 추가 삭제 예정
+  const handleAuctionqueue = async () => {
+    // 대기열 진입 api 추가
+    const result = await enterAuctionQueue(
+      auctionIdTemp as number,
+      accessToken ?? ''
+    );
+
+    switch (result.code) {
+      case 'SUCCESS': {
+        //queueToken 저장
+        sessionStorage.setItem('queueToken', result.data.queueToken);
+        sessionStorage.setItem('identifyType', String(auctionIdTemp));
+
+        //Todo 최초진입 store에서 상태값 ture로 바꾸기 추가
+
+        if (result.data.status === 'ACTIVE') {
+          //예약페이지 페이지로 이동
+          router.push(`/auction/${auctionIdTemp}/reserve`);
+          return;
+        }
+
+        if (result.data.status === 'WAITING') {
+          router.push(`/queue`);
+          // 대기열 페이지 이동
+          return;
+        }
+
+        return;
+      }
+
+      case 'Q001': {
+        console.log(result.data.blockedUntil);
+        console.log(QUEUE_ERROR_MESSAGES[result.code]);
+        return;
+      }
+
+      case 'C001':
+      case 'A002':
+      case 'A003':
+      case 'S001': {
+        console.log(QUEUE_ERROR_MESSAGES[result.code]);
+        return;
+      }
+    }
+  };
+
   return (
     <Box className="fixed inset-0 flex items-center justify-center  ">
       <Box
@@ -199,7 +248,21 @@ export default function PaymentRegisterModal() {
             }}
           >
             <Typography variant="label-1">
-              예약페이지 바로가기 (임시)
+              예약페이지 바로가기 (MSW 서버 임시)
+            </Typography>
+          </Button>
+        </div>
+        <div className="py-s px-ms">
+          <Button
+            variant="destructive"
+            className="w-full"
+            onClick={() => {
+              close();
+              handleAuctionqueue();
+            }}
+          >
+            <Typography variant="label-1">
+              대기열진입 바로가기 (MSW 서버 임시)
             </Typography>
           </Button>
         </div>

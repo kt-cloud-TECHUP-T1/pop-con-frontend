@@ -34,7 +34,7 @@ export const useAuthStore = create<AuthState>()((set) => ({
   // accessToken: null,
   authStatus: 'authenticated',
   // authStatus: 'loading',
-  isPaymentRegistered: null,
+  isPaymentRegistered: false,
   billingCards: [],
 
   setAccessToken: (accessToken) =>
