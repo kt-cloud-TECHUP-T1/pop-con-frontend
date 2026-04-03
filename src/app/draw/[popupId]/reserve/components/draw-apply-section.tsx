@@ -10,6 +10,12 @@ import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { snackbar } from '@/components/ui/snackbar';
 import { DRAW_ENTRY_ERROR_MESSAGE } from '@/constants/draw-apply';
 import { postDrawEntry } from '@/lib/api/draw-apply';
+import {
+  DrawEntryResult,
+  DrawEntrySuccessData,
+} from '@/types/applay/draw-apply';
+import DrawEntrySuccessModal from '@/components/sale-detail/info/draw-entry-success-modal';
+import DrawEntryDuplicateModal from '@/components/sale-detail/info/draw-entry-duplicate-modal';
 
 const DEFAULT_SUBMIT_ERROR =
   '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
@@ -28,6 +34,12 @@ export default function DrawApplySection({
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isAlreadyEnteredModalOpen, setIsAlreadyEnteredModalOpen] =
+    useState(false);
+  const [successData, setSuccessData] = useState<DrawEntrySuccessData | null>(
+    null
+  );
 
   const handleCheck = (index: number, checked: boolean) => {
     setChecks((prev) => {
@@ -46,12 +58,13 @@ export default function DrawApplySection({
     }
 
     if (selectedOptionId === null) {
-      setErrorMessage('응모할 회차를 선택해주세요.');
+      snackbar.destructive({
+        title: '응모할 회차를 선택해주세요.',
+      });
       return;
     }
 
     setIsSubmitting(true);
-    setErrorMessage(null);
 
     try {
       const result = await postDrawEntry(
@@ -65,11 +78,13 @@ export default function DrawApplySection({
       );
 
       if (result.code === 'SUCCESS') {
-        snackbar.success({
-          title: '응모 완료',
-          description: result.message,
-        });
-        router.push(`/draw/${drawId}/success`);
+        setSuccessData(result.data);
+        setIsSuccessModalOpen(true);
+        return;
+      }
+
+      if (result.code === 'D005') {
+        setIsAlreadyEnteredModalOpen(true);
         return;
       }
 
@@ -79,24 +94,27 @@ export default function DrawApplySection({
           result.data.isPrivacyAgreed ??
           result.message;
 
-        setErrorMessage(validationMessage);
+        snackbar.destructive({
+          title: '응모 실패',
+          description: validationMessage,
+        });
         return;
       }
 
       const mappedMessage =
         DRAW_ENTRY_ERROR_MESSAGE[result.code] ?? DEFAULT_SUBMIT_ERROR;
 
-      setErrorMessage(mappedMessage);
-
-      if (result.code === 'A002') {
-        snackbar.destructive({
-          title: '인증 오류',
-          description: mappedMessage,
-        });
-      }
+      snackbar.destructive({
+        title: '응모 실패',
+        description: mappedMessage,
+      });
     } catch (error) {
       console.error('[DrawApplySection/handleSubmit]', error);
-      setErrorMessage(DEFAULT_SUBMIT_ERROR);
+
+      snackbar.destructive({
+        title: '응모 실패',
+        description: DEFAULT_SUBMIT_ERROR,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -153,6 +171,16 @@ export default function DrawApplySection({
       >
         {isSubmitting ? '신청 중...' : '드로우 신청하기'}
       </Button>
+      <DrawEntrySuccessModal
+        open={isSuccessModalOpen}
+        data={successData}
+        onClose={() => setIsSuccessModalOpen(false)}
+      />
+
+      <DrawEntryDuplicateModal
+        open={isAlreadyEnteredModalOpen}
+        onClose={() => setIsAlreadyEnteredModalOpen(false)}
+      />
     </div>
   );
 }

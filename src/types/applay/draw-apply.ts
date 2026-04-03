@@ -10,11 +10,21 @@ export type DrawEntryValidationErrorData = {
   isTermsAgreed?: string;
 };
 
+export type DrawEntrySuccessData = {
+  vThumbnailUrl: string;
+  popupTitle: string;
+  popupAddress: string;
+  entryDate: string;
+  entryTime: string;
+  userName: string;
+  userPhoneNumber: string;
+};
+
 export type DrawEntryResult =
   | {
       code: 'SUCCESS';
       message: string;
-      data: null;
+      data: DrawEntrySuccessData;
     }
   | {
       code: 'C001';
