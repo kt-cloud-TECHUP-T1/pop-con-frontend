@@ -1,3 +1,4 @@
+import { auctionReservationHandlers } from './auction-success/auction-reservation';
 import { authHandlers } from './auth';
 import { billingMyHandlers } from './billing/get-billingList';
 import { billingKeyHandlers } from './billing/set-billing-keys';
@@ -16,4 +17,5 @@ export const handlers = [
   ...billingKeyHandlers,
   ...billingMyHandlers,
   ...auctionQueueHandlers,
+  ...auctionReservationHandlers,
 ];

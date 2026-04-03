@@ -33,6 +33,9 @@ export default function ReservePaymentSection({
   const currentPrice = useAuctionStore(
     (state) => state.liveData?.currentPrice ?? null
   );
+  const auctionId = useAuctionStore(
+    (state) => state.liveData?.auctionId ?? null
+  );
   const [billingDefault, setBillingDefault] = useState<BillingCard | null>(
     null
   );
@@ -86,14 +89,16 @@ export default function ReservePaymentSection({
     );
     //성공 처리
     if (result.code === 'SUCCESS') {
+      const reservationId = result.data?.reservationNo;
       snackbar.success({
         title: '낙찰 성공!',
         description: '잠시 후 완료 페이지로 이동합니다.',
       });
 
       setTimeout(() => {
-        // router.push(`완료 페이지로 이동`);
-        alert(' 낙찰 성공 api 완성 후 완료 페이지로 이동 로직 추가');
+        setTimeout(() => {
+          router.push(`/auction/${auctionId}/success/${reservationId}`);
+        }, 1000);
       }, 1000);
 
       return;
