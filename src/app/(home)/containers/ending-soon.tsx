@@ -83,8 +83,12 @@ export const EndingSoon = () => {
 
   if (endingSoonCards === null) return <EndingSoonSkeleton />;
 
-  const handleClick = (popupId: number) => {
-    router.push(`/ending-soon/${popupId}`);
+  const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
+    if (phaseType === 'AUCTION') {
+      router.push(`/auction/${popupId}`);
+    } else {
+      router.push(`/draw/${popupId}`);
+    }
   };
 
   return (
@@ -120,9 +124,9 @@ export const EndingSoon = () => {
               showButtonLike
               showCountView
               showCountLike
-              onClick={() => handleClick(endingSoonCard.popupId)}
-              // TODO 좋아요 작업 필요
-              // onClickLike={() => handleClickLike(item.id)}
+              onClick={() => handleClick(endingSoonCard.popupId, endingSoonCard.phase.type)}
+              // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
+              isLiked={endingSoonCard.liked ?? false}
             />
           ))}
         />

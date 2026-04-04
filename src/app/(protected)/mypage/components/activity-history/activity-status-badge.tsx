@@ -1,6 +1,6 @@
 import { Tag } from '@/components/ui/tag';
 import { cn } from '@/lib/utils';
-import type { ActivityStatusTone } from '@/features/mypage/types/activity';
+import type { ActivityStatusTone } from '@/app/(protected)/mypage/types';
 
 type ActivityStatusBadgeProps = {
   label: string;
@@ -8,7 +8,10 @@ type ActivityStatusBadgeProps = {
   className?: string;
 };
 
-const toneToTagColor: Record<ActivityStatusTone, 'blue' | 'orange' | 'red' | 'green'> = {
+const toneToTagColor: Record<
+  ActivityStatusTone,
+  'blue' | 'orange' | 'red' | 'green'
+> = {
   neutral: 'blue',
   warning: 'orange',
   danger: 'red',

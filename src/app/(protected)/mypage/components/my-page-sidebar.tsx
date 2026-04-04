@@ -2,17 +2,69 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { MY_PAGE_SIDEBAR } from '@/app/(protected)/mypage/_config/mypage';
 import { cn } from '@/lib/utils';
-import type { MyPageSidebarItem } from '@/features/mypage/types/navigation';
 import { Typography } from '@/components/ui/typography';
 import { Box } from '@/components/ui/box';
 
-const isActiveSidebarItem = (pathname: string, item: MyPageSidebarItem) => {
-  if (item.match === 'exact') {
-    return pathname === item.href;
-  }
+type MyPageSidebarItem = {
+  label: string;
+  href: string;
+};
 
+type MyPageSidebarSection = {
+  title: string;
+  items: MyPageSidebarItem[];
+};
+
+const MY_PAGE_SIDEBAR: MyPageSidebarSection[] = [
+  {
+    title: '내 정보',
+    items: [
+      {
+        label: '프로필 관리',
+        href: '/mypage/info/profile',
+      },
+      {
+        label: '결제수단 관리',
+        href: '/mypage/info/payment-methods',
+      },
+    ],
+  },
+  {
+    title: '활동',
+    items: [
+      {
+        label: '내 티켓',
+        href: '/mypage/info/tickets',
+      },
+      {
+        label: '드로우 내역',
+        href: '/mypage/activity/draws',
+      },
+      { label: '낙찰 내역', href: '/mypage/activity/bids' },
+      {
+        label: '작성한 리뷰',
+        href: '/mypage/activity/reviews',
+      },
+      {
+        label: '찜 목록',
+        href: '/mypage/activity/liked-popups',
+      },
+    ],
+  },
+  {
+    title: '기타',
+    items: [
+      { label: '설정', href: '/mypage/others/settings' },
+      {
+        label: '고객센터',
+        href: '/support',
+      },
+    ],
+  },
+];
+
+const isActiveSidebarItem = (pathname: string, item: MyPageSidebarItem) => {
   return pathname.startsWith(item.href);
 };
 

@@ -1,6 +1,7 @@
 'use client';
 
-import { ProfileSettingsActions } from '@/app/(protected)/mypage/info/profile/settings/components/profile-settings-actions';
+import Link from 'next/link';
+import { Button, buttonVariants } from '@/components/ui/button';
 import { ProfileSettingsFormSection } from '@/app/(protected)/mypage/info/profile/settings/components/profile-settings-form-section';
 import { useProfileSettings } from '@/app/(protected)/mypage/info/profile/settings/hooks/use-profile-settings';
 
@@ -32,11 +33,23 @@ export function SettingsPageClient() {
         onImagePickerOpen={openImagePicker}
         onImageRemove={handleImageRemove}
       />
-      <ProfileSettingsActions
-        cancelHref="/mypage/info/profile"
-        onSave={handleSave}
-        isSaving={isSaving}
-      />
+      <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+        <Link
+          href="/mypage/info/profile"
+          className={buttonVariants({ variant: 'secondary', size: 'large', className: 'min-w-[200px]' })}
+        >
+          취소
+        </Link>
+        <Button
+          type="button"
+          size="large"
+          className="min-w-[200px]"
+          onClick={handleSave}
+          disabled={isSaving}
+        >
+          저장
+        </Button>
+      </div>
     </section>
   );
 }

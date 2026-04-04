@@ -1,6 +1,6 @@
 import { PageHeader } from '@/components/shared/page-header';
 import { ProfileSummaryCard } from '@/app/(protected)/mypage/info/profile/components/profile-summary-card';
-import type { ProfileInfoItem } from '@/app/(protected)/mypage/info/profile/components/profile-info-list';
+import type { ProfileInfoItem } from '@/app/(protected)/mypage/info/profile/components/profile-summary-card';
 
 // TODO: 하드코딩 데이터를 실제 사용자 정보로 교체 필요
 const PROFILE_INFO: ProfileInfoItem[] = [
@@ -22,8 +22,6 @@ export default function MyPageProfilePage() {
         imageSrc="/images/temp/God-Sang-hyeok.png"
         nickname="심심한 고래"
         infoItems={PROFILE_INFO}
-        settingsHref="/mypage/info/profile/settings"
-        personalInfoHref="/mypage/info/profile/personal"
       />
     </section>
   );

@@ -1,0 +1,18 @@
+import * as React from 'react';
+import type { SVGProps } from 'react';
+const SvgStarFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1em"
+    height="1em"
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <path
+      fill="currentColor"
+      d="M10.71 1.864c.594-1.012 2.102-.978 2.635.101l2.404 4.872 5.378.783c1.23.179 1.722 1.69.832 2.558l-3.891 3.792.919 5.357c.21 1.225-1.077 2.16-2.177 1.58L12 18.38l-4.81 2.529c-1.1.578-2.386-.356-2.176-1.581l.918-5.357-3.89-3.792c-.89-.868-.399-2.38.832-2.558l5.376-.783 2.406-4.872z"
+    />
+  </svg>
+);
+export default SvgStarFill;

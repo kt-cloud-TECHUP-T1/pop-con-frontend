@@ -59,13 +59,17 @@ export const Notable = () => {
           }
         );
 
-        if (!response.ok) return;
+        if (!response.ok) {
+          setNotableCards([]);
+          return;
+        }
 
         const result =
           (await response.json()) as ApiResponse<NotableCardResponse>;
         setNotableCards(result.data?.items ?? []);
       } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
         console.error('[notable] 주목할 만한 팝업 조회 실패', error);
         setNotableCards([]);
       }
@@ -77,8 +81,12 @@ export const Notable = () => {
 
   if (notableCards === null) return <NotableSkeleton />;
 
-  const handleClick = (popupId: number) => {
-    router.push(`/featured/${popupId}`);
+  const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
+    if (phaseType === 'AUCTION') {
+      router.push(`/auction/${popupId}`);
+    } else {
+      router.push(`/draw/${popupId}`);
+    }
   };
 
   return (
@@ -114,9 +122,11 @@ export const Notable = () => {
               showButtonLike
               showCountView
               showCountLike
-              onClick={() => handleClick(notableCard.popupId)}
-              // TODO 좋아요 작업 필요
-              // onClickLike={() => handleClickLike(notableCard.popupId)}
+              // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
+              isLiked={notableCard.liked ?? false}
+              onClick={() =>
+                handleClick(notableCard.popupId, notableCard.phase.type)
+              }
             />
           ))}
         />

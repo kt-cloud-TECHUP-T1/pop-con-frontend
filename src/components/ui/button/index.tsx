@@ -70,9 +70,13 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {leftIcon && <span className="inline-flex shrink-0">{leftIcon}</span>}
-        {children}
-        {rightIcon && <span className="inline-flex shrink-0">{rightIcon}</span>}
+        {asChild ? children : (
+          <>
+            {leftIcon && <span className="inline-flex shrink-0">{leftIcon}</span>}
+            {children}
+            {rightIcon && <span className="inline-flex shrink-0">{rightIcon}</span>}
+          </>
+        )}
       </Comp>
     );
   }

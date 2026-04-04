@@ -10,7 +10,7 @@ const SvgSquareCheckboxFill = (props: SVGProps<SVGSVGElement>) => (
     {...props}
   >
     <path
-      fill="var(--checkbox-fill-bg, #0a0a0a)"
+      fill="var(--checkbox-fill-bg, `#0a0a0a`)"
       d="M3 7a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4z"
     />
     <mask

@@ -1,9 +1,9 @@
 'use client';
 
+import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
-import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
@@ -32,6 +32,8 @@ export default function DrawApplySection({
   const [checks, setChecks] = useState([false, false]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  // TODO 테스트 후 주석 제거
+  // const accessToken = useAuthStore((state) => state.accessToken);
   const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
@@ -166,6 +168,7 @@ export default function DrawApplySection({
       )}
 
       <Button
+        // TODO 테스트를 위하여 임시 주석
         disabled={!isAllChecked || selectedOptionId === null || isSubmitting}
         onClick={handleSubmit}
       >
