@@ -14,7 +14,11 @@ export async function Header() {
     <header className="w-full border-b border-[var(--neutral-90)] py-5 sticky top-0 bg-white z-50">
       <Box className="mx-auto flex max-w-[1280px] items-center justify-between gap-8 px-10">
         <Box className="min-w-0 flex flex-1 items-center gap-12">
-          <Link href="/" className="inline-block text-center">
+          <Link
+            href="/"
+            className="inline-block text-center"
+            aria-label="POP-CON 홈"
+          >
             <Image src="/Logo.svg" alt="" width={70} height={40} />
           </Link>
           <HeaderNav />
