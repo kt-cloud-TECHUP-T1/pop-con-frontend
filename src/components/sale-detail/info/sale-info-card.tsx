@@ -8,7 +8,7 @@ import SaleInfoCTA from './sale-info-cta';
 import { useEffect, useState } from 'react';
 import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
 import SaleScheduleInfo from './sale-schedule-info';
-import { DrawParticipateButton } from './draw-participate-button';
+
 
 export default function SaleInfoCard(props: SaleDetailSidebarProps) {
   const { phaseType, phaseStatus, popupId } = props;

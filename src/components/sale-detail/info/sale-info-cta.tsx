@@ -4,10 +4,13 @@ import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { formatDateWithWeekdayTime } from '@/lib/utils';
 import { DrawSaleInfoCTAProps, SaleInfoCTAProps } from '@/types/sale-detail';
+import { useDetailPageCollector } from '@/features/anti-macro';
 import useCountdown from '../hooks/use-countdown';
 
 export default function SaleInfoCTA(props: SaleInfoCTAProps) {
   const { phaseType, phaseStatus, serverTime } = props;
+  const page = phaseType === 'AUCTION' ? 'dutch-auction-detail' as const : 'popup-detail' as const;
+  const { submitSignals } = useDetailPageCollector({ page });
 
   if (phaseType === 'AUCTION') {
     const { auctionOpenAt, auctionStatus, buttonStatus, connetedDrawOpenAt } =
@@ -15,7 +18,7 @@ export default function SaleInfoCTA(props: SaleInfoCTAProps) {
     switch (buttonStatus) {
       case 'ENABLED':
         return (
-          <Button size="large" variant="primary" className="w-full">
+          <Button size="large" variant="primary" className="w-full" onClick={() => submitSignals()}>
             <Typography variant="label-1">프리미엄 경매 참여하기</Typography>
           </Button>
         );
@@ -47,14 +50,15 @@ export default function SaleInfoCTA(props: SaleInfoCTAProps) {
         return null;
     }
   }
-  return <DrawCTA {...props} />;
+  return <DrawCTA {...props} onSubmitSignals={submitSignals} />;
 }
 
 function DrawCTA({
   drawOpenAt,
   drawCloseAt,
   serverTime,
-}: DrawSaleInfoCTAProps) {
+  onSubmitSignals,
+}: DrawSaleInfoCTAProps & { onSubmitSignals: () => Promise<void> }) {
   const remaining = useCountdown(drawOpenAt, serverTime);
   const isOpen = remaining <= 0;
 
@@ -64,6 +68,7 @@ function DrawCTA({
       variant="primary"
       disabled={!isOpen}
       className="w-full"
+      {...(isOpen && { onClick: () => onSubmitSignals() })}
     >
       <Typography variant="label-1">
         {isOpen ? '드로우 응모하기' : formatDateWithWeekdayTime(drawOpenAt)}

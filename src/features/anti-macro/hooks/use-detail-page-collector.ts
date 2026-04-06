@@ -5,12 +5,17 @@ import { createBrowserFingerprintCollector } from '../collectors/browser-fingerp
 import { createClickBehaviorCollector } from '../collectors/click-behavior';
 import { createTimingCollector } from '../collectors/timing';
 import { useAntiMacro } from './use-anti-macro';
+import type { PageType } from '../types';
 
-type UsePopupDetailCollectorOptions = {
+type UseDetailPageCollectorOptions = {
+  page?: Extract<PageType, 'popup-detail' | 'dutch-auction-detail'>;
   userId?: string;
 };
 
-export function usePopupDetailCollector({ userId }: UsePopupDetailCollectorOptions = {}) {
+export function useDetailPageCollector({
+  page = 'popup-detail',
+  userId,
+}: UseDetailPageCollectorOptions = {}) {
   const { fingerprintCollector, clickCollector, collectors } = useMemo(() => {
     const fp = createBrowserFingerprintCollector();
     const click = createClickBehaviorCollector();
@@ -27,7 +32,7 @@ export function usePopupDetailCollector({ userId }: UsePopupDetailCollectorOptio
   const getVisitorId = () => fingerprintCollector.getFingerprint()?.visitorId;
 
   const { getPayload, submitSignals } = useAntiMacro({
-    page: 'popup-detail',
+    page,
     collectors,
     getVisitorId,
     userId,

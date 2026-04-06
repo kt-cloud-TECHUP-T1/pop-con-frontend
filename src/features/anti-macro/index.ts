@@ -10,6 +10,7 @@ export type {
   PageSignalPayload,
   AntiMacroSubmission,
   SignalSubmitResponse,
+  VqaLevel,
 } from './types';
 
 // 상수
@@ -17,5 +18,5 @@ export { COLLECTION } from './constants';
 
 // 훅
 export { useLoginCollector } from './hooks/use-login-collector';
-export { usePopupDetailCollector } from './hooks/use-popup-detail-collector';
-export { useDrawApplyCollector } from './hooks/use-draw-apply-collector';
+export { useDetailPageCollector } from './hooks/use-detail-page-collector';
+export { useApplyPageCollector } from './hooks/use-apply-page-collector';
