@@ -3,10 +3,11 @@ import { AUTH_MESSAGES } from '@/constants/auth';
 import {
   createBadRequestResponse,
   createServerErrorResponse,
+  getServiceBaseUrl,
   handleProxyResponse,
 } from '@/app/api/shared/route-helpers';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
+const API_BASE_URL = getServiceBaseUrl('auth');
 
 export async function POST(request: NextRequest) {
   const refreshToken = request.cookies.get('refresh_token')?.value;

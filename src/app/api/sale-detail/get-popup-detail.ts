@@ -2,15 +2,16 @@ import {
   PopupDetailErrorResponse,
   PopupDetailResponse,
 } from '@/types/sale-detail';
+import { getServiceBaseUrl } from '../shared/route-helpers';
 
 export async function getPopupDetail(popupId: number, accessToken?: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '');
+  const API_BASE_URL = getServiceBaseUrl('auction');
 
-  if (!baseUrl) {
+  if (!API_BASE_URL) {
     throw new Error('NEXT_PUBLIC_API_BASE_URL이 설정되지 않았습니다.');
   }
 
-  const url = `${baseUrl}/popups/${popupId}`;
+  const url = `${API_BASE_URL}/popups/${popupId}`;
 
   const response = await fetch(url, {
     method: 'GET',

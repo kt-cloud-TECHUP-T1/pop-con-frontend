@@ -1,10 +1,11 @@
 import {
   createBadRequestResponse,
   createServerErrorResponse,
+  getServiceBaseUrl,
   handleProxyResponse,
 } from '../../shared/route-helpers';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
+const API_BASE_URL = getServiceBaseUrl('popup');
 const MIN_LIMIT = 1;
 const MAX_LIMIT = 10;
 

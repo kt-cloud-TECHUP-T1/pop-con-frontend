@@ -3,6 +3,7 @@ import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
 import {
   createBadRequestResponse,
   createServerErrorResponse,
+  getServiceBaseUrl,
   handleProxyResponse,
 } from '@/app/api/shared/route-helpers';
 
@@ -10,7 +11,7 @@ type IdentityCompleteRequestBody = {
   identityVerificationId?: string;
 };
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
+const API_BASE_URL = getServiceBaseUrl('auth');
 
 function createSessionExpiredResponse() {
   return NextResponse.json(

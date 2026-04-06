@@ -1,5 +1,6 @@
 // 로그인
 'use client';
+import { getServiceBaseUrl } from '@/app/api/shared/route-helpers';
 import { Icon } from '@/components/Icon/Icon';
 import { Wrapper } from '@/components/layout/wrapper';
 import { Button } from '@/components/ui/button';
@@ -15,9 +16,9 @@ import { useLoginCollector } from '@/features/anti-macro';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
-const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = getServiceBaseUrl('auth');
+const normalizedBaseUrl = API_BASE_URL?.replace(/\/+$/, '');
 
-const normalizedBaseUrl = NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
 const isValidAbsoluteUrl = (value: string) => {
   try {
     const url = new URL(value);

@@ -92,3 +92,22 @@ export async function handleProxyResponse(
 
   return nextResponse;
 }
+
+// ================================================================
+
+const USE_LOCAL = process.env.NEXT_PUBLIC_USE_LOCAL_BACKEND === 'true';
+const PROD_BASE = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
+
+const LOCAL_URLS = {
+  auth: process.env.NEXT_PUBLIC_AUTH_API_URL,
+  user: process.env.NEXT_PUBLIC_USER_API_URL,
+  popup: process.env.NEXT_PUBLIC_POPUP_API_URL,
+  auction: process.env.NEXT_PUBLIC_AUCTION_API_URL,
+  draw: process.env.NEXT_PUBLIC_DRAW_API_URL,
+  queue: process.env.NEXT_PUBLIC_QUEUE_API_URL,
+};
+
+export function getServiceBaseUrl(service: keyof typeof LOCAL_URLS) {
+  const url = USE_LOCAL ? (LOCAL_URLS[service] ?? PROD_BASE) : PROD_BASE;
+  return url?.replace(/\/+$/, '') ?? '';
+}
