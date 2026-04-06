@@ -1,137 +1,41 @@
 'use client';
 
-import SaleInfoPrice from '@/components/sale-detail/info/sale-info-price';
-import ReservePaymentSection from './reserve-payment-section';
 import SaleNoticeCard from '@/components/sale-detail/info/sale-notice-card';
-import { useEffect, useState } from 'react';
+import SaleAuctionReserveSidebar from '@/components/sale-detail/info/SaleAuctionReserveSidebar';
 import { Typography } from '@/components/ui/typography';
-import { ReserveCalendarSection } from './reserve-calendar-section';
-import { ReserveTimeSlotSection } from './reserve-time-slot-section';
 import { Box } from '@/components/ui/box';
 import { AuctionInfoContent } from '@/constants/sale-detail';
-import { useAuthStore } from '@/features/auth/stores/auth-store';
-import { ReservePanelSkeleton } from '@/components/sale-detail/reserve-panel-skeleton';
-import { AuctionData } from '@/types/sale-detail';
-import SaleAuctionReserveSidebar from '@/components/sale-detail/info/SaleAuctionReserveSidebar';
-
-export interface AuctionSlot {
-  optionId: number;
-  entryTime: string;
-  remainingStock: number;
-  selectable: boolean;
-}
+import { ReservePanelSkeleton } from '@/features/reserve/components/reserve-panel-skeleton';
+import { ReserveCalendarSection } from '@/features/reserve/components/reserve-calendar-section';
+import { ReserveTimeSlotSection } from '@/features/reserve/components/reserve-time-slot-section';
+import { ReserveTimeSlotCard } from '@/features/reserve/components/reserve-time-slot-card';
+import { useReserveDateSlots } from '@/features/reserve/hooks/use-reserve-date-slots';
+import type { AuctionSlot } from '@/features/reserve/types/reserve';
 
 interface AuctionReservePageClientProps {
   auctionId: number;
 }
 
-const DEFAULT_DATES_ERROR =
-  '예약 가능 날짜를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
-const DEFAULT_SLOTS_ERROR =
-  '회차 정보를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
+const AU_ERROR_CODES = ['AU001', 'AU002', 'AU003'];
 
 export function AuctionReservePageClient({
   auctionId,
 }: AuctionReservePageClientProps) {
-  const accessToken = useAuthStore((state) => state.accessToken);
-  // 첫 진입 시에는 아무 날짜도 선택하지 않은 상태로 시작
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
-  const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
-  const [availableDates, setAvailableDates] = useState<string[]>([]);
-  const [slots, setSlots] = useState<AuctionSlot[]>([]);
-  const [datesErrorMessage, setDatesErrorMessage] = useState<string | null>(
-    null
-  );
-  const [slotsErrorMessage, setSlotsErrorMessage] = useState<string | null>(
-    null
-  );
-  const [isDatesLoading, setIsDatesLoading] = useState(false);
-
-  // ====================== 페이지 진입 시 선택 가능한 날짜 목록 조회
-  useEffect(() => {
-    // TODO 테스트 후 주석 제거
-    if (!accessToken) return;
-
-    const fetchDates = async () => {
-      setIsDatesLoading(true);
-      try {
-        const response = await fetch(`/api/auctions/${auctionId}/dates`, {
-          headers: {
-            // TODO 테스트 후 주석 제거
-            Authorization: `Bearer ${accessToken}`,
-          },
-        });
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          const AU_ERROR_CODES = ['AU001', 'AU002', 'AU003'];
-
-          setAvailableDates([]);
-          setDatesErrorMessage(
-            AU_ERROR_CODES.includes(result.code)
-              ? result.message
-              : DEFAULT_DATES_ERROR
-          );
-
-          return;
-        }
-
-        setDatesErrorMessage(null);
-        setAvailableDates(
-          result.data?.map((date: { entryDate: string }) => date.entryDate) ??
-            []
-        );
-      } catch (error) {
-        console.error('[auction/fetchDates]', error);
-        setAvailableDates([]);
-        setDatesErrorMessage(DEFAULT_DATES_ERROR);
-      } finally {
-        setIsDatesLoading(false);
-      }
-    };
-    fetchDates();
-  }, [auctionId, accessToken]);
-
-  // ====================== 날짜 선택 시 해당 날짜의 회차 목록 조회
-  useEffect(() => {
-    // TODO 테스트 후 주석 제거
-    if (!accessToken || !selectedDate) return;
-    if (!selectedDate) return;
-
-    const fetchDatesOptions = async () => {
-      setSlots([]);
-      setSlotsErrorMessage(null);
-      try {
-        const response = await fetch(
-          `/api/auctions/${auctionId}/dates/${selectedDate}/options`,
-          // TODO 테스트 후 주석 제거
-          { headers: { Authorization: `Bearer ${accessToken}` } }
-        );
-
-        const result = await response.json();
-
-        if (!response.ok) {
-          const AU_ERROR_CODES = ['AU001', 'AU002', 'AU003'];
-
-          setAvailableDates([]);
-          setDatesErrorMessage(
-            AU_ERROR_CODES.includes(result.code)
-              ? result.message
-              : DEFAULT_SLOTS_ERROR
-          );
-
-          return;
-        }
-
-        setSlotsErrorMessage(null);
-        setSlots(result.data ?? []);
-      } catch (error) {
-        console.error('[auction/fetchDatesOptions]', error);
-      }
-    };
-    fetchDatesOptions();
-  }, [auctionId, selectedDate, accessToken]);
+  const {
+    selectedDate,
+    setSelectedDate,
+    availableDates,
+    selectedOptionId,
+    setSelectedOptionId,
+    slots,
+    datesErrorMessage,
+    slotsErrorMessage,
+    isDatesLoading,
+    isSlotsLoading,
+  } = useReserveDateSlots<AuctionSlot>({
+    datesUrl: `/api/auctions/${auctionId}/dates`,
+    errorCodes: AU_ERROR_CODES,
+  });
 
   return (
     <section className="flex flex-col gap-8">
@@ -179,6 +83,15 @@ export function AuctionReservePageClient({
                     slots={slots}
                     onSelectSlot={setSelectedOptionId}
                     errorMessage={slotsErrorMessage}
+                    isLoading={isSlotsLoading}
+                    renderSlot={(slot, isSelected) => (
+                      <ReserveTimeSlotCard
+                        variant="auction"
+                        slot={slot}
+                        isSelected={isSelected}
+                        onSelect={setSelectedOptionId}
+                      />
+                    )}
                   />
                 </div>
               )}
