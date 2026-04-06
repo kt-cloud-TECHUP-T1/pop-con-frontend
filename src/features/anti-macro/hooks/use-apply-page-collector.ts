@@ -5,12 +5,17 @@ import { createClickBehaviorCollector } from '../collectors/click-behavior';
 import { createMouseCollector } from '../collectors/mouse-touch';
 import { createTimingCollector } from '../collectors/timing';
 import { useAntiMacro } from './use-anti-macro';
+import type { PageType } from '../types';
 
-type UseDrawApplyCollectorOptions = {
+type UseApplyPageCollectorOptions = {
+  page?: Extract<PageType, 'draw-application' | 'dutch-auction-application'>;
   userId: string;
 };
 
-export function useDrawApplyCollector({ userId }: UseDrawApplyCollectorOptions) {
+export function useApplyPageCollector({
+  page = 'draw-application',
+  userId,
+}: UseApplyPageCollectorOptions) {
   const { clickCollector, mouseCollector, collectors } = useMemo(() => {
     const click = createClickBehaviorCollector();
     const mouse = createMouseCollector();
@@ -23,9 +28,8 @@ export function useDrawApplyCollector({ userId }: UseDrawApplyCollectorOptions) 
     };
   }, []);
 
-  // 신청: userId만 전송
   const { getPayload, submitSignals } = useAntiMacro({
-    page: 'draw-application',
+    page,
     collectors,
     userId,
   });

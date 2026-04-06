@@ -3,6 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { formatDateWithWeekdayTime } from '@/lib/utils';
+import { useDetailPageCollector } from '@/features/anti-macro';
 import useCountdown from '../hooks/use-countdown';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
@@ -17,13 +18,23 @@ import { QUEUE_ERROR_MESSAGES } from '@/constants/queue';
 
 export default function SaleInfoCTA() {
   const phaseType = usePopupStore((state) => state.data?.phaseType);
+  const page =
+    phaseType === 'AUCTION'
+      ? ('dutch-auction-detail' as const)
+      : ('popup-detail' as const);
+  const { submitSignals } = useDetailPageCollector({ page });
 
-  if (phaseType === 'AUCTION') return <AuctionCTA />;
-  if (phaseType === 'DRAW') return <DrawCTA />;
+  if (phaseType === 'AUCTION')
+    return <AuctionCTA onSubmitSignals={submitSignals} />;
+  if (phaseType === 'DRAW') return <DrawCTA onSubmitSignals={submitSignals} />;
   return null;
 }
 
-function AuctionCTA() {
+function AuctionCTA({
+  onSubmitSignals,
+}: {
+  onSubmitSignals: () => Promise<void>;
+}) {
   const auctionData = useAuctionLatestData();
   const drawOpenAt = useDrawStore((state) => state.data?.drawOpenAt);
   const router = useRouter();
@@ -57,6 +68,7 @@ function AuctionCTA() {
           return;
         }
 
+        onSubmitSignals();
         // 대기열 진입 api 추가
         const result = await enterAuctionQueue(auctionId, accessToken ?? '');
 
@@ -145,7 +157,11 @@ function AuctionCTA() {
   }
 }
 
-function DrawCTA() {
+function DrawCTA({
+  onSubmitSignals,
+}: {
+  onSubmitSignals: () => Promise<void>;
+}) {
   const drawData = useDrawStore((state) => state.data);
   const router = useRouter();
   const authStatus = useAuthStore((state) => state.authStatus);
@@ -168,6 +184,8 @@ function DrawCTA() {
       authStatus,
       onAuthenticated: () => {
         //드로우 상세 페이지 CTA 버튼 클릭시 draw 큐진입 api 호출 후 응답에 따른 분기처리
+
+        onSubmitSignals(); //해당 함수 호출 이후 큐진입 api 호출
       },
       //로그인 유도 모달 오픈
       onUnauthenticated: () => openLoginRequiredModal(),
