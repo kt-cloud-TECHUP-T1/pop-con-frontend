@@ -39,3 +39,10 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# storybook
+*storybook.log
+storybook-static
+
+# api
+docs/api/

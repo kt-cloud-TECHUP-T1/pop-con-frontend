@@ -1,0 +1,18 @@
+import * as React from 'react';
+import type { SVGProps } from 'react';
+const SvgHeartFill = (props: SVGProps<SVGSVGElement>) => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="1em"
+    height="1em"
+    fill="none"
+    viewBox="0 0 24 24"
+    {...props}
+  >
+    <path
+      fill="currentColor"
+      d="M12 4.801c2.119-2.229 5.61-2.446 7.976-.329l.233.22c2.339 2.328 2.404 6.219.095 8.629l-.012.011-7.082 7.156-.001-.001a1.683 1.683 0 0 1-2.419 0l-7.082-7.155-.012-.011c-2.384-2.488-2.237-6.554.328-8.849 2.367-2.117 5.857-1.9 7.976.33"
+    />
+  </svg>
+);
+export default SvgHeartFill;

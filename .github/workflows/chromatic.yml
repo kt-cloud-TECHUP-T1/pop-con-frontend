@@ -1,0 +1,37 @@
+name: 'Deploy Storybook to Chromatic'
+
+on:
+  push:
+    branches:
+      - dev # main 브랜치에 푸시될 때 실행
+  pull_request:
+    branches:
+      - dev # PR이 생성될 때 실행
+
+jobs:
+  chromatic-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4 # 최신 버전 v4 권장
+        with:
+          fetch-depth: 0 # 전체 Git 히스토리를 가져오도록 설정
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build Storybook
+        run: npm run build-storybook
+
+      - name: Publish to Chromatic
+        id: chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          storybookBuildDir: storybook-static
+          exitZeroOnChanges: true
+
+      - name: Add Storybook link to workflow summary
+        if: ${{ steps.chromatic.outputs.storybookUrl != '' }}
+        run: |
+          echo "🚀 storybook: ${{ steps.chromatic.outputs.storybookUrl }}" >> "$GITHUB_STEP_SUMMARY"

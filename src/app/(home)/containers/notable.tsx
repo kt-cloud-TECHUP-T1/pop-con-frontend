@@ -1,0 +1,136 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { CardThumbnail } from '@/components/content/card-thumbnail';
+import { GridCarousel } from '@/components/content/grid-carousel';
+import { Section } from '../components/section';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { ApiResponse } from '@/types/api/common';
+import { useRouter } from 'next/navigation';
+import { NotableSkeleton } from '../components/skeletons';
+
+interface NotableCard {
+  popupId: number;
+  title: string;
+  supportingText: string | null;
+  subText: string | null;
+  caption: string | null;
+  thumbnailUrl: string | null;
+  liked: boolean | null;
+  stats: {
+    likeCount: number;
+    viewCount: number;
+  };
+  overlay: null;
+  phase: {
+    type: 'AUCTION' | 'DRAW';
+    status: 'UPCOMING' | 'OPEN' | 'CLOSED';
+    openAt: string;
+    closeAt: string;
+  };
+}
+
+interface NotableCardResponse {
+  sectionKey: 'FEATURED';
+  itemCount: number;
+  items: NotableCard[];
+}
+
+const NOTABLE_LIMIT = 10;
+
+export const Notable = () => {
+  const [notableCards, setNotableCards] = useState<NotableCard[] | null>(null);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const router = useRouter();
+
+  useEffect(() => {
+    const controller = new AbortController();
+
+    const fetchNotable = async () => {
+      try {
+        const response = await fetch(
+          `/api/popups/featured?limit=${NOTABLE_LIMIT}`,
+          {
+            method: 'GET',
+            signal: controller.signal,
+            headers: {
+              ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
+            },
+          }
+        );
+
+        if (!response.ok) {
+          setNotableCards([]);
+          return;
+        }
+
+        const result =
+          (await response.json()) as ApiResponse<NotableCardResponse>;
+        setNotableCards(result.data?.items ?? []);
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
+        console.error('[notable] 주목할 만한 팝업 조회 실패', error);
+        setNotableCards([]);
+      }
+    };
+    fetchNotable();
+    // NOTE 좋아요 기능 붙을 때를 위해 대비
+    return () => controller.abort();
+  }, [accessToken]);
+
+  if (notableCards === null) return <NotableSkeleton />;
+
+  const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
+    if (phaseType === 'AUCTION') {
+      router.push(`/auction/${popupId}`);
+    } else {
+      router.push(`/draw/${popupId}`);
+    }
+  };
+
+  return (
+    <Section
+      title="주목할 만한 팝업"
+      showButtonMore
+      // TODO 더보기 작업 필요
+      // onClickMore={handleClickMore}
+    >
+      {notableCards.length === 0 ? (
+        <div className="min-h-[250px] flex items-center justify-center">
+          주목할 만한 팝업이 아직 없어요.
+        </div>
+      ) : (
+        <GridCarousel
+          gridSize={{
+            default: 2,
+            md: 3,
+            lg: 5,
+          }}
+          carouselOpts={{ align: 'start' }}
+          alignArrowToRatio="3/4"
+          items={notableCards.map((notableCard) => (
+            <CardThumbnail
+              key={notableCard.popupId}
+              thumbnailUrl={notableCard.thumbnailUrl ?? undefined}
+              thumbnailRatio="3/4"
+              title={notableCard.title}
+              description={notableCard.subText ?? undefined}
+              caption={notableCard.caption ?? undefined}
+              countView={notableCard.stats.viewCount}
+              countLike={notableCard.stats.likeCount}
+              showButtonLike
+              showCountView
+              showCountLike
+              // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
+              isLiked={notableCard.liked ?? false}
+              onClick={() =>
+                handleClick(notableCard.popupId, notableCard.phase.type)
+              }
+            />
+          ))}
+        />
+      )}
+    </Section>
+  );
+};
