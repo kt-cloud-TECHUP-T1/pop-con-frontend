@@ -1,82 +1,39 @@
 'use client';
-import { Icon } from '@/components/Icon/Icon';
-import { Typography } from '@/components/ui/typography';
-import { cn } from '@/lib/utils';
+
 import SaleInfoPrice from './sale-info-price';
-import { SaleDetailSidebarProps, SaleInfoCTAProps } from '@/types/sale-detail';
 import SaleInfoCTA from './sale-info-cta';
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
 import SaleScheduleInfo from './sale-schedule-info';
+import { usePopupStore } from '../stores/popup-store';
+import { useDrawStore } from '../stores/draw-store';
 
-
-export default function SaleInfoCard(props: SaleDetailSidebarProps) {
-  const { phaseType, phaseStatus, popupId } = props;
-
-  const [ConnectedDrawData, setDrawData] = useState<Awaited<
-    ReturnType<typeof getDrawDetail>
-  > | null>(null);
+export default function SaleInfoCard() {
+  const phaseType = usePopupStore((state) => state.data?.phaseType);
+  const connetedDrawId = usePopupStore((state) => state.data?.drawId);
+  const setDrawData = useDrawStore((state) => state.setDrawData);
 
   useEffect(() => {
-    if (phaseType !== 'AUCTION' || !popupId) return;
+    if (phaseType !== 'AUCTION' || !connetedDrawId) return;
 
     const fetchDraw = async () => {
       try {
-        if (!props.connetedDrawId) return;
-        const data = await getDrawDetail(String(props.connetedDrawId));
+        const data = await getDrawDetail(String(connetedDrawId));
         setDrawData(data);
-      } catch (error) {
-        throw new Error('DRAW 조회 중 오류가 발생했습니다.');
+      } catch {
+        throw new Error('DRAW 조회 중 오류가 발생했습니다. in SaleInfoCard');
       }
     };
 
     fetchDraw();
-  }, [phaseType, popupId]);
-
-  const ctaProps: SaleInfoCTAProps =
-    phaseType === 'AUCTION'
-      ? {
-          phaseType: 'AUCTION',
-          phaseStatus: phaseStatus,
-          serverTime: props.serverTime,
-          auctionOpenAt: props.auctionOpenAt,
-          auctionStatus: props.auctionStatus,
-          buttonStatus: props.buttonStatus,
-          connetedDrawOpenAt: ConnectedDrawData?.drawOpenAt ?? null,
-        }
-      : {
-          phaseType: 'DRAW',
-          phaseStatus: phaseStatus,
-          serverTime: props.serverTime,
-          drawOpenAt: props.drawOpenAt,
-          drawCloseAt: props.drawCloseAt,
-        };
+  }, [phaseType, connetedDrawId]);
 
   return (
     <div className="border border-[var(--line-3)] rounded-ml p-ms">
-      {phaseType === 'AUCTION' && (
-        <SaleInfoPrice
-          auctionStatus={props.auctionStatus}
-          serverTime={props.serverTime}
-          auctionOpenAt={props.auctionOpenAt}
-          auctionCloseAt={props.auctionCloseAt}
-          remainingUntilOpenSeconds={props.remainingUntilOpenSeconds}
-          remainingUntilCloseSeconds={props.remainingUntilCloseSeconds}
-          startPrice={props.startPrice}
-          minimumPrice={props.minimumPrice}
-          currentPrice={props.currentPrice}
-          nextPrice={props.nextPrice}
-          discountAmount={props.discountAmount}
-          priceDropUnit={props.priceDropUnit}
-          priceDropIntervalSeconds={props.priceDropIntervalSeconds}
-          secondsUntilNextDrop={props.secondsUntilNextDrop}
-          maxPurchaseQuantityPerRound={props.maxPurchaseQuantityPerRound}
-          canParticipate={props.canParticipate}
-        ></SaleInfoPrice>
-      )}
+      {phaseType === 'AUCTION' && <SaleInfoPrice />}
 
-      <SaleScheduleInfo {...props}></SaleScheduleInfo>
-      <SaleInfoCTA {...ctaProps}></SaleInfoCTA>
+      <SaleScheduleInfo />
+      <SaleInfoCTA></SaleInfoCTA>
     </div>
   );
 }

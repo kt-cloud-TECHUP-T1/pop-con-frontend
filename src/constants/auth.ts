@@ -116,3 +116,5 @@ export const TERMS: readonly {
     apiKey: 'isMarketingAgreed',
   },
 ];
+
+export const LOGIN_REDIRECT_KEY = 'loginRedirectPath';

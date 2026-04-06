@@ -2,42 +2,33 @@
 import { Typography } from '@/components/ui/typography';
 import useCountdown from '../hooks/use-countdown';
 import { splitRemainingTime } from '../utils/sale-detail-utils';
+import { useAuctionLatestData } from '../stores/auction-store';
 
-interface OpenCountCardProps {
-  saleOpenAt: string;
-  phaseType: string;
-  phaseStatus: string;
-  serverTime: string;
-}
-
-export default function OpenCountCard({
-  saleOpenAt,
-  phaseType,
-  phaseStatus,
-  serverTime,
-}: OpenCountCardProps) {
-  const remaining = useCountdown(saleOpenAt, serverTime);
+export default function OpenCountCard() {
+  const auctionData = useAuctionLatestData();
+  const remaining = useCountdown(
+    auctionData?.auctionOpenAt ?? '',
+    auctionData?.serverTime ?? ''
+  );
   const { days, hours, minutes, seconds } = splitRemainingTime(remaining);
-  // 'UPCOMING' | 'OPEN' | 'CLOSED'
-  if (phaseStatus === 'OPEN' || phaseStatus === 'CLOSED') return;
+
+  if (auctionData?.auctionStatus !== 'SCHEDULED') return;
   return (
     <>
-      {phaseStatus == 'UPCOMING' && (
-        <div className="p-ms bg-[var(--neutral-20)] text-[var(--white)] rounded-ml flex flex-col gap-xs items-center">
-          <Typography variant="body-2" weight="regular">
-            {phaseType == 'AUCTION' ? '경매' : '드로우'} 오픈까지
-          </Typography>
-          <div className="flex items-start justify-center gap-xs text-white">
-            <CountItem value={days} label="일" />
-            <Separator />
-            <CountItem value={hours} label="시간" />
-            <Separator />
-            <CountItem value={minutes} label="분" />
-            <Separator />
-            <CountItem value={seconds} label="초" />
-          </div>
+      <div className="p-ms bg-[var(--neutral-20)] text-[var(--white)] rounded-ml flex flex-col gap-xs items-center">
+        <Typography variant="body-2" weight="regular">
+          경매 오픈까지
+        </Typography>
+        <div className="flex items-start justify-center gap-xs text-white">
+          <CountItem value={days} label="일" />
+          <Separator />
+          <CountItem value={hours} label="시간" />
+          <Separator />
+          <CountItem value={minutes} label="분" />
+          <Separator />
+          <CountItem value={seconds} label="초" />
         </div>
-      )}
+      </div>
     </>
   );
 }

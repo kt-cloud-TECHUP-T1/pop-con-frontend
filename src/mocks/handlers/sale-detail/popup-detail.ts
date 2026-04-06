@@ -1,7 +1,7 @@
 import { http, HttpResponse } from 'msw';
 
 const popupDetailMockData = {
-  phaseType: 'AUCTION',
+  phaseType: 'DRAW',
   phaseStatus: 'OPEN',
   popupId: 100,
   liked: true,

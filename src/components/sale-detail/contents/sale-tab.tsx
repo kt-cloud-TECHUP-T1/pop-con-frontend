@@ -2,11 +2,11 @@
 
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
+import { usePopupStore } from '../stores/popup-store';
 
 type TabValue = 'info' | 'review';
 
 interface SaleTabProps {
-  reviewCount: number;
   hasStickyTopBar: boolean;
 }
 
@@ -17,11 +17,9 @@ const TAB_TO_SECTION = {
 
 const STICKY_TOP_BAR_HEIGHT = 40;
 
-export default function SaleTab({
-  reviewCount = 0,
-  hasStickyTopBar,
-}: SaleTabProps) {
+export default function SaleTab({ hasStickyTopBar }: SaleTabProps) {
   const [activeTab, setActiveTab] = useState<TabValue>('info');
+  const reviewCount = usePopupStore((state) => state.data?.reviewCount ?? 0);
 
   const handleTabClick = (tab: TabValue) => {
     setActiveTab(tab);

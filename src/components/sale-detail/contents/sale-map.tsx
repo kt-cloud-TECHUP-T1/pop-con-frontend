@@ -4,17 +4,16 @@ import { Icon } from '@/components/Icon/Icon';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { useEffect, useRef } from 'react';
+import { usePopupStore } from '../stores/popup-store';
 
-interface SaleMapProps {
-  location: string;
-}
-
-export function SaleMap({ location }: SaleMapProps) {
+export function SaleMap() {
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<naver.maps.Map | null>(null);
   const markerRef = useRef<naver.maps.Marker | null>(null);
+  const location = usePopupStore((state) => state.data?.location);
 
   useEffect(() => {
+    if (!location) return;
     const clientId = process.env.NEXT_PUBLIC_NAVER_CLIENT_ID;
     if (!clientId) return;
 

@@ -9,6 +9,7 @@ export interface DrawDetailResponse {
     drawOpenAt: string;
     drawCloseAt: string;
     serverTime: string;
+    drawId: number;
   } | null;
 }
 

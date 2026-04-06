@@ -2,9 +2,10 @@
 import { delay, http, HttpResponse } from 'msw';
 
 const mockDrawData = {
-  drawOpenAt: '2026-03-23T10:00:00',
-  drawCloseAt: '2026-03-29T18:00:00',
-  serverTime: '2026-03-24T12:10:00',
+  drawId: 100,
+  drawOpenAt: '2026-03-30T10:00:00',
+  drawCloseAt: '2026-04-01T18:00:00',
+  serverTime: '2026-03-31T19:10:00',
 };
 
 export const drawHandlers = [

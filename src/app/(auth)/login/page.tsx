@@ -6,7 +6,11 @@ import { Button } from '@/components/ui/button';
 import { snackbar } from '@/components/ui/snackbar';
 import { Typography } from '@/components/ui/typography';
 import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
-import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
+import {
+  AUTH_ERROR_CODES,
+  AUTH_MESSAGES,
+  LOGIN_REDIRECT_KEY,
+} from '@/constants/auth';
 import { useLoginCollector } from '@/features/anti-macro';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -38,9 +42,14 @@ export default function Login() {
   const router = useRouter();
   const params = useSearchParams();
   const errorCode = params.get('error');
+  const redirect = params.get('redirect');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const { submitSignals, honeypotProps, honeypotOverlayProps, honeypotWrapperProps } =
-    useLoginCollector();
+  const {
+    submitSignals,
+    honeypotProps,
+    honeypotOverlayProps,
+    honeypotWrapperProps,
+  } = useLoginCollector();
 
   const socialLoginHandler = async (provider: SocialProvider) => {
     if (isLoggingIn) return;
@@ -64,6 +73,12 @@ export default function Login() {
     setIsLoggingIn(false);
     router.replace('/login');
   }, [router]);
+
+  useEffect(() => {
+    if (!redirect) return;
+
+    sessionStorage.setItem(LOGIN_REDIRECT_KEY, redirect);
+  }, [redirect]);
 
   useEffect(() => {
     if (!errorCode) return;

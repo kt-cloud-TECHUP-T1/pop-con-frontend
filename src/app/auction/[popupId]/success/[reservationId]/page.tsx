@@ -1,67 +1,96 @@
+'use client';
+
+import { useEffect, useState } from 'react';
+import { useParams, useRouter } from 'next/navigation';
+import Image from 'next/image';
+import Link from 'next/link';
 import { Icon } from '@/components/Icon/Icon';
 import { Wrapper } from '@/components/layout/wrapper';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
+import { snackbar } from '@/components/ui/snackbar';
 import { formatWon } from '@/lib/utils';
-import Image from 'next/image';
-import Link from 'next/link';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { AuctionReservationSuccessDetail } from '@/types/auction-success/auction-success';
+import { getAuctionReservation } from '@/features/auction-success/get-auction-reservation';
+import {
+  AUCTION_RESERVATION_ERROR_MESSAGES,
+  DEFAULT_AUCTION_RESERVATION_ERROR_MESSAGE,
+} from '@/constants/auction-success-reservation';
 
-export interface OrderDetail {
-  reservationNumber: string;
+export default function SuccessPage() {
+  const router = useRouter();
+  const params = useParams<{ popupId: string; reservationId: string }>();
+  const accessToken = useAuthStore((state) => state.accessToken);
 
-  popup: {
-    id: number;
-    title: string;
-    date: string; // ISO 추천
-    timeText: string; // "오후 1:30" 같은 포맷용
-    location: string;
-    thumbnailUrl: string;
+  const popupId = params.popupId;
+  const reservationId = params.reservationId;
+
+  const [reservationDetail, setReservationDetail] =
+    useState<AuctionReservationSuccessDetail | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!reservationId || !accessToken) {
+      return;
+    }
+
+    const fetchReservationDetail = async () => {
+      setIsLoading(true);
+
+      const result = await getAuctionReservation(reservationId, accessToken);
+
+      if ('status' in result && result.status === 'SUCCESS') {
+        setReservationDetail(result.data);
+        setIsLoading(false);
+        return;
+      }
+
+      if ('code' in result) {
+        const message =
+          AUCTION_RESERVATION_ERROR_MESSAGES[result.code] ??
+          DEFAULT_AUCTION_RESERVATION_ERROR_MESSAGE;
+
+        setErrorMessage(message);
+        setIsLoading(false);
+
+        snackbar.destructive({
+          title: '조회 실패',
+          description: message,
+        });
+        return;
+      }
+
+      setErrorMessage(DEFAULT_AUCTION_RESERVATION_ERROR_MESSAGE);
+      setIsLoading(false);
+
+      snackbar.destructive({
+        title: '조회 실패',
+        description: DEFAULT_AUCTION_RESERVATION_ERROR_MESSAGE,
+      });
+    };
+
+    fetchReservationDetail();
+  }, [reservationId, accessToken]);
+
+  const handleDetailClick = () => {
+    // if (!popupId || !reservationId) return;
+    // router.push(`/auction/${popupId}/success/${reservationId}`);
+    //낙찰 상세보기 예정
   };
 
-  payment: {
-    originalPrice: number;
-    discountPrice: number;
-    finalPrice: number;
-  };
-}
-
-export const mockOrderDetail: OrderDetail = {
-  reservationNumber: 'TKT50434728',
-
-  popup: {
-    id: 1,
-    title: 'T1 팝업 스토어',
-    date: '2026-03-14T13:30:00',
-    timeText: '2026.03.14(토) 오후 1:30',
-    location: '서울 영등포구 여의대로 108, 더현대 서울',
-    thumbnailUrl: '/images/temp/no-image.png',
-  },
-
-  payment: {
-    originalPrice: 132000,
-    discountPrice: -30000,
-    finalPrice: 102000,
-  },
-};
-
-export default async function Success({
-  params,
-}: {
-  params: Promise<{ popupId: string }>;
-}) {
-  await params;
-
-  return (
-    <>
-      <Wrapper className="py-3xl max-w-[762px] ">
+  if (isLoading) {
+    return (
+      <Wrapper className="py-3xl max-w-[762px]">
         <div className="flex flex-col gap-m w-full">
           <div className="flex flex-col gap-xs items-center">
             <Icon
               name="CircleCheckFill"
               size={72}
               className="text-[var(--btn-primary-default)]"
-            ></Icon>
+            />
             <Typography variant="heading-1" weight="bold">
               낙찰 완료
             </Typography>
@@ -70,103 +99,29 @@ export default async function Success({
               weight="regular"
               className="text-[var(--content-extra-low)]"
             >
-              티켓 구매가 성공적으로 완료되었습니다.
+              예약 정보를 불러오는 중입니다.
             </Typography>
           </div>
-          <div className="flex flex-col gap-xs">
-            <Box
-              padding="MS"
-              border="var(--line-3)"
-              radius="MS"
-              className="flex flex-col gap-ms"
+        </div>
+      </Wrapper>
+    );
+  }
+
+  if (errorMessage || !reservationDetail) {
+    return (
+      <Wrapper className="py-3xl max-w-[762px]">
+        <div className="flex flex-col gap-m w-full">
+          <div className="flex flex-col gap-xs items-center">
+            <Typography variant="heading-1" weight="bold">
+              예약 정보 조회 실패
+            </Typography>
+            <Typography
+              variant="body-1"
+              weight="regular"
+              className="text-[var(--content-extra-low)]"
             >
-              <Typography variant="title-2" weight="bold">
-                주문 내역
-              </Typography>
-              <div>
-                <div className="  pb-s border-b border-[var(--line-3)]">
-                  <Typography
-                    variant="caption-1"
-                    weight="regular"
-                    className="text-[var(--content-extra-low)] "
-                  >
-                    예약번호 : {mockOrderDetail.reservationNumber}
-                  </Typography>
-                </div>
-                <div className="pt-s flex gap-s">
-                  <div className="relative w-[60px] aspect-[3/4] rounded-[8px] border overflow-hidden">
-                    <Image
-                      src="/images/temp/no-image.png"
-                      alt="썸네일"
-                      fill
-                      className="object-cover"
-                    />
-                  </div>
-                  <div className="flex flex-col">
-                    <Typography
-                      variant="body-1"
-                      weight="bold"
-                      className="pb-[8px]"
-                    >
-                      {mockOrderDetail.popup.title}
-                    </Typography>
-                    <Typography
-                      variant="caption-1"
-                      weight="regular"
-                      className="text-[var(--content-extra-low)] "
-                    >
-                      {mockOrderDetail.popup.timeText}
-                    </Typography>
-                    <Typography
-                      variant="caption-1"
-                      weight="regular"
-                      className="text-[var(--content-extra-low)] pt-[4px]"
-                    >
-                      {mockOrderDetail.popup.location}
-                    </Typography>
-                  </div>
-                </div>
-              </div>
-            </Box>
-            <Box padding="MS" border="var(--line-3)" radius="MS">
-              <Typography variant="title-2" weight="bold">
-                결제 금액
-              </Typography>
-              <div className="pt-ms text-[var(--content-extra-low)]">
-                <div className="flex items-center justify-between  pb-xs ">
-                  <Typography variant="body-1" weight="regular">
-                    시작가
-                  </Typography>
-                  <Typography variant="body-1" weight="regular">
-                    {formatWon(mockOrderDetail.payment.originalPrice)}
-                  </Typography>
-                </div>
-                <div className="flex items-center justify-between pb-s">
-                  <Typography variant="body-1" weight="regular">
-                    할인 금액
-                  </Typography>
-                  <Typography variant="body-1" weight="regular">
-                    {formatWon(mockOrderDetail.payment.discountPrice)}
-                  </Typography>
-                </div>
-                <div className="flex items-center justify-between  border-t border-[var(--line-line-1,#E5E5E5)] pt-s">
-                  <Typography
-                    variant="body-1"
-                    weight="bold"
-                    className="text-[black]"
-                  >
-                    최종 낙찰 금액
-                  </Typography>
-                  <Typography
-                    variant="body-1"
-                    weight="bold"
-                    className="text-[var(--btn-primary-default)]"
-                  >
-                    {formatWon(mockOrderDetail.payment.finalPrice)}
-                  </Typography>
-                </div>
-              </div>
-            </Box>
+              {errorMessage ?? DEFAULT_AUCTION_RESERVATION_ERROR_MESSAGE}
+            </Typography>
           </div>
 
           <div className="flex gap-xs">
@@ -177,14 +132,159 @@ export default async function Success({
                 </Typography>
               </Button>
             </Link>
-            <Button className="flex-1">
+            <Button className="flex-1" onClick={() => router.back()}>
               <Typography variant="label-1" weight="medium">
-                낙찰 상세 보기
+                이전 페이지로
               </Typography>
             </Button>
           </div>
         </div>
       </Wrapper>
-    </>
+    );
+  }
+
+  return (
+    <Wrapper className="py-3xl max-w-[762px]">
+      <div className="flex flex-col gap-m w-full">
+        <div className="flex flex-col gap-xs items-center">
+          <Icon
+            name="CircleCheckFill"
+            size={72}
+            className="text-[var(--btn-primary-default)]"
+          />
+          <Typography variant="heading-1" weight="bold">
+            낙찰 완료
+          </Typography>
+          <Typography
+            variant="body-1"
+            weight="regular"
+            className="text-[var(--content-extra-low)]"
+          >
+            티켓 구매가 성공적으로 완료되었습니다.
+          </Typography>
+        </div>
+
+        <div className="flex flex-col gap-xs">
+          <Box
+            padding="MS"
+            border="var(--line-3)"
+            radius="MS"
+            className="flex flex-col gap-ms"
+          >
+            <Typography variant="title-2" weight="bold">
+              주문 내역
+            </Typography>
+
+            <div>
+              <div className="pb-s border-b border-[var(--line-3)]">
+                <Typography
+                  variant="caption-1"
+                  weight="regular"
+                  className="text-[var(--content-extra-low)]"
+                >
+                  예약번호 : {reservationDetail.reservationNo}
+                </Typography>
+              </div>
+
+              <div className="pt-s flex gap-s">
+                <div className="relative w-[60px] aspect-[3/4] rounded-[8px] border overflow-hidden">
+                  <Image
+                    src="/images/temp/no-image.png"
+                    alt="썸네일"
+                    fill
+                    className="object-cover"
+                  />
+                </div>
+
+                <div className="flex flex-col">
+                  <Typography
+                    variant="body-1"
+                    weight="bold"
+                    className="pb-[8px]"
+                  >
+                    {reservationDetail.popupTitle}
+                  </Typography>
+
+                  <Typography
+                    variant="caption-1"
+                    weight="regular"
+                    className="text-[var(--content-extra-low)]"
+                  >
+                    {reservationDetail.entryDate} {reservationDetail.entryTime}
+                  </Typography>
+
+                  <Typography
+                    variant="caption-1"
+                    weight="regular"
+                    className="text-[var(--content-extra-low)] pt-[4px]"
+                  >
+                    {reservationDetail.popupAddress}
+                  </Typography>
+                </div>
+              </div>
+            </div>
+          </Box>
+
+          <Box padding="MS" border="var(--line-3)" radius="MS">
+            <Typography variant="title-2" weight="bold">
+              결제 금액
+            </Typography>
+
+            <div className="pt-ms text-[var(--content-extra-low)]">
+              <div className="flex items-center justify-between pb-xs">
+                <Typography variant="body-1" weight="regular">
+                  시작가
+                </Typography>
+                <Typography variant="body-1" weight="regular">
+                  {formatWon(reservationDetail.startPrice)}
+                </Typography>
+              </div>
+
+              <div className="flex items-center justify-between pb-s">
+                <Typography variant="body-1" weight="regular">
+                  할인 금액
+                </Typography>
+                <Typography variant="body-1" weight="regular">
+                  {formatWon(reservationDetail.discountAmount)}
+                </Typography>
+              </div>
+
+              <div className="flex items-center justify-between border-t border-[var(--line-line-1,#E5E5E5)] pt-s">
+                <Typography
+                  variant="body-1"
+                  weight="bold"
+                  className="text-[black]"
+                >
+                  최종 낙찰 금액
+                </Typography>
+                <Typography
+                  variant="body-1"
+                  weight="bold"
+                  className="text-[var(--btn-primary-default)]"
+                >
+                  {formatWon(reservationDetail.finalPrice)}
+                </Typography>
+              </div>
+            </div>
+          </Box>
+        </div>
+
+        <div className="flex gap-xs">
+          <Link href="/" className="flex-1">
+            <Button className="w-full" variant="secondary">
+              <Typography variant="label-1" weight="medium">
+                홈으로 돌아가기
+              </Typography>
+            </Button>
+          </Link>
+
+          <Button className="flex-1" onClick={handleDetailClick}>
+            <Typography variant="label-1" weight="medium">
+              낙찰 상세 보기
+            </Typography>
+          </Button>
+        </div>
+      </div>
+    </Wrapper>
   );
 }
