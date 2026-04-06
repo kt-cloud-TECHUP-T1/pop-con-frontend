@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
-import { getPopupDetail } from '@/app/api/sale-detail/get-popup-detail';
+import { getPopupDetail } from '@/lib/api/popup/get-popup-detail';
 import { Wrapper } from '@/components/layout/wrapper';
 import { SaleDetailLayout } from '@/components/layout/sale-detail-layout';
 import { SaleDetailMain } from '@/components/sale-detail/contents/sale-detail-main';
@@ -14,7 +14,8 @@ import { getAuctionDetail } from '@/app/api/sale-detail/get-auction-detail';
 import { connectAuctionStream } from '@/app/api/sale-detail/connect-auction-stream';
 import { AuctionData } from '@/types/sale-detail';
 import { usePopupStore } from '../stores/popup-store';
-import { useAuctionLatestData, useAuctionStore } from '../stores/auction-store';
+import { useAuctionStore } from '../stores/auction-store';
+import { ApiError } from '@/lib/api-error';
 
 //Auction Data 복구
 export function AuctionContainer() {
@@ -31,15 +32,22 @@ export function AuctionContainer() {
   const popupData = usePopupStore((state) => state.data);
 
   const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [error, setError] = useState<ApiError | null>(null);
 
   useEffect(() => {
-    //기존 스토어 데이터 삭제
     resetAuctionData();
     resetPopupData();
+    setError(null);
+    setIsLoading(true);
 
     if (!popupId || Number.isNaN(popupIdNumber)) {
-      setError('유효하지 않은 popupId입니다.');
+      setError(
+        new ApiError({
+          code: 'C001',
+          message: '유효하지 않은 popupId입니다.',
+          data: { popupId: 'popupId는 숫자여야 합니다.' },
+        })
+      );
       setIsLoading(false);
       return;
     }
@@ -52,19 +60,21 @@ export function AuctionContainer() {
         const popupDetail = await getPopupDetail(popupIdNumber);
 
         if (!isMounted) return;
-
-        setPopupData(popupDetail); //main Popup 데이터 저장
+        setPopupData(popupDetail);
 
         const auctionId = popupDetail.auctionId;
 
         if (!auctionId) {
-          throw new Error('경매 ID가 없습니다.');
+          throw new ApiError({
+            code: 'UNKNOWN_ERROR',
+            message: '경매 ID가 없습니다.',
+          });
         }
 
         const auctionDetail: AuctionData = await getAuctionDetail(auctionId);
 
         if (!isMounted) return;
-        setInitialAuctionData(auctionDetail); //auction 초기 데이터 저장
+        setInitialAuctionData(auctionDetail);
 
         disconnectStream = connectAuctionStream({
           auctionId,
@@ -73,16 +83,29 @@ export function AuctionContainer() {
             setLiveAuctionData(data);
           },
           onError: () => {
-            throw new Error('SSE 연결 중 오류가 발생했습니다.');
+            if (!isMounted) return;
+
+            setError(
+              new ApiError({
+                code: 'NETWORK_ERROR',
+                message: '실시간 경매 데이터 연결에 실패했습니다.',
+              })
+            );
           },
         });
       } catch (err) {
         if (!isMounted) return;
 
+        if (err instanceof ApiError) {
+          setError(err);
+          return;
+        }
+
         setError(
-          err instanceof Error
-            ? err.message
-            : '상세 조회 중 오류가 발생했습니다.'
+          new ApiError({
+            code: 'UNKNOWN_ERROR',
+            message: '상세 조회 중 알 수 없는 오류가 발생했습니다.',
+          })
         );
       } finally {
         if (!isMounted) return;
@@ -98,14 +121,18 @@ export function AuctionContainer() {
       resetAuctionData();
       resetPopupData();
     };
-  }, [popupIdNumber, popupId]);
+  }, [popupId, popupIdNumber]);
 
   if (isLoading) {
     return <div>로딩중...</div>;
   }
 
-  if (error || !popupData || !popupId || !auctionStatus) {
-    return <div>{error ?? '데이터를 불러오지 못했습니다.'}</div>;
+  if (error) {
+    return <div>{error.message}</div>;
+  }
+
+  if (!popupData || !popupId || !auctionStatus) {
+    return <div>데이터를 불러오지 못했습니다.</div>;
   }
 
   const hasStickyTopBar = auctionStatus !== 'SCHEDULED';
