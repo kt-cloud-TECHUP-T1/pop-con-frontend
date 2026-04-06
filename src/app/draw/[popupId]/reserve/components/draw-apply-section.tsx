@@ -43,6 +43,7 @@ export default function DrawApplySection({
     null
   );
 
+  //예약 신청 페이지 버튼
   const handleCheck = (index: number, checked: boolean) => {
     setChecks((prev) => {
       const next = [...prev];

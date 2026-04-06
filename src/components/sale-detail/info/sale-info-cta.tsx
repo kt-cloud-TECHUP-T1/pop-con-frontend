@@ -166,50 +166,8 @@ function DrawCTA() {
   const handleDrawParticipate = async () => {
     requireAuth({
       authStatus,
-      onAuthenticated: async () => {
-        // 대기열 진입 api 추가
-        const result = await enterAuctionQueue(
-          drawData?.drawId as number,
-          accessToken ?? ''
-        );
-
-        switch (result.code) {
-          case 'SUCCESS': {
-            //queueToken 저장
-            sessionStorage.setItem('queueToken', result.data.queueToken);
-            sessionStorage.setItem('identifyType', String(drawData?.drawId));
-
-            //Todo 최초진입 store에서 상태값 ture로 바꾸기 추가
-
-            if (result.data.status === 'ACTIVE') {
-              //예약페이지 페이지로 이동
-              router.push(`/draw/${drawData?.drawId}/reserve`);
-              return;
-            }
-
-            if (result.data.status === 'WAITING') {
-              router.push(`/queue`);
-              // 대기열 페이지 이동
-              return;
-            }
-
-            return;
-          }
-
-          case 'Q001': {
-            console.log(result.data.blockedUntil);
-            console.log(QUEUE_ERROR_MESSAGES[result.code]);
-            return;
-          }
-
-          case 'C001':
-          case 'A002':
-          case 'A003':
-          case 'S001': {
-            console.log(QUEUE_ERROR_MESSAGES[result.code]);
-            return;
-          }
-        }
+      onAuthenticated: () => {
+        //드로우 상세 페이지 CTA 버튼 클릭시 draw 큐진입 api 호출 후 응답에 따른 분기처리
       },
       //로그인 유도 모달 오픈
       onUnauthenticated: () => openLoginRequiredModal(),
