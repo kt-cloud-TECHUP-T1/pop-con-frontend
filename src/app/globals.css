@@ -367,7 +367,10 @@
   --size-avatar-2xl: 72px;
   --size-avatar-3xl: 88px;
   /* END 디자인 시스템 설계도에 따른 Avatar 사이즈 */
-  --sale-time-bar-height: 40px;
+
+  /* 경매/드로우 페이지 사이드바 */
+  --sale-time-bar-height: 132px;
+  /* END 경매/드로우 페이지 사이드바 */
 }
 
 :root {
