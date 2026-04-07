@@ -3,10 +3,11 @@
 import {
   createServerErrorResponse,
   createUnauthorizedResponse,
+  getServiceBaseUrl,
   handleProxyResponse,
 } from '../shared/route-helpers';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
+const API_BASE_URL = getServiceBaseUrl('queue');
 
 export async function DELETE(request: Request) {
   if (!API_BASE_URL) {

@@ -62,7 +62,7 @@ export function HeaderNav() {
         })}
         <span
           aria-hidden
-          className={`pointer-events-none absolute -bottom-7.5 left-0 h-[3px] rounded-full bg-[var(--orange-50)] ${
+          className={`pointer-events-none absolute -bottom-7 left-0 h-[3px] rounded-full bg-[var(--orange-50)] ${
             indicator.ready
               ? 'transition-[transform,width] duration-300 ease-out'
               : ''

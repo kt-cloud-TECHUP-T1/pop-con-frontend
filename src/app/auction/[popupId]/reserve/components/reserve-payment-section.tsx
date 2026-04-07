@@ -1,10 +1,11 @@
 'use client';
+
+import Link from 'next/link';
 import { Icon } from '@/components/Icon/Icon';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
-import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
@@ -49,6 +50,7 @@ export default function ReservePaymentSection({
   };
 
   //혹시 민중님이 작성하신 코드인가...??
+  // 저 아닙니다 ^_^
   useEffect(() => {
     const fetchBilling = async () => {
       try {

@@ -6,13 +6,13 @@ import { useEffect, useRef } from 'react';
 
 export default function AuthSessionRestore() {
   const requestedRef = useRef(false);
-
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
   const setAuthLoading = useAuthStore((state) => state.setAuthLoading);
   const setPaymentRegistered = useAuthStore(
     (state) => state.setPaymentRegistered
   );
+
   useEffect(() => {
     if (requestedRef.current) return;
     requestedRef.current = true;
@@ -32,6 +32,12 @@ export default function AuthSessionRestore() {
 
         if (!response.ok) {
           clearAccessToken();
+          if (process.env.NODE_ENV === 'development') {
+            console.log(
+              '[auth-session-restore] 세션 복원 실패 - status:',
+              response.status
+            );
+          }
           return;
         }
 
@@ -69,7 +75,7 @@ export default function AuthSessionRestore() {
     };
 
     void restoreSession();
-  }, [setAccessToken, clearAccessToken, setAuthLoading]);
+  }, [setAccessToken, clearAccessToken, setAuthLoading, setPaymentRegistered]);
 
   return null;
 }

@@ -1,10 +1,11 @@
 'use client';
 
+import useCountdown from '../hooks/use-countdown';
+import { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { formatDateWithWeekdayTime } from '@/lib/utils';
 import { useDetailPageCollector } from '@/features/anti-macro';
-import useCountdown from '../hooks/use-countdown';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { useLoginRequiredModalStore } from '@/features/auth/stores/login-required-modal-store';
@@ -15,6 +16,10 @@ import { useAuctionLatestData } from '../stores/auction-store';
 import { useDrawStore } from '../stores/draw-store';
 import { enterAuctionQueue } from '@/lib/api/enter-auction-queue';
 import { QUEUE_ERROR_MESSAGES } from '@/constants/queue';
+import { snackbar } from '@/components/ui/snackbar';
+import { queueTokenStorage } from '@/features/queue/utils/queue-token';
+import { useQueueStore } from '@/features/queue/stores/queue-store';
+import { QueueEntryResponse } from '@/features/queue/types/queue';
 
 export default function SaleInfoCTA() {
   const phaseType = usePopupStore((state) => state.data?.phaseType);
@@ -172,6 +177,9 @@ function DrawCTA({
   const openLoginRequiredModal = useLoginRequiredModalStore(
     (state) => state.open
   );
+  const setDrawId = useQueueStore((state) => state.setDrawId);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const openRemaining = useCountdown(
     drawData?.drawOpenAt ?? '',
     drawData?.serverTime ?? ''
@@ -185,10 +193,74 @@ function DrawCTA({
   const handleDrawParticipate = async () => {
     requireAuth({
       authStatus,
-      onAuthenticated: () => {
-        //드로우 상세 페이지 CTA 버튼 클릭시 draw 큐진입 api 호출 후 응답에 따른 분기처리
+      onAuthenticated: async () => {
+        if (!drawData) return;
 
-        onSubmitSignals(); //해당 함수 호출 이후 큐진입 api 호출
+        setIsSubmitting(true);
+        await onSubmitSignals();
+
+        try {
+          const response = await fetch(`/api/queue/draws/${drawData.drawId}`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${accessToken}`,
+            },
+          });
+
+          const result = (await response.json()) as QueueEntryResponse;
+
+          if (!response.ok || !result.data) {
+            snackbar.destructive({
+              title:
+                result.message ??
+                '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.',
+            });
+            return;
+          }
+
+          const { status } = result.data;
+
+          if (status !== 'BLOCKED' && 'queueToken' in result.data) {
+            queueTokenStorage.save(result.data.queueToken);
+          }
+
+          const statusHandler: Record<string, () => void> = {
+            ACTIVE: () => router.push('/security-quiz'),
+            WAITING: () => {
+              sessionStorage.setItem('queue_draw_id', String(drawData.drawId));
+              setDrawId(String(drawData.drawId));
+              router.push('/queue');
+            },
+            BLOCKED: () => {
+              const msg =
+                result.data?.status === 'BLOCKED'
+                  ? result.data.blockedUntil
+                  : null;
+              snackbar.destructive({
+                title: msg
+                  ? `${msg}까지 접근이 제한되었습니다.`
+                  : (result.message ?? '접근이 제한되었습니다.'),
+              });
+            },
+          };
+
+          const handler = statusHandler[status];
+          if (handler) {
+            handler();
+          } else {
+            snackbar.destructive({
+              title: '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.',
+            });
+          }
+        } catch (error) {
+          console.error('[DrawCTA/handleDrawParticipate]', error);
+          snackbar.destructive({
+            title: '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.',
+          });
+        } finally {
+          setIsSubmitting(false);
+        }
       },
       //로그인 유도 모달 오픈
       onUnauthenticated: () => openLoginRequiredModal(),
@@ -205,14 +277,13 @@ function DrawCTA({
     <Button
       size="large"
       variant="primary"
-      disabled={!isOpen}
+      disabled={!isOpen || isSubmitting}
       className="w-full"
       onClick={handleDrawParticipate}
     >
       <Typography variant="label-1">
         {status === 'UPCOMING' &&
-          formatDateWithWeekdayTime(drawData?.drawOpenAt ?? '')}{' '}
-        드로우 오픈
+          `${formatDateWithWeekdayTime(drawData?.drawOpenAt ?? '')} 드로우 오픈`}
         {status === 'OPEN' && '드로우 응모하기'}
         {status === 'CLOSED' && '응모 마감'}
       </Typography>
