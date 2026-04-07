@@ -30,7 +30,6 @@ export function AuctionContainer() {
     (state) => state.initialData?.auctionStatus
   );
   const popupData = usePopupStore((state) => state.data);
-
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<ApiError | null>(null);
 
@@ -131,7 +130,7 @@ export function AuctionContainer() {
     return <div>{error.message}</div>;
   }
 
-  if (!popupData || !popupId || !auctionStatus) {
+  if (!popupData || !auctionStatus) {
     return <div>데이터를 불러오지 못했습니다.</div>;
   }
 
