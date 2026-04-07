@@ -3,10 +3,10 @@ import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { formatWon } from '@/lib/utils';
 import { formatSecondsToMMSS } from '../utils/sale-detail-utils';
-import { useAuctionLatestData } from '../stores/auction-store';
+import { useAuctionStore } from '../stores/auction-store';
 
 export default function SaleInfoPrice() {
-  const auctionData = useAuctionLatestData();
+  const auctionData = useAuctionStore((state) => state.liveData);
 
   if (!auctionData) return null;
 

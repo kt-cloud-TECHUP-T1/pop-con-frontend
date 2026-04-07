@@ -2,7 +2,8 @@
 
 import { cn } from '@/lib/utils';
 import { useEffect, useState } from 'react';
-import { usePopupStore } from '../stores/popup-store';
+import { useParams } from 'next/navigation';
+import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
 
 type TabValue = 'info' | 'review';
 
@@ -19,7 +20,9 @@ const STICKY_TOP_BAR_HEIGHT = 40;
 
 export default function SaleTab({ hasStickyTopBar }: SaleTabProps) {
   const [activeTab, setActiveTab] = useState<TabValue>('info');
-  const reviewCount = usePopupStore((state) => state.data?.reviewCount ?? 0);
+  const params = useParams<{ popupId: string }>();
+  const popupIdNumber = Number(params.popupId);
+  const { data: popupData } = usePopupDetailQuery(popupIdNumber);
 
   const handleTabClick = (tab: TabValue) => {
     setActiveTab(tab);
@@ -90,7 +93,7 @@ export default function SaleTab({ hasStickyTopBar }: SaleTabProps) {
               : 'text-gray-400'
           )}
         >
-          리뷰 {reviewCount}
+          리뷰 {popupData?.reviewCount}
         </button>
       </div>
     </nav>

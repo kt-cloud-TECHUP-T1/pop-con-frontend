@@ -6,45 +6,69 @@ import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { formatDateWithWeekdayTime } from '@/lib/utils';
 import { useDetailPageCollector } from '@/features/anti-macro';
-import { useRouter } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { useLoginRequiredModalStore } from '@/features/auth/stores/login-required-modal-store';
 import { requireAuth } from '../utils/require-auth';
 import { usePaymentRequiredModalStore } from '@/features/auth/stores/payment-required-modal-store';
-import { usePopupStore } from '../stores/popup-store';
-import { useAuctionLatestData } from '../stores/auction-store';
-import { useDrawStore } from '../stores/draw-store';
+import { useAuctionStore } from '../stores/auction-store';
 import { enterAuctionQueue } from '@/lib/api/enter-auction-queue';
 import { QUEUE_ERROR_MESSAGES } from '@/constants/queue';
 import { snackbar } from '@/components/ui/snackbar';
 import { queueTokenStorage } from '@/features/queue/utils/queue-token';
 import { useQueueStore } from '@/features/queue/stores/queue-store';
 import { QueueEntryResponse } from '@/features/queue/types/queue';
+import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
+import { useCurrentDrawDetail } from '../queries/use-current-draw-detail';
+import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
+import { useQuery } from '@tanstack/react-query';
 
 export default function SaleInfoCTA() {
-  const phaseType = usePopupStore((state) => state.data?.phaseType);
+  const params = useParams<{ popupId: string }>();
+  const popupIdNumber = Number(params.popupId);
+  const { data: popupData } = usePopupDetailQuery(popupIdNumber);
   const page =
-    phaseType === 'AUCTION'
+    popupData?.phaseType === 'AUCTION'
       ? ('dutch-auction-detail' as const)
       : ('popup-detail' as const);
   const { submitSignals } = useDetailPageCollector({ page });
 
-  if (phaseType === 'AUCTION')
-    return <AuctionCTA onSubmitSignals={submitSignals} />;
-  if (phaseType === 'DRAW') return <DrawCTA onSubmitSignals={submitSignals} />;
+  if (popupData?.phaseType === 'AUCTION')
+    return (
+      <AuctionCTA
+        onSubmitSignals={submitSignals}
+        drawId={popupData.drawId as number}
+      />
+    );
+  if (popupData?.phaseType === 'DRAW')
+    return <DrawCTA onSubmitSignals={submitSignals} />;
   return null;
 }
 
 function AuctionCTA({
   onSubmitSignals,
+  drawId,
 }: {
   onSubmitSignals: () => Promise<void>;
+  drawId: number;
 }) {
-  const auctionData = useAuctionLatestData();
-  const drawOpenAt = useDrawStore((state) => state.data?.drawOpenAt);
+  const auctionData = useAuctionStore((state) => state.liveData);
   const router = useRouter();
   const authStatus = useAuthStore((state) => state.authStatus);
   const accessToken = useAuthStore((state) => state.accessToken);
+  const shouldFetchDraw = auctionData?.auctionStatus === 'CLOSED';
+
+  const {
+    data: drawData,
+    isPending: isDrawPending,
+    isError: isDrawError,
+    error: drawError,
+  } = useQuery({
+    queryKey: ['draw-detail', drawId],
+    queryFn: () => getDrawDetail(drawId!),
+    enabled: shouldFetchDraw,
+  });
+
   const openLoginRequiredModal = useLoginRequiredModalStore(
     (state) => state.open
   );
@@ -86,8 +110,8 @@ function AuctionCTA({
             //Todo 최초진입 store에서 상태값 ture로 바꾸기 추가
 
             if (result.data.status === 'ACTIVE') {
-              //예약페이지 페이지로 이동
-              router.push(`/auction/${auctionId}/reserve`);
+              //퀴즈페이지로 이동
+              router.push('/security-quiz');
               return;
             }
 
@@ -99,10 +123,14 @@ function AuctionCTA({
 
             return;
           }
-
           case 'Q001': {
-            console.log(result.data.blockedUntil);
-            console.log(QUEUE_ERROR_MESSAGES[result.code]);
+            const msg = result.data.blockedUntil;
+            snackbar.destructive({
+              title: msg
+                ? `${msg}까지 접근이 제한되었습니다.`
+                : (result.message ?? '접근이 제한되었습니다.'),
+            });
+
             return;
           }
 
@@ -154,8 +182,8 @@ function AuctionCTA({
       return (
         <Button size="large" disabled className="w-full">
           <Typography variant="label-1">
-            {drawOpenAt
-              ? `${formatDateWithWeekdayTime(drawOpenAt)} 드로우 오픈`
+            {drawData?.drawOpenAt
+              ? `${formatDateWithWeekdayTime(drawData?.drawOpenAt)} 드로우 오픈`
               : '판매 종료'}
           </Typography>
         </Button>
@@ -170,7 +198,7 @@ function DrawCTA({
 }: {
   onSubmitSignals: () => Promise<void>;
 }) {
-  const drawData = useDrawStore((state) => state.data);
+  const { data: drawData } = useCurrentDrawDetail();
   const router = useRouter();
   const authStatus = useAuthStore((state) => state.authStatus);
   const accessToken = useAuthStore((state) => state.accessToken);

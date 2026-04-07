@@ -4,13 +4,16 @@ import { Icon } from '@/components/Icon/Icon';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { useEffect, useRef } from 'react';
-import { usePopupStore } from '../stores/popup-store';
+import { useParams } from 'next/navigation';
+import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
 
 export function SaleMap() {
   const mapElementRef = useRef<HTMLDivElement>(null);
   const mapRef = useRef<naver.maps.Map | null>(null);
   const markerRef = useRef<naver.maps.Marker | null>(null);
-  const location = usePopupStore((state) => state.data?.location);
+  const params = useParams<{ popupId: string }>();
+  const popupIdNumber = Number(params.popupId);
+  const { data: popupData } = usePopupDetailQuery(popupIdNumber);
 
   useEffect(() => {
     if (!location) return;
@@ -19,37 +22,41 @@ export function SaleMap() {
 
     const initOrUpdateMap = () => {
       if (!window.naver?.maps?.Service) return;
+      if (!popupData?.location) return;
 
-      naver.maps.Service.geocode({ query: location }, (status, response) => {
-        if (status !== naver.maps.Service.Status.OK) return;
+      naver.maps.Service.geocode(
+        { query: popupData?.location },
+        (status, response) => {
+          if (status !== naver.maps.Service.Status.OK) return;
 
-        const result = response.v2.addresses?.[0];
-        if (!result) return;
+          const result = response.v2.addresses?.[0];
+          if (!result) return;
 
-        const lat = Number(result.y);
-        const lng = Number(result.x);
-        const coords = new naver.maps.LatLng(lat, lng);
+          const lat = Number(result.y);
+          const lng = Number(result.x);
+          const coords = new naver.maps.LatLng(lat, lng);
 
-        const mapElement = mapElementRef.current;
-        if (!mapElement) return;
+          const mapElement = mapElementRef.current;
+          if (!mapElement) return;
 
-        if (!mapRef.current) {
-          mapRef.current = new naver.maps.Map(mapElement, {
-            center: coords,
-            zoom: 16,
-          });
+          if (!mapRef.current) {
+            mapRef.current = new naver.maps.Map(mapElement, {
+              center: coords,
+              zoom: 16,
+            });
 
-          markerRef.current = new naver.maps.Marker({
-            position: coords,
-            map: mapRef.current,
-          });
+            markerRef.current = new naver.maps.Marker({
+              position: coords,
+              map: mapRef.current,
+            });
 
-          return;
+            return;
+          }
+
+          mapRef.current.setCenter(coords);
+          markerRef.current?.setPosition(coords);
         }
-
-        mapRef.current.setCenter(coords);
-        markerRef.current?.setPosition(coords);
-      });
+      );
     };
 
     if (window.naver?.maps?.Service) {
@@ -82,7 +89,7 @@ export function SaleMap() {
     });
 
     document.head.appendChild(script);
-  }, [location]);
+  }, [popupData?.location]);
 
   return (
     <div className="pb-l">
@@ -97,7 +104,7 @@ export function SaleMap() {
         </section>
         <div className="flex p-ms justify-between items-center">
           <Typography variant="body-1" weight="regular">
-            {location}
+            {popupData?.location}
           </Typography>
           <Button variant="secondary" leftIcon={<Icon name="Copy"></Icon>}>
             주소 복사
