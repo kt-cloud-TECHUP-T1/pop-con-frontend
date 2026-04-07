@@ -38,7 +38,6 @@ export interface PopupDetailErrorResponse {
 }
 
 export type AuctionStatus = 'SCHEDULED' | 'OPEN' | 'SOLD_OUT' | 'CLOSED';
-
 export type AuctionButtonStatus = 'WAITING' | 'ENABLED' | 'SOLD_OUT' | 'ENDED';
 
 export interface AuctionData {
@@ -92,55 +91,3 @@ export interface DrawErrorResponse {
   message: string;
   data: Record<string, string> | null;
 }
-
-export interface AuctionSidebarProps extends AuctionData {
-  phaseType: 'AUCTION';
-  openAt: string;
-  closeAt: string;
-  weekdayOpen: string;
-  weekdayClose: string;
-  weekendOpen: string;
-  weekendClose: string;
-  location: string;
-  popupId: number;
-  phaseStatus: string;
-  connetedDrawId: number | null;
-}
-
-export interface DrawSidebarProps extends DrawData {
-  phaseType: 'DRAW';
-  openAt: string;
-  closeAt: string;
-  weekdayOpen: string;
-  weekdayClose: string;
-  weekendOpen: string;
-  weekendClose: string;
-  location: string;
-  popupId: number;
-  phaseStatus: string;
-}
-
-export type SaleDetailSidebarProps = AuctionSidebarProps | DrawSidebarProps;
-
-interface BaseSaleInfoCTAProps {
-  phaseStatus: string;
-  serverTime: string;
-}
-
-interface AuctionSaleInfoCTAProps extends BaseSaleInfoCTAProps {
-  phaseType: 'AUCTION';
-  auctionOpenAt: string;
-  auctionStatus: string;
-  buttonStatus: AuctionButtonStatus;
-  connetedDrawOpenAt: string | null;
-  auctionId: number;
-}
-
-export interface DrawSaleInfoCTAProps extends BaseSaleInfoCTAProps {
-  phaseType: 'DRAW';
-  drawOpenAt: string;
-  drawCloseAt: string;
-  drawId: number;
-}
-
-export type SaleInfoCTAProps = AuctionSaleInfoCTAProps | DrawSaleInfoCTAProps;

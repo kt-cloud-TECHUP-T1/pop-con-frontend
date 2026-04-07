@@ -7,7 +7,7 @@ import { RelatedPopup } from '../popup/related-popup';
 import { RecommendedPopup } from '../popup/recommended-popup';
 import { SaleDetailMain } from './sale-detail-main';
 import SaleDrawDetailSidebar from '../info/sale-draw-detail-sidebar';
-import { getPopupDetail } from '@/app/api/sale-detail/get-popup-detail';
+import { getPopupDetail } from '@/lib/api/popup/get-popup-detail';
 import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
 import { useDrawStore } from '../stores/draw-store';
 import { usePopupStore } from '../stores/popup-store';

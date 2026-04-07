@@ -116,7 +116,10 @@ function AuctionCTA({
         }
       },
       //로그인 유도 모달 오픈
-      onUnauthenticated: () => openLoginRequiredModal(),
+      onUnauthenticated: () => {
+        console.log('로그인 모달 오픈');
+        openLoginRequiredModal();
+      },
       onLoading: () => {},
     });
   };

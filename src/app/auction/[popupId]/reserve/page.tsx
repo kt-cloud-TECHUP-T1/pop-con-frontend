@@ -2,12 +2,7 @@
 import SaleTimeCountBar from '@/components/sale-detail/contents/sale-time-count-bar';
 import { Wrapper } from '@/components/layout/wrapper';
 import { AuctionReservePageClient } from './components/auction-reserve-page-client';
-import { mockReserveData } from './mock-reserve-data';
 import { useParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
-import { AuctionData } from '@/types/sale-detail';
-import { getAuctionDetail } from '@/app/api/sale-detail/get-auction-detail';
-import { connectAuctionStream } from '@/app/api/sale-detail/connect-auction-stream';
 
 export default function AuctionReservePage() {
   const params = useParams<{ popupId: string }>();

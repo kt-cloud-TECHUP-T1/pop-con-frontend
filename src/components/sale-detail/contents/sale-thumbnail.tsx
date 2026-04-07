@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
+import { usePopupStore } from '../stores/popup-store';
 
 type ThumbnailSize = 'sm' | 'md' | 'lg';
 
@@ -10,7 +11,6 @@ const sizeClass: Record<ThumbnailSize, string> = {
 };
 
 interface ThumbnailProps {
-  src?: string;
   alt?: string;
   size?: ThumbnailSize;
   className?: string;
@@ -18,12 +18,15 @@ interface ThumbnailProps {
 }
 
 export function SaleThumbnail({
-  src,
   alt = '',
   size = 'md',
   className,
   priority,
 }: ThumbnailProps) {
+  const src = usePopupStore(
+    (state) => state.data?.thumbnailUrl ?? '/images/temp/no-image.png'
+  );
+
   return (
     <div
       className={cn(
