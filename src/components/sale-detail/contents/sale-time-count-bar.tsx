@@ -17,7 +17,7 @@ export default function SaleTimeCountBar() {
   if (auctionData.auctionStatus === 'SCHEDULED') return null;
 
   return (
-    <div className="sticky top-0 z-50 bg-[var(--content-high)] py-xs text-center">
+    <div className="sticky top-20.5 z-50 bg-[var(--content-high)] py-xs text-center">
       {auctionData.auctionStatus === 'CLOSED' ? (
         <Typography variant="body-1" weight="bold" className="text-white">
           경매가 종료되었습니다.

@@ -34,8 +34,8 @@ const toDateKey = (date: Date) => {
 const createCalendarDays = (currentMonth: Date) => {
   const year = currentMonth.getFullYear();
   const month = currentMonth.getMonth();
-  const firstDay = new Date(year, month, 1);
-  const lastDay = new Date(year, month + 1, 0); // 마지막 날
+  const firstDay = new Date(year, month, 1); // 해당 월 1일
+  const lastDay = new Date(year, month + 1, 0); // 이번 달 마지막 날
 
   const start = new Date(firstDay);
   start.setDate(firstDay.getDate() - firstDay.getDay());

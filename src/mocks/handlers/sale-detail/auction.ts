@@ -23,7 +23,136 @@ const mockAuctionData: AuctionData = {
   buttonStatus: 'WAITING',
 };
 
+const mockAuctionDates = [
+  { entryDate: '2026-03-10' },
+  { entryDate: '2026-04-12' },
+  { entryDate: '2026-04-14' },
+];
+
+const mockSlotsByDate: Record<
+  string,
+  {
+    optionId: number;
+    entryTime: string;
+    remainingStock: number;
+    pendingStock: number;
+    selectable: boolean;
+  }[]
+> = {
+  '2026-03-10': [
+    {
+      optionId: 1001,
+      entryTime: '13:00:00',
+      remainingStock: 5,
+      pendingStock: 0,
+      selectable: true,
+    },
+    {
+      optionId: 1002,
+      entryTime: '15:00:00',
+      remainingStock: 0,
+      pendingStock: 2,
+      selectable: false,
+    },
+    {
+      optionId: 1003,
+      entryTime: '17:00:00',
+      remainingStock: 0,
+      pendingStock: 0,
+      selectable: false,
+    },
+  ],
+  '2026-04-12': [
+    {
+      optionId: 1004,
+      entryTime: '12:00:00',
+      remainingStock: 3,
+      pendingStock: 0,
+      selectable: true,
+    },
+    {
+      optionId: 1005,
+      entryTime: '14:00:00',
+      remainingStock: 1,
+      pendingStock: 0,
+      selectable: true,
+    },
+  ],
+  '2026-04-14': [
+    {
+      optionId: 1006,
+      entryTime: '11:00:00',
+      remainingStock: 0,
+      pendingStock: 0,
+      selectable: false,
+    },
+    {
+      optionId: 1007,
+      entryTime: '16:00:00',
+      remainingStock: 2,
+      pendingStock: 0,
+      selectable: true,
+    },
+  ],
+};
+
 export const auctionHandlers = [
+  http.get(
+    '*/api/auctions/:auctionId/dates/:entryDate/options',
+    async ({ params }) => {
+      const auctionId = Number(params.auctionId);
+      const entryDate = String(params.entryDate);
+
+      await delay(300);
+
+      if (!Number.isInteger(auctionId) || auctionId <= 0) {
+        return HttpResponse.json(
+          { code: 'C001', message: '입력값이 올바르지 않습니다.', data: null },
+          { status: 400 }
+        );
+      }
+
+      if (auctionId !== 100) {
+        return HttpResponse.json(
+          { code: 'AU001', message: '존재하지 않는 경매입니다.', data: null },
+          { status: 404 }
+        );
+      }
+
+      return HttpResponse.json({
+        code: 'SUCCESS',
+        message: '날짜별 입장 시간 목록 조회를 성공했습니다.',
+        data: mockSlotsByDate[entryDate] ?? [],
+      });
+    }
+  ),
+
+  http.get('*/api/auctions/:auctionId/dates', async ({ params }) => {
+    const auctionId = Number(params.auctionId);
+
+    await delay(300);
+
+    if (!Number.isInteger(auctionId) || auctionId <= 0) {
+      return HttpResponse.json(
+        { code: 'C001', message: '입력값이 올바르지 않습니다.', data: null },
+        { status: 400 }
+      );
+    }
+
+    if (auctionId !== 100) {
+      return HttpResponse.json(
+        { code: 'AU001', message: '존재하지 않는 경매입니다.', data: null },
+        { status: 404 }
+      );
+    }
+
+    return HttpResponse.json({
+      code: 'SUCCESS',
+      message: '선택 가능한 날짜 목록 조회를 성공했습니다.',
+      data: mockAuctionDates,
+    });
+  }),
+
   http.get('*/auctions/:auctionId', async ({ params }) => {
     const auctionId = Number(params.auctionId);
 
