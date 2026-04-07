@@ -15,6 +15,7 @@ import { queueTokenStorage } from '../utils/queue-token';
 import { useQueueStore } from '../stores/queue-store';
 import { useEffect, useState } from 'react';
 import { QueueEntryResponse } from '../types/queue';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
 
 export const QueuePageClient = () => {
   const [token, setToken] = useState(queueTokenStorage.get() ?? '');
@@ -62,6 +63,7 @@ export const QueuePageClient = () => {
   const drawId = useQueueStore((state) => state.drawId);
   const setDrawId = useQueueStore((state) => state.setDrawId);
   const clearDrawId = useQueueStore((state) => state.clearDrawId);
+  const accessToken = useAuthStore((state) => state.accessToken);
 
   const clearQueueState = () => {
     queueTokenStorage.remove();
@@ -86,7 +88,7 @@ export const QueuePageClient = () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              // Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
           });
 

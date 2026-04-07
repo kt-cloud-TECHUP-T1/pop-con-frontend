@@ -17,7 +17,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
 const API_BASE_URL = getServiceBaseUrl('auth');
-const normalizedBaseUrl = API_BASE_URL?.replace(/\/+$/, '');
 
 const isValidAbsoluteUrl = (value: string) => {
   try {
@@ -55,7 +54,7 @@ export default function Login() {
   const socialLoginHandler = async (provider: SocialProvider) => {
     if (isLoggingIn) return;
 
-    if (!normalizedBaseUrl || !isValidAbsoluteUrl(normalizedBaseUrl)) {
+    if (!API_BASE_URL || !isValidAbsoluteUrl(API_BASE_URL)) {
       snackbar.destructive({
         title: '설정 오류',
         description: 'API_BASE_URL 설정이 올바르지 않습니다.',
@@ -67,7 +66,7 @@ export default function Login() {
     // 안티매크로 시그널 전송 후 페이지 이동
     await submitSignals();
 
-    window.location.href = `${normalizedBaseUrl}/auth/oauth/${provider}`;
+    window.location.href = `${API_BASE_URL}/auth/oauth/${provider}`;
   };
 
   const toLogin = useCallback(() => {
