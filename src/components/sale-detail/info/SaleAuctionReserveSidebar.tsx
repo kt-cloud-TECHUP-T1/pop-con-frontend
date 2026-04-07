@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { getAuctionDetail } from '@/app/api/sale-detail/get-auction-detail';
+import { getAuctionDetail } from '@/lib/api/auction/get-auction-detail';
 import { connectAuctionStream } from '@/app/api/sale-detail/connect-auction-stream';
 
 import { AuctionData } from '@/types/sale-detail';

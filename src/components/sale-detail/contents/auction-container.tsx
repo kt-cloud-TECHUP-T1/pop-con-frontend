@@ -10,7 +10,7 @@ import SaleTimeCountBar from '@/components/sale-detail/contents/sale-time-count-
 import { SaleAuctionDetailSidebar } from '@/components/sale-detail/info/sale-auction-detail-sidebar';
 import { RecommendedPopup } from '@/components/sale-detail/popup/recommended-popup';
 import { RelatedPopup } from '@/components/sale-detail/popup/related-popup';
-import { getAuctionDetail } from '@/app/api/sale-detail/get-auction-detail';
+import { getAuctionDetail } from '@/lib/api/auction/get-auction-detail';
 import { connectAuctionStream } from '@/app/api/sale-detail/connect-auction-stream';
 import { AuctionData } from '@/types/sale-detail';
 import { usePopupStore } from '../stores/popup-store';

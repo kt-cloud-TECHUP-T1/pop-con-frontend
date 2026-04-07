@@ -37,12 +37,7 @@ export interface PopupDetailErrorResponse {
   data: Record<string, string> | null;
 }
 
-export type PopupDetailApiResponse =
-  | PopupDetailResponse
-  | PopupDetailErrorResponse;
-
 export type AuctionStatus = 'SCHEDULED' | 'OPEN' | 'SOLD_OUT' | 'CLOSED';
-
 export type AuctionButtonStatus = 'WAITING' | 'ENABLED' | 'SOLD_OUT' | 'ENDED';
 
 export interface AuctionData {
