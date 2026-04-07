@@ -1,26 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
-import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { useRouter } from 'next/navigation';
-import { ApiResponse } from '@/types/api/common';
 import { EndingSoonSkeleton } from '../components/skeletons';
+import { BasePopupCard } from '../types';
+import { useSectionFetch } from '../hooks/use-section-fetch';
 
-interface EndingSoonCard {
-  popupId: number;
-  title: string;
-  supportingText: string | null;
-  subText: string | null;
-  caption: string | null;
-  thumbnailUrl: string | null;
-  liked: boolean | null;
-  stats: {
-    likeCount: number;
-    viewCount: number;
-  };
+interface EndingSoonCard extends BasePopupCard {
   overlay: null;
   phase: {
     type: 'AUCTION' | 'DRAW';
@@ -30,56 +18,13 @@ interface EndingSoonCard {
   };
 }
 
-interface EndingSoonCardResponse {
-  sectionKey: 'ENDING_SOON';
-  itemCount: number;
-  items: EndingSoonCard[];
-}
-
 const ENDING_SOON_LIMIT = 10;
 
 export const EndingSoon = () => {
-  const [endingSoonCards, setEndingSoonCards] = useState<
-    EndingSoonCard[] | null
-  >(null);
-  const accessToken = useAuthStore((state) => state.accessToken);
+  const endingSoonCards = useSectionFetch<EndingSoonCard>(
+    `/api/popups/ending-soon?limit=${ENDING_SOON_LIMIT}`
+  );
   const router = useRouter();
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchEndingSoon = async () => {
-      try {
-        const response = await fetch(
-          `/api/popups/ending-soon?limit=${ENDING_SOON_LIMIT}`,
-          {
-            method: 'GET',
-            signal: controller.signal,
-            headers: {
-              ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-            },
-          }
-        );
-
-        if (!response.ok) {
-          setEndingSoonCards([]);
-          return;
-        }
-
-        const result =
-          (await response.json()) as ApiResponse<EndingSoonCardResponse>;
-        setEndingSoonCards(result.data?.items ?? []);
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError')
-          return;
-        console.error('[ending-soon] 곧 종료되는 팝업 조회 실패', error);
-        setEndingSoonCards([]);
-      }
-    };
-    fetchEndingSoon();
-    // NOTE 좋아요 기능 붙을 때를 위해 대비
-    return () => controller.abort();
-  }, [accessToken]);
 
   if (endingSoonCards === null) return <EndingSoonSkeleton />;
 

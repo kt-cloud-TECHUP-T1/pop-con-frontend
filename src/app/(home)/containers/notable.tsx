@@ -1,26 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
-import { useAuthStore } from '@/features/auth/stores/auth-store';
-import { ApiResponse } from '@/types/api/common';
 import { useRouter } from 'next/navigation';
 import { NotableSkeleton } from '../components/skeletons';
+import { BasePopupCard } from '../types';
+import { useSectionFetch } from '../hooks/use-section-fetch';
 
-interface NotableCard {
-  popupId: number;
-  title: string;
-  supportingText: string | null;
-  subText: string | null;
-  caption: string | null;
-  thumbnailUrl: string | null;
-  liked: boolean | null;
-  stats: {
-    likeCount: number;
-    viewCount: number;
-  };
+interface NotableCard extends BasePopupCard {
   overlay: null;
   phase: {
     type: 'AUCTION' | 'DRAW';
@@ -30,54 +18,13 @@ interface NotableCard {
   };
 }
 
-interface NotableCardResponse {
-  sectionKey: 'FEATURED';
-  itemCount: number;
-  items: NotableCard[];
-}
-
 const NOTABLE_LIMIT = 10;
 
 export const Notable = () => {
-  const [notableCards, setNotableCards] = useState<NotableCard[] | null>(null);
-  const accessToken = useAuthStore((state) => state.accessToken);
+  const notableCards = useSectionFetch<NotableCard>(
+    `/api/popups/featured?limit=${NOTABLE_LIMIT}`
+  );
   const router = useRouter();
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchNotable = async () => {
-      try {
-        const response = await fetch(
-          `/api/popups/featured?limit=${NOTABLE_LIMIT}`,
-          {
-            method: 'GET',
-            signal: controller.signal,
-            headers: {
-              ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-            },
-          }
-        );
-
-        if (!response.ok) {
-          setNotableCards([]);
-          return;
-        }
-
-        const result =
-          (await response.json()) as ApiResponse<NotableCardResponse>;
-        setNotableCards(result.data?.items ?? []);
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError')
-          return;
-        console.error('[notable] 주목할 만한 팝업 조회 실패', error);
-        setNotableCards([]);
-      }
-    };
-    fetchNotable();
-    // NOTE 좋아요 기능 붙을 때를 위해 대비
-    return () => controller.abort();
-  }, [accessToken]);
 
   if (notableCards === null) return <NotableSkeleton />;
 

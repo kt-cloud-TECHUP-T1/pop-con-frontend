@@ -10,21 +10,12 @@ import { ApiResponse } from '@/types/api/common';
 import { LuckyDrawSkeleton } from '../components/skeletons';
 import { Typography } from '@/components/ui/typography';
 import { formatOpenAt } from '@/lib/utils';
+import { BaseCardResponse, BasePopupCard } from '../types';
 
 type DrawTab = 'UPCOMING' | 'OPEN';
 
-interface LuckyDrawCard {
-  popupId: number;
-  title: string;
+interface LuckyDrawCard extends BasePopupCard {
   supportingText: null;
-  subText: string | null;
-  caption: string | null;
-  thumbnailUrl: string | null;
-  liked: boolean | null;
-  stats: {
-    likeCount: number;
-    viewCount: number;
-  };
   overlay: {
     type: 'DRAW_OPEN_AT';
     rank: null;
@@ -37,11 +28,7 @@ interface LuckyDrawCard {
   };
 }
 
-interface LuckyDrawCardResponse {
-  sectionKey: 'DRAWS_OPEN' | 'DRAWS_UPCOMING';
-  itemCount: number;
-  items: LuckyDrawCard[];
-}
+type LuckyDrawCardResponse = BaseCardResponse<LuckyDrawCard, 'DRAWS_OPEN' | 'DRAWS_UPCOMING'>;
 
 export const LuckyDraw = () => {
   const [activeTab, setActiveTab] = useState<DrawTab>('UPCOMING');
