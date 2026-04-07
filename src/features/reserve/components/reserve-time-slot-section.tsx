@@ -1,27 +1,30 @@
 'use client';
 
+import { Fragment } from 'react';
 import { Typography } from '@/components/ui/typography';
-import { ReserveTimeSlotCard } from './reserve-time-slot-card';
-import type { AuctionSlot } from './auction-reserve-page-client';
+import { SlotSkeleton } from './reserve-panel-skeleton';
 
-interface ReserveTimeSlotSectionProps {
+interface ReserveTimeSlotSectionProps<TSlot extends { optionId: number }> {
   selectedDate: string | null;
   selectedOptionId: number | null;
-  slots: AuctionSlot[];
+  slots: TSlot[];
   onSelectSlot: (optionId: number) => void;
   errorMessage?: string | null;
+  isLoading?: boolean;
+  renderSlot: (slot: TSlot, isSelected: boolean) => React.ReactNode;
 }
 
-export function ReserveTimeSlotSection({
+export function ReserveTimeSlotSection<TSlot extends { optionId: number }>({
   selectedDate,
   selectedOptionId,
   slots,
   onSelectSlot,
   errorMessage,
-}: ReserveTimeSlotSectionProps) {
+  isLoading,
+  renderSlot,
+}: ReserveTimeSlotSectionProps<TSlot>) {
   return (
     <section>
-      {/* 회차 섹션 제목 */}
       <div className="flex flex-col gap-xs">
         <Typography variant="heading-2" weight="bold">
           회차를 선택해주세요
@@ -40,7 +43,6 @@ export function ReserveTimeSlotSection({
           </Typography>
         </div>
       ) : errorMessage ? (
-        // AU001 / AU002 / AU003 에러
         <div className="flex min-h-[250px] items-center justify-center mt-6">
           <Typography
             variant="label-2"
@@ -49,8 +51,11 @@ export function ReserveTimeSlotSection({
             {errorMessage}
           </Typography>
         </div>
+      ) : isLoading ? (
+        <div className="mt-6 animate-pulse">
+          <SlotSkeleton />
+        </div>
       ) : slots.length === 0 ? (
-        // 날짜 선택 후 조회 가능한 회차 없음
         <div className="flex min-h-[250px] items-center justify-center mt-6">
           <Typography
             variant="label-2"
@@ -62,12 +67,9 @@ export function ReserveTimeSlotSection({
       ) : (
         <div className="mt-6 grid grid-cols-2 gap-s md:grid-cols-3">
           {slots.map((slot) => (
-            <ReserveTimeSlotCard
-              key={slot.optionId}
-              slot={slot}
-              isSelected={selectedOptionId === slot.optionId}
-              onSelect={onSelectSlot}
-            />
+            <Fragment key={slot.optionId}>
+              {renderSlot(slot, selectedOptionId === slot.optionId)}
+            </Fragment>
           ))}
         </div>
       )}
