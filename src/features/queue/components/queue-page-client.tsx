@@ -16,6 +16,7 @@ import { useQueueStore } from '../stores/queue-store';
 import { useEffect, useState } from 'react';
 import { QueueEntryResponse } from '../types/queue';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { enterAuctionQueue } from '@/lib/api/enter-auction-queue';
 
 export const QueuePageClient = () => {
   const [token, setToken] = useState(queueTokenStorage.get() ?? '');
@@ -138,26 +139,19 @@ export const QueuePageClient = () => {
       }
 
       const rejoinQueue = async () => {
+        const NumberAuctionId = Number(auctionId);
         try {
-          const response = await fetch(
-            `/api/queue/auctions/${savedAuctionId}`,
-            {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                Authorization: `Bearer ${accessToken}`,
-              },
-            }
+          const result = await enterAuctionQueue(
+            NumberAuctionId,
+            accessToken as string
           );
 
-          if (!response.ok) {
+          if (result.code !== 'SUCCESS') {
             queueTokenStorage.remove();
             sessionStorage.removeItem('queue_auction_id');
             router.replace('/');
             return;
           }
-
-          const result = (await response.json()) as QueueEntryResponse;
 
           if (result.data && 'queueToken' in result.data) {
             queueTokenStorage.save(result.data.queueToken);
