@@ -1,10 +1,14 @@
+'use client';
 import { Icon } from '@/components/Icon/Icon';
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
-import { usePopupStore } from '../stores/popup-store';
+import { useParams } from 'next/navigation';
+import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
 
 export default function SaleScheduleInfo() {
-  const popupData = usePopupStore((state) => state.data);
+  const params = useParams<{ popupId: string }>();
+  const popupIdNumber = Number(params.popupId);
+  const { data: popupData } = usePopupDetailQuery(popupIdNumber);
 
   if (popupData == null) return;
   return (

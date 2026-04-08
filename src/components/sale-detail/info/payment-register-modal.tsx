@@ -29,8 +29,8 @@ export default function PaymentRegisterModal() {
   );
   //예약페이지 임시 이동용 추후 삭제
   const router = useRouter();
-  const auctionIdTemp = useAuctionStore(
-    (state) => state.initialData?.auctionId ?? null
+  const auctionId = useAuctionStore(
+    (state) => state.liveData?.auctionId ?? null
   );
   if (!isOpen) return null;
 
@@ -123,7 +123,7 @@ export default function PaymentRegisterModal() {
   const handleAuctionqueue = async () => {
     // 대기열 진입 api 추가
     const result = await enterAuctionQueue(
-      auctionIdTemp as number,
+      auctionId as number,
       accessToken ?? ''
     );
 
@@ -131,13 +131,13 @@ export default function PaymentRegisterModal() {
       case 'SUCCESS': {
         //queueToken 저장
         sessionStorage.setItem('queueToken', result.data.queueToken);
-        sessionStorage.setItem('identifyType', String(auctionIdTemp));
+        sessionStorage.setItem('identifyType', String(auctionId));
 
         //Todo 최초진입 store에서 상태값 ture로 바꾸기 추가
 
         if (result.data.status === 'ACTIVE') {
           //예약페이지 페이지로 이동
-          router.push(`/auction/${auctionIdTemp}/reserve`);
+          router.push(`/auction/${auctionId}/reserve`);
           return;
         }
 
@@ -236,34 +236,6 @@ export default function PaymentRegisterModal() {
         <div className="py-s px-ms">
           <Button className="w-full" onClick={close}>
             <Typography variant="label-1">확인</Typography>
-          </Button>
-        </div>
-        <div className="py-s px-ms">
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={() => {
-              router.push(`/auction/${auctionIdTemp}/reserve`);
-              close();
-            }}
-          >
-            <Typography variant="label-1">
-              예약페이지 바로가기 (MSW 서버 임시)
-            </Typography>
-          </Button>
-        </div>
-        <div className="py-s px-ms">
-          <Button
-            variant="destructive"
-            className="w-full"
-            onClick={() => {
-              close();
-              handleAuctionqueue();
-            }}
-          >
-            <Typography variant="label-1">
-              대기열진입 바로가기 (MSW 서버 임시)
-            </Typography>
           </Button>
         </div>
       </Box>

@@ -2,10 +2,10 @@
 import { Typography } from '@/components/ui/typography';
 import useCountdown from '../hooks/use-countdown';
 import { splitRemainingTime } from '../utils/sale-detail-utils';
-import { useAuctionLatestData } from '../stores/auction-store';
+import { useAuctionStore } from '../stores/auction-store';
 
 export default function OpenCountCard() {
-  const auctionData = useAuctionLatestData();
+  const auctionData = useAuctionStore((state) => state.liveData);
   const remaining = useCountdown(
     auctionData?.auctionOpenAt ?? '',
     auctionData?.serverTime ?? ''

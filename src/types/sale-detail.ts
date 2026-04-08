@@ -1,13 +1,10 @@
 export type PopupPhaseType = 'AUCTION' | 'DRAW';
-export type PopupPhaseStatus = 'UPCOMING' | 'OPEN' | 'CLOSED';
 
 export interface PopupDetailData {
   phaseType: PopupPhaseType;
-  phaseStatus: PopupPhaseStatus;
   popupId: number;
   liked: boolean;
   thumbnailUrl: string;
-  images: string[];
   subtitle: string;
   title: string;
   viewCount: number;

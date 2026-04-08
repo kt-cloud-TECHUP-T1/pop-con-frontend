@@ -1,6 +1,8 @@
+'use client';
 import Image from 'next/image';
 import { cn } from '@/lib/utils';
-import { usePopupStore } from '../stores/popup-store';
+import { useParams } from 'next/navigation';
+import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
 
 type ThumbnailSize = 'sm' | 'md' | 'lg';
 
@@ -23,9 +25,9 @@ export function SaleThumbnail({
   className,
   priority,
 }: ThumbnailProps) {
-  const src = usePopupStore(
-    (state) => state.data?.thumbnailUrl ?? '/images/temp/no-image.png'
-  );
+  const params = useParams<{ popupId: string }>();
+  const popupIdNumber = Number(params.popupId);
+  const { data: popupData } = usePopupDetailQuery(popupIdNumber);
 
   return (
     <div
@@ -35,9 +37,9 @@ export function SaleThumbnail({
         className
       )}
     >
-      {src ? (
+      {popupData?.thumbnailUrl ? (
         <Image
-          src={src}
+          src={popupData?.thumbnailUrl}
           alt={alt}
           fill
           priority={priority}

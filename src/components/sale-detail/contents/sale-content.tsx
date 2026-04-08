@@ -1,6 +1,8 @@
++'use client';
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
-import { usePopupStore } from '../stores/popup-store';
+import { useParams } from 'next/navigation';
+import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
 
 interface SaleContentProps {
   className?: string;
@@ -12,7 +14,9 @@ export default function SaleContent({
   className,
   hasStickyTopBar,
 }: SaleContentProps) {
-  const description = usePopupStore((state) => state.data?.description);
+  const params = useParams<{ popupId: string }>();
+  const popupIdNumber = Number(params.popupId);
+  const { data: popupData } = usePopupDetailQuery(popupIdNumber);
 
   return (
     <section
@@ -34,7 +38,7 @@ export default function SaleContent({
           weight="regular"
           className="whitespace-pre-line pt-ms"
         >
-          {description}
+          {popupData?.description}
         </Typography>
       </div>
     </section>

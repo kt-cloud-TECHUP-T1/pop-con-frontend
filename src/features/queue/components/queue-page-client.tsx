@@ -60,6 +60,8 @@ export const QueuePageClient = () => {
       }
     }
   };
+
+  /////////////////////////////////////////////////////////
   const drawId = useQueueStore((state) => state.drawId);
   const setDrawId = useQueueStore((state) => state.setDrawId);
   const clearDrawId = useQueueStore((state) => state.clearDrawId);
@@ -125,11 +127,6 @@ export const QueuePageClient = () => {
     queueToken: token,
     onActive: () => router.push('/security-quiz'),
   });
-
-  // const handleBack = () => {
-  //   clearQueueState();
-  //   router.back();
-  // };
 
   return (
     <Wrapper>
