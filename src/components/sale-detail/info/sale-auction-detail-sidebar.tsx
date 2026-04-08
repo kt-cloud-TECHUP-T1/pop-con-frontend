@@ -8,11 +8,16 @@ import { useAuthStore } from '@/features/auth/stores/auth-store';
 
 export function SaleAuctionDetailSidebar() {
   const authStatus = useAuthStore((state) => state.authStatus);
+  const isPaymentRegistered = useAuthStore(
+    (state) => state.isPaymentRegistered
+  );
 
   return (
     <div className="flex flex-col gap-s">
       <OpenCountCard />
-      {authStatus === 'unauthenticated' && <PaymentRegisterCard />}
+      {(authStatus === 'unauthenticated' || !isPaymentRegistered) && (
+        <PaymentRegisterCard />
+      )}
       <SaleInfoCard></SaleInfoCard>
       <SaleNoticeCard items={AuctionInfoContent} />
     </div>
