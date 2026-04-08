@@ -30,8 +30,6 @@ export const Recommend = () => {
     );
   };
 
-  console.log('recommendedCards', recommendedCards);
-
   if (recommendedCards === null) return <RecommendSkeleton />;
 
   return (
