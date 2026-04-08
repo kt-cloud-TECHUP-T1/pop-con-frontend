@@ -3,10 +3,10 @@ name: 'Deploy Storybook to Chromatic'
 on:
   push:
     branches:
-      - dev # main 브랜치에 푸시될 때 실행
+      - main
   pull_request:
     branches:
-      - dev # PR이 생성될 때 실행
+      - main
 
 jobs:
   chromatic-deploy:
