@@ -1,26 +1,14 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
-import { ApiResponse } from '@/types/api/common';
-import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { RecommendSkeleton } from '../components/skeletons';
 import { useRouter } from 'next/navigation';
+import { BasePopupCard } from '../types';
+import { useSectionFetch } from '../hooks/use-section-fetch';
 
-interface RecommendedCard {
-  popupId: number;
-  title: string;
-  supportingText: string | null;
-  subText: string | null;
-  caption: string | null;
-  thumbnailUrl: string | null;
-  liked: boolean | null;
-  stats: {
-    likeCount: number;
-    viewCount: number;
-  };
+interface RecommendedCard extends BasePopupCard {
   overlay: null;
   phase: {
     type: 'AUCTION' | 'DRAW';
@@ -30,51 +18,9 @@ interface RecommendedCard {
   };
 }
 
-interface RecommendedCardResponse {
-  sectionKey: 'RECOMMENDED';
-  itemCount: number;
-  items: RecommendedCard[];
-}
-
 export const Recommend = () => {
-  const [recommendedCards, setRecommendedCards] = useState<
-    RecommendedCard[] | null
-  >(null);
-  const accessToken = useAuthStore((state) => state.accessToken);
+  const recommendedCards = useSectionFetch<RecommendedCard>('/api/popups/recommended');
   const router = useRouter();
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchRecommended = async () => {
-      try {
-        const response = await fetch('/api/popups/recommended', {
-          method: 'GET',
-          signal: controller.signal,
-          headers: {
-            ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-          },
-        });
-
-        if (!response.ok) {
-          setRecommendedCards([]);
-          return;
-        }
-
-        const result =
-          (await response.json()) as ApiResponse<RecommendedCardResponse>;
-        setRecommendedCards(result.data?.items ?? []);
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError')
-          return;
-        console.error('[recommend] 추천 팝업 조회 실패', error);
-        setRecommendedCards([]);
-      }
-    };
-    fetchRecommended();
-    // NOTE 좋아요 기능 붙을 때를 위해 대비
-    return () => controller.abort();
-  }, [accessToken]);
 
   const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
     router.push(

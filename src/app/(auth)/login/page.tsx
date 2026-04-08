@@ -1,19 +1,23 @@
 // 로그인
 'use client';
+import { getServiceBaseUrl } from '@/app/api/shared/route-helpers';
 import { Icon } from '@/components/Icon/Icon';
 import { Wrapper } from '@/components/layout/wrapper';
 import { Button } from '@/components/ui/button';
 import { snackbar } from '@/components/ui/snackbar';
 import { Typography } from '@/components/ui/typography';
 import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
-import { AUTH_ERROR_CODES, AUTH_MESSAGES } from '@/constants/auth';
+import {
+  AUTH_ERROR_CODES,
+  AUTH_MESSAGES,
+  LOGIN_REDIRECT_KEY,
+} from '@/constants/auth';
 import { useLoginCollector } from '@/features/anti-macro';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
-const NEXT_PUBLIC_API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
+const API_BASE_URL = getServiceBaseUrl('auth');
 
-const normalizedBaseUrl = NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '');
 const isValidAbsoluteUrl = (value: string) => {
   try {
     const url = new URL(value);
@@ -38,14 +42,19 @@ export default function Login() {
   const router = useRouter();
   const params = useSearchParams();
   const errorCode = params.get('error');
+  const redirect = params.get('redirect');
   const [isLoggingIn, setIsLoggingIn] = useState(false);
-  const { submitSignals, honeypotProps, honeypotOverlayProps, honeypotWrapperProps } =
-    useLoginCollector();
+  const {
+    submitSignals,
+    honeypotProps,
+    honeypotOverlayProps,
+    honeypotWrapperProps,
+  } = useLoginCollector();
 
   const socialLoginHandler = async (provider: SocialProvider) => {
     if (isLoggingIn) return;
 
-    if (!normalizedBaseUrl || !isValidAbsoluteUrl(normalizedBaseUrl)) {
+    if (!API_BASE_URL || !isValidAbsoluteUrl(API_BASE_URL)) {
       snackbar.destructive({
         title: '설정 오류',
         description: 'API_BASE_URL 설정이 올바르지 않습니다.',
@@ -57,13 +66,19 @@ export default function Login() {
     // 안티매크로 시그널 전송 후 페이지 이동
     await submitSignals();
 
-    window.location.href = `${normalizedBaseUrl}/auth/oauth/${provider}`;
+    window.location.href = `${API_BASE_URL}/auth/oauth/${provider}`;
   };
 
   const toLogin = useCallback(() => {
     setIsLoggingIn(false);
     router.replace('/login');
   }, [router]);
+
+  useEffect(() => {
+    if (!redirect) return;
+
+    sessionStorage.setItem(LOGIN_REDIRECT_KEY, redirect);
+  }, [redirect]);
 
   useEffect(() => {
     if (!errorCode) return;

@@ -2,10 +2,10 @@
 
 import { CardOverlay } from '@/components/content/card-overlay';
 import { GridCarousel } from '@/components/content/grid-carousel';
-import type { ApiResponse } from '@/types/api/common';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { MainBannerSkeleton } from '../components/skeletons';
+import { useSectionFetch } from '../hooks/use-section-fetch';
+import { PopupPhase } from '../types';
 
 interface BannerCard {
   popupId: number;
@@ -17,51 +17,16 @@ interface BannerCard {
   liked: boolean | null;
   stats: null;
   overlay: null;
-  phase: {
-    type: 'AUCTION' | 'DRAW';
-    status: 'UPCOMING' | 'OPEN' | 'CLOSED';
-    openAt: string;
-    closeAt: string;
-  };
-}
-
-interface BannerCardResponse {
-  sectionKey: 'BANNERS';
-  itemCount: number;
-  items: BannerCard[];
+  phase: PopupPhase;
 }
 
 const BANNER_LIMIT = 5;
 
 export const MainBanner = () => {
-  const [bannerCards, setBannerCards] = useState<BannerCard[] | null>(null);
+  const bannerCards = useSectionFetch<BannerCard>(
+    `/api/popups/banners?limit=${BANNER_LIMIT}`
+  );
   const router = useRouter();
-
-  useEffect(() => {
-    const fetchBanners = async () => {
-      try {
-        const response = await fetch(
-          `/api/popups/banners?limit=${BANNER_LIMIT}`,
-          {
-            method: 'GET',
-          }
-        );
-
-        if (!response.ok) {
-          setBannerCards([]);
-          return;
-        }
-
-        const result =
-          (await response.json()) as ApiResponse<BannerCardResponse>;
-        setBannerCards(result.data?.items ?? []);
-      } catch (error) {
-        console.error('[banner] 배너 조회 실패', error);
-        setBannerCards([]);
-      }
-    };
-    fetchBanners();
-  }, []);
 
   if (bannerCards === null) return <MainBannerSkeleton />;
 
@@ -81,7 +46,9 @@ export const MainBanner = () => {
   return (
     <GridCarousel
       gridSize="auto"
-      carouselOpts={{ loop: true }}
+      carouselOpts={{ loop: true, align: 'center' }}
+      contentWrapperClassName="overflow-visible"
+      contentClassName="justify-center"
       showIndexes
       items={bannerCards.map((bannerCard) => (
         <div key={bannerCard.popupId} className="w-[384px]">

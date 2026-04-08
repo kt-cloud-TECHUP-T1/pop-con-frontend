@@ -4,13 +4,20 @@ import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { RefreshTokenResponse } from '@/types/auth/auth';
+import { LOGIN_REDIRECT_KEY } from '@/constants/auth';
+import { getBillingList } from '@/app/api/payment/get-billing-list';
+
+const isValidRedirectPath = (value: string | null): value is string => {
+  return typeof value === 'string' && value.startsWith('/');
+};
 
 export default function AuthCallbackPage() {
   const router = useRouter();
   const requestedRef = useRef(false);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
-  console.log('콜백페이지 실행');
-
+  const setPaymentRegistered = useAuthStore(
+    (state) => state.setPaymentRegistered
+  );
   useEffect(() => {
     if (requestedRef.current) return;
     requestedRef.current = true;
@@ -37,6 +44,34 @@ export default function AuthCallbackPage() {
         }
 
         setAccessToken(accessToken);
+
+        try {
+          const billingList = await getBillingList(accessToken);
+          //간편결제 리스트 조회 결과로 등록여부 t/f판단
+          setPaymentRegistered(billingList.length > 0);
+        } catch (error: unknown) {
+          console.error('[billing] error:', error);
+
+          const errorCode = error instanceof Error ? error.message : 'UNKNOWN';
+
+          if (errorCode === 'A002' || errorCode === 'A003') {
+            setAccessToken(null);
+            setPaymentRegistered(false);
+            router.replace('/login');
+            return;
+          }
+
+          setPaymentRegistered(false);
+        }
+
+        const redirect = sessionStorage.getItem(LOGIN_REDIRECT_KEY);
+        sessionStorage.removeItem(LOGIN_REDIRECT_KEY);
+
+        if (isValidRedirectPath(redirect)) {
+          router.replace(redirect);
+          return;
+        }
+
         router.replace('/');
       } catch (error) {
         console.error('[AuthCallbackPage] refresh failed:', error);

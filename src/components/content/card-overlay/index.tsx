@@ -1,5 +1,6 @@
 'use client';
 
+import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
 import { cva, type VariantProps } from 'class-variance-authority';
 
@@ -75,18 +76,20 @@ export const CardOverlay: React.FC<CardOverlayProps> = ({
         )}
       >
         <div className="flex flex-col justify-start items-start gap-1">
-          <h6
+          <Typography
+            variant="heading-1"
+            weight="bold"
             className={cn(
               'title',
-              'self-stretch justify-start text-Common-White text-3xl font-bold leading-10 line-clamp-2'
+              'self-stretch justify-start leading-10 line-clamp-2'
             )}
           >
             {title}
-          </h6>
+          </Typography>
           {description && (
-            <div className="justify-start text-Common-White text-lg font-normal leading-6">
+            <Typography variant="title-2" className="justify-start leading-6">
               {description}
-            </div>
+            </Typography>
           )}
           {caption && (
             <div className="justify-start text-Common-White text-sm font-normal leading-5">

@@ -1,30 +1,19 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/features/auth/stores/auth-store';
-import { ApiResponse } from '@/types/api/common';
 import { DutchAuctionSkeleton } from '../components/skeletons';
 import { Typography } from '@/components/ui/typography';
 import { formatOpenAt } from '@/lib/utils';
+import { BasePopupCard } from '../types';
+import { useSectionFetch } from '../hooks/use-section-fetch';
 
 const DUTCH_AUCTION_LIMIT = 10;
 
-interface DutchAuctionCard {
-  popupId: number;
-  title: string;
+interface DutchAuctionCard extends BasePopupCard {
   supportingText: null;
-  subText: string | null;
-  caption: string | null;
-  thumbnailUrl: string | null;
-  liked: boolean | null;
-  stats: {
-    likeCount: number;
-    viewCount: number;
-  };
   overlay: {
     type: 'AUCTION_IN_PROGRESS' | 'AUCTION_OPEN_AT';
     rank: null;
@@ -37,54 +26,11 @@ interface DutchAuctionCard {
   };
 }
 
-interface DutchAuctionCardResponse {
-  sectionKey: 'AUCTIONS';
-  itemCount: number;
-  items: DutchAuctionCard[];
-}
-
 export const DutchAuction = () => {
-  const [dutchAuctionCards, setDutchAuctionCards] = useState<
-    DutchAuctionCard[] | null
-  >(null);
-  const accessToken = useAuthStore((state) => state.accessToken);
+  const dutchAuctionCards = useSectionFetch<DutchAuctionCard>(
+    `/api/popups?phaseType=AUCTION&phaseStatus=OPEN,UPCOMING&limit=${DUTCH_AUCTION_LIMIT}`
+  );
   const router = useRouter();
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchDutchAuctions = async () => {
-      try {
-        const response = await fetch(
-          `/api/popups?phaseType=AUCTION&phaseStatus=OPEN,UPCOMING&limit=${DUTCH_AUCTION_LIMIT}`,
-          {
-            signal: controller.signal,
-            headers: {
-              'Content-Type': 'application/json',
-              ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-            },
-          }
-        );
-
-        if (!response.ok) {
-          setDutchAuctionCards([]);
-          return;
-        }
-
-        const result =
-          (await response.json()) as ApiResponse<DutchAuctionCardResponse>;
-        setDutchAuctionCards(result.data?.items ?? []);
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError')
-          return;
-        console.error('[dutch-auction] 더치 경매 조회 실패', error);
-        setDutchAuctionCards([]);
-      }
-    };
-    fetchDutchAuctions();
-
-    return () => controller.abort();
-  }, [accessToken]);
 
   if (dutchAuctionCards === null) return <DutchAuctionSkeleton />;
 
@@ -116,6 +62,11 @@ export const DutchAuction = () => {
               <CardThumbnail
                 thumbnailUrl={dutchAuctionCard.thumbnailUrl ?? undefined}
                 thumbnailRatio="16/9"
+                thumbnailClassName={
+                  dutchAuctionCard.overlay.type === 'AUCTION_OPEN_AT'
+                    ? 'brightness-70'
+                    : undefined
+                }
                 title={dutchAuctionCard.title}
                 description={dutchAuctionCard.subText ?? undefined}
                 caption={dutchAuctionCard.caption ?? undefined}

@@ -7,24 +7,78 @@ import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
 import { Wrapper } from '@/components/layout/wrapper';
 import { Typography } from '@/components/ui/typography';
+import { leaveQueue, leaveQueueBeacon } from '@/lib/api/leave-queue';
+import { QUEUE_ERROR_MESSAGES } from '@/constants/queue';
+import { useRef } from 'react';
 import { useQueue } from '../hooks/use-queue';
 import { queueTokenStorage } from '../utils/queue-token';
 import { useQueueStore } from '../stores/queue-store';
 import { useEffect, useState } from 'react';
 import { QueueEntryResponse } from '../types/queue';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { enterAuctionQueue } from '@/lib/api/enter-auction-queue';
 
 export const QueuePageClient = () => {
   const [token, setToken] = useState(queueTokenStorage.get() ?? '');
   const router = useRouter();
+  const isManualLeave = useRef(false); // 대기열 이탈 api 중복호출 방지
   const drawId = useQueueStore((state) => state.drawId);
   const setDrawId = useQueueStore((state) => state.setDrawId);
   const clearDrawId = useQueueStore((state) => state.clearDrawId);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const auctionId = useQueueStore((state) => state.auctionId);
+  const setAuctionId = useQueueStore((state) => state.setAuctionId);
+  const clearAuctionId = useQueueStore((state) => state.clearAuctionId);
 
-  const clearQueueState = () => {
+  const clearAuctionQueueState = () => {
+    queueTokenStorage.remove();
+    sessionStorage.removeItem('queue_auction_id');
+    setToken('');
+    clearAuctionId();
+  };
+  const clearDrawQueueState = () => {
     queueTokenStorage.remove();
     sessionStorage.removeItem('queue_draw_id');
     setToken('');
     clearDrawId();
+  };
+  useEffect(() => {
+    const handlePopState = () => {
+      // 버튼 클릭으로 인한 popstate면 스킵
+      if (isManualLeave.current) {
+        isManualLeave.current = false;
+        return;
+      }
+
+      if (!token) return;
+
+      leaveQueueBeacon(token);
+      clearAuctionQueueState();
+      clearDrawQueueState();
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, [token]);
+
+  const handleBack = async () => {
+    const result = await leaveQueue(token);
+
+    switch (result.code) {
+      case 'SUCCESS':
+      case 'Q002':
+      case 'Q003': {
+        clearAuctionQueueState();
+        clearDrawQueueState();
+        isManualLeave.current = true;
+        router.back();
+        return;
+      }
+      case 'S001': {
+        console.log(QUEUE_ERROR_MESSAGES[result.code]);
+        return;
+      }
+    }
   };
 
   // 드로우 대기열 진입 -> 새로고침 복구
@@ -43,7 +97,7 @@ export const QueuePageClient = () => {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
-              // Authorization: `Bearer ${accessToken}`,
+              Authorization: `Bearer ${accessToken}`,
             },
           });
 
@@ -62,11 +116,11 @@ export const QueuePageClient = () => {
             setToken(result.data.queueToken);
           } else {
             // BLOCKED 등 queueToken이 없는 케이스
-            clearQueueState();
+            clearDrawQueueState();
             router.replace('/');
           }
         } catch {
-          clearQueueState();
+          clearDrawQueueState();
           router.replace('/');
         }
       };
@@ -76,15 +130,55 @@ export const QueuePageClient = () => {
   }, [drawId, router, setDrawId]);
   // END 드로우 대기열 진입 -> 새로고침 복구
 
+  // 드로우 대기열 진입 -> auction 전용 새로고침 복구
+  useEffect(() => {
+    // auctionId null(zustand 휘발) + token 있음 = 새로고침으로 판별
+    if (!auctionId && token) {
+      const savedAuctionId = sessionStorage.getItem('queue_auction_id');
+      if (!savedAuctionId) {
+        router.replace('/');
+        return;
+      }
+
+      const rejoinQueue = async () => {
+        const NumberAuctionId = Number(savedAuctionId);
+        try {
+          const result = await enterAuctionQueue(
+            NumberAuctionId,
+            accessToken as string
+          );
+
+          if (result.code !== 'SUCCESS') {
+            queueTokenStorage.remove();
+            sessionStorage.removeItem('queue_auction_id');
+            router.replace('/');
+            return;
+          }
+
+          if (result.data && 'queueToken' in result.data) {
+            queueTokenStorage.save(result.data.queueToken);
+            setAuctionId(savedAuctionId);
+            setToken(result.data.queueToken);
+          } else {
+            // BLOCKED 등 queueToken이 없는 케이스
+            clearAuctionQueueState();
+            router.replace('/');
+          }
+        } catch {
+          clearAuctionQueueState();
+          router.replace('/');
+        }
+      };
+
+      void rejoinQueue();
+    }
+  }, [auctionId, router, setAuctionId]);
+  // END 드로우 대기열 진입 -> 새로고침 복구
+
   const { position, estimatedWaitSeconds, progress } = useQueue({
     queueToken: token,
     onActive: () => router.push('/security-quiz'),
   });
-
-  const handleBack = () => {
-    clearQueueState();
-    router.back();
-  };
 
   return (
     <Wrapper>

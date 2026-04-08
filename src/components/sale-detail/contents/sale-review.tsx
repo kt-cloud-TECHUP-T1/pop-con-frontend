@@ -2,16 +2,18 @@ import { Icon } from '@/components/Icon/Icon';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
+import { useParams } from 'next/navigation';
+import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
 
 interface SaleReviewProps {
-  reviewCount: number;
   hasStickyTopBar: boolean;
 }
 
-export default function SaleReview({
-  reviewCount,
-  hasStickyTopBar,
-}: SaleReviewProps) {
+export default function SaleReview({ hasStickyTopBar }: SaleReviewProps) {
+  const params = useParams<{ popupId: string }>();
+  const popupIdNumber = Number(params.popupId);
+  const { data: popupData } = usePopupDetailQuery(popupIdNumber);
+
   return (
     <section
       id="review"
@@ -22,7 +24,10 @@ export default function SaleReview({
     >
       <div className="flex items-center justify-between">
         <Typography variant="title-1" weight="bold">
-          리뷰 <span className="text-[var(--content-low)]">{reviewCount}</span>
+          리뷰{' '}
+          <span className="text-[var(--content-low)]">
+            {popupData?.reviewCount}
+          </span>
         </Typography>
         <Button
           className="text-[var(--content-low)]"
@@ -32,7 +37,7 @@ export default function SaleReview({
           리뷰 쓰기
         </Button>
       </div>
-      {reviewCount > 0 ? (
+      {(popupData?.reviewCount as number) > 0 ? (
         <div>리뷰있음 UI 작업 추후에 진행</div>
       ) : (
         <div className="flex flex-col items-center pt-ms">

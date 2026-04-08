@@ -5,12 +5,13 @@ import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-// TODO 테스트 후 주석 제거
-// import { useAuthStore } from '@/features/auth/stores/auth-store';
-import { queueTokenStorage } from '@/features/queue/utils/queue-token';
-import { useQueueStore } from '@/features/queue/stores/queue-store';
-import { QueueEntryResponse } from '@/features/queue/types/queue';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { snackbar } from '@/components/ui/snackbar';
+import { DRAW_ENTRY_ERROR_MESSAGE } from '@/constants/draw-apply';
+import { postDrawEntry } from '@/lib/api/draw-apply';
+import { DrawEntrySuccessData } from '@/types/applay/draw-apply';
+import DrawEntrySuccessModal from '@/components/sale-detail/info/draw-entry-success-modal';
+import DrawEntryDuplicateModal from '@/components/sale-detail/info/draw-entry-duplicate-modal';
 
 const DEFAULT_SUBMIT_ERROR =
   '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
@@ -27,11 +28,15 @@ export default function DrawApplySection({
   const [checks, setChecks] = useState([false, false]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-  // TODO 테스트 후 주석 제거
-  // const accessToken = useAuthStore((state) => state.accessToken);
-  const router = useRouter();
-  const setDrawId = useQueueStore((state) => state.setDrawId);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
+  const [isAlreadyEnteredModalOpen, setIsAlreadyEnteredModalOpen] =
+    useState(false);
+  const [successData, setSuccessData] = useState<DrawEntrySuccessData | null>(
+    null
+  );
 
+  //예약 신청 페이지 버튼
   const handleCheck = (index: number, checked: boolean) => {
     setChecks((prev) => {
       const next = [...prev];
@@ -41,59 +46,71 @@ export default function DrawApplySection({
   };
 
   const handleSubmit = async () => {
-    // TODO 테스트 후 주석 제거
-    if (selectedOptionId === null) return;
+    if (!accessToken) {
+      snackbar.destructive({
+        title: '로그인이 필요합니다.',
+      });
+      return;
+    }
+
+    if (selectedOptionId === null) {
+      snackbar.destructive({
+        title: '응모할 회차를 선택해주세요.',
+      });
+      return;
+    }
 
     setIsSubmitting(true);
-    setErrorMessage(null);
 
     try {
-      const response = await fetch(`/api/queue/draws/${drawId}`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          // TODO 테스트 후 주석 제거
-          // Authorization: `Bearer ${accessToken}`,
+      const result = await postDrawEntry(
+        Number(drawId),
+        selectedOptionId,
+        {
+          isPrivacyAgreed: checks[1],
+          isTermsAgreed: checks[0],
         },
-      });
+        accessToken
+      );
 
-      const result = (await response.json()) as QueueEntryResponse;
-
-      if (!response.ok || !result.data) {
-        setErrorMessage(result.message ?? DEFAULT_SUBMIT_ERROR);
+      if (result.code === 'SUCCESS') {
+        setSuccessData(result.data);
+        setIsSuccessModalOpen(true);
         return;
       }
 
-      const { status } = result.data;
-
-      if (status !== 'BLOCKED' && 'queueToken' in result.data) {
-        queueTokenStorage.save(result.data.queueToken);
+      if (result.code === 'D005') {
+        setIsAlreadyEnteredModalOpen(true);
+        return;
       }
 
-      const statusHandler: Record<string, () => void> = {
-        ACTIVE: () => router.push('/security-quiz'),
-        WAITING: () => {
-          sessionStorage.setItem('queue_draw_id', drawId);
-          setDrawId(drawId);
-          router.push('/queue');
-        },
-        BLOCKED: () => {
-          const msg =
-            result.data?.status === 'BLOCKED' ? result.data.blockedUntil : null;
-          setErrorMessage(
-            msg ? `${msg}까지 접근이 제한되었습니다.` : result.message
-          );
-        },
-      };
-      const handler = statusHandler[status];
-      if (handler) {
-        handler();
-      } else {
-        setErrorMessage(DEFAULT_SUBMIT_ERROR);
+      if (result.code === 'C001') {
+        const validationMessage =
+          result.data.isTermsAgreed ??
+          result.data.isPrivacyAgreed ??
+          result.message;
+
+        snackbar.destructive({
+          title: '응모 실패',
+          description: validationMessage,
+        });
+        return;
       }
+
+      const mappedMessage =
+        DRAW_ENTRY_ERROR_MESSAGE[result.code] ?? DEFAULT_SUBMIT_ERROR;
+
+      snackbar.destructive({
+        title: '응모 실패',
+        description: mappedMessage,
+      });
     } catch (error) {
-      console.error('[draw-apply-section]', error);
-      setErrorMessage(DEFAULT_SUBMIT_ERROR);
+      console.error('[DrawApplySection/handleSubmit]', error);
+
+      snackbar.destructive({
+        title: '응모 실패',
+        description: DEFAULT_SUBMIT_ERROR,
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -145,12 +162,21 @@ export default function DrawApplySection({
       )}
 
       <Button
-        // TODO 테스트를 위하여 임시 주석
         disabled={!isAllChecked || selectedOptionId === null || isSubmitting}
         onClick={handleSubmit}
       >
         {isSubmitting ? '신청 중...' : '드로우 신청하기'}
       </Button>
+      <DrawEntrySuccessModal
+        open={isSuccessModalOpen}
+        data={successData}
+        onClose={() => setIsSuccessModalOpen(false)}
+      />
+
+      <DrawEntryDuplicateModal
+        open={isAlreadyEnteredModalOpen}
+        onClose={() => setIsAlreadyEnteredModalOpen(false)}
+      />
     </div>
   );
 }

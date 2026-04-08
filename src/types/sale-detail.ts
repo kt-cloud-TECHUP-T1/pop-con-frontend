@@ -1,13 +1,10 @@
 export type PopupPhaseType = 'AUCTION' | 'DRAW';
-export type PopupPhaseStatus = 'UPCOMING' | 'OPEN' | 'CLOSED';
 
 export interface PopupDetailData {
   phaseType: PopupPhaseType;
-  phaseStatus: PopupPhaseStatus;
   popupId: number;
   liked: boolean;
   thumbnailUrl: string;
-  images: string[];
   subtitle: string;
   title: string;
   viewCount: number;
@@ -38,7 +35,6 @@ export interface PopupDetailErrorResponse {
 }
 
 export type AuctionStatus = 'SCHEDULED' | 'OPEN' | 'SOLD_OUT' | 'CLOSED';
-
 export type AuctionButtonStatus = 'WAITING' | 'ENABLED' | 'SOLD_OUT' | 'ENDED';
 
 export interface AuctionData {
@@ -78,6 +74,7 @@ export interface DrawData {
   drawOpenAt: string;
   drawCloseAt: string;
   serverTime: string;
+  drawId: number;
 }
 
 export interface DrawDetailResponse {
@@ -90,66 +87,4 @@ export interface DrawErrorResponse {
   code: 'D001' | 'C001' | 'S001' | string;
   message: string;
   data: Record<string, string> | null;
-}
-
-export interface AuctionSidebarProps extends AuctionData {
-  phaseType: 'AUCTION';
-  openAt: string;
-  closeAt: string;
-  weekdayOpen: string;
-  weekdayClose: string;
-  weekendOpen: string;
-  weekendClose: string;
-  location: string;
-  popupId: number;
-  phaseStatus: string;
-  connetedDrawId: number | null;
-}
-
-export interface DrawSidebarProps extends DrawData {
-  phaseType: 'DRAW';
-  openAt: string;
-  closeAt: string;
-  weekdayOpen: string;
-  weekdayClose: string;
-  weekendOpen: string;
-  weekendClose: string;
-  location: string;
-  popupId: number;
-  phaseStatus: string;
-  drawId: number | null;
-}
-
-export type SaleDetailSidebarProps = AuctionSidebarProps | DrawSidebarProps;
-
-interface BaseSaleInfoCTAProps {
-  phaseStatus: string;
-  serverTime: string;
-}
-
-interface AuctionSaleInfoCTAProps extends BaseSaleInfoCTAProps {
-  phaseType: 'AUCTION';
-  auctionOpenAt: string;
-  auctionStatus: string;
-  buttonStatus: AuctionButtonStatus;
-  connetedDrawOpenAt: string | null;
-}
-
-export interface DrawSaleInfoCTAProps extends BaseSaleInfoCTAProps {
-  phaseType: 'DRAW';
-  drawOpenAt: string;
-  drawCloseAt: string;
-}
-
-export type SaleInfoCTAProps = AuctionSaleInfoCTAProps | DrawSaleInfoCTAProps;
-
-export interface SaleScheduleInfoProps {
-  phaseType: PopupPhaseType;
-  openAt: string;
-  closeAt: string;
-  weekdayOpen: string;
-  weekdayClose: string;
-  weekendOpen: string;
-  weekendClose: string;
-  location: string;
 }

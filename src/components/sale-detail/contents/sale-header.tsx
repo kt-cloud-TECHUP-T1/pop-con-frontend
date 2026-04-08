@@ -1,21 +1,17 @@
+'use client';
 import { Icon } from '@/components/Icon/Icon';
 import { Typography } from '@/components/ui/typography';
+import { useParams } from 'next/navigation';
+import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
 
-interface SaleHeaderProps {
-  title: string;
-  subTitle?: string;
-  viewCount?: number;
-  likeCount?: number;
-  className?: string;
-}
+export default function SaleHeader() {
+  const params = useParams<{ popupId: string }>();
+  const popupIdNumber = Number(params.popupId);
+  const { data: popupData } = usePopupDetailQuery(popupIdNumber);
 
-export default function SaleHeader({
-  title,
-  subTitle,
-  viewCount = 0,
-  likeCount = 0,
-  className,
-}: SaleHeaderProps) {
+  if (!popupData) return null;
+
+  const { title, subtitle, viewCount = 0, likeCount = 0 } = popupData;
   return (
     <div className="py-m">
       <section className="flex justify-between">
@@ -24,7 +20,7 @@ export default function SaleHeader({
           weight="medium"
           className="text-[var(--content-extra-low)]"
         >
-          {subTitle}
+          {subtitle}
         </Typography>
         <div className="flex gap-xs text-[var(--content-extra-low)]">
           <Icon name="Heart" size={24}></Icon>

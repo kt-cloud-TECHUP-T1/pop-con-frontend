@@ -5,6 +5,7 @@ import { Icon } from '@/components/Icon/Icon';
 
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Box } from '@/components/ui/box';
+import { Typography } from '@/components/ui/typography';
 
 const thumbnailVariants = cva(
   'w-full rounded-ml border border-Line-Line-3/10 object-cover',
@@ -37,6 +38,7 @@ export interface CardThumbnailProps {
   showCountView?: boolean;
   showCountLike?: boolean;
   isLiked?: boolean;
+  thumbnailClassName?: string;
   overlayBadge?: React.ReactNode;
   overlayBadgeBackground?: string;
   overlayBadgeClassName?: string;
@@ -59,6 +61,7 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
   showCountLike,
   index,
   isLiked,
+  thumbnailClassName,
   overlayBadge,
   overlayBadgeBackground,
   overlayBadgeClassName,
@@ -99,7 +102,8 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
           <img
             className={cn(
               'thumbnail',
-              thumbnailVariants({ ratio: thumbnailRatio })
+              thumbnailVariants({ ratio: thumbnailRatio }),
+              thumbnailClassName
             )}
             src={thumbnailUrl ?? '/images/temp/no-image.png'}
             alt={thumbnailAlt || title || ''}
@@ -153,23 +157,32 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
                 </div>
               </div>
             )}
-            <h6
+            <Typography
+              variant="title-2"
+              weight="bold"
               className={cn(
                 'title',
-                'justify-start text-Contents-High text-lg font-bold leading-6'
+                'justify-start text-Contents-High text-lg leading-6'
               )}
             >
               {title}
-            </h6>
+            </Typography>
             {description && (
-              <div className="justify-start text-Contents-High text-base font-normal leading-6">
+              <Typography
+                variant="body-1"
+                weight="regular"
+                className="justify-start text-base leading-6 text-[var(--content-high)]"
+              >
                 {description}
-              </div>
+              </Typography>
             )}
             {caption && (
-              <div className="justify-start text-Contents-Extra-Low text-xs font-normal leading-5 text-neutral-60">
+              <Typography
+                variant="caption-1"
+                className="justify-start text-xs font-normal leading-5 text-[var(--content-extra-low)]"
+              >
                 {caption}
-              </div>
+              </Typography>
             )}
             <div className="inline-flex justify-start items-center gap-2 text-neutral-500">
               {showCountView && (
