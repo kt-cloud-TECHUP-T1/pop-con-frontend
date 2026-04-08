@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import Link from 'next/link';
 import { Box } from '@/components/ui/box';
 import { Typography } from '../ui/typography';
@@ -55,11 +56,8 @@ export const Footer = () => {
     <footer className="w-full pt-10 pb-12 border-t border-[#ebebeb]">
       <Box className="max-w-[1280px] mx-auto px-10">
         <Box className="flex items-center justify-between">
-          <Link
-            href="/"
-            className="w-[130px] h-[32px] flex items-center justify-center logo bg-[#E5E5E5] text-black"
-          >
-            Logo
+          <Link href="/" className="text-black" aria-label="POP-CON 홈">
+            <Image src="/Logo.svg" alt="" width={70} height={40} />
           </Link>
           <nav>
             <ul className="flex gap-8">

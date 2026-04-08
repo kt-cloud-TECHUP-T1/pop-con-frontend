@@ -62,6 +62,11 @@ export const DutchAuction = () => {
               <CardThumbnail
                 thumbnailUrl={dutchAuctionCard.thumbnailUrl ?? undefined}
                 thumbnailRatio="16/9"
+                thumbnailClassName={
+                  dutchAuctionCard.overlay.type === 'AUCTION_OPEN_AT'
+                    ? 'brightness-70'
+                    : undefined
+                }
                 title={dutchAuctionCard.title}
                 description={dutchAuctionCard.subText ?? undefined}
                 caption={dutchAuctionCard.caption ?? undefined}

@@ -77,7 +77,7 @@ export const Magazine = () => {
           gridSize={{
             default: 1,
             md: 2,
-            lg: 4,
+            lg: 3,
           }}
           carouselOpts={{ align: 'start' }}
           items={magazineCards.map((magazineCard) => (
