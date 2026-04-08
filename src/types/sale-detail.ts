@@ -71,10 +71,10 @@ export interface AuctionErrorResponse {
 }
 
 export interface DrawData {
+  drawId: number;
   drawOpenAt: string;
   drawCloseAt: string;
   serverTime: string;
-  drawId: number;
 }
 
 export interface DrawDetailResponse {

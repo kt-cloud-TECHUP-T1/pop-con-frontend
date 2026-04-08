@@ -20,7 +20,7 @@ import { useQueueStore } from '@/features/queue/stores/queue-store';
 import { QueueEntryResponse } from '@/features/queue/types/queue';
 import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
 import { useCurrentDrawDetail } from '../queries/use-current-draw-detail';
-import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
+import { getDrawDetail } from '@/lib/api/draw/get-draw-detail';
 import { useQuery } from '@tanstack/react-query';
 
 export default function SaleInfoCTA() {

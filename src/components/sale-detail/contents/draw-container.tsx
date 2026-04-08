@@ -11,7 +11,7 @@ import { SaleDetailMain } from './sale-detail-main';
 import SaleDrawDetailSidebar from '../info/sale-draw-detail-sidebar';
 
 import { getPopupDetail } from '@/lib/api/popup/get-popup-detail';
-import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
+import { getDrawDetail } from '@/lib/api/draw/get-draw-detail';
 import { SaleDetailSkeleton } from '../ui/loading/sale-detail-skeleton';
 import { ErrorPage } from '../ui/error/error-page';
 import { ApiError } from '@/lib/api-error';
@@ -33,6 +33,7 @@ export default function DrawContainer() {
   });
 
   const drawId = popupData?.drawId;
+  const isValidDrawId = typeof drawId === 'number' && drawId > 0;
 
   const {
     data: drawData,
@@ -42,7 +43,7 @@ export default function DrawContainer() {
   } = useQuery({
     queryKey: ['draw-detail', drawId],
     queryFn: () => getDrawDetail(drawId!),
-    enabled: !!drawId,
+    enabled: isValidDrawId,
   });
 
   if (!popupId || Number.isNaN(popupIdNumber)) {
