@@ -29,6 +29,7 @@ export async function getPopupDetail(popupId: number, accessToken?: string) {
       cache: 'no-store',
     });
   } catch {
+    //네트워크 레벨 에러 캐치
     throw new ApiError({
       code: 'NETWORK_ERROR',
       message: COMMON_ERROR_MESSAGES.NETWORK_ERROR,
