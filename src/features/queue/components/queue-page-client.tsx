@@ -139,7 +139,7 @@ export const QueuePageClient = () => {
       }
 
       const rejoinQueue = async () => {
-        const NumberAuctionId = Number(auctionId);
+        const NumberAuctionId = Number(savedAuctionId);
         try {
           const result = await enterAuctionQueue(
             NumberAuctionId,
