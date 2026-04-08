@@ -2,11 +2,11 @@ import { create } from 'zustand';
 
 interface QueueState {
   drawId: string | null;
-  auctionId: string | null;
   setDrawId: (drawId: string) => void;
   clearDrawId: () => void;
-  setauctionId: (auctionId: string) => void;
-  clearauctionId: () => void;
+  auctionId: string | null;
+  setAuctionId: (auctionId: string) => void;
+  clearAuctionId: () => void;
 }
 
 export const useQueueStore = create<QueueState>((set) => ({
@@ -14,6 +14,6 @@ export const useQueueStore = create<QueueState>((set) => ({
   setDrawId: (drawId) => set({ drawId }),
   clearDrawId: () => set({ drawId: null }),
   auctionId: null,
-  setauctionId: (drawId) => set({ drawId }),
-  clearauctionId: () => set({ drawId: null }),
+  setAuctionId: (auctionId) => set({ auctionId }),
+  clearAuctionId: () => set({ auctionId: null }),
 }));
