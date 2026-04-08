@@ -5,7 +5,7 @@ interface QueueState {
   auctionId: string | null;
   setDrawId: (drawId: string) => void;
   clearDrawId: () => void;
-  setauctionId: (drawId: string) => void;
+  setauctionId: (auctionId: string) => void;
   clearauctionId: () => void;
 }
 

@@ -1,3 +1,4 @@
+'use client';
 import { Icon } from '@/components/Icon/Icon';
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';

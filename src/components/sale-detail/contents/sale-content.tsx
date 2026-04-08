@@ -1,3 +1,4 @@
++'use client';
 import { Typography } from '@/components/ui/typography';
 import { cn } from '@/lib/utils';
 import { useParams } from 'next/navigation';
