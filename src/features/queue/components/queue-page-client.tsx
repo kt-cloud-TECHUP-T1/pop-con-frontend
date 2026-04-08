@@ -54,6 +54,7 @@ export const QueuePageClient = () => {
 
       leaveQueueBeacon(token);
       clearAuctionQueueState();
+      clearDrawQueueState();
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -68,6 +69,7 @@ export const QueuePageClient = () => {
       case 'Q002':
       case 'Q003': {
         clearAuctionQueueState();
+        clearDrawQueueState();
         isManualLeave.current = true;
         router.back();
         return;
