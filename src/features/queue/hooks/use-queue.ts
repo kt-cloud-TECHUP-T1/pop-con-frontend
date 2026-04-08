@@ -26,7 +26,7 @@ export function useQueue({ queueToken, onActive }: UseQueueOptions) {
     },
     refetchInterval: (query) => {
       if (query.state.data?.data?.status === 'ACTIVE') return false;
-      return 3000;
+      return query.state.data?.data?.pollAfterMs ?? 3000;
     },
     enabled: !!queueToken,
     retry: false,
