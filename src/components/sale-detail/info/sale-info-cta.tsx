@@ -56,6 +56,7 @@ function AuctionCTA({
   const router = useRouter();
   const authStatus = useAuthStore((state) => state.authStatus);
   const accessToken = useAuthStore((state) => state.accessToken);
+  const setAuctionId = useQueueStore((state) => state.setAuctionId);
   const shouldFetchDraw = auctionData?.auctionStatus === 'CLOSED';
 
   const {
@@ -103,11 +104,8 @@ function AuctionCTA({
 
         switch (result.code) {
           case 'SUCCESS': {
-            //queueToken 저장
-            sessionStorage.setItem('queueToken', result.data.queueToken);
-            sessionStorage.setItem('identifyType', String(auctionId));
-
-            //Todo 최초진입 store에서 상태값 ture로 바꾸기 추가
+            //queueToken 저장 (대기열 페이지에서 풀링 및 삭제용)
+            queueTokenStorage.save(result.data.queueToken);
 
             if (result.data.status === 'ACTIVE') {
               //퀴즈페이지로 이동
@@ -116,7 +114,14 @@ function AuctionCTA({
             }
 
             if (result.data.status === 'WAITING') {
-              router.push(`/queue`);
+              //재진입시 api 전달용
+              sessionStorage.setItem(
+                'queue_auction_id',
+                String(auctionData.auctionId)
+              );
+              //큐스토어에 auctionId 저장 새로고침시 재진입 확인용
+              setAuctionId(String(auctionData.auctionId));
+              router.push('/queue');
               // 대기열 페이지 이동
               return;
             }
