@@ -45,4 +45,5 @@ next-env.d.ts
 storybook-static
 
 # docs
-/docs/*
+/docs/api/
+/docs/csv/
