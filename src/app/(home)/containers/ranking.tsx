@@ -5,7 +5,7 @@ import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
 import { RankingSkeleton } from '../components/skeletons';
-import { BasePopupCard } from '../types';
+import { BasePopupCard, PopupPhase } from '../types';
 import { useSectionFetch } from '../hooks/use-section-fetch';
 
 interface RankingCard extends BasePopupCard {
@@ -13,12 +13,7 @@ interface RankingCard extends BasePopupCard {
     type: 'RANK';
     rank: number;
   };
-  phase: {
-    type: 'AUCTION';
-    status: 'UPCOMING' | 'OPEN' | 'CLOSED';
-    openAt: string;
-    closeAt: string;
-  };
+  phase: PopupPhase;
 }
 
 export const Ranking = () => {
