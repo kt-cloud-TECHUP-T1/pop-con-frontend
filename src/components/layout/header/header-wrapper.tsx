@@ -12,7 +12,9 @@ const AUTH_PATHS = ['/login', '/signup', '/verify', '/callback'];
 
 export function HeaderWrapper({ isLoggedIn }: { isLoggedIn: boolean }) {
   const pathname = usePathname();
-  const isAuthPage = AUTH_PATHS.some((path) => pathname.startsWith(path));
+  const isAuthPage = AUTH_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  );
 
   return (
     <header className="w-full border-b border-[var(--neutral-90)] py-5 sticky top-0 bg-white z-50">
