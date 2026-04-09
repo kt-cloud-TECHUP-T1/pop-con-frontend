@@ -1,5 +1,3 @@
-// src/app/api/sale-detail/get-draw-detail.ts
-
 import { DRAW_ERROR_MESSAGES } from '@/constants/draw';
 import { COMMON_ERROR_MESSAGES } from '@/constants/error/common';
 import { ApiError } from '@/lib/api-error';
