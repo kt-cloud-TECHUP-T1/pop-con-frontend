@@ -58,7 +58,7 @@ export const Ranking = () => {
               thumbnailUrl={rankingCard.thumbnailUrl ?? undefined}
               thumbnailRatio="3/4"
               title={rankingCard.title}
-              description={rankingCard.supportingText ?? undefined}
+              description={rankingCard.subText ?? undefined}
               caption={rankingCard.caption ?? undefined}
               countView={rankingCard.stats.viewCount}
               countLike={rankingCard.stats.likeCount}

@@ -2,6 +2,10 @@
 @import 'tw-animate-css';
 @custom-variant dark (&:is(.dark *));
 
+html {
+  scroll-behavior: smooth;
+}
+
 @utility container {
   width: 100%;
   margin-inline: auto;

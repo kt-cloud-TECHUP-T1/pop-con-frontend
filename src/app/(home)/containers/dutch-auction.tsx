@@ -40,6 +40,7 @@ export const DutchAuction = () => {
 
   return (
     <Section
+      id="dutch-auction"
       title="더치 경매"
       showButtonMore
       // TODO 더보기 작업 필요

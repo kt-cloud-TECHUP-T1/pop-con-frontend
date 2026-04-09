@@ -63,6 +63,7 @@ export const Magazine = () => {
 
   return (
     <Section
+      id="magazine"
       title="매거진"
       showButtonMore
       // TODO 더보기 작업 필요

@@ -100,6 +100,7 @@ export const LuckyDraw = () => {
 
   return (
     <Section
+      id="lucky-draw"
       title="드로우"
       showButtonMore
       // TODO 더보기 작업 필요
