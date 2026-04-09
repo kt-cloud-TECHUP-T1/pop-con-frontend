@@ -10,6 +10,7 @@ import { Footer } from '@/components/layout/footer';
 import { SnackbarToaster } from '@/components/ui/snackbar';
 import { AppProviders } from './providers';
 import { HeaderWrapper } from '@/components/layout/header/header-wrapper';
+import { SnackbarHandler } from './(auth)/callback/utils/snakbar-handler';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -46,6 +47,7 @@ export default async function RootLayout({
         <PaymentRequiredModal />
         <PaymentRegisterModal />
         <SnackbarToaster />
+        <SnackbarHandler />
       </body>
     </html>
   );
