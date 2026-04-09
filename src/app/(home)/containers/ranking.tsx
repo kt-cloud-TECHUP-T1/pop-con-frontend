@@ -5,7 +5,7 @@ import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
 import { RankingSkeleton } from '../components/skeletons';
-import { BasePopupCard } from '../types';
+import { BasePopupCard, PopupPhase } from '../types';
 import { useSectionFetch } from '../hooks/use-section-fetch';
 
 interface RankingCard extends BasePopupCard {
@@ -13,20 +13,19 @@ interface RankingCard extends BasePopupCard {
     type: 'RANK';
     rank: number;
   };
-  phase: {
-    type: 'AUCTION';
-    status: 'UPCOMING' | 'OPEN' | 'CLOSED';
-    openAt: string;
-    closeAt: string;
-  };
+  phase: PopupPhase;
 }
 
 export const Ranking = () => {
   const rankingCards = useSectionFetch<RankingCard>('/api/popups/rankings');
   const router = useRouter();
 
-  const handleClick = (popupId: number) => {
-    router.push(`/auction/${popupId}`);
+  const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
+    if (phaseType === 'AUCTION') {
+      router.push(`/auction/${popupId}`);
+    } else {
+      router.push(`/draw/${popupId}`);
+    }
   };
 
   if (rankingCards === null) return <RankingSkeleton />;
@@ -67,7 +66,9 @@ export const Ranking = () => {
               showCountLike
               // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
               isLiked={rankingCard.liked ?? false}
-              onClick={() => handleClick(rankingCard.popupId)}
+              onClick={() =>
+                handleClick(rankingCard.popupId, rankingCard.phase.type)
+              }
             />
           ))}
         />
