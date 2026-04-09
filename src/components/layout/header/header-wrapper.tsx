@@ -7,11 +7,23 @@ import { Box } from '@/components/ui/box';
 import { HeaderNav } from './header-nav';
 import { Avatar } from '@/components/ui/avatar';
 import { Icon } from '@/components/Icon/Icon';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
 
 const AUTH_PATHS = ['/login', '/signup', '/verify', '/callback'];
 
-export function HeaderWrapper({ isLoggedIn }: { isLoggedIn: boolean }) {
+export function HeaderWrapper({
+  isLoggedIn: serverIsLoggedIn,
+}: {
+  isLoggedIn: boolean;
+}) {
   const pathname = usePathname();
+  const authStatus = useAuthStore((state) => state.authStatus);
+
+  const isLoggedIn =
+    authStatus === 'loading'
+      ? serverIsLoggedIn
+      : authStatus === 'authenticated';
+
   const isAuthPage = AUTH_PATHS.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`)
   );
