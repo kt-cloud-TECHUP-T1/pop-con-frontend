@@ -6,10 +6,6 @@ const API_BASE =
 
 export async function GET() {
   const url = `${API_BASE}/queues/vqa/start`;
-  console.log(
-    '11aㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁㅁ'
-  );
-  console.log(url);
   const response = await fetch(url, {
     method: 'POST',
     headers: {
@@ -17,7 +13,6 @@ export async function GET() {
     },
     body: JSON.stringify({ user_agent: '' }),
   });
-  console.log(response);
 
   return handleProxyResponse(response);
 }
@@ -32,8 +27,6 @@ export async function POST(request: Request) {
     },
     body: JSON.stringify(body),
   });
-
-  console.log(response);
 
   return handleProxyResponse(response);
 }
