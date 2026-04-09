@@ -6,10 +6,10 @@ import PaymentRequiredModal from '@/components/sale-detail/info/payment-required
 import PaymentRegisterModal from '@/components/sale-detail/info/payment-register-modal';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import { Header } from '@/components/layout/header';
 import { Footer } from '@/components/layout/footer';
 import { SnackbarToaster } from '@/components/ui/snackbar';
 import { AppProviders } from './providers';
+import { HeaderWrapper } from '@/components/layout/header/header-wrapper';
 
 const pretendard = localFont({
   src: '../../public/fonts/PretendardVariable.woff2',
@@ -39,7 +39,7 @@ export default async function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.variable} antialiased`}>
         <ConditionalAuthSessionRestore isLoggedIn={isLoggedIn} />
-        <Header />
+        <HeaderWrapper isLoggedIn={isLoggedIn} />
         <AppProviders>{children}</AppProviders>
         <Footer />
         <LoginRequiredModal></LoginRequiredModal>
