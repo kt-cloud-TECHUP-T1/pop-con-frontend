@@ -25,8 +25,12 @@ export const Ranking = () => {
   const rankingCards = useSectionFetch<RankingCard>('/api/popups/rankings');
   const router = useRouter();
 
-  const handleClick = (popupId: number) => {
-    router.push(`/auction/${popupId}`);
+  const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
+    if (phaseType === 'AUCTION') {
+      router.push(`/auction/${popupId}`);
+    } else {
+      router.push(`/draw/${popupId}`);
+    }
   };
 
   if (rankingCards === null) return <RankingSkeleton />;
@@ -67,7 +71,9 @@ export const Ranking = () => {
               showCountLike
               // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
               isLiked={rankingCard.liked ?? false}
-              onClick={() => handleClick(rankingCard.popupId)}
+              onClick={() =>
+                handleClick(rankingCard.popupId, rankingCard.phase.type)
+              }
             />
           ))}
         />
