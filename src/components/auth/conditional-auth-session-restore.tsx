@@ -21,11 +21,13 @@ export default function ConditionalAuthSessionRestore({
   isLoggedIn: boolean;
 }) {
   const pathname = usePathname();
+  const authStatus = useAuthStore((state) => state.authStatus);
 
   const isAuthPage = AUTH_PATHS.some((path) => pathname.startsWith(path));
 
   if (isAuthPage) return null;
-  if (!isLoggedIn) return <SetUnauthenticated />;
+  if (!isLoggedIn && authStatus !== 'authenticated')
+    return <SetUnauthenticated />;
 
   return <AuthSessionRestore />;
 }
