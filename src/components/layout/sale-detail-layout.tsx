@@ -29,9 +29,12 @@ export function SaleDetailLayout({
         <aside
           className={cn(
             'h-fit lg:sticky',
+            // SaleTimeCountBar 유무에 따라 sticky 위치 조정
+            // - 있음: bar 높이 기준 (132px)
+            // - 없음: 헤더 높이 기준 (82px)
             hasStickyTopBar
               ? 'lg:top-[calc(var(--sale-time-bar-height)+var(--spacing-s))]'
-              : 'lg:top-s'
+              : 'lg:top-[calc(var(--header-height)+var(--spacing-s))]'
           )}
         >
           {right}
