@@ -60,6 +60,7 @@ jobs:
             NEXT_PUBLIC_NAVER_CLIENT_ID=${{ secrets.NEXT_PUBLIC_NAVER_CLIENT_ID }}
             NEXT_PUBLIC_QUEUE_SOCKET_URL=${{ secrets.NEXT_PUBLIC_QUEUE_SOCKET_URL }}
             NEXT_PUBLIC_QUEUE_SOCKET_PATH=${{ secrets.NEXT_PUBLIC_QUEUE_SOCKET_PATH }}
+            NEXT_PUBLIC_PORTONE_BILLING_CHANNEL_KEY=${{ secrets.NEXT_PUBLIC_PORTONE_BILLING_CHANNEL_KEY }}
 
       - name: Update GitOps deployment
         run: |
