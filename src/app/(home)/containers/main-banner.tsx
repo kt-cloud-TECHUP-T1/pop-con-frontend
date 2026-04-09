@@ -23,7 +23,9 @@ interface BannerCard {
 const BANNER_LIMIT = 5;
 
 export const MainBanner = () => {
-  const bannerCards = useSectionFetch<BannerCard>(`/api/popups/banners?limit=${BANNER_LIMIT}`);
+  const bannerCards = useSectionFetch<BannerCard>(
+    `/api/popups/banners?limit=${BANNER_LIMIT}`
+  );
   const router = useRouter();
 
   if (bannerCards === null) return <MainBannerSkeleton />;
@@ -44,7 +46,9 @@ export const MainBanner = () => {
   return (
     <GridCarousel
       gridSize="auto"
-      carouselOpts={{ loop: true }}
+      carouselOpts={{ loop: true, align: 'center' }}
+      contentWrapperClassName="overflow-visible"
+      contentClassName="justify-center"
       showIndexes
       items={bannerCards.map((bannerCard) => (
         <div key={bannerCard.popupId} className="w-[384px]">

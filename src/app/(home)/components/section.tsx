@@ -40,9 +40,10 @@ export const Section = ({
   title,
   showButtonMore,
   onClickMore,
-}: { children: React.ReactNode } & SectionHeaderProps) => {
+  id,
+}: { children: React.ReactNode; id?: string } & SectionHeaderProps) => {
   return (
-    <section className="mb-20">
+    <section id={id} className="mb-20 scroll-mt-24">
       <SectionTitle
         title={title}
         showButtonMore={showButtonMore}

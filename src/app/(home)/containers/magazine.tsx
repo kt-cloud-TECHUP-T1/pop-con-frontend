@@ -63,6 +63,7 @@ export const Magazine = () => {
 
   return (
     <Section
+      id="magazine"
       title="매거진"
       showButtonMore
       // TODO 더보기 작업 필요
@@ -77,7 +78,7 @@ export const Magazine = () => {
           gridSize={{
             default: 1,
             md: 2,
-            lg: 4,
+            lg: 3,
           }}
           carouselOpts={{ align: 'start' }}
           items={magazineCards.map((magazineCard) => (

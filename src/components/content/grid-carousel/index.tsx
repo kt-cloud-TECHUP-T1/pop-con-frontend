@@ -90,18 +90,23 @@ export interface GridCarouselProps {
   showArrows?: boolean;
   showIndexes?: boolean;
   alignArrowToRatio?: '3/4' | '16/9' | '1/1' | 'auto';
+  contentWrapperClassName?: string;
+  contentClassName?: string;
 }
 
 export const GridCarousel: React.FC<GridCarouselProps> = ({
-  gridSize = 4,
+  gridSize = 3,
   items,
   carouselOpts,
   showArrows = true,
   showIndexes,
   alignArrowToRatio = 'auto',
+  contentWrapperClassName,
+  contentClassName,
 }) => {
   const [api, setApi] = React.useState<CarouselApi>();
   const [current, setCurrent] = React.useState(0);
+  const [canScroll, setCanScroll] = React.useState(false);
 
   const basisClass = getResponsiveClasses(gridSize, 'basis');
   const widthClass = getResponsiveClasses(gridSize, 'width');
@@ -131,29 +136,35 @@ export const GridCarousel: React.FC<GridCarouselProps> = ({
   );
 
   React.useEffect(() => {
-    if (!api) {
-      return;
-    }
+    if (!api) return;
 
     const onSelect = () => setCurrent(api.selectedScrollSnap() + 1);
     setCurrent(api.selectedScrollSnap() + 1);
-
     api.on('select', onSelect);
+    return () => { api.off('select', onSelect); };
+  }, [api]);
+
+  React.useEffect(() => {
+    if (!api) return;
+
+    const update = () => setCanScroll(api.scrollSnapList().length > 1);
+    update();
+    api.on('reInit', update);
     return () => {
-      api.off('select', onSelect);
+      api.off('reInit', update);
     };
   }, [api]);
 
   return (
     <Carousel className="w-full" opts={carouselOpts} setApi={setApi}>
-      <CarouselContent>
+      <CarouselContent wrapperClassName={contentWrapperClassName} className={contentClassName}>
         {items.map((item, index) => (
           <CarouselItem key={index} className={cn('', basisClass)}>
             <div className="pl-0">{item}</div>
           </CarouselItem>
         ))}
       </CarouselContent>
-      {showArrows && (
+      {showArrows && canScroll && (
         <div
           className={cn(
             'container absolute top-0 left-1/2 -translate-x-1/2 pointer-events-none z-10 flex justify-between',
@@ -170,7 +181,7 @@ export const GridCarousel: React.FC<GridCarouselProps> = ({
           </div>
         </div>
       )}
-      {showIndexes && (
+      {showIndexes && canScroll && (
         <div className="flex justify-center items-center gap-2 mt-6">
           {Array.from({ length: items.length }).map((_, index) => (
             <div

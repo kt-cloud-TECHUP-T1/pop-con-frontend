@@ -11,7 +11,7 @@ import { Recommend } from './containers/recommend';
 
 export default function Home() {
   return (
-    <div className="mt-6">
+    <div className="mt-6 overflow-hidden">
       {/* 메인 배너 */}
       <MainBanner />
       {/* 카테고리 */}

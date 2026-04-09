@@ -40,6 +40,7 @@ export const DutchAuction = () => {
 
   return (
     <Section
+      id="dutch-auction"
       title="더치 경매"
       showButtonMore
       // TODO 더보기 작업 필요
@@ -62,6 +63,11 @@ export const DutchAuction = () => {
               <CardThumbnail
                 thumbnailUrl={dutchAuctionCard.thumbnailUrl ?? undefined}
                 thumbnailRatio="16/9"
+                thumbnailClassName={
+                  dutchAuctionCard.overlay.type === 'AUCTION_OPEN_AT'
+                    ? 'brightness-70'
+                    : undefined
+                }
                 title={dutchAuctionCard.title}
                 description={dutchAuctionCard.subText ?? undefined}
                 caption={dutchAuctionCard.caption ?? undefined}

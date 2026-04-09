@@ -9,6 +9,7 @@ import { auctionStreamHandlers } from './sale-detail/auction-stream';
 import { drawHandlers } from './sale-detail/draw';
 import { popupDetailHandlers } from './sale-detail/popup-detail';
 import { queueHandlers } from './queue';
+import { historyHandlers } from './history';
 
 export const handlers = [
   ...authHandlers,
@@ -22,4 +23,5 @@ export const handlers = [
   ...auctionReservationHandlers,
   ...drawEntryHandlers,
   ...queueHandlers,
+  ...historyHandlers,
 ];

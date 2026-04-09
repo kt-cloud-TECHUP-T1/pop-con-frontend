@@ -19,7 +19,9 @@ interface RecommendedCard extends BasePopupCard {
 }
 
 export const Recommend = () => {
-  const recommendedCards = useSectionFetch<RecommendedCard>('/api/popups/recommended');
+  const recommendedCards = useSectionFetch<RecommendedCard>(
+    '/api/popups/recommended'
+  );
   const router = useRouter();
 
   const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
@@ -57,7 +59,7 @@ export const Recommend = () => {
               thumbnailAlt={recommendedCard.caption ?? undefined}
               thumbnailRatio="3/4"
               title={recommendedCard.title}
-              description={recommendedCard.supportingText ?? undefined}
+              description={recommendedCard.subText ?? undefined}
               caption={recommendedCard.caption ?? undefined}
               countView={recommendedCard.stats.viewCount}
               countLike={recommendedCard.stats.likeCount}

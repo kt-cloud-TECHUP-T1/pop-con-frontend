@@ -8,8 +8,13 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        //추후 이미지 저장된 서버 도메인으로 변경
-        hostname: 'imagelink.com',
+        // csv 데이터 기준
+        hostname: 'popply.co.kr',
+      },
+      {
+        protocol: 'https',
+        // csv 데이터 기준
+        hostname: 'cdn.popga.co.kr',
       },
     ],
   },

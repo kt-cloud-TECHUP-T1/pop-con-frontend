@@ -1,11 +1,19 @@
 'use client';
 
 import { usePathname } from 'next/navigation';
-import AuthSessionRestore from './auth-session-restore';
-import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { useEffect } from 'react';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import AuthSessionRestore from './auth-session-restore';
 
 const AUTH_PATHS = ['/signup', '/verify', '/callback'];
+
+function SetUnauthenticated() {
+  const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
+  useEffect(() => {
+    clearAccessToken();
+  }, [clearAccessToken]);
+  return null;
+}
 
 export default function ConditionalAuthSessionRestore({
   isLoggedIn,
@@ -13,17 +21,11 @@ export default function ConditionalAuthSessionRestore({
   isLoggedIn: boolean;
 }) {
   const pathname = usePathname();
-  const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
 
   const isAuthPage = AUTH_PATHS.some((path) => pathname.startsWith(path));
 
-  useEffect(() => {
-    if (!isAuthPage && !isLoggedIn) {
-      clearAccessToken();
-    }
-  }, [isAuthPage, isLoggedIn, clearAccessToken]);
-
-  if (isAuthPage || !isLoggedIn) return null;
+  if (isAuthPage) return null;
+  if (!isLoggedIn) return <SetUnauthenticated />;
 
   return <AuthSessionRestore />;
 }
