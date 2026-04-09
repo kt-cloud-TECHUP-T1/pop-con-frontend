@@ -28,10 +28,13 @@ interface LuckyDrawCard extends BasePopupCard {
   };
 }
 
-type LuckyDrawCardResponse = BaseCardResponse<LuckyDrawCard, 'DRAWS_OPEN' | 'DRAWS_UPCOMING'>;
+type LuckyDrawCardResponse = BaseCardResponse<
+  LuckyDrawCard,
+  'DRAWS_OPEN' | 'DRAWS_UPCOMING'
+>;
 
 export const LuckyDraw = () => {
-  const [activeTab, setActiveTab] = useState<DrawTab>('UPCOMING');
+  const [activeTab, setActiveTab] = useState<DrawTab>('OPEN');
   const [openCards, setOpenCards] = useState<LuckyDrawCard[] | null>(null);
   const [upcomingCards, setUpcomingCards] = useState<LuckyDrawCard[] | null>(
     null
