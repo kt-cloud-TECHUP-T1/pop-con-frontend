@@ -215,8 +215,8 @@ export default function PortoneAuthClient() {
         weight="bold"
         className="text-center mb-10"
       >
-        휴대폰 번호로
-        <br /> 본인 인증해주세요.
+        회원가입을 위해
+        <br /> 본인 인증이 필요해요
       </Typography>
       <Box
         className="w-full max-w-[360px] bg-[#F35E11] text-center mx-auto"
