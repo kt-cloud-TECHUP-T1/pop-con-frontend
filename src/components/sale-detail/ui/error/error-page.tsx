@@ -97,16 +97,9 @@ export function ErrorPage({ code, message, onRetry }: ErrorPageProps) {
             </Button>
           ) : null}
 
-          <Link href="/" className="w-full">
-            <Button
-              type="button"
-              variant="primary"
-              size="large"
-              className="w-full"
-            >
-              홈으로 가기
-            </Button>
-          </Link>
+          <Button asChild variant="primary" size="large" className="w-full">
+            <Link href="/">홈으로 가기</Link>
+          </Button>
         </div>
       </div>
     </Wrapper>
