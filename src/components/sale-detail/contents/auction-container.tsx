@@ -15,6 +15,8 @@ import { RelatedPopup } from '@/components/sale-detail/popup/related-popup';
 import { connectAuctionStream } from '@/app/api/sale-detail/connect-auction-stream';
 import { useAuctionStore } from '../stores/auction-store';
 import { ApiError } from '@/lib/api-error';
+import { SaleDetailSkeleton } from '../ui/loading/sale-detail-skeleton';
+import { ErrorPage } from '../ui/error/error-page';
 
 export function AuctionContainer() {
   const params = useParams<{ popupId: string }>();
@@ -70,32 +72,31 @@ export function AuctionContainer() {
   }, [popupData?.auctionId, resetAuctionData, setLiveAuctionData]);
 
   if (!popupId || Number.isNaN(popupIdNumber)) {
-    return <div>유효하지 않은 popupId입니다.</div>;
+    return <ErrorPage code="C001" message="유효하지 않은 popupId입니다." />;
   }
 
   if (isPopupPending) {
-    return <div>로딩중...</div>;
+    return <SaleDetailSkeleton />;
   }
 
   if (isPopupError) {
-    return (
-      <div>
-        {popupError instanceof Error
-          ? popupError.message
-          : '팝업 조회에 실패했습니다.'}
-      </div>
-    );
+    if (popupError instanceof ApiError) {
+      return <ErrorPage code={popupError.code} message={popupError.message} />;
+    }
+
+    return <ErrorPage code="NETWORK_ERROR" />;
   }
 
   if (!popupData) {
-    return <div>데이터를 불러오지 못했습니다.</div>;
+    return (
+      <ErrorPage code="UNKNOWN_ERROR" message="데이터를 불러오지 못했습니다." />
+    );
   }
   if (sseError) {
-    return <div>{sseError.message}</div>;
+    return <ErrorPage code={sseError.code} message={sseError.message} />;
   }
-  // popup은 준비됐지만, 경매 실시간 첫 데이터가 아직 안 온 상태
   if (!liveAuctionData) {
-    return <div>경매 정보를 불러오는 중...</div>;
+    return <SaleDetailSkeleton />;
   }
 
   const hasStickyTopBar = liveAuctionData.auctionStatus !== 'SCHEDULED';

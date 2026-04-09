@@ -15,6 +15,7 @@ export default function AuthCallbackPage() {
   const router = useRouter();
   const requestedRef = useRef(false);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
   const setPaymentRegistered = useAuthStore(
     (state) => state.setPaymentRegistered
   );
@@ -32,13 +33,15 @@ export default function AuthCallbackPage() {
         const result: RefreshTokenResponse = await response.json();
 
         if (!response.ok) {
+          clearAccessToken();
           router.replace(`/login?error=${result.code ?? 'S001'}`);
           return;
         }
 
         const accessToken = result.data?.accessToken ?? null;
-
+        //응답은 제대로 왔지만 서버에서 엑세스토큰을 실수로 안내려준 경우
         if (!accessToken) {
+          clearAccessToken();
           router.replace('/login?error=S001');
           return;
         }
@@ -54,14 +57,18 @@ export default function AuthCallbackPage() {
 
           const errorCode = error instanceof Error ? error.message : 'UNKNOWN';
 
-          if (errorCode === 'A002' || errorCode === 'A003') {
-            setAccessToken(null);
-            setPaymentRegistered(false);
+          if (
+            errorCode === 'A002' ||
+            errorCode === 'A003' ||
+            errorCode === 'U001'
+          ) {
+            //인증 깨짐 => 등록여부 및 로그인 비회원으로 바꿈
+            clearAccessToken();
             router.replace('/login');
             return;
           }
-
-          setPaymentRegistered(false);
+          //시스템 에러인경우로 상태 확인 불가라서 null
+          setPaymentRegistered(null);
         }
 
         const redirect = sessionStorage.getItem(LOGIN_REDIRECT_KEY);
@@ -80,7 +87,7 @@ export default function AuthCallbackPage() {
     };
 
     refresh();
-  }, [router, setAccessToken]);
+  }, [router, setAccessToken, clearAccessToken, setPaymentRegistered]);
 
   return <div>로그인 처리 중...</div>;
 }

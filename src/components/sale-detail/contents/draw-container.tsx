@@ -11,7 +11,10 @@ import { SaleDetailMain } from './sale-detail-main';
 import SaleDrawDetailSidebar from '../info/sale-draw-detail-sidebar';
 
 import { getPopupDetail } from '@/lib/api/popup/get-popup-detail';
-import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
+import { getDrawDetail } from '@/lib/api/draw/get-draw-detail';
+import { SaleDetailSkeleton } from '../ui/loading/sale-detail-skeleton';
+import { ErrorPage } from '../ui/error/error-page';
+import { ApiError } from '@/lib/api-error';
 
 export default function DrawContainer() {
   const params = useParams<{ popupId: string }>();
@@ -30,6 +33,7 @@ export default function DrawContainer() {
   });
 
   const drawId = popupData?.drawId;
+  const isValidDrawId = typeof drawId === 'number' && drawId > 0;
 
   const {
     data: drawData,
@@ -39,47 +43,46 @@ export default function DrawContainer() {
   } = useQuery({
     queryKey: ['draw-detail', drawId],
     queryFn: () => getDrawDetail(drawId!),
-    enabled: !!drawId,
+    enabled: isValidDrawId,
   });
 
   if (!popupId || Number.isNaN(popupIdNumber)) {
-    return <div>유효하지 않은 popupId입니다.</div>;
+    return <ErrorPage code="C001" message="유효하지 않은 popupId입니다." />;
   }
 
   if (isPopupPending || (drawId && isDrawPending)) {
-    return <div>로딩중...</div>;
+    return <SaleDetailSkeleton></SaleDetailSkeleton>;
   }
 
   if (isPopupError) {
+    if (popupError instanceof ApiError) {
+      return <ErrorPage code={popupError.code} message={popupError.message} />;
+    }
+
+    return <ErrorPage code="NETWORK_ERROR" />;
+  }
+
+  if (!popupData || !drawId) {
     return (
-      <div>
-        {popupError instanceof Error
-          ? popupError.message
-          : '팝업 조회에 실패했습니다.'}
-      </div>
+      <ErrorPage code="UNKNOWN_ERROR" message="데이터를 불러오지 못했습니다." />
     );
-  }
-
-  if (!popupData) {
-    return <div>팝업 데이터를 불러오지 못했습니다.</div>;
-  }
-
-  if (!drawId) {
-    return <div>유효한 drawId가 없습니다.</div>;
   }
 
   if (isDrawError) {
-    return (
-      <div>
-        {drawError instanceof Error
-          ? drawError.message
-          : '드로우 조회에 실패했습니다.'}
-      </div>
-    );
+    if (drawError instanceof ApiError) {
+      return <ErrorPage code={drawError.code} message={drawError.message} />;
+    }
+
+    return <ErrorPage code="NETWORK_ERROR" />;
   }
 
   if (!drawData) {
-    return <div>드로우 데이터를 불러오지 못했습니다.</div>;
+    return (
+      <ErrorPage
+        code="UNKNOWN_ERROR"
+        message="드로우 데이터를 불러오지 못했습니다."
+      />
+    );
   }
 
   return (

@@ -20,7 +20,7 @@ import { useQueueStore } from '@/features/queue/stores/queue-store';
 import { QueueEntryResponse } from '@/features/queue/types/queue';
 import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
 import { useCurrentDrawDetail } from '../queries/use-current-draw-detail';
-import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
+import { getDrawDetail } from '@/lib/api/draw/get-draw-detail';
 import { useQuery } from '@tanstack/react-query';
 
 export default function SaleInfoCTA() {
@@ -88,8 +88,12 @@ function AuctionCTA({
     requireAuth({
       authStatus,
       onAuthenticated: async () => {
-        //간편결제 상태 모름
+        //간편결제 상태 모름 👉 null = 로딩중 or 아직 확인 안됨 (판단 불가 상태)
         if (isPaymentRegistered === null) {
+          snackbar.destructive({
+            title:
+              '결제수단 정보를 아직 확인하지 못했습니다. 잠시 후 다시 시도해주세요.',
+          });
           return;
         }
         //간편결제 등록 안됐을경우 결제모달 오픈
@@ -100,7 +104,10 @@ function AuctionCTA({
 
         onSubmitSignals();
         // 대기열 진입 api 추가
-        const result = await enterAuctionQueue(auctionId, accessToken ?? '');
+        const result = await enterAuctionQueue(
+          auctionId,
+          accessToken as string
+        );
 
         switch (result.code) {
           case 'SUCCESS': {
@@ -150,7 +157,6 @@ function AuctionCTA({
       },
       //로그인 유도 모달 오픈
       onUnauthenticated: () => {
-        console.log('로그인 모달 오픈');
         openLoginRequiredModal();
       },
       onLoading: () => {},

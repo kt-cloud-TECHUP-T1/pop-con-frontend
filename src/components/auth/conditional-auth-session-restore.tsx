@@ -15,8 +15,13 @@ function SetUnauthenticated() {
   return null;
 }
 
-export default function ConditionalAuthSessionRestore({ isLoggedIn }: { isLoggedIn: boolean }) {
+export default function ConditionalAuthSessionRestore({
+  isLoggedIn,
+}: {
+  isLoggedIn: boolean;
+}) {
   const pathname = usePathname();
+
   const isAuthPage = AUTH_PATHS.some((path) => pathname.startsWith(path));
 
   if (isAuthPage) return null;

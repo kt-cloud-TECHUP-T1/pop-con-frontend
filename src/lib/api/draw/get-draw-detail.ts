@@ -1,11 +1,9 @@
+import { DRAW_ERROR_MESSAGES } from '@/constants/draw';
 import { COMMON_ERROR_MESSAGES } from '@/constants/error/common';
 import { ApiError } from '@/lib/api-error';
-import {
-  PopupDetailErrorResponse,
-  PopupDetailResponse,
-} from '@/types/sale-detail';
+import { DrawDetailResponse, DrawErrorResponse } from '@/types/sale-detail';
 
-export async function getPopupDetail(popupId: number, accessToken?: string) {
+export async function getDrawDetail(drawId: string | number) {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '');
 
   if (!baseUrl) {
@@ -15,33 +13,32 @@ export async function getPopupDetail(popupId: number, accessToken?: string) {
     });
   }
 
-  const url = `${baseUrl}/popups/${popupId}`;
+  const url = `${baseUrl}/popups/${drawId}`;
 
   let response: Response;
 
+  // 1. 네트워크 에러
   try {
     response = await fetch(url, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
       },
       cache: 'no-store',
     });
   } catch {
-    //네트워크 레벨 에러 캐치
     throw new ApiError({
       code: 'NETWORK_ERROR',
       message: COMMON_ERROR_MESSAGES.NETWORK_ERROR,
     });
   }
 
-  let result: PopupDetailResponse | PopupDetailErrorResponse;
+  //2. json 파싱에러
+
+  let result: DrawDetailResponse | DrawErrorResponse;
 
   try {
-    result = (await response.json()) as
-      | PopupDetailResponse
-      | PopupDetailErrorResponse;
+    result = (await response.json()) as DrawDetailResponse | DrawErrorResponse;
   } catch {
     throw new ApiError({
       code: 'INVALID_JSON',
@@ -50,12 +47,17 @@ export async function getPopupDetail(popupId: number, accessToken?: string) {
     });
   }
 
+  //3 비즈니스 에러
+
   if (result.code !== 'SUCCESS') {
-    const errorResult = result as PopupDetailErrorResponse;
+    const errorResult = result as DrawErrorResponse;
 
     throw new ApiError({
       code: errorResult.code,
       message:
+        DRAW_ERROR_MESSAGES[
+          errorResult.code as keyof typeof DRAW_ERROR_MESSAGES
+        ] ??
         COMMON_ERROR_MESSAGES[
           errorResult.code as keyof typeof COMMON_ERROR_MESSAGES
         ] ??
@@ -65,8 +67,6 @@ export async function getPopupDetail(popupId: number, accessToken?: string) {
       data: errorResult.data,
     });
   }
-
-  const successResult = result as PopupDetailResponse;
-
+  const successResult = result as DrawDetailResponse;
   return successResult.data;
 }

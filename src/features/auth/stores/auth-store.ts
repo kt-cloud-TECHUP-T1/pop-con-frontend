@@ -18,11 +18,11 @@ type AuthState = {
   isPaymentRegistered: boolean | null;
   billingCards: BillingCard[];
 
-  setAccessToken: (accessToken: string | null) => void;
+  setAccessToken: (accessToken: string) => void;
   clearAccessToken: () => void;
   setAuthLoading: () => void;
 
-  setPaymentRegistered: (isRegistered: boolean) => void;
+  setPaymentRegistered: (isRegistered: boolean | null) => void;
   setBillingCards: (cards: BillingCard[]) => void;
 
   clearPaymentRegistered: () => void;
@@ -30,11 +30,9 @@ type AuthState = {
 };
 
 export const useAuthStore = create<AuthState>()((set) => ({
-  // accessToken: 'tempToken',
   accessToken: null,
-  // authStatus: 'authenticated',
   authStatus: 'loading',
-  isPaymentRegistered: false,
+  isPaymentRegistered: null,
   billingCards: [],
 
   setAccessToken: (accessToken) =>
@@ -75,6 +73,6 @@ export const useAuthStore = create<AuthState>()((set) => ({
   clearBillingCards: () =>
     set({
       billingCards: [],
-      isPaymentRegistered: false,
+      isPaymentRegistered: null,
     }),
 }));

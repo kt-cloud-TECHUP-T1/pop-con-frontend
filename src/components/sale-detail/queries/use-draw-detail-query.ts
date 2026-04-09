@@ -1,5 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
-import { getDrawDetail } from '@/app/api/sale-detail/get-draw-detail';
+import { getDrawDetail } from '@/lib/api/draw/get-draw-detail';
 
 export function useDrawDetailQuery(drawId: number) {
   return useQuery({
