@@ -11,6 +11,18 @@ export default function AuthSessionRestore() {
 
     if (accessToken) return;
 
+    // [DEV ONLY] 로컬 작업용: 운영에서 복사한 accessToken을 localStorage에 넣어두면 사용
+    if (process.env.NODE_ENV === 'development') {
+      const devToken =
+        typeof window !== 'undefined'
+          ? window.localStorage.getItem('__dev_access_token')
+          : null;
+      if (devToken) {
+        setAccessToken(devToken);
+        return;
+      }
+    }
+
     const restoreSession = async () => {
       try {
         const response = await fetch('/api/auth/token/refresh', {
