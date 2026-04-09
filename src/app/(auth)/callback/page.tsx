@@ -138,8 +138,8 @@ export default function AuthCallbackPage() {
       <Wrapper>
         <div className="flex flex-col justify-center items-center h-screen gap-l pb-40">
           <div className="flex flex-col justify-center items-center gap-xs">
-            <Typography variant="heading-2" weight="medium">
-              Pop Corn 에 오신걸 환영합니다.
+            <Typography variant="heading-2" weight="bold">
+              POP-CON 에 오신걸 환영합니다.
             </Typography>
             <Typography
               variant="title-1"
@@ -149,7 +149,7 @@ export default function AuthCallbackPage() {
               잠시만 기다려주세요.
             </Typography>
           </div>
-          <Spinner size="xl" thickness="xl"></Spinner>
+          <Spinner size="xl" thickness="l"></Spinner>
         </div>
       </Wrapper>
     </div>

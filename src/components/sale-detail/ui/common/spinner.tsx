@@ -23,7 +23,7 @@ const thicknessMap: Record<SpinnerThickness, string> = {
   s: 'border',
   m: 'border-2',
   l: 'border-4',
-  xl: 'border-6',
+  xl: 'border-8',
 };
 
 export function Spinner({
