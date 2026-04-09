@@ -31,7 +31,7 @@ export function SaleDetailLayout({
             'h-fit lg:sticky',
             hasStickyTopBar
               ? 'lg:top-[calc(var(--sale-time-bar-height)+var(--spacing-s))]'
-              : 'lg:top-s'
+              : 'lg:top-[calc(var(--header-height)+var(--spacing-s))]'
           )}
         >
           {right}
