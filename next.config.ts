@@ -16,6 +16,10 @@ const nextConfig: NextConfig = {
         // csv 데이터 기준
         hostname: 'cdn.popga.co.kr',
       },
+      {
+        protocol: 'https',
+        hostname: 'img1.newsis.com',
+      },
     ],
   },
   webpack(config) {

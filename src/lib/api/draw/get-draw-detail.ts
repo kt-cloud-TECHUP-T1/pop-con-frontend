@@ -13,7 +13,7 @@ export async function getDrawDetail(drawId: string | number) {
     });
   }
 
-  const url = `${baseUrl}/popups/${drawId}`;
+  const url = `${baseUrl}/draws/${drawId}`;
 
   let response: Response;
 
