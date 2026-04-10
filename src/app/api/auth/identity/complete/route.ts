@@ -48,12 +48,16 @@ export async function POST(request: NextRequest) {
     return createSessionExpiredResponse();
   }
 
+  if (!cookieHeader) {
+    return createSessionExpiredResponse();
+  }
+
   try {
     const response = await fetch(`${API_BASE_URL}/auth/identity/complete`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        Cookie: cookieHeader!,
+        Cookie: cookieHeader,
       },
       body: JSON.stringify({ identityVerificationId }),
       cache: 'no-store',

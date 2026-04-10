@@ -51,8 +51,9 @@ export const QueuePageClient = () => {
       }
 
       if (!token) return;
+      if (!accessToken) return;
 
-      leaveQueueBeacon(token, accessToken!);
+      leaveQueueBeacon(token, accessToken);
       clearAuctionQueueState();
       clearDrawQueueState();
     };
@@ -62,6 +63,14 @@ export const QueuePageClient = () => {
   }, [token, accessToken]);
 
   const handleBack = async () => {
+    if (!accessToken) {
+      clearAuctionQueueState();
+      clearDrawQueueState();
+      isManualLeave.current = true;
+      router.back();
+      return;
+    }
+
     const result = await leaveQueue(token, accessToken!);
 
     switch (result.code) {
