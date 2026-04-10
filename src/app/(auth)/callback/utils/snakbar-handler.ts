@@ -2,10 +2,13 @@
 
 import { useEffect } from 'react';
 import { snackbar } from '@/components/ui/snackbar';
+import { usePathname } from 'next/navigation';
+import { SNACKBAR_KEY } from '@/constants/auth';
 
 export function SnackbarHandler() {
+  const pathname = usePathname();
   useEffect(() => {
-    const raw = sessionStorage.getItem('login_snackbar');
+    const raw = sessionStorage.getItem(SNACKBAR_KEY);
     if (!raw) return;
 
     try {
@@ -26,8 +29,8 @@ export function SnackbarHandler() {
       console.error('snackbar parse error', e);
     }
 
-    sessionStorage.removeItem('login_snackbar');
-  }, []);
+    sessionStorage.removeItem(SNACKBAR_KEY);
+  }, [pathname]);
 
   return null;
 }

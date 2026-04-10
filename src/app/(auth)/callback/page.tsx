@@ -4,7 +4,11 @@ import { useEffect, useRef } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { RefreshTokenResponse } from '@/types/auth/auth';
-import { LOGIN_REDIRECT_KEY } from '@/constants/auth';
+import {
+  LOGIN_REDIRECT_KEY,
+  SNACKBAR_KEY,
+  SNACKBAR_MESSAGES,
+} from '@/constants/auth';
 import { getBillingList } from '@/app/api/payment/get-billing-list';
 import { Wrapper } from '@/components/layout/wrapper';
 import { Typography } from '@/components/ui/typography';
@@ -38,12 +42,8 @@ export default function AuthCallbackPage() {
         if (!response.ok) {
           clearAccessToken();
           sessionStorage.setItem(
-            'login_snackbar',
-            JSON.stringify({
-              type: 'error',
-              title: '로그인 실패',
-              description: '로그인 요청이 실패했습니다.',
-            })
+            SNACKBAR_KEY,
+            JSON.stringify(SNACKBAR_MESSAGES.LOGIN_FAIL)
           );
           router.replace(`/login?error=${result.code ?? 'S001'}`);
           return;
@@ -54,12 +54,8 @@ export default function AuthCallbackPage() {
         if (!accessToken) {
           clearAccessToken();
           sessionStorage.setItem(
-            'login_snackbar',
-            JSON.stringify({
-              type: 'error',
-              title: '로그인 실패',
-              description: '인증 정보를 확인할 수 없습니다.',
-            })
+            SNACKBAR_KEY,
+            JSON.stringify(SNACKBAR_MESSAGES.TOKEN_MISSING)
           );
           router.replace('/login?error=S001');
           return;
@@ -67,13 +63,9 @@ export default function AuthCallbackPage() {
 
         setAccessToken(accessToken);
         sessionStorage.setItem(
-          'login_snackbar',
+          SNACKBAR_KEY,
           //세션스토리지는 문자열만 저장가능 꺼내쓸때 파싱필요
-          JSON.stringify({
-            type: 'success',
-            title: '로그인 성공',
-            description: '환영합니다!',
-          })
+          JSON.stringify(SNACKBAR_MESSAGES.LOGIN_SUCCESS)
         );
 
         try {
@@ -93,12 +85,8 @@ export default function AuthCallbackPage() {
             //인증 깨짐 => 등록여부 및 로그인 비회원으로 바꿈
             clearAccessToken();
             sessionStorage.setItem(
-              'login_snackbar',
-              JSON.stringify({
-                type: 'error',
-                title: '로그인 실패',
-                description: '인증에 문제가 발생했습니다. 다시 로그인해주세요.',
-              })
+              SNACKBAR_KEY,
+              JSON.stringify(SNACKBAR_MESSAGES.AUTH_ERROR)
             );
             router.replace('/login');
             return;
@@ -119,12 +107,8 @@ export default function AuthCallbackPage() {
       } catch (error) {
         console.error('[AuthCallbackPage] refresh failed:', error);
         sessionStorage.setItem(
-          'login_snackbar',
-          JSON.stringify({
-            type: 'error',
-            title: '로그인 실패',
-            description: '네트워크 오류가 발생했습니다.',
-          })
+          SNACKBAR_KEY,
+          JSON.stringify(SNACKBAR_MESSAGES.NETWORK_ERROR)
         );
         router.replace('/login?error=S001');
       }
