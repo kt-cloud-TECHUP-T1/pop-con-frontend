@@ -95,13 +95,13 @@ export const TERMS: readonly {
 }[] = [
   {
     id: 'privacy',
-    label: '개인정보 수집 및 이용 동의',
+    label: '만 14세 이상입니다',
     isRequired: true,
     apiKey: 'isPrivacyPolicyAgreed',
   },
   {
     id: 'identifierPolicy',
-    label: '고유식별정보 처리 동의',
+    label: '개인정보 수집 및 이용 동의',
     isRequired: true,
     apiKey: 'isIdentifierPolicyAgreed',
   },
