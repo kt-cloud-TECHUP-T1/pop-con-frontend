@@ -189,8 +189,8 @@ export default function SuccessPage() {
               <div className="pt-s flex gap-s">
                 <div className="relative w-[60px] aspect-[3/4] rounded-[8px] border overflow-hidden">
                   <Image
-                    src="/images/temp/no-image.png"
-                    alt="썸네일"
+                    src={reservationDetail.popupThumbnail}
+                    alt={reservationDetail.popupTitle}
                     fill
                     className="object-cover"
                   />

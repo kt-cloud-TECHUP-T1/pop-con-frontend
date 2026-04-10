@@ -9,6 +9,7 @@ export interface AuctionReservationSuccessDetail {
   discountAmount: number;
   finalPrice: number;
   paidAt: string;
+  popupThumbnail: string;
 }
 
 export interface GetAuctionReservationSuccessResponse {
