@@ -12,6 +12,7 @@ import { postDrawEntry } from '@/lib/api/draw-apply';
 import { DrawEntrySuccessData } from '@/types/applay/draw-apply';
 import DrawEntrySuccessModal from '@/components/sale-detail/info/draw-entry-success-modal';
 import DrawEntryDuplicateModal from '@/components/sale-detail/info/draw-entry-duplicate-modal';
+import { quizPassedTokenStorage } from '@/lib/utils';
 
 const DEFAULT_SUBMIT_ERROR =
   '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
@@ -60,6 +61,16 @@ export default function DrawApplySection({
       return;
     }
 
+    const quizPassedToken = quizPassedTokenStorage.get();
+
+    if (!quizPassedToken) {
+      snackbar.destructive({
+        title: '보안퀴즈 필요',
+        description: '보안퀴즈를 다시 진행해주세요.',
+      });
+      return;
+    }
+
     setIsSubmitting(true);
 
     try {
@@ -70,10 +81,13 @@ export default function DrawApplySection({
           isPrivacyAgreed: checks[1],
           isTermsAgreed: checks[0],
         },
-        accessToken
+        accessToken,
+        quizPassedToken
       );
 
       if (result.code === 'SUCCESS') {
+        //응모 성공 후 퀴즈패스토큰 삭제
+        quizPassedTokenStorage.remove();
         setSuccessData(result.data);
         setIsSuccessModalOpen(true);
         return;

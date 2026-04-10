@@ -11,7 +11,8 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 
 export async function postAuctionBid(
   body: AuctionBidRequest,
-  accessToken: string
+  accessToken: string,
+  quizPassedToken: string
 ): Promise<AuctionBidResult> {
   try {
     const response = await fetch(
@@ -21,6 +22,7 @@ export async function postAuctionBid(
         headers: {
           Authorization: `Bearer ${accessToken}`,
           'Content-Type': 'application/json',
+          'X-Quiz-Passed-Token': quizPassedToken,
         },
         body: JSON.stringify(body),
         cache: 'no-store',
