@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
-import { quizPassedTokenStorage } from '@/features/anti-macro/utils/quiz-passed-token';
+import { quizPassedTokenStorage } from '@/lib/utils';
 
 const DEFAULT_DATES_ERROR =
   '예약 가능 날짜를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
