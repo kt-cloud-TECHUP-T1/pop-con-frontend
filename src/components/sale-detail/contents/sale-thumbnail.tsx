@@ -40,7 +40,7 @@ export function SaleThumbnail({
       {popupData?.thumbnailUrl ? (
         <Image
           src={popupData?.thumbnailUrl}
-          alt={alt}
+          alt={popupData?.title ?? '이미지 불러오기 실패'}
           fill
           priority={priority}
           sizes="(min-width: 1024px) 640px, 100vw"
