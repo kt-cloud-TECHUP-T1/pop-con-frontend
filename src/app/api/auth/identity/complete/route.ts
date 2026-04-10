@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        ...(cookieHeader ? { Cookie: cookieHeader } : {}),
+        Cookie: cookieHeader!,
       },
       body: JSON.stringify({ identityVerificationId }),
       cache: 'no-store',
