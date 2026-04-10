@@ -14,7 +14,8 @@ function createLeaveQueueErrorResponse(
 }
 
 export async function leaveQueue(
-  queueToken: string
+  queueToken: string,
+  accessToken: string
 ): Promise<LeaveQueueResponse> {
   //queueToken이 없으면 아예 fetch 안 보내고 바로 Q002 반환 브라우저 뒤로가기 우려
   if (!queueToken) {
@@ -28,6 +29,7 @@ export async function leaveQueue(
       method: 'DELETE',
       headers: {
         'X-Queue-Token': queueToken,
+        Authorization: `Bearer ${accessToken}`,
       },
       cache: 'no-store',
     });
@@ -43,12 +45,18 @@ export async function leaveQueue(
 }
 
 // 브라우저 뒤로가기용 (fire-and-forget, keepalive 보장)
-export function leaveQueueBeacon(queueToken: string): void {
+export function leaveQueueBeacon(
+  queueToken: string,
+  accessToken: string
+): void {
   if (!queueToken) return;
 
-  fetch(`${API_BASE_URL.replace(/\/+$/, '')}/queues`, {
+  fetch(`${API_BASE_URL}/queues`, {
     method: 'DELETE',
-    headers: { 'X-Queue-Token': queueToken },
+    headers: {
+      'X-Queue-Token': queueToken,
+      Authorization: `Bearer ${accessToken}`,
+    },
     keepalive: true,
   });
 }
