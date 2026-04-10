@@ -51,7 +51,12 @@ export const QueuePageClient = () => {
       }
 
       if (!token) return;
-      if (!accessToken) return;
+      if (!accessToken) {
+        clearAuctionQueueState();
+        clearDrawQueueState();
+        router.back();
+        return;
+      }
 
       leaveQueueBeacon(token, accessToken);
       clearAuctionQueueState();
