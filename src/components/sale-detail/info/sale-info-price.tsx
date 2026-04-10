@@ -17,6 +17,7 @@ export default function SaleInfoPrice() {
     secondsUntilNextDrop,
     maxPurchaseQuantityPerRound,
     priceDropIntervalSeconds,
+    minimumPrice,
   } = auctionData;
 
   switch (auctionStatus) {
@@ -71,12 +72,12 @@ export default function SaleInfoPrice() {
                 className="text-[var(--content-high)]"
                 weight="bold"
               >
-                {formatWon(currentPrice as number)}
+                {formatWon(Math.max(currentPrice as number, minimumPrice))}
               </Typography>
               <div className="flex items-center text-[var(--status-warning)]">
                 <Icon size={32} name="CaretDown"></Icon>
                 <Typography variant="label-2" weight="bold">
-                  {formatWon(startPrice - (currentPrice as number))}총 할인중
+                  총 {formatWon(startPrice - (currentPrice as number))} 할인중
                 </Typography>
               </div>
             </div>
@@ -99,7 +100,9 @@ export default function SaleInfoPrice() {
                 weight="bold"
                 className="text-black"
               >
-                {formatSecondsToMMSS(secondsUntilNextDrop)}
+                {(currentPrice as number) > minimumPrice
+                  ? formatSecondsToMMSS(secondsUntilNextDrop)
+                  : '00:00'}
               </Typography>
             </div>
           </Button>
