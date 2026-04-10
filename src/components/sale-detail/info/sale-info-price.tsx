@@ -4,6 +4,7 @@ import { Typography } from '@/components/ui/typography';
 import { formatWon } from '@/lib/utils';
 import { formatSecondsToMMSS } from '../utils/sale-detail-utils';
 import { useAuctionStore } from '../stores/auction-store';
+import { ZERO_TIME } from '@/constants/auction';
 
 export default function SaleInfoPrice() {
   const auctionData = useAuctionStore((state) => state.liveData);
@@ -102,7 +103,7 @@ export default function SaleInfoPrice() {
               >
                 {(currentPrice as number) > minimumPrice
                   ? formatSecondsToMMSS(secondsUntilNextDrop)
-                  : '00:00'}
+                  : ZERO_TIME}
               </Typography>
             </div>
           </Button>
