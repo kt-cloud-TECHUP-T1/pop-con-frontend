@@ -1,6 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import type { QueueStatusResponse } from '@/features/queue/types/queue';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
 
 interface UseQueueOptions {
   queueToken: string;
@@ -10,12 +11,16 @@ interface UseQueueOptions {
 export function useQueue({ queueToken, onActive }: UseQueueOptions) {
   const initialPositionRef = useRef<number | null>(null);
   const [progress, setProgress] = useState(0);
+  const accessToken = useAuthStore((state) => state.accessToken);
 
   const { data } = useQuery({
     queryKey: ['queue-status', queueToken],
     queryFn: async () => {
       const response = await fetch('/api/queue/status', {
-        headers: { 'X-Queue-Token': queueToken },
+        headers: {
+          'X-Queue-Token': queueToken,
+          Authorization: `Bearer ${accessToken}`,
+        },
       });
 
       if (!response.ok) {

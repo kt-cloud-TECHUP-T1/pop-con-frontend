@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Typography } from '@/components/ui/typography';
 import { snackbar } from '@/components/ui/snackbar';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
 
 interface VqaQuestion {
   failCount: number;
@@ -32,6 +33,7 @@ export default function VqaForm() {
   const [questionData, setQuestionData] = useState<VqaQuestion | null>(null);
   const [timeLeft, setTimeLeft] = useState(30);
   const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const accessToken = useAuthStore((state) => state.accessToken);
 
   useEffect(() => {
     const fetchQuestion = async () => {
@@ -78,7 +80,10 @@ export default function VqaForm() {
     try {
       const res = await fetch('/api/vqa', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
         body: JSON.stringify({
           answer: answer.trim(),
           questionId: questionData?.questionId,
