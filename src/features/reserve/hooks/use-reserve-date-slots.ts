@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { quizPassedTokenStorage } from '@/lib/utils';
 
 const DEFAULT_DATES_ERROR =
   '예약 가능 날짜를 불러오지 못했습니다. 잠시 후 다시 시도해주세요.';
@@ -36,8 +37,12 @@ export function useReserveDateSlots<TSlot>({
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [selectedOptionId, setSelectedOptionId] = useState<number | null>(null);
   const [slots, setSlots] = useState<TSlot[]>([]);
-  const [datesErrorMessage, setDatesErrorMessage] = useState<string | null>(null);
-  const [slotsErrorMessage, setSlotsErrorMessage] = useState<string | null>(null);
+  const [datesErrorMessage, setDatesErrorMessage] = useState<string | null>(
+    null
+  );
+  const [slotsErrorMessage, setSlotsErrorMessage] = useState<string | null>(
+    null
+  );
   const [isDatesLoading, setIsDatesLoading] = useState(true);
   const [isSlotsLoading, setIsSlotsLoading] = useState(false);
 
@@ -50,23 +55,34 @@ export function useReserveDateSlots<TSlot>({
     const fetchDates = async () => {
       setIsDatesLoading(true);
       try {
-        const response = await fetch(datesUrl, { signal: controller.signal });
+        const quizPassedToken = quizPassedTokenStorage.get();
+        const response = await fetch(datesUrl, {
+          signal: controller.signal,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'X-Quiz-Passed-Token': quizPassedToken ?? '',
+          },
+        });
         const result = await response.json();
 
         if (!response.ok) {
           setAvailableDates([]);
           setDatesErrorMessage(
-            errorCodes.includes(result.code) ? result.message : DEFAULT_DATES_ERROR
+            errorCodes.includes(result.code)
+              ? result.message
+              : DEFAULT_DATES_ERROR
           );
           return;
         }
 
         setDatesErrorMessage(null);
         setAvailableDates(
-          result.data?.map((date: { entryDate: string }) => date.entryDate) ?? []
+          result.data?.map((date: { entryDate: string }) => date.entryDate) ??
+            []
         );
       } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
         console.error('[useReserveDateSlots/fetchDates]', error);
         setAvailableDates([]);
         setDatesErrorMessage(DEFAULT_DATES_ERROR);
@@ -92,14 +108,21 @@ export function useReserveDateSlots<TSlot>({
       setSlotsErrorMessage(null);
       setIsSlotsLoading(true);
       try {
+        const quizPassedToken = quizPassedTokenStorage.get();
         const response = await fetch(`${datesUrl}/${selectedDate}/options`, {
           signal: controller.signal,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+            'X-Quiz-Passed-Token': quizPassedToken ?? '',
+          },
         });
         const result = await response.json();
 
         if (!response.ok) {
           setSlotsErrorMessage(
-            errorCodes.includes(result.code) ? result.message : DEFAULT_SLOTS_ERROR
+            errorCodes.includes(result.code)
+              ? result.message
+              : DEFAULT_SLOTS_ERROR
           );
           return;
         }
@@ -107,7 +130,8 @@ export function useReserveDateSlots<TSlot>({
         setSlotsErrorMessage(null);
         setSlots(result.data ?? []);
       } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
+        if (error instanceof DOMException && error.name === 'AbortError')
+          return;
         console.error('[useReserveDateSlots/fetchSlots]', error);
         setSlotsErrorMessage(DEFAULT_SLOTS_ERROR);
       } finally {
