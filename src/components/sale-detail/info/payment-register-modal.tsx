@@ -4,15 +4,12 @@ import { getBillingList } from '@/app/api/payment/get-billing-list';
 import { requestBillingKey } from '@/app/api/payment/request-billing-key';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
+import { PaymentAvatar } from '@/components/ui/avatar/payment';
 import { snackbar } from '@/components/ui/snackbar';
 import { Typography } from '@/components/ui/typography';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { usePaymentRegisterModalStore } from '@/features/auth/stores/payment-register-modal-store';
 import { cn } from '@/lib/utils';
-import { useAuctionStore } from '../stores/auction-store';
-import { useRouter } from 'next/navigation';
-import { QUEUE_ERROR_MESSAGES } from '@/constants/queue';
-import { enterAuctionQueue } from '@/lib/api/enter-auction-queue';
 
 const BASE_URL =
   process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/+$/, '') ?? '';
@@ -27,17 +24,12 @@ export default function PaymentRegisterModal() {
   const isPaymentRegistered = useAuthStore(
     (state) => state.isPaymentRegistered
   );
-  //예약페이지 임시 이동용 추후 삭제
-  const router = useRouter();
-  const auctionId = useAuctionStore(
-    (state) => state.liveData?.auctionId ?? null
-  );
+
   if (!isOpen) return null;
 
   const handleRegisterClick = async () => {
     // 포트원 SDK 호출
     // 성공 시 상태 갱신
-    // 모달 닫기
 
     if (!accessToken) {
       snackbar.destructive({
@@ -69,6 +61,7 @@ export default function PaymentRegisterModal() {
 
       // 3. 간편결제 리스트 조회
       const billingCards = await getBillingList(accessToken);
+
       // 4. 조회 리스트를 store에 저장해서 화면 반영
       setBillingCards(billingCards);
 
@@ -76,8 +69,6 @@ export default function PaymentRegisterModal() {
         title: '등록 완료',
         description: '간편결제 수단이 등록되었습니다.',
       });
-
-      close();
     } catch (error: unknown) {
       console.error('[PaymentRegisterModal] billing register failed:', error);
 
@@ -119,50 +110,50 @@ export default function PaymentRegisterModal() {
     }
   };
 
-  //임시 대기열 진입 핸들러 추가 삭제 예정
-  const handleAuctionqueue = async () => {
-    // 대기열 진입 api 추가
-    const result = await enterAuctionQueue(
-      auctionId as number,
-      accessToken ?? ''
-    );
+  const handleSelectDefaultCard = async (
+    cardId: number,
+    isDefault: boolean
+  ) => {
+    if (isDefault) return;
+    if (!accessToken) {
+      snackbar.destructive({
+        title: '인증 오류',
+        description: '로그인 정보가 없습니다. 다시 로그인해주세요.',
+      });
+      return;
+    }
 
-    switch (result.code) {
-      case 'SUCCESS': {
-        //queueToken 저장
-        sessionStorage.setItem('queueToken', result.data.queueToken);
-        sessionStorage.setItem('identifyType', String(auctionId));
+    try {
+      const res = await fetch(`/api/billing/keys/${cardId}/default`, {
+        method: 'PATCH',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
 
-        //Todo 최초진입 store에서 상태값 ture로 바꾸기 추가
+      const data = await res.json();
 
-        if (result.data.status === 'ACTIVE') {
-          //예약페이지 페이지로 이동
-          router.push(`/auction/${auctionId}/reserve`);
-          return;
-        }
-
-        if (result.data.status === 'WAITING') {
-          router.push(`/queue`);
-          // 대기열 페이지 이동
-          return;
-        }
-
-        return;
+      if (!res.ok) {
+        throw new Error(data.code || '대표카드 변경 실패');
       }
 
-      case 'Q001': {
-        console.log(result.data.blockedUntil);
-        console.log(QUEUE_ERROR_MESSAGES[result.code]);
-        return;
-      }
+      const updatedCards = await getBillingList(accessToken);
+      setBillingCards(updatedCards);
 
-      case 'C001':
-      case 'A002':
-      case 'A003':
-      case 'S001': {
-        console.log(QUEUE_ERROR_MESSAGES[result.code]);
-        return;
-      }
+      snackbar.success({
+        title: '변경 완료',
+        description: '대표카드가 변경되었습니다.',
+      });
+    } catch (error) {
+      console.error(
+        '[PaymentRegisterModal] default card change failed:',
+        error
+      );
+
+      snackbar.destructive({
+        title: '변경 실패',
+        description: '대표카드 변경 중 오류가 발생했습니다.',
+      });
     }
   };
 
@@ -193,32 +184,61 @@ export default function PaymentRegisterModal() {
             {billingCards.map((card) => (
               <div
                 key={card.id}
+                onClick={() => handleSelectDefaultCard(card.id, card.isDefault)}
                 className={cn(
-                  'rounded-ml border px-4 py-3 text-left',
+                  'flex items-center rounded-ml border px-4 py-3 text-left cursor-pointer',
                   card.isDefault
                     ? //나중에 물어보기
                       'border-[var(--orange-50)]'
                     : 'border-[var(--line-3)]'
                 )}
               >
-                <div className="flex items-center justify-between">
-                  <Typography variant="label-1" weight="bold">
-                    {card.cardName}
-                  </Typography>
+                <div className="toggle flex items-center justify-center pr-4">
+                  <span
+                    className={cn(
+                      'flex h-5 w-5 items-center justify-center rounded-full border',
+                      card.isDefault
+                        ? 'border-[var(--orange-50)]'
+                        : 'border-[var(--line-3)]'
+                    )}
+                  >
+                    <span
+                      className={cn(
+                        'h-2.5 w-2.5 rounded-full',
+                        card.isDefault
+                          ? 'bg-[var(--orange-50)]'
+                          : 'bg-[var(--line-5)]'
+                      )}
+                    />
+                  </span>
+                </div>
+                <PaymentAvatar
+                  brandCode={card.cardName}
+                  size="MD"
+                  className="mr-4 shrink-0"
+                />
+                <div className="content flex-1">
+                  <div>
+                    <Typography variant="label-1" weight="bold">
+                      {card.cardName}
+                    </Typography>
+                  </div>
 
-                  {card.isDefault && (
-                    <span className="rounded-ml bg-[var(--background-secondary)] px-2 py-1 text-xs">
-                      기본
-                    </span>
-                  )}
+                  <Typography
+                    variant="body-2"
+                    className="mt-1 text-[var(--content-medium)]"
+                  >
+                    {card.cardNumber}
+                  </Typography>
                 </div>
 
-                <Typography
-                  variant="body-2"
-                  className="mt-1 text-[var(--content-medium)]"
-                >
-                  {card.cardNumber}
-                </Typography>
+                {card.isDefault && (
+                  <div className="isDefault flex items-center justify-center">
+                    <span className="rounded-ml bg-[var(--orange-95)] px-2 py-1 text-xs text-[var(--orange-45)]">
+                      대표
+                    </span>
+                  </div>
+                )}
               </div>
             ))}
           </div>
