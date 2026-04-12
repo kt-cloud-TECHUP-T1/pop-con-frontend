@@ -25,6 +25,18 @@ const CardSkeleton = ({ ratio }: { ratio: '3/4' | '16/9' }) => (
   </div>
 );
 
+/** 카테고리 리스트 */
+export const CategoryListSkeleton = () => (
+  <div className="flex justify-center items-center flex-wrap gap-10 my-3xl">
+    {Array.from({ length: 6 }).map((_, i) => (
+      <div key={i} className="flex flex-col items-center gap-2">
+        <SkeletonBlock className="h-20 w-20 rounded-xl" />
+        <SkeletonBlock className="h-4 w-12 rounded" />
+      </div>
+    ))}
+  </div>
+);
+
 /** 메인 배너 */
 export const MainBannerSkeleton = () => (
   <div className="flex gap-6 justify-center overflow-hidden">
