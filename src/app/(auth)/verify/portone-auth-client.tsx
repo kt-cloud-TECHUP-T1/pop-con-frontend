@@ -237,10 +237,10 @@ export default function PortoneAuthClient() {
         isOpen={isUnder14}
         onClose={() => setIsUnder14(false)}
         showClose={false}
-        title="만 14세 이하 가입 제한"
+        title="연령 확인이 필요해요"
         size="md"
       >
-        <ModalBody>만 14세 이하는 가입이 제한 되어있습니다.</ModalBody>
+        <ModalBody>팝콘은 만 14세 이상부터 이용할 수 있는 서비스예요</ModalBody>
         <ModalFooter>
           <Button
             variant="primary"
