@@ -3,7 +3,7 @@
 import { useUserMeQuery } from '@/features/user/queries/use-user-me-query';
 import { ProfileSummaryCard } from './profile-summary-card';
 
-const FALLBACK_PROFILE_IMAGE = '/images/temp/God-Sang-hyeok.png';
+const FALLBACK_PROFILE_IMAGE = '/images/temp/no-image.png';
 
 export function ProfileSummaryCardClient() {
   const { data: userMe } = useUserMeQuery();
