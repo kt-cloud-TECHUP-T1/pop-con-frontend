@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { useSectionFetch } from '../hooks/use-section-fetch';
 import { CategoryListSkeleton } from './skeletons';
-import { useRouter } from 'next/navigation';
 import { PopupPhase } from '../types';
 
 interface CategoryItem {
@@ -20,30 +19,18 @@ export const CategoryList = () => {
     `/api/popups/categories?limit=${CATEGORY_LIMIT}`
   );
 
-  const router = useRouter();
-
   if (categories === null) return <CategoryListSkeleton />;
   if (categories.length === 0) return null;
 
-  const handleBannersClick = (
-    popupId: number,
-    phaseType: 'AUCTION' | 'DRAW'
-  ) => {
-    if (phaseType === 'AUCTION') {
-      router.push(`/auction/${popupId}`);
-    } else {
-      router.push(`/draw/${popupId}`);
-    }
-  };
+  const getCategoryHref = (popupId: number, phaseType: PopupPhase['type']) =>
+    phaseType === 'AUCTION' ? `/auction/${popupId}` : `/draw/${popupId}`;
 
   return (
     <div className="flex justify-center items-center flex-wrap gap-10 my-3xl">
       {categories.map((category) => (
-        <div
-          key={category.iconName}
-          onClick={() =>
-            handleBannersClick(category.popupId, category.phase.type)
-          }
+        <Link
+          key={category.popupId}
+          href={getCategoryHref(category.popupId, category.phase.type)}
           className="flex flex-col items-center basis-auto cursor-pointer"
         >
           <div className="mb-2 flex h-20 w-20 items-center justify-center rounded-xl bg-gray-100 overflow-hidden">
@@ -58,7 +45,7 @@ export const CategoryList = () => {
           <span className="text-Contents-High text-base font-normal leading-6">
             {category.iconName}
           </span>
-        </div>
+        </Link>
       ))}
     </div>
   );

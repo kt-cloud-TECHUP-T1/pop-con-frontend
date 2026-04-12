@@ -1,8 +1,9 @@
+import { NextResponse } from 'next/server';
 import {
   createBadRequestResponse,
   createServerErrorResponse,
   getServiceBaseUrl,
-  handleProxyResponse,
+  safeParseResponseBody,
 } from '../../shared/route-helpers';
 
 const API_BASE_URL = getServiceBaseUrl('popup');
@@ -38,7 +39,27 @@ export async function GET(request: Request) {
         cache: 'no-store',
       }
     );
-    return handleProxyResponse(response);
+
+    if (response.status >= 500) {
+      return createServerErrorResponse();
+    }
+
+    const body = (await safeParseResponseBody(response)) as {
+      data?: {
+        items?: { isActive?: boolean }[];
+        itemCount?: number;
+      };
+    };
+
+    if (response.ok && Array.isArray(body?.data?.items)) {
+      const activeItems = body.data.items.filter(
+        (item: { isActive?: boolean }) => item.isActive !== false
+      );
+      body.data.items = activeItems;
+      body.data.itemCount = activeItems.length;
+    }
+
+    return NextResponse.json(body, { status: response.status });
   } catch (error) {
     console.error('[GET /api/popups/categories]', error);
     return createServerErrorResponse('시스템 오류가 발생했습니다.');
