@@ -15,19 +15,34 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const sessionId = searchParams.get('sessionId');
 
+  if (!sessionId) {
+    return Response.json(
+      { code: 'C001', message: 'sessionId가 필요합니다.', data: null },
+      { status: 400 }
+    );
+  }
+
   const authorization = request.headers.get('Authorization');
   const queueToken = request.headers.get(QUEUE_TOKEN_HEADER);
 
-  const response = await fetch(
-    `${API_BASE}/queues/vqa/next?sessionId=${sessionId}`,
-    {
-      method: 'GET',
-      headers: {
-        ...(authorization ? { Authorization: authorization } : {}),
-        ...(queueToken ? { [QUEUE_TOKEN_HEADER]: queueToken } : {}),
-      },
-    }
-  );
+  try {
+    const response = await fetch(
+      `${API_BASE}/queues/vqa/next?sessionId=${encodeURIComponent(sessionId)}`,
+      {
+        method: 'GET',
+        headers: {
+          ...(authorization ? { Authorization: authorization } : {}),
+          ...(queueToken ? { [QUEUE_TOKEN_HEADER]: queueToken } : {}),
+        },
+      }
+    );
 
-  return handleProxyResponse(response);
+    return handleProxyResponse(response);
+  } catch (error) {
+    console.error('[proxy] /queues/vqa/next 에러:', error);
+    return Response.json(
+      { code: 'S001', message: '시스템 오류가 발생했습니다.', data: null },
+      { status: 500 }
+    );
+  }
 }

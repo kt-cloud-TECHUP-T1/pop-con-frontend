@@ -65,6 +65,7 @@ export default function VqaForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isBlocked, setIsBlocked] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [hasLoadError, setHasLoadError] = useState(false);
 
   // 타이머
   const [timeLeft, setTimeLeft] = useState(QUIZ_TIME_LIMIT);
@@ -83,6 +84,7 @@ export default function VqaForm() {
         const data: VqaStartData | undefined = json?.data;
 
         if (!data) {
+          setHasLoadError(true);
           snackbar.destructive({ title: '퀴즈를 불러오지 못했어요.' });
           return;
         }
@@ -103,6 +105,7 @@ export default function VqaForm() {
           startTimeRef.current = Date.now();
         }
       } catch {
+        setHasLoadError(true);
         snackbar.destructive({ title: '퀴즈를 불러오지 못했어요.' });
       } finally {
         setIsLoading(false);
@@ -167,9 +170,10 @@ export default function VqaForm() {
     const totalTime = (Date.now() - startTimeRef.current) / 1000;
 
     try {
+      const queueToken = queueTokenStorage.get();
       const res = await fetch('/api/vqa', {
         method: 'POST',
-        headers: buildHeaders(accessToken, null, true),
+        headers: buildHeaders(accessToken, queueToken, true),
         body: JSON.stringify({
           vqaSessionId,
           videoId: question.video.id,
@@ -249,7 +253,7 @@ export default function VqaForm() {
   }
 
   // ── 로딩 ───────────────────────────────────────────
-  if (isLoading || !question) {
+  if (isLoading) {
     return (
       <div className="bg-white rounded-[16px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.12),0px_0px_1px_0px_rgba(0,0,0,0.08)] flex flex-col gap-[30px] items-center p-8 w-full">
         <Typography
@@ -259,6 +263,29 @@ export default function VqaForm() {
         >
           퀴즈를 불러오는 중...
         </Typography>
+      </div>
+    );
+  }
+
+  // ── 에러 ───────────────────────────────────────────
+  if (hasLoadError || !question) {
+    return (
+      <div className="bg-white rounded-[16px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.12),0px_0px_1px_0px_rgba(0,0,0,0.08)] flex flex-col gap-[30px] items-center p-8 w-full">
+        <Typography
+          variant="heading-1"
+          weight="bold"
+          className="text-[var(--content-high)] text-center"
+        >
+          퀴즈를 불러오지 못했어요
+        </Typography>
+        <Button
+          variant="primary"
+          size="large"
+          className="w-full"
+          onClick={() => router.back()}
+        >
+          이전으로 돌아가기
+        </Button>
       </div>
     );
   }
