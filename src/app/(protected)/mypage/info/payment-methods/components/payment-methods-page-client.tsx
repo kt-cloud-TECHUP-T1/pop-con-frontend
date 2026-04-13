@@ -63,10 +63,6 @@ export function PaymentMethodsPageClient() {
         '[PaymentMethodsPageClient] fetch billing list failed:',
         error
       );
-      snackbar.destructive({
-        title: '조회 실패',
-        description: '결제수단 목록을 불러오지 못했습니다.',
-      });
     } finally {
       setIsLoading(false);
     }
