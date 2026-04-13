@@ -17,8 +17,8 @@ export async function submitSignals(
   const submission = {
     timestamp: Date.now(),
     payload,
-    ...(options.visitorId && { visitorId: options.visitorId }),
-    ...(options.userId && { userId: options.userId }),
+    ...(options.visitorId && { visitorId: String(options.visitorId) }),
+    ...(options.userId && { userId: String(options.userId) }),
   };
 
   try {

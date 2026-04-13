@@ -89,13 +89,13 @@ export default function VqaForm() {
           return;
         }
 
-        // 면제 → 바로 통과
+        // 면제 → 바로 통과 (isLoading 유지하여 에러 화면 방지)
         if (data.isExempt && data.quizPassedToken) {
           sessionStorage.setItem('quiz_passed_token', data.quizPassedToken);
           const redirect = sessionStorage.getItem('vqa_redirect');
           sessionStorage.removeItem('vqa_redirect');
           router.push(redirect ?? '/');
-          return;
+          return; // isLoading을 false로 바꾸지 않고 로딩 화면 유지
         }
 
         // 퀴즈 진행
@@ -104,10 +104,10 @@ export default function VqaForm() {
           setQuestion(data.firstQuestion);
           startTimeRef.current = Date.now();
         }
+        setIsLoading(false);
       } catch {
         setHasLoadError(true);
         snackbar.destructive({ title: '퀴즈를 불러오지 못했어요.' });
-      } finally {
         setIsLoading(false);
       }
     };
@@ -218,40 +218,6 @@ export default function VqaForm() {
     }
   };
 
-  // ── 차단 화면 ──────────────────────────────────────
-  if (isBlocked) {
-    return (
-      <div className="bg-white rounded-[16px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.12),0px_0px_1px_0px_rgba(0,0,0,0.08)] flex flex-col gap-[30px] items-center p-8 w-full">
-        <div className="flex flex-col gap-[2px] items-center w-full">
-          <Typography
-            variant="heading-1"
-            weight="bold"
-            className="text-[var(--content-high)] text-center"
-          >
-            잠시 후 다시 이용해주세요
-          </Typography>
-          <Typography
-            variant="label-2"
-            as="p"
-            className="text-[var(--content-extra-low)] text-center"
-          >
-            퀴즈를 3번 틀려서 30분간 입장이 제한되었어요
-            <br />
-            시간을 두고 다시 시도해주세요
-          </Typography>
-        </div>
-        <Button
-          variant="primary"
-          size="large"
-          className="w-full"
-          onClick={() => router.push('/')}
-        >
-          메인으로 돌아가기
-        </Button>
-      </div>
-    );
-  }
-
   // ── 로딩 ───────────────────────────────────────────
   if (isLoading) {
     return (
@@ -292,7 +258,40 @@ export default function VqaForm() {
 
   // ── 퀴즈 화면 ──────────────────────────────────────
   return (
-    <div className="bg-white rounded-[16px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.12),0px_0px_1px_0px_rgba(0,0,0,0.08)] flex flex-col gap-[30px] items-center p-8 w-full">
+    <div className="relative bg-white rounded-[16px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.12),0px_0px_1px_0px_rgba(0,0,0,0.08)] flex flex-col gap-[30px] items-center p-8 w-full">
+      {/* 차단 모달 오버레이 */}
+      {isBlocked && (
+        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[16px] bg-black/40">
+          <div className="bg-white rounded-[16px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.15)] flex flex-col gap-[20px] items-center px-8 py-6 mx-6 max-w-[360px] w-full">
+            <div className="flex flex-col gap-[2px] items-center w-full">
+              <Typography
+                variant="heading-1"
+                weight="bold"
+                className="text-[var(--content-high)] text-center"
+              >
+                잠시 후 다시 이용해주세요
+              </Typography>
+              <Typography
+                variant="label-2"
+                as="p"
+                className="text-[var(--content-extra-low)] text-center"
+              >
+                퀴즈를 3번 틀려서 30분간 입장이 제한되었어요
+                <br />
+                시간을 두고 다시 시도해주세요
+              </Typography>
+            </div>
+            <Button
+              variant="primary"
+              size="large"
+              className="w-full"
+              onClick={() => router.push('/')}
+            >
+              메인으로 돌아가기
+            </Button>
+          </div>
+        </div>
+      )}
       {/* Heading */}
       <div className="flex flex-col gap-[2px] items-center w-full">
         <Typography
