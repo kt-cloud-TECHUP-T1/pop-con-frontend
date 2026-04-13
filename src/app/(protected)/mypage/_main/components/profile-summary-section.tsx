@@ -1,9 +1,12 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
 import type { IconName } from '@/components/Icon/Icon';
 import { Icon } from '@/components/Icon/Icon';
 import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
+import { useUserMeQuery } from '@/features/user/queries/use-user-me-query';
 
 const summaryCards: {
   label: string;
@@ -11,8 +14,8 @@ const summaryCards: {
   icon: IconName;
 }[] = [
   { label: '내 티켓', value: '3', icon: 'Ticket' },
-  { label: '드로우 내역', value: '6', icon: 'Blank' },
-  { label: '낙찰 내역', value: '2', icon: 'Blank' },
+  { label: '드로우 내역', value: '6', icon: 'Roulette' },
+  { label: '낙찰 내역', value: '2', icon: 'Gavel' },
   { label: '작성한 리뷰', value: '2', icon: 'Like' },
 ];
 
@@ -25,7 +28,19 @@ const summaryStats: { label: string; value: number }[] = [
   { label: '찜한 수', value: 12 },
 ];
 
+const FALLBACK_PROFILE_IMAGE = '/images/temp/no-image.png';
+
 export function ProfileSummarySection() {
+  const { data: userMe } = useUserMeQuery();
+
+  const profileImage = userMe?.profileImage || FALLBACK_PROFILE_IMAGE;
+  const nickname = userMe?.nickname ?? '';
+  const email = userMe?.email ?? '';
+  const phone = userMe?.phone ?? '';
+  const joinDate = userMe?.joinDate
+    ? `가입일 ${userMe.joinDate.replace(/-/g, '.')}`
+    : '';
+
   return (
     <section className="space-y-2">
       {/* 프로필 */}
@@ -40,7 +55,7 @@ export function ProfileSummarySection() {
           <div className="flex items-center gap-4">
             <Box radius="FULL" className="h-[72px] w-[72px] overflow-hidden">
               <Image
-                src="/images/temp/God-Sang-hyeok.png"
+                src={profileImage}
                 alt="프로필 이미지"
                 width={72}
                 height={72}
@@ -49,22 +64,22 @@ export function ProfileSummarySection() {
             </Box>
             <div className="space-y-2">
               <Typography variant="title-1" weight="medium">
-                심심한 고래
+                {nickname}
               </Typography>
               <div className="flex flex-col text-[var(--neutral-60)] md:flex-row md:flex-wrap md:items-center">
                 <Typography
                   variant="body-1"
                   className="after:mx-2 after:content-['|'] last:after:hidden after:text-[#0A0A0A]/8"
                 >
-                  account@mail.com
+                  {email}
                 </Typography>
                 <Typography
                   variant="body-1"
                   className="after:mx-2 after:content-['|'] last:after:hidden after:text-[#0A0A0A]/8"
                 >
-                  010-1234-5678
+                  {phone}
                 </Typography>
-                <Typography variant="body-1">가입일 2025.01.01</Typography>
+                <Typography variant="body-1">{joinDate}</Typography>
               </div>
             </div>
           </div>

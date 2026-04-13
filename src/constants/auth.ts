@@ -1,3 +1,5 @@
+import { SnackbarData } from '@/types/common';
+
 export const AUTH_MESSAGES = {
   IDENTITY: {
     SUCCESS: {
@@ -93,13 +95,13 @@ export const TERMS: readonly {
 }[] = [
   {
     id: 'privacy',
-    label: '개인정보 수집 및 이용 동의',
+    label: '만 14세 이상입니다',
     isRequired: true,
     apiKey: 'isPrivacyPolicyAgreed',
   },
   {
     id: 'identifierPolicy',
-    label: '고유식별정보 처리 동의',
+    label: '개인정보 수집 및 이용 동의',
     isRequired: true,
     apiKey: 'isIdentifierPolicyAgreed',
   },
@@ -118,3 +120,32 @@ export const TERMS: readonly {
 ];
 
 export const LOGIN_REDIRECT_KEY = 'loginRedirectPath';
+export const SNACKBAR_KEY = 'login_snackbar';
+
+export const SNACKBAR_MESSAGES = {
+  LOGIN_SUCCESS: {
+    type: 'success',
+    title: '로그인 성공',
+    description: '환영합니다!',
+  },
+  LOGIN_FAIL: {
+    type: 'error',
+    title: '로그인 실패',
+    description: '로그인 요청이 실패했습니다.',
+  },
+  TOKEN_MISSING: {
+    type: 'error',
+    title: '로그인 실패',
+    description: '인증 정보를 확인할 수 없습니다.',
+  },
+  AUTH_ERROR: {
+    type: 'error',
+    title: '로그인 실패',
+    description: '인증에 문제가 발생했습니다. 다시 로그인해주세요.',
+  },
+  NETWORK_ERROR: {
+    type: 'error',
+    title: '로그인 실패',
+    description: '네트워크 오류가 발생했습니다.',
+  },
+} satisfies Record<string, SnackbarData>;

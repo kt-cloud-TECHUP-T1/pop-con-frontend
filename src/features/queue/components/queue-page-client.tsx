@@ -51,18 +51,32 @@ export const QueuePageClient = () => {
       }
 
       if (!token) return;
+      if (!accessToken) {
+        clearAuctionQueueState();
+        clearDrawQueueState();
+        router.back();
+        return;
+      }
 
-      leaveQueueBeacon(token);
+      leaveQueueBeacon(token, accessToken);
       clearAuctionQueueState();
       clearDrawQueueState();
     };
 
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
-  }, [token]);
+  }, [token, accessToken]);
 
   const handleBack = async () => {
-    const result = await leaveQueue(token);
+    if (!accessToken) {
+      clearAuctionQueueState();
+      clearDrawQueueState();
+      isManualLeave.current = true;
+      router.back();
+      return;
+    }
+
+    const result = await leaveQueue(token, accessToken!);
 
     switch (result.code) {
       case 'SUCCESS':
@@ -127,7 +141,7 @@ export const QueuePageClient = () => {
 
       void rejoinQueue();
     }
-  }, [drawId, router, setDrawId]);
+  }, [drawId, router, setDrawId, accessToken]);
   // END 드로우 대기열 진입 -> 새로고침 복구
 
   // 드로우 대기열 진입 -> auction 전용 새로고침 복구
@@ -172,7 +186,7 @@ export const QueuePageClient = () => {
 
       void rejoinQueue();
     }
-  }, [auctionId, router, setAuctionId]);
+  }, [auctionId, router, setAuctionId, accessToken]);
   // END 드로우 대기열 진입 -> 새로고침 복구
 
   const { position, estimatedWaitSeconds, progress } = useQueue({

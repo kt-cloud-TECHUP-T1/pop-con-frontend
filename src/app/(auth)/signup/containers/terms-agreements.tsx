@@ -42,6 +42,9 @@ export default function TermsAgreements() {
   const [isPending, setIsPending] = useState(false);
   const router = useRouter();
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
+  const setPaymentRegistered = useAuthStore(
+    (state) => state.setPaymentRegistered
+  );
 
   const isAllAgreed = terms.every((term) => term.isAgreed);
   const isRequiredAgreed = terms
@@ -126,8 +129,9 @@ export default function TermsAgreements() {
         });
         return;
       }
-      // 가입 성공
+      // 가입 성공 및 간편결제 초기화
       setAccessToken(result.data.accessToken);
+      setPaymentRegistered(false);
       snackbar.success({
         title: '회원가입이 완료되었습니다.',
         description: '잠시 후 메인 화면으로 이동합니다.',

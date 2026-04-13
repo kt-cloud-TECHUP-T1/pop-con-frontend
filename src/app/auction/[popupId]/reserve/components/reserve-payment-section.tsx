@@ -16,6 +16,7 @@ import { postAuctionBid } from '@/lib/api/auction-bid';
 import { useAuctionStore } from '@/components/sale-detail/stores/auction-store';
 import { snackbar } from '@/components/ui/snackbar';
 import { SoldOutModal } from '@/components/sale-detail/info/soldout-modal';
+import { quizPassedTokenStorage } from '@/lib/utils';
 
 type BillingCard = {
   id: number;
@@ -91,16 +92,29 @@ export default function ReservePaymentSection({
 
     await submitSignals();
 
+    const quizPassedToken = quizPassedTokenStorage.get();
+
+    //프론트쪽에서는 토큰 유무판변
+    if (!quizPassedToken) {
+      snackbar.destructive({
+        title: '보안퀴즈 필요',
+        description: '보안퀴즈를 다시 진행해주세요.',
+      });
+      return;
+    }
+    //서버에서는 위조토큰인지도 진짜 검증
     const result = await postAuctionBid(
       {
         auctionOptionId: selectedOptionId,
         bidPrice: currentPrice as number,
       },
-      accessToken
+      accessToken,
+      quizPassedToken
     );
     //성공 처리
     if (result.code === 'SUCCESS') {
       const reservationId = result.data?.reservationNo;
+      quizPassedTokenStorage.remove();
       snackbar.success({
         title: '낙찰 성공!',
         description: '잠시 후 완료 페이지로 이동합니다.',

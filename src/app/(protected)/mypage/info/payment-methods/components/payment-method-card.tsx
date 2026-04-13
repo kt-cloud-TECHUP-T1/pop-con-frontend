@@ -1,22 +1,14 @@
-import Image from 'next/image';
 import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
-
-// TODO PaymentAvatar PR 승인되면 해당 컴포넌트에 맞게 교체 필요 #68
-export type CardBrandCode = 'HYUNDAI' | 'TOSS';
+import { PaymentAvatar } from '@/components/ui/avatar/payment';
 
 export type PaymentMethod = {
   id: number;
-  brandCode: CardBrandCode;
+  brandCode: string;
   brand: string;
   maskedNumber: string;
   isPrimary: boolean;
-};
-
-const CARD_BRAND_IMAGE: Record<CardBrandCode, string> = {
-  HYUNDAI: '/images/temp/hyundai-card.png',
-  TOSS: '/images/temp/toss-card.png',
 };
 
 export function PaymentMethodCard({
@@ -35,13 +27,7 @@ export function PaymentMethodCard({
     <Box as="article" radius="ML" border="#0A0A0A14" paddingY="MS" paddingX="M">
       <div className="flex items-center justify-between gap-3">
         <div className="flex min-w-0 items-center gap-4">
-          <Image
-            src={CARD_BRAND_IMAGE[brandCode]}
-            alt={`${brand} 로고`}
-            width={30}
-            height={47}
-            className="h-[47px] w-[30px] rounded-[2px] object-cover"
-          />
+          <PaymentAvatar brandCode={brandCode} size="LG" />
 
           <div className="min-w-0">
             <Typography

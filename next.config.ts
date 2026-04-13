@@ -9,17 +9,15 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        // csv 데이터 기준
-        hostname: 'popply.co.kr',
+        hostname: 'assets.popcon.store',
       },
       {
         protocol: 'https',
-        // csv 데이터 기준
-        hostname: 'cdn.popga.co.kr',
+        hostname: 'cdn.popcon.com',
       },
       {
         protocol: 'https',
-        hostname: 'img1.newsis.com',
+        hostname: 'imagelink.com',
       },
       {
         protocol: 'https',

@@ -16,9 +16,10 @@ export async function GET(
   }
 
   const authorization = request.headers.get('Authorization');
+  const quizPassedToken = request.headers.get('X-Quiz-Passed-Token');
   const { drawId, entryDate } = await params;
 
-  if (!authorization) {
+  if (!authorization || !quizPassedToken) {
     return createUnauthorizedResponse();
   }
 
@@ -30,6 +31,7 @@ export async function GET(
         headers: {
           'Content-Type': 'application/json',
           Authorization: authorization,
+          'X-Quiz-Passed-Token': quizPassedToken,
         },
       }
     );
