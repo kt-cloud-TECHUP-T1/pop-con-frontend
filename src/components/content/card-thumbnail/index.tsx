@@ -96,7 +96,7 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
         <div
           className={cn(
             'wrapper-thumbnail',
-            'self-stretch relative flex flex-col justify-start items-start gap-4'
+            'self-stretch relative flex flex-col justify-start items-start gap-4 rounded-ml overflow-hidden'
           )}
         >
           <img
