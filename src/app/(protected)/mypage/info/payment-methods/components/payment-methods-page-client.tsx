@@ -59,6 +59,11 @@ export function PaymentMethodsPageClient() {
       const billingCards: BillingCard[] = await getBillingList(accessToken);
       setPaymentMethods(billingCards.map(billingCardToPaymentMethod));
     } catch (error) {
+      // 인증 오류인 경우 세션 만료 처리
+      if (error instanceof Error && handleAuthError({ code: error.message })) {
+        return;
+      }
+
       console.error(
         '[PaymentMethodsPageClient] fetch billing list failed:',
         error
