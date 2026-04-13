@@ -14,8 +14,8 @@ const summaryCards: {
   icon: IconName;
 }[] = [
   { label: '내 티켓', value: '3', icon: 'Ticket' },
-  { label: '드로우 내역', value: '6', icon: 'Blank' },
-  { label: '낙찰 내역', value: '2', icon: 'Blank' },
+  { label: '드로우 내역', value: '6', icon: 'Roulette' },
+  { label: '낙찰 내역', value: '2', icon: 'Gavel' },
   { label: '작성한 리뷰', value: '2', icon: 'Like' },
 ];
 
