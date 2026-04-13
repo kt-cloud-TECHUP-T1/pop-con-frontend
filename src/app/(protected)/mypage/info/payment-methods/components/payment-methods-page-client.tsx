@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import {
   PaymentMethodCard,
   type PaymentMethod,
@@ -28,18 +28,53 @@ function billingCardToPaymentMethod(card: BillingCard): PaymentMethod {
   };
 }
 
-type PaymentMethodsPageClientProps = {
-  initialPaymentMethods: PaymentMethod[];
-};
-
-export function PaymentMethodsPageClient({
-  initialPaymentMethods,
-}: PaymentMethodsPageClientProps) {
-  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>(
-    initialPaymentMethods
-  );
+export function PaymentMethodsPageClient() {
+  const [paymentMethods, setPaymentMethods] = useState<PaymentMethod[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
   const accessToken = useAuthStore((state) => state.accessToken);
   const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
+
+  const handleAuthError = useCallback(
+    (data: { code?: string }) => {
+      if (data.code === 'A002' || data.code === 'A003') {
+        clearAccessToken();
+        snackbar.destructive({
+          title: '세션 만료',
+          description: '로그인이 만료되었습니다. 다시 로그인해주세요.',
+        });
+        return true;
+      }
+      return false;
+    },
+    [clearAccessToken]
+  );
+
+  const fetchBillingList = useCallback(async () => {
+    if (!accessToken) {
+      setIsLoading(false);
+      return;
+    }
+
+    try {
+      const billingCards: BillingCard[] = await getBillingList(accessToken);
+      setPaymentMethods(billingCards.map(billingCardToPaymentMethod));
+    } catch (error) {
+      console.error(
+        '[PaymentMethodsPageClient] fetch billing list failed:',
+        error
+      );
+      snackbar.destructive({
+        title: '조회 실패',
+        description: '결제수단 목록을 불러오지 못했습니다.',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  }, [accessToken]);
+
+  useEffect(() => {
+    fetchBillingList();
+  }, [fetchBillingList]);
 
   const handleRegisterClick = async () => {
     if (!accessToken) {
@@ -72,15 +107,7 @@ export function PaymentMethodsPageClient({
       const data = await response.json();
 
       if (!response.ok) {
-        if (data.code === 'A002' || data.code === 'A003') {
-          clearAccessToken();
-
-          snackbar.destructive({
-            title: '세션 만료',
-            description: '로그인이 만료되었습니다. 다시 로그인해주세요.',
-          });
-          return;
-        }
+        if (handleAuthError(data)) return;
 
         if (data.code === API_ERROR_CODES.COMMON.BAD_REQUEST) {
           snackbar.destructive({
@@ -124,33 +151,122 @@ export function PaymentMethodsPageClient({
     }
   };
 
-  const handleSetPrimary = (paymentMethodId: number) => {
-    setPaymentMethods((prev) =>
-      prev.map((paymentMethod) => ({
-        ...paymentMethod,
-        isPrimary: paymentMethod.id === paymentMethodId,
-      }))
-    );
+  const handleSetPrimary = async (paymentMethodId: number) => {
+    if (!accessToken) return;
+
+    try {
+      const response = await fetch(
+        `/api/billing/keys/${paymentMethodId}/default`,
+        {
+          method: 'PATCH',
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (handleAuthError(data)) return;
+
+        snackbar.destructive({
+          title: '변경 실패',
+          description: '주 결제수단 변경 중 오류가 발생했습니다.',
+        });
+        return;
+      }
+
+      setPaymentMethods((prev) =>
+        prev.map((pm) => ({
+          ...pm,
+          isPrimary: pm.id === paymentMethodId,
+        }))
+      );
+
+      snackbar.success({
+        title: '변경 완료',
+        description: '주 결제수단이 변경되었습니다.',
+      });
+    } catch (error) {
+      console.error('[PaymentMethodsPageClient] set primary failed:', error);
+      snackbar.destructive({
+        title: '변경 실패',
+        description: '주 결제수단 변경 중 오류가 발생했습니다.',
+      });
+    }
   };
 
-  const handleDelete = (paymentMethodId: number) => {
-    setPaymentMethods((previous) =>
-      previous.filter((paymentMethod) => paymentMethod.id !== paymentMethodId)
-    );
+  const handleDelete = async (paymentMethodId: number) => {
+    if (!accessToken) return;
+
+    try {
+      const response = await fetch(`/api/billing/keys/${paymentMethodId}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (handleAuthError(data)) return;
+
+        snackbar.destructive({
+          title: '삭제 실패',
+          description: '결제수단 삭제 중 오류가 발생했습니다.',
+        });
+        return;
+      }
+
+      setPaymentMethods((prev) =>
+        prev.filter((pm) => pm.id !== paymentMethodId)
+      );
+
+      snackbar.success({
+        title: '삭제 완료',
+        description: '결제수단이 삭제되었습니다.',
+      });
+    } catch (error) {
+      console.error('[PaymentMethodsPageClient] delete failed:', error);
+      snackbar.destructive({
+        title: '삭제 실패',
+        description: '결제수단 삭제 중 오류가 발생했습니다.',
+      });
+    }
   };
+
+  if (isLoading) {
+    return (
+      <div className="flex justify-center py-10">
+        <Typography variant="body-2" className="text-[var(--neutral-50)]">
+          결제수단을 불러오는 중...
+        </Typography>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
-      <div className="grid gap-4 xl:grid-cols-2">
-        {paymentMethods.map((paymentMethod) => (
-          <PaymentMethodCard
-            key={paymentMethod.id}
-            {...paymentMethod}
-            onSetPrimary={handleSetPrimary}
-            onDelete={handleDelete}
-          />
-        ))}
-      </div>
+      {paymentMethods.length === 0 ? (
+        <div className="flex justify-center py-10">
+          <Typography variant="body-2" className="text-[var(--neutral-50)]">
+            등록된 결제수단이 없습니다.
+          </Typography>
+        </div>
+      ) : (
+        <div className="grid gap-4 xl:grid-cols-2">
+          {paymentMethods.map((paymentMethod) => (
+            <PaymentMethodCard
+              key={paymentMethod.id}
+              {...paymentMethod}
+              onSetPrimary={handleSetPrimary}
+              onDelete={handleDelete}
+            />
+          ))}
+        </div>
+      )}
 
       <Button size="large" variant="tertiary" onClick={handleRegisterClick}>
         <Icon name="Plus" size={20} />
