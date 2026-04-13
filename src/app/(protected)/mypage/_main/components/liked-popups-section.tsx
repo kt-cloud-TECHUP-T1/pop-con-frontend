@@ -1,7 +1,7 @@
 'use client';
 
-import { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { useEffect, useState } from 'react';
 import { Icon } from '@/components/Icon/Icon';
 import { LikedPopupCard } from '@/app/(protected)/mypage/components/liked-popup-card';
 import { PageHeader } from '@/components/shared/page-header';
@@ -11,6 +11,19 @@ import { LikedPopup, LikedPopupsData } from '../../types/liked-popup';
 
 const PAGE = 0;
 const SIZE = 8;
+
+function LikedPopupCardSkeleton() {
+  return (
+    <div className="animate-pulse">
+      <div className="aspect-[3/4] rounded-[var(--radius-ML)] bg-[var(--neutral-90)]" />
+      <div className="mt-2 space-y-1.5">
+        <div className="h-4 w-3/4 rounded bg-[var(--neutral-90)]" />
+        <div className="h-3 w-1/2 rounded bg-[var(--neutral-90)]" />
+        <div className="h-3 w-1/3 rounded bg-[var(--neutral-90)]" />
+      </div>
+    </div>
+  );
+}
 
 export function LikedPopupsSection() {
   const [popups, setPopups] = useState<LikedPopup[] | null>(null);
@@ -94,17 +107,4 @@ export function LikedPopupsSection() {
       )}
     </section>
   );
-
-  function LikedPopupCardSkeleton() {
-    return (
-      <div className="animate-pulse">
-        <div className="aspect-[3/4] rounded-[var(--radius-ML)] bg-[var(--neutral-90)]" />
-        <div className="mt-2 space-y-1.5">
-          <div className="h-4 w-3/4 rounded bg-[var(--neutral-90)]" />
-          <div className="h-3 w-1/2 rounded bg-[var(--neutral-90)]" />
-          <div className="h-3 w-1/3 rounded bg-[var(--neutral-90)]" />
-        </div>
-      </div>
-    );
-  }
 }

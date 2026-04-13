@@ -8,6 +8,10 @@ import {
 const API_BASE_URL = getServiceBaseUrl('user');
 
 export async function GET(request: Request) {
+  if (!API_BASE_URL) {
+    return createServerErrorResponse();
+  }
+
   const authorization = request.headers.get('Authorization');
 
   if (!authorization) {
@@ -26,6 +30,7 @@ export async function GET(request: Request) {
         headers: {
           Authorization: authorization,
         },
+        cache: 'no-store',
       }
     );
 

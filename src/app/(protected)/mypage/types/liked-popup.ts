@@ -13,7 +13,7 @@ export type LikedPopup = {
   overlay: {
     type: string | null;
     rank: number | null;
-  };
+  } | null;
   phase: {
     type: string;
     status: string;
