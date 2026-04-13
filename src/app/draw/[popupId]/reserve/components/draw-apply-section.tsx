@@ -13,6 +13,8 @@ import { DrawEntrySuccessData } from '@/types/applay/draw-apply';
 import DrawEntrySuccessModal from '@/components/sale-detail/info/draw-entry-success-modal';
 import DrawEntryDuplicateModal from '@/components/sale-detail/info/draw-entry-duplicate-modal';
 import { quizPassedTokenStorage } from '@/lib/utils';
+import { Box } from '@/components/ui/box';
+import { useUserMeQuery } from '@/features/user/queries/use-user-me-query';
 
 const DEFAULT_SUBMIT_ERROR =
   '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
@@ -20,12 +22,17 @@ const DEFAULT_SUBMIT_ERROR =
 interface DrawApplySectionProps {
   drawId: string;
   selectedOptionId: number | null;
+  selectedDate: string | null;
+  selectedEntryTime: string | null;
 }
 
 export default function DrawApplySection({
   drawId,
   selectedOptionId,
+  selectedDate,
+  selectedEntryTime,
 }: DrawApplySectionProps) {
+  const { data: userMe } = useUserMeQuery();
   const [checks, setChecks] = useState([false, false]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -131,9 +138,109 @@ export default function DrawApplySection({
   };
 
   const isAllChecked = checks.every(Boolean);
+  const userName = userMe?.name ?? '';
+  const userPhone = userMe?.phone ?? '';
+  const maskedPhone = userPhone.replace(
+    /^(\d{3})-?\d{4}-?(\d{4})$/,
+    '$1-****-$2'
+  );
+  const selectedTimeText = (() => {
+    if (!selectedEntryTime) return '시간을 선택해주세요';
+
+    const [hourText, minuteText = '00'] = selectedEntryTime.split(':');
+    const hour = Number(hourText);
+    const period = hour < 12 ? '오전' : '오후';
+    const displayHour = hour % 12 === 0 ? 12 : hour % 12;
+
+    return `${period} ${displayHour.toString().padStart(2, '0')}:${minuteText}`;
+  })();
 
   return (
-    <div className="pt-ms flex flex-col gap-ms">
+    <div className=" flex flex-col gap-ms">
+      <div className="draw-apply-info flex flex-col ">
+        <Typography variant="body-1" weight="bold">
+          응모 정보 요약
+        </Typography>
+        <div>
+          <div className="flex justify-between pt-ms">
+            <Typography
+              variant="label-1"
+              weight="regular"
+              className="text-[var(--content-extra-low)]"
+            >
+              선택한 날짜
+            </Typography>
+            <Typography
+              variant="label-1"
+              className="text-[var(--content-high)]"
+            >
+              {selectedDate ?? '날짜를 선택해주세요'}
+            </Typography>
+          </div>
+          <div className="flex justify-between pt-[5px]">
+            <Typography
+              variant="label-1"
+              weight="regular"
+              className="text-[var(--content-extra-low)]"
+            >
+              선택한 시간
+            </Typography>
+            <Typography
+              variant="label-1"
+              className="text-[var(--content-high)]"
+            >
+              {selectedTimeText}
+            </Typography>
+          </div>
+        </div>
+      </div>
+
+      <div className=" border-b border-[var(--line-3)]"></div>
+      <div>
+        <div className="flex justify-between">
+          <Typography
+            variant="label-1"
+            weight="regular"
+            className="text-[var(--content-extra-low)]"
+          >
+            이름
+          </Typography>
+          <Typography variant="label-1" className="text-[var(--content-high)]">
+            {userName}
+          </Typography>
+        </div>
+        <div className="flex justify-between pt-[5px]">
+          <Typography
+            variant="label-1"
+            weight="regular"
+            className="text-[var(--content-extra-low)]"
+          >
+            연락처
+          </Typography>
+          <Typography variant="label-1" className="text-[var(--content-high)]">
+            {userPhone}
+          </Typography>
+        </div>
+      </div>
+
+      <Box
+        radius="ML"
+        border="#0A0A0A14"
+        className="p-ms w-full flex flex-col gap-s"
+      >
+        <Typography
+          variant="label-3"
+          className="text-[var(--content-extra-low)]"
+        >
+          현재 등록된 정보({userName}/{maskedPhone})로 응모할까요? 결과도 이
+          번호로 알려드려요.
+        </Typography>
+        <div>
+          <Button variant="secondary">정보 수정하기</Button>
+        </div>
+      </Box>
+      <div className=" border-b border-[var(--line-3)]"></div>
+
       <div className="assign flex flex-col gap-s">
         <Typography variant="body-1" weight="bold">
           이용 약관 동의

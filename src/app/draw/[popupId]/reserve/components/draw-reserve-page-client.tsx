@@ -37,6 +37,8 @@ export function DrawReservePageClient({ drawId }: DrawReservePageClientProps) {
     errorCodes: D_ERROR_CODES,
   });
 
+  const selectedSlot = slots.find((slot) => slot.optionId === selectedOptionId);
+
   return (
     <section className="flex flex-col gap-8">
       {/* 페이지 제목/설명 */}
@@ -105,6 +107,8 @@ export function DrawReservePageClient({ drawId }: DrawReservePageClientProps) {
             <DrawApplySection
               drawId={drawId}
               selectedOptionId={selectedOptionId}
+              selectedDate={selectedDate}
+              selectedEntryTime={selectedSlot?.entryTime ?? null}
             />
           </Box>
           <SaleNoticeCard items={DrawInfoContent} />
