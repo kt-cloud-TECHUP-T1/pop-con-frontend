@@ -89,13 +89,13 @@ export default function VqaForm() {
           return;
         }
 
-        // 면제 → 바로 통과
+        // 면제 → 바로 통과 (isLoading 유지하여 에러 화면 방지)
         if (data.isExempt && data.quizPassedToken) {
           sessionStorage.setItem('quiz_passed_token', data.quizPassedToken);
           const redirect = sessionStorage.getItem('vqa_redirect');
           sessionStorage.removeItem('vqa_redirect');
           router.push(redirect ?? '/');
-          return;
+          return; // isLoading을 false로 바꾸지 않고 로딩 화면 유지
         }
 
         // 퀴즈 진행
@@ -104,10 +104,10 @@ export default function VqaForm() {
           setQuestion(data.firstQuestion);
           startTimeRef.current = Date.now();
         }
+        setIsLoading(false);
       } catch {
         setHasLoadError(true);
         snackbar.destructive({ title: '퀴즈를 불러오지 못했어요.' });
-      } finally {
         setIsLoading(false);
       }
     };
