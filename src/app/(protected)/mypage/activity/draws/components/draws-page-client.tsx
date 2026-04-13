@@ -1,6 +1,7 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { ActivityStatusBadge } from '@/app/(protected)/mypage/components/activity-history/activity-status-badge';
 import { ActivityHistoryList } from '@/app/(protected)/mypage/components/activity-history/activity-history-list';
 import { ActivityStatusFilters } from '@/app/(protected)/mypage/components/activity-history/activity-status-filters';
@@ -8,21 +9,20 @@ import { formatWon } from '@/lib/utils';
 import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
 import { Icon } from '@/components/Icon/Icon';
-import type { ActivityItem } from '@/app/(protected)/mypage/types';
+import type { ApiResponse } from '@/types/api/common';
+import type { ActivityItem, ActivityStatusTone } from '@/app/(protected)/mypage/types';
 import DrawResultModal, { type DrawResult } from './draw-result-modal';
 
 type DrawStatusFilter = 'won' | 'notWon' | 'inProgress' | 'pendingResult';
 
-type DrawHistoryItem = {
+interface DrawHistoryItem {
   id: number;
-  title: string;
-  amount: number;
-  paidAt: string;
-  statusFilter: DrawStatusFilter;
-  statusLabel: string;
-  statusTone: 'neutral' | 'warning' | 'danger' | 'success';
-  drawResult?: 'lucky' | 'won' | 'notWon';
-};
+  thumbnailUrl: string | null;
+  popupTitle: string;
+  entryFee: number;
+  appliedAt: string;
+  status: string;
+}
 
 const STATUS_FILTERS: { value: DrawStatusFilter; label: string }[] = [
   { value: 'won', label: '드로우 당첨' },
@@ -31,88 +31,121 @@ const STATUS_FILTERS: { value: DrawStatusFilter; label: string }[] = [
   { value: 'pendingResult', label: '결과 확인 대기중' },
 ];
 
-// TODO: 실제 API로 교체 필요
-const DRAW_HISTORY: DrawHistoryItem[] = [
-  {
-    id: 1,
-    title: 'Title',
-    amount: 31000,
-    paidAt: '2026.02.17',
-    statusFilter: 'won',
-    statusLabel: '드로우 당첨',
-    statusTone: 'success',
-  },
-  {
-    id: 2,
-    title: 'Title',
-    amount: 14000,
-    paidAt: '2026.02.14',
-    statusFilter: 'notWon',
-    statusLabel: '드로우 미당첨',
-    statusTone: 'danger',
-  },
-  {
-    id: 3,
-    title: 'Title',
-    amount: 26000,
-    paidAt: '2026.02.08',
-    statusFilter: 'inProgress',
-    statusLabel: '드로우 진행중',
-    statusTone: 'neutral',
-  },
-  {
-    id: 4,
-    title: 'Title',
-    amount: 18000,
-    paidAt: '2026.02.11',
-    statusFilter: 'pendingResult',
-    statusLabel: '결과 확인 대기중',
-    statusTone: 'warning',
-    drawResult: 'lucky',
-  },
-  {
-    id: 5,
-    title: 'Title',
-    amount: 12000,
-    paidAt: '2026.02.12',
-    statusFilter: 'pendingResult',
-    statusLabel: '결과 확인 대기중',
-    statusTone: 'warning',
-    drawResult: 'won',
-  },
-  {
-    id: 6,
-    title: 'Title',
-    amount: 10000,
-    paidAt: '2026.02.14',
-    statusFilter: 'pendingResult',
-    statusLabel: '결과 확인 대기중',
-    statusTone: 'warning',
-    drawResult: 'notWon',
-  },
-];
+function formatDate(isoString: string) {
+  const date = new Date(isoString);
+  return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
+}
+
+function getStatusFilter(status: string): DrawStatusFilter {
+  const s = status.toUpperCase();
+  if (s === 'WON' || s === '당첨') return 'won';
+  if (s === 'LOST' || s === '미당첨') return 'notWon';
+  if (s === 'IN_PROGRESS' || s === '진행중') return 'inProgress';
+  return 'pendingResult';
+}
+
+function getStatusLabel(status: string): string {
+  const filter = getStatusFilter(status);
+  return STATUS_FILTERS.find((f) => f.value === filter)?.label ?? status;
+}
+
+function getStatusTone(status: string): ActivityStatusTone {
+  const filter = getStatusFilter(status);
+  const toneMap: Record<DrawStatusFilter, ActivityStatusTone> = {
+    won: 'success',
+    notWon: 'danger',
+    inProgress: 'neutral',
+    pendingResult: 'warning',
+  };
+  return toneMap[filter];
+}
+
+function DrawItemSkeleton() {
+  return (
+    <div className="animate-pulse grid grid-cols-1 gap-4 py-2 md:grid-cols-[80px_minmax(0,1fr)_160px_140px_160px] md:items-center md:gap-6">
+      <div className="w-20 h-[104px] rounded-[var(--radius-ML)] bg-[var(--neutral-90)]" />
+      <div className="h-5 w-2/3 rounded bg-[var(--neutral-90)]" />
+      <div className="h-5 w-24 rounded bg-[var(--neutral-90)]" />
+      <div className="space-y-1.5">
+        <div className="h-4 w-20 rounded bg-[var(--neutral-90)]" />
+        <div className="h-3 w-16 rounded bg-[var(--neutral-90)]" />
+      </div>
+      <div className="h-9 w-[100px] rounded bg-[var(--neutral-90)] md:justify-self-end" />
+    </div>
+  );
+}
 
 export function DrawsPageClient() {
-  const [activeFilter, setActiveFilter] = useState<DrawStatusFilter | null>(
-    null
-  );
+  const [draws, setDraws] = useState<DrawHistoryItem[] | null>(null);
+  const [isError, setIsError] = useState(false);
+  const [activeFilter, setActiveFilter] = useState<DrawStatusFilter | null>(null);
   const [modalResult, setModalResult] = useState<DrawResult | null>(null);
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  useEffect(() => {
+    if (!accessToken) return;
+
+    const controller = new AbortController();
+
+    const fetchDraws = async () => {
+      try {
+        const response = await fetch('/api/history/draws', {
+          signal: controller.signal,
+          headers: { Authorization: `Bearer ${accessToken}` },
+        });
+
+        if (!response.ok) {
+          setIsError(true);
+          return;
+        }
+
+        const result = (await response.json()) as ApiResponse<DrawHistoryItem[]>;
+        setDraws(result.data ?? []);
+      } catch (error) {
+        if (error instanceof DOMException && error.name === 'AbortError') return;
+        setIsError(true);
+      }
+    };
+
+    fetchDraws();
+    return () => controller.abort();
+  }, [accessToken]);
 
   const handleToggle = (value: DrawStatusFilter) => {
     setActiveFilter((prev) => (prev === value ? null : value));
   };
 
-  const filteredHistory = activeFilter
-    ? DRAW_HISTORY.filter((item) => item.statusFilter === activeFilter)
-    : DRAW_HISTORY;
+  if (isError) {
+    return (
+      <div className="min-h-[200px] flex items-center justify-center text-[var(--content-extra-low)]">
+        드로우 응모 내역을 불러오지 못했어요.
+      </div>
+    );
+  }
 
-  const items: ActivityItem[] = filteredHistory.map((item) => ({
+  if (draws === null) {
+    return (
+      <ul className="space-y-8">
+        {Array.from({ length: 3 }).map((_, i) => (
+          <li key={i}>
+            <DrawItemSkeleton />
+          </li>
+        ))}
+      </ul>
+    );
+  }
+
+  const filteredDraws = activeFilter
+    ? draws.filter((item) => getStatusFilter(item.status) === activeFilter)
+    : draws;
+
+  const items: ActivityItem[] = filteredDraws.map((item) => ({
     id: item.id,
-    title: item.title,
-    price: formatWon(item.amount),
-    paidAt: item.paidAt,
-    stateLabel: item.statusLabel,
-    stateTone: item.statusTone,
+    title: item.popupTitle,
+    price: formatWon(item.entryFee),
+    paidAt: formatDate(item.appliedAt),
+    stateLabel: getStatusLabel(item.status),
+    stateTone: getStatusTone(item.status),
   }));
 
   return (
@@ -122,32 +155,44 @@ export function DrawsPageClient() {
         activeValues={activeFilter ? [activeFilter] : []}
         onToggle={handleToggle}
       />
-      <ActivityHistoryList
-        items={items}
-        renderRightContent={(item) => {
-          const draw = filteredHistory.find((d) => d.id === item.id)!;
-          return draw.statusFilter === 'pendingResult' ? (
-            <Box
-              as="button"
-              type="button"
-              paddingX="S"
-              radius="XS"
-              className="bg-[var(--orange-50)] py-2 text-white flex gap-1"
-              onClick={() => setModalResult(draw.drawResult ?? 'notWon')}
-            >
-              <Icon name="Search" size={18} className="text-white" />
-              <Typography as="p" variant="label-3">
-                결과 확인하기
-              </Typography>
-            </Box>
-          ) : (
-            <ActivityStatusBadge
-              label={item.stateLabel}
-              tone={item.stateTone}
-            />
-          );
-        }}
-      />
+
+      {draws.length === 0 && (
+        <div className="min-h-[200px] flex items-center justify-center text-[var(--content-extra-low)]">
+          드로우 응모 내역이 없어요.
+        </div>
+      )}
+
+      {draws.length > 0 && (
+        <ActivityHistoryList
+          items={items}
+          renderRightContent={(item) => {
+            const draw = filteredDraws.find((d) => d.id === item.id)!;
+            const filter = getStatusFilter(draw.status);
+
+            return filter === 'pendingResult' ? (
+              <Box
+                as="button"
+                type="button"
+                paddingX="S"
+                radius="XS"
+                className="bg-[var(--orange-50)] py-2 text-white flex gap-1"
+                onClick={() => setModalResult('won')}
+              >
+                <Icon name="Search" size={18} className="text-white" />
+                <Typography as="p" variant="label-3">
+                  결과 확인하기
+                </Typography>
+              </Box>
+            ) : (
+              <ActivityStatusBadge
+                label={item.stateLabel}
+                tone={item.stateTone}
+              />
+            );
+          }}
+        />
+      )}
+
       {modalResult && (
         <DrawResultModal
           isOpen={!!modalResult}
