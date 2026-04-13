@@ -9,6 +9,8 @@ import { Typography } from '@/components/ui/typography';
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { useMyId } from '@/hooks/use-my-id';
+import { useApplyPageCollector } from '@/features/anti-macro';
 import { getBillingList } from '@/app/api/payment/get-billing-list';
 import { postAuctionBid } from '@/lib/api/auction-bid';
 import { useAuctionStore } from '@/components/sale-detail/stores/auction-store';
@@ -31,6 +33,11 @@ export default function ReservePaymentSection({
   const [checks, setChecks] = useState([false, false, false]);
   const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
+  const userId = useMyId();
+  const { submitSignals } = useApplyPageCollector({
+    page: 'dutch-auction-application',
+    userId: userId ?? '',
+  });
   const currentPrice = useAuctionStore(
     (state) => state.liveData?.currentPrice ?? null
   );
@@ -81,6 +88,8 @@ export default function ReservePaymentSection({
     if (!accessToken) return;
     if (selectedOptionId === null) return;
     if (currentPrice === null) return;
+
+    await submitSignals();
 
     const result = await postAuctionBid(
       {

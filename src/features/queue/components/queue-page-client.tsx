@@ -177,7 +177,7 @@ export const QueuePageClient = () => {
 
   const { position, estimatedWaitSeconds, progress } = useQueue({
     queueToken: token,
-    onActive: () => router.push('/security-quiz'),
+    onActive: () => router.push('/vqa'),
   });
 
   return (

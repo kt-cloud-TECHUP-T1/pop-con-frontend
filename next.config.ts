@@ -3,6 +3,7 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   output: 'standalone',
   /* config options here */
+  reactStrictMode:false,
   reactCompiler: true,
   images: {
     remotePatterns: [
@@ -19,6 +20,10 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'img1.newsis.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'assets.popcon.store',
       },
     ],
   },

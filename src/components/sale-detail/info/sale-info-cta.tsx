@@ -8,6 +8,7 @@ import { formatDateWithWeekdayTime } from '@/lib/utils';
 import { useDetailPageCollector } from '@/features/anti-macro';
 import { useParams, useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { useMyId } from '@/hooks/use-my-id';
 import { useLoginRequiredModalStore } from '@/features/auth/stores/login-required-modal-store';
 import { requireAuth } from '../utils/require-auth';
 import { usePaymentRequiredModalStore } from '@/features/auth/stores/payment-required-modal-store';
@@ -27,28 +28,33 @@ export default function SaleInfoCTA() {
   const params = useParams<{ popupId: string }>();
   const popupIdNumber = Number(params.popupId);
   const { data: popupData } = usePopupDetailQuery(popupIdNumber);
+  const accessToken = useAuthStore((state) => state.accessToken);
+  const userId = useMyId();
   const page =
     popupData?.phaseType === 'AUCTION'
       ? ('dutch-auction-detail' as const)
       : ('popup-detail' as const);
-  const { submitSignals } = useDetailPageCollector({ page });
+  const { submitSignals } = useDetailPageCollector({ page, userId });
 
   if (popupData?.phaseType === 'AUCTION')
     return (
       <AuctionCTA
+        popupId={params.popupId}
         onSubmitSignals={submitSignals}
         drawId={popupData.drawId as number}
       />
     );
   if (popupData?.phaseType === 'DRAW')
-    return <DrawCTA onSubmitSignals={submitSignals} />;
+    return <DrawCTA popupId={params.popupId} onSubmitSignals={submitSignals} />;
   return null;
 }
 
 function AuctionCTA({
+  popupId,
   onSubmitSignals,
   drawId,
 }: {
+  popupId: string;
   onSubmitSignals: () => Promise<void>;
   drawId: number;
 }) {
@@ -116,12 +122,14 @@ function AuctionCTA({
 
             if (result.data.status === 'ACTIVE') {
               //퀴즈페이지로 이동
-              router.push('/security-quiz');
+              sessionStorage.setItem('vqa_redirect', `/auction/${popupId}/reserve`);
+              router.push('/vqa');
               return;
             }
 
             if (result.data.status === 'WAITING') {
               //재진입시 api 전달용
+              sessionStorage.setItem('vqa_redirect', `/auction/${popupId}/reserve`);
               sessionStorage.setItem(
                 'queue_auction_id',
                 String(auctionData.auctionId)
@@ -205,8 +213,10 @@ function AuctionCTA({
 }
 
 function DrawCTA({
+  popupId,
   onSubmitSignals,
 }: {
+  popupId: string;
   onSubmitSignals: () => Promise<void>;
 }) {
   const { data: drawData } = useCurrentDrawDetail();
@@ -265,8 +275,12 @@ function DrawCTA({
           }
 
           const statusHandler: Record<string, () => void> = {
-            ACTIVE: () => router.push('/security-quiz'),
+            ACTIVE: () => {
+              sessionStorage.setItem('vqa_redirect', `/draw/${popupId}/reserve`);
+              router.push('/vqa');
+            },
             WAITING: () => {
+              sessionStorage.setItem('vqa_redirect', `/draw/${popupId}/reserve`);
               sessionStorage.setItem('queue_draw_id', String(drawData.drawId));
               setDrawId(String(drawData.drawId));
               router.push('/queue');

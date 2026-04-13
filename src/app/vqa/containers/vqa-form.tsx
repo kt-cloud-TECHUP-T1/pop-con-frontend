@@ -6,52 +6,117 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Typography } from '@/components/ui/typography';
 import { snackbar } from '@/components/ui/snackbar';
+import { queueTokenStorage } from '@/features/queue/utils/queue-token';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
 
-interface VqaQuestion {
-  failCount: number;
-  questionId: string;
-  question: string;
-  videoUrl: string;
-  timeLimit: number;
+// ── 백엔드 응답 타입 ──────────────────────────────────
+
+/** POST /queues/vqa/start 응답 */
+interface VqaStartData {
+  isExempt: boolean;
+  vqaSessionId: string | null;
+  quizPassedToken: string | null;
+  firstQuestion: VqaQuestion | null;
 }
-const DUMMY_QUESTION = {
-  failCount: 3,
-  questionId: 'q1',
-  videoUrl:
-    'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTQWOxKPwNHFjUvdcASruiQwfX6KlzGN5p39g&s',
-  question: '이 영상에 있는 동물은 무엇인가요?',
-  timeLimit: 3000000,
-};
+
+/** 문제 정보 */
+interface VqaQuestion {
+  video: { id: number; title: string };
+  question: { id: number; text: string };
+  is_exempt: boolean | null;
+}
+
+/** POST /queues/vqa/submit 응답 */
+interface VqaSubmitData {
+  isPass: boolean;
+  score: number | null;
+  quizPassedToken: string | null;
+  remainAttempts: number | null;
+}
+
+// ── 헬퍼 ──────────────────────────────────────────────
+
+const QUIZ_TIME_LIMIT = 30;
+const VQA_VIDEO_BASE = 'https://vqa.botfett.cloud/api/v1/videos';
+
+function buildHeaders(
+  accessToken: string | null,
+  queueToken: string | null,
+  json = false
+): Record<string, string> {
+  return {
+    ...(json ? { 'Content-Type': 'application/json' } : {}),
+    ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
+    ...(queueToken ? { 'X-Queue-Token': queueToken } : {}),
+  };
+}
+
+// ── 컴포넌트 ─────────────────────────────────────────
 
 export default function VqaForm() {
   const router = useRouter();
+  const accessToken = useAuthStore((state) => state.accessToken);
+
+  // 퀴즈 상태
+  const [vqaSessionId, setVqaSessionId] = useState<string | null>(null);
+  const [question, setQuestion] = useState<VqaQuestion | null>(null);
   const [answer, setAnswer] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isBlocked, setIsBlocked] = useState(false);
-  const [questionData, setQuestionData] = useState<VqaQuestion | null>(null);
-  const [timeLeft, setTimeLeft] = useState(30);
-  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
+  // 타이머
+  const [timeLeft, setTimeLeft] = useState(QUIZ_TIME_LIMIT);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+  const startTimeRef = useRef<number>(Date.now());
+
+  // ── 퀴즈 시작 요청 ─────────────────────────────────
   useEffect(() => {
-    const fetchQuestion = async () => {
+    const fetchStart = async () => {
       try {
-        const res = await fetch('/api/vqa');
-        const data = await res.json();
-        if (data?.data) {
-          setQuestionData(data.data);
-          setTimeLeft(data.data.timeLimit ?? 30);
+        const queueToken = queueTokenStorage.get();
+        const res = await fetch('/api/vqa', {
+          headers: buildHeaders(accessToken, queueToken),
+        });
+        const json = await res.json();
+        const data: VqaStartData | undefined = json?.data;
+
+        if (!data) {
+          snackbar.destructive({ title: '퀴즈를 불러오지 못했어요.' });
+          return;
+        }
+
+        // 면제 → 바로 통과
+        if (data.isExempt && data.quizPassedToken) {
+          sessionStorage.setItem('quiz_passed_token', data.quizPassedToken);
+          const redirect = sessionStorage.getItem('vqa_redirect');
+          sessionStorage.removeItem('vqa_redirect');
+          router.push(redirect ?? '/');
+          return;
+        }
+
+        // 퀴즈 진행
+        if (data.vqaSessionId && data.firstQuestion) {
+          setVqaSessionId(data.vqaSessionId);
+          setQuestion(data.firstQuestion);
+          startTimeRef.current = Date.now();
         }
       } catch {
-        setQuestionData(DUMMY_QUESTION);
-        setTimeLeft(DUMMY_QUESTION.timeLimit);
+        snackbar.destructive({ title: '퀴즈를 불러오지 못했어요.' });
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchQuestion();
+    fetchStart();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  // ── 카운트다운 타이머 ──────────────────────────────
   useEffect(() => {
+    if (isLoading || !question) return;
+
     timerRef.current = setInterval(() => {
       setTimeLeft((prev) => {
         if (prev <= 1) {
@@ -69,39 +134,79 @@ export default function VqaForm() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [router]);
+  }, [isLoading, question, router]);
 
+  // ── 다음 문제 조회 ──────────────────────────────────
+  const fetchNextQuestion = async () => {
+    try {
+      const queueToken = queueTokenStorage.get();
+      const res = await fetch(
+        `/api/vqa/next?sessionId=${vqaSessionId}`,
+        {
+          headers: buildHeaders(accessToken, queueToken),
+        }
+      );
+      const json = await res.json();
+      const nextQuestion: VqaQuestion | undefined = json?.data;
+
+      if (nextQuestion) {
+        setQuestion(nextQuestion);
+        setTimeLeft(QUIZ_TIME_LIMIT);
+        startTimeRef.current = Date.now();
+      }
+    } catch {
+      // 다음 문제 로드 실패 시 기존 문제 유지
+    }
+  };
+
+  // ── 답변 제출 ──────────────────────────────────────
   const handleSubmit = async () => {
-    if (!answer.trim() || isSubmitting) return;
+    if (!answer.trim() || isSubmitting || !question || !vqaSessionId) return;
 
     setIsSubmitting(true);
+    const totalTime = (Date.now() - startTimeRef.current) / 1000;
+
     try {
       const res = await fetch('/api/vqa', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: buildHeaders(accessToken, null, true),
         body: JSON.stringify({
-          answer: answer.trim(),
-          questionId: questionData?.questionId,
+          vqaSessionId,
+          videoId: question.video.id,
+          questionId: question.question.id,
+          userAnswer: answer.trim(),
+          totalTime,
         }),
       });
 
-      const data = await res.json();
+      const json = await res.json();
+      const data: VqaSubmitData | undefined = json?.data;
 
-      if (!res.ok) {
-        const failCount = data?.data?.failCount ?? questionData?.failCount;
-        if (failCount >= 3) {
-          setIsBlocked(true);
-          if (timerRef.current) clearInterval(timerRef.current);
-          return;
-        }
-        setErrorMessage(
-          `정답이 아니에요. 다시 시도해주세요 (${failCount ?? '?'}/3회) 오답`
-        );
-        setAnswer('');
+      // 통과
+      if (data?.isPass && data.quizPassedToken) {
+        sessionStorage.setItem('quiz_passed_token', data.quizPassedToken);
+        const redirect = sessionStorage.getItem('vqa_redirect');
+        sessionStorage.removeItem('vqa_redirect');
+        router.push(redirect ?? '/');
         return;
       }
 
-      router.back();
+      // 실패 — 남은 횟수 확인
+      const remain = data?.remainAttempts ?? 0;
+
+      if (remain <= 0) {
+        setIsBlocked(true);
+        if (timerRef.current) clearInterval(timerRef.current);
+        return;
+      }
+
+      setErrorMessage(
+        `정답이 아니에요. 다시 시도해주세요 (${3 - remain}/3회 오답)`
+      );
+      setAnswer('');
+
+      // 다음 문제 가져오기
+      await fetchNextQuestion();
     } catch {
       snackbar.destructive({ title: '오류가 발생했어요. 다시 시도해주세요.' });
     } finally {
@@ -109,6 +214,7 @@ export default function VqaForm() {
     }
   };
 
+  // ── 차단 화면 ──────────────────────────────────────
   if (isBlocked) {
     return (
       <div className="bg-white rounded-[16px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.12),0px_0px_1px_0px_rgba(0,0,0,0.08)] flex flex-col gap-[30px] items-center p-8 w-full">
@@ -142,6 +248,22 @@ export default function VqaForm() {
     );
   }
 
+  // ── 로딩 ───────────────────────────────────────────
+  if (isLoading || !question) {
+    return (
+      <div className="bg-white rounded-[16px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.12),0px_0px_1px_0px_rgba(0,0,0,0.08)] flex flex-col gap-[30px] items-center p-8 w-full">
+        <Typography
+          variant="heading-1"
+          weight="bold"
+          className="text-[var(--content-high)] text-center"
+        >
+          퀴즈를 불러오는 중...
+        </Typography>
+      </div>
+    );
+  }
+
+  // ── 퀴즈 화면 ──────────────────────────────────────
   return (
     <div className="bg-white rounded-[16px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.12),0px_0px_1px_0px_rgba(0,0,0,0.08)] flex flex-col gap-[30px] items-center p-8 w-full">
       {/* Heading */}
@@ -166,9 +288,8 @@ export default function VqaForm() {
 
       {/* Content */}
       <div className="flex flex-col gap-6 w-full">
-        {/* Video + Timer */}
+        {/* Timer */}
         <div className="flex flex-col gap-4 w-full">
-          {/* Timer */}
           <div className="bg-[var(--component-default)] rounded-[10px] px-[2px] py-2 flex gap-1 items-center justify-center">
             <Typography
               variant="label-1"
@@ -185,50 +306,19 @@ export default function VqaForm() {
             </Typography>
           </div>
 
-          {/* Thumbnail */}
+          {/* Video */}
           <div
             className="rounded-[16px] overflow-hidden w-full bg-[var(--component-default)] flex items-center justify-center"
             style={{ aspectRatio: '16/9' }}
           >
-            {questionData?.videoUrl ? (
-              <video
-                src={questionData.videoUrl}
-                className="w-full h-full object-cover"
-              />
-            ) : (
-              <svg
-                width="48"
-                height="48"
-                viewBox="0 0 48 48"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                aria-hidden="true"
-              >
-                <rect
-                  x="4"
-                  y="8"
-                  width="40"
-                  height="32"
-                  rx="2"
-                  stroke="#a3a3a3"
-                  strokeWidth="2"
-                  fill="none"
-                />
-                <circle
-                  cx="18"
-                  cy="20"
-                  r="4"
-                  stroke="#a3a3a3"
-                  strokeWidth="2"
-                />
-                <path
-                  d="M4 36l10-10 6 6 8-10 16 14"
-                  stroke="#a3a3a3"
-                  strokeWidth="2"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            )}
+            <video
+              src={`${VQA_VIDEO_BASE}/${question.video.id}/stream`}
+              autoPlay
+              muted
+              loop
+              playsInline
+              className="w-full h-full object-cover"
+            />
           </div>
         </div>
 
@@ -239,7 +329,7 @@ export default function VqaForm() {
           as="p"
           className="text-[var(--content-high)] text-center w-full"
         >
-          {questionData?.question ?? ''}
+          {question.question.text}
         </Typography>
 
         {/* Form */}

@@ -47,3 +47,4 @@ storybook-static
 # docs
 /docs/api/
 /docs/csv/
+.gstack/
