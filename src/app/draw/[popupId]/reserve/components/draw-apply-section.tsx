@@ -6,6 +6,8 @@ import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
 import { useState } from 'react';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { useMyId } from '@/hooks/use-my-id';
+import { useApplyPageCollector } from '@/features/anti-macro';
 import { snackbar } from '@/components/ui/snackbar';
 import { DRAW_ENTRY_ERROR_MESSAGE } from '@/constants/draw-apply';
 import { postDrawEntry } from '@/lib/api/draw-apply';
@@ -37,6 +39,11 @@ export default function DrawApplySection({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const accessToken = useAuthStore((state) => state.accessToken);
+  const userId = useMyId();
+  const { submitSignals } = useApplyPageCollector({
+    page: 'draw-application',
+    userId: userId ?? '',
+  });
   const [isSuccessModalOpen, setIsSuccessModalOpen] = useState(false);
   const [isAlreadyEnteredModalOpen, setIsAlreadyEnteredModalOpen] =
     useState(false);
@@ -81,6 +88,8 @@ export default function DrawApplySection({
     setIsSubmitting(true);
 
     try {
+      await submitSignals();
+
       const result = await postDrawEntry(
         Number(drawId),
         selectedOptionId,
