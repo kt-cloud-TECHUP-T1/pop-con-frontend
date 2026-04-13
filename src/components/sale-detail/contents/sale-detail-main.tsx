@@ -13,7 +13,7 @@ export function SaleDetailMain({
 }) {
   return (
     <div className="flex flex-col">
-      <SaleThumbnail size="lg" alt="이미지 불러오기 실패" />
+      <SaleThumbnail size="lg" />
       <SaleHeader />
       <SaleTab hasStickyTopBar={hasStickyTopBar} />
       <SaleContent hasStickyTopBar={hasStickyTopBar} />

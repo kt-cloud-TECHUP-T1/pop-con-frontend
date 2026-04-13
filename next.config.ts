@@ -14,6 +14,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'cdn.popcon.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'imagelink.com',
+      },
     ],
   },
   webpack(config) {
