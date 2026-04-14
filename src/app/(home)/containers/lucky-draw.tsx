@@ -150,7 +150,7 @@ export const LuckyDraw = () => {
 
             return (
               <CardThumbnail
-                key={activeDrawCard.popupId}
+                key={`lucky-draw-${activeDrawCard.popupId}`}
                 thumbnailUrl={activeDrawCard.thumbnailUrl ?? undefined}
                 thumbnailRatio="3/4"
                 title={activeDrawCard.title}

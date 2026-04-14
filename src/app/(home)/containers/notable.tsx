@@ -58,7 +58,7 @@ export const Notable = () => {
           alignArrowToRatio="3/4"
           items={notableCards.map((notableCard) => (
             <CardThumbnail
-              key={notableCard.popupId}
+              key={`notable-${notableCard.popupId}`}
               thumbnailUrl={notableCard.thumbnailUrl ?? undefined}
               thumbnailRatio="3/4"
               title={notableCard.title}

@@ -52,7 +52,7 @@ export const Ranking = () => {
           alignArrowToRatio="3/4"
           items={rankingCards.map((rankingCard) => (
             <CardThumbnail
-              key={rankingCard.popupId}
+              key={`ranking-${rankingCard.popupId}`}
               index={rankingCard.overlay.rank}
               thumbnailUrl={rankingCard.thumbnailUrl ?? undefined}
               thumbnailRatio="3/4"
