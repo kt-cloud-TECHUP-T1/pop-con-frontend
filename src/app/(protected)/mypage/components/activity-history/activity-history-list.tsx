@@ -16,7 +16,6 @@ type ActivityHistoryListProps = {
 
 export function ActivityHistoryList({
   items,
-  thumbnailUrl,
   className,
   paymentStatusLabel,
   getPaymentStatusLabel,
@@ -34,7 +33,7 @@ export function ActivityHistoryList({
             )}
           >
             <ThumbnailImage
-              src={thumbnailUrl ?? '/images/temp/no-image.png'}
+              src={item.image ?? '/images/temp/no-image.png'}
               width={80}
               height={104}
               radius="ML"
@@ -43,7 +42,11 @@ export function ActivityHistoryList({
             <Typography variant="title-2" weight="medium">
               {item.title}
             </Typography>
-            <Typography variant="title-2" weight="bold" className={cn(getPriceClassName?.(item))}>
+            <Typography
+              variant="title-2"
+              weight="bold"
+              className={cn(getPriceClassName?.(item))}
+            >
               {item.price}
             </Typography>
             <div className="text-left md:text-center">
@@ -51,7 +54,9 @@ export function ActivityHistoryList({
                 {item.paidAt}
               </Typography>
               <Typography variant="body-2">
-                {getPaymentStatusLabel?.(item) ?? paymentStatusLabel ?? '결제 완료'}
+                {getPaymentStatusLabel?.(item) ??
+                  paymentStatusLabel ??
+                  '결제 완료'}
               </Typography>
             </div>
             <div className="md:justify-self-end">
