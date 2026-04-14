@@ -64,6 +64,7 @@ export const AUTH_ERROR_CODES = {
     DUPLICATE_EMAIL: 'U001', // 이미 가입된 이메일
     MISSING_SOCIAL_INFO: 'U002', // 가입 세션 소셜 정보 누락
     DUPLICATE_PHONE: 'U004', // 이미 사용중인 휴대폰 번호
+    SAME_PHONE: 'U005', // 현재 사용 중인 번호
   },
 
   // 인증 및 세션 (A)
