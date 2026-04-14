@@ -59,7 +59,10 @@ export const DutchAuction = () => {
           carouselOpts={{ align: 'start' }}
           alignArrowToRatio="16/9"
           items={dutchAuctionCards.map((dutchAuctionCard) => (
-            <div key={dutchAuctionCard.popupId} className="relative">
+            <div
+              key={`dutch-auction-${dutchAuctionCard.popupId}`}
+              className="relative"
+            >
               <CardThumbnail
                 thumbnailUrl={dutchAuctionCard.thumbnailUrl ?? undefined}
                 thumbnailRatio="16/9"

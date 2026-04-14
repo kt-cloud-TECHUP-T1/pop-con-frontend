@@ -51,7 +51,7 @@ export const MainBanner = () => {
       contentClassName="justify-center"
       showIndexes
       items={bannerCards.map((bannerCard) => (
-        <div key={bannerCard.popupId} className="w-[384px]">
+        <div key={`banner-${bannerCard.popupId}`} className="w-[384px]">
           <CardOverlay
             thumbnailUrl={bannerCard.thumbnailUrl ?? undefined}
             thumbnailAlt={bannerCard.title}

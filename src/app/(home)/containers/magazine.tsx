@@ -83,7 +83,7 @@ export const Magazine = () => {
           carouselOpts={{ align: 'start' }}
           items={magazineCards.map((magazineCard) => (
             <CardOverlay
-              key={magazineCard.magazineId}
+              key={`magazine-${magazineCard.magazineId}`}
               thumbnailUrl={magazineCard.thumbnailUrl ?? undefined}
               thumbnailRatio="16/9"
               title={magazineCard.title ?? undefined}

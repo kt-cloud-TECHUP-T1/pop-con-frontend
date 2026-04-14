@@ -58,7 +58,7 @@ export const EndingSoon = () => {
           alignArrowToRatio="3/4"
           items={endingSoonCards.map((endingSoonCard) => (
             <CardThumbnail
-              key={endingSoonCard.popupId}
+              key={`ending-soon-${endingSoonCard.popupId}`}
               thumbnailUrl={endingSoonCard.thumbnailUrl ?? undefined}
               thumbnailRatio="3/4"
               title={endingSoonCard.title}
