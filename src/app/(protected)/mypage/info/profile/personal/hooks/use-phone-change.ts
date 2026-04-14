@@ -30,6 +30,9 @@ const PHONE_CHANGE_ERROR_SNACKBAR: Record<
   [AUTH_ERROR_CODES.USER.DUPLICATE_PHONE]: {
     title: '이미 사용중인 휴대폰 번호입니다.',
   },
+  [AUTH_ERROR_CODES.USER.SAME_PHONE]: {
+    title: '현재 사용 중인 번호와 동일합니다.',
+  },
   [AUTH_ERROR_CODES.AUTH.INVALID_AUTH]: {
     title: AUTH_MESSAGES.IDENTITY.ERROR.INVALID_AUTH,
     description: '다시 로그인 후 시도해주세요.',
