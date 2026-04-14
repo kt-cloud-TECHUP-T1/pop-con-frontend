@@ -1,7 +1,12 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Recommend } from '../recommend';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import type { ApiResponse } from '@/types/api/common';
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ push: jest.fn() }),
+}));
 
 jest.mock('@/features/auth/stores/auth-store', () => ({
   useAuthStore: jest.fn(),
@@ -62,6 +67,19 @@ const makeRecommendItem = (id: number) => ({
   },
 });
 
+function renderWithQueryClient(ui: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+}
+
 describe('Recommend', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -77,7 +95,7 @@ describe('Recommend', () => {
       json: async () => mockRecommendResponse([]),
     });
 
-    render(<Recommend />);
+    renderWithQueryClient(<Recommend />);
 
     await waitFor(() => {
       expect(screen.getByText('추천 팝업이 없어요.')).toBeInTheDocument();
@@ -91,7 +109,7 @@ describe('Recommend', () => {
       json: async () => mockRecommendResponse(items),
     });
 
-    render(<Recommend />);
+    renderWithQueryClient(<Recommend />);
 
     await waitFor(() => {
       expect(screen.getByText('추천 팝업 1')).toBeInTheDocument();
@@ -112,7 +130,7 @@ describe('Recommend', () => {
       json: async () => mockRecommendResponse([]),
     });
 
-    render(<Recommend />);
+    renderWithQueryClient(<Recommend />);
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
@@ -132,7 +150,7 @@ describe('Recommend', () => {
       json: async () => mockRecommendResponse([]),
     });
 
-    render(<Recommend />);
+    renderWithQueryClient(<Recommend />);
 
     await waitFor(() => {
       const fetchCall = (global.fetch as jest.Mock).mock.calls[0];
@@ -144,7 +162,7 @@ describe('Recommend', () => {
   it('API 응답이 실패하면 빈 상태 메시지를 표시한다', async () => {
     global.fetch = jest.fn().mockResolvedValue({ ok: false });
 
-    render(<Recommend />);
+    renderWithQueryClient(<Recommend />);
 
     await waitFor(() => {
       expect(screen.getByText('추천 팝업이 없어요.')).toBeInTheDocument();

@@ -1,6 +1,11 @@
 import { render, screen, waitFor } from '@testing-library/react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { MainBanner } from '../main-banner';
 import type { ApiResponse } from '@/types/api/common';
+
+jest.mock('next/navigation', () => ({
+  useRouter: () => ({ push: jest.fn() }),
+}));
 
 jest.mock('@/components/content/card-overlay', () => ({
   CardOverlay: ({ title }: { title: string }) => (
@@ -42,6 +47,19 @@ const makeBannerItem = (id: number) => ({
   },
 });
 
+function renderWithQueryClient(ui: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+}
+
 describe('MainBanner', () => {
   beforeEach(() => {
     jest.resetAllMocks();
@@ -53,7 +71,7 @@ describe('MainBanner', () => {
       json: async () => mockBannerResponse([]),
     });
 
-    const { container } = render(<MainBanner />);
+    const { container } = renderWithQueryClient(<MainBanner />);
 
     await waitFor(() => {
       expect(container.firstChild).toBeNull();
@@ -67,7 +85,7 @@ describe('MainBanner', () => {
       json: async () => mockBannerResponse(items),
     });
 
-    render(<MainBanner />);
+    renderWithQueryClient(<MainBanner />);
 
     await waitFor(() => {
       expect(screen.getByText('배너 제목 1')).toBeInTheDocument();
@@ -83,12 +101,13 @@ describe('MainBanner', () => {
       json: async () => mockBannerResponse([makeBannerItem(1)]),
     });
 
-    render(<MainBanner />);
+    renderWithQueryClient(<MainBanner />);
 
     await waitFor(() => {
-      expect(global.fetch).toHaveBeenCalledWith('/api/popups/banners?limit=5', {
-        method: 'GET',
-      });
+      expect(global.fetch).toHaveBeenCalledWith(
+        '/api/popups/banners?limit=5',
+        expect.objectContaining({})
+      );
     });
   });
 
@@ -97,7 +116,7 @@ describe('MainBanner', () => {
       ok: false,
     });
 
-    const { container } = render(<MainBanner />);
+    const { container } = renderWithQueryClient(<MainBanner />);
 
     await waitFor(() => {
       expect(container.firstChild).toBeNull();

@@ -1,42 +1,43 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { ApiResponse } from '@/types/api/common';
 import { BaseCardResponse } from '../types';
 
+export const HOME_SECTION_QUERY_KEY = ['home-section'] as const;
+
 export function useSectionFetch<T>(url: string): T[] | null {
-  const [items, setItems] = useState<T[] | null>(null);
   const accessToken = useAuthStore((state) => state.accessToken);
 
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchItems = async () => {
+  const { data } = useQuery({
+    queryKey: [...HOME_SECTION_QUERY_KEY, url, accessToken],
+    queryFn: async ({ signal }) => {
       try {
         const response = await fetch(url, {
-          signal: controller.signal,
+          signal,
           headers: {
             ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
           },
         });
 
         if (!response.ok) {
-          setItems([]);
-          return;
+          return [];
         }
 
-        const result = (await response.json()) as ApiResponse<BaseCardResponse<T>>;
-        setItems(result.data?.items ?? []);
+        const result = (await response.json()) as ApiResponse<
+          BaseCardResponse<T>
+        >;
+        return result.data?.items ?? [];
       } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError') return;
-        setItems([]);
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          return [];
+        }
+
+        return [];
       }
-    };
+    },
+  });
 
-    fetchItems();
-    return () => controller.abort();
-  }, [accessToken, url]);
-
-  return items;
+  return data ?? null;
 }

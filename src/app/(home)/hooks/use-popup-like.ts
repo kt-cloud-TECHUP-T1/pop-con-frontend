@@ -1,32 +1,58 @@
 'use client';
 
-import { useState } from 'react';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { snackbar } from '@/components/ui/snackbar';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
-import type { LikedPopupState } from '@/types/popup-like';
 import type { BasePopupCard } from '../types';
 import { deleteHomePopupLike, postHomePopupLike } from '../actions';
+import { HOME_SECTION_QUERY_KEY } from './use-section-fetch';
+
+function isPopupCardItem(
+  item: unknown,
+  popupId: number
+): item is BasePopupCard {
+  if (typeof item !== 'object' || item === null) return false;
+
+  const maybeItem = item as Partial<BasePopupCard>;
+
+  return (
+    maybeItem.popupId === popupId &&
+    typeof maybeItem.stats === 'object' &&
+    maybeItem.stats !== null &&
+    typeof maybeItem.stats.likeCount === 'number'
+  );
+}
+
+function updatePopupLikeInItems(
+  oldItems: unknown,
+  popupId: number,
+  nextIsLiked: boolean
+) {
+  if (!Array.isArray(oldItems)) return oldItems;
+
+  return oldItems.map((item) => {
+    if (!isPopupCardItem(item, popupId)) return item;
+
+    return {
+      ...item,
+      liked: nextIsLiked,
+      stats: {
+        ...item.stats,
+        likeCount: Math.max(0, item.stats.likeCount + (nextIsLiked ? 1 : -1)),
+      },
+    };
+  });
+}
 
 export function usePopupLike<T extends BasePopupCard>() {
-  const [likedPopupState, setLikedPopupState] = useState<LikedPopupState>({});
   const accessToken = useAuthStore((state) => state.accessToken);
+  const queryClient = useQueryClient();
 
-  const updateLikedPopupState = (popup: T, nextIsLiked: boolean) => {
-    setLikedPopupState((prev) => {
-      const current = prev[popup.popupId] ?? {
-        isLiked: popup.liked ?? false,
-        likeCount: popup.stats.likeCount,
-      };
-
-      return {
-        ...prev,
-        [popup.popupId]: {
-          isLiked: nextIsLiked,
-          likeCount: Math.max(0, current.likeCount + (nextIsLiked ? 1 : -1)),
-        },
-      };
-    });
+  const updateHomeSectionQueries = (popup: T, nextIsLiked: boolean) => {
+    queryClient.setQueriesData(
+      { queryKey: HOME_SECTION_QUERY_KEY },
+      (oldItems) => updatePopupLikeInItems(oldItems, popup.popupId, nextIsLiked)
+    );
   };
 
   const likeMutation = useMutation({
@@ -38,7 +64,7 @@ export function usePopupLike<T extends BasePopupCard>() {
       return postHomePopupLike(popup.popupId, accessToken);
     },
     onSuccess: (_, popup) => {
-      updateLikedPopupState(popup, true);
+      updateHomeSectionQueries(popup, true);
     },
     onError: (error) => {
       snackbar.destructive({
@@ -59,7 +85,7 @@ export function usePopupLike<T extends BasePopupCard>() {
       return deleteHomePopupLike(popup.popupId, accessToken);
     },
     onSuccess: (_, popup) => {
-      updateLikedPopupState(popup, false);
+      updateHomeSectionQueries(popup, false);
     },
     onError: (error) => {
       snackbar.destructive({
@@ -71,21 +97,15 @@ export function usePopupLike<T extends BasePopupCard>() {
     },
   });
 
-  const getLikedPopupState = (popup: T) => {
-    const likedState = likedPopupState[popup.popupId];
-
-    return {
-      isLiked: likedState?.isLiked ?? popup.liked ?? false,
-      likeCount: likedState?.likeCount ?? popup.stats.likeCount,
-    };
-  };
+  const getLikedPopupState = (popup: T) => ({
+    isLiked: popup.liked ?? false,
+    likeCount: popup.stats.likeCount,
+  });
 
   const handleClickLike = (popup: T) => {
     if (likeMutation.isPending || unlikeMutation.isPending) return;
 
-    const { isLiked } = getLikedPopupState(popup);
-
-    if (isLiked) {
+    if (popup.liked ?? false) {
       unlikeMutation.mutate(popup);
       return;
     }
