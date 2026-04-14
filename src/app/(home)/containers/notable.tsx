@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { NotableSkeleton } from '../components/skeletons';
 import { BasePopupCard } from '../types';
 import { useSectionFetch } from '../hooks/use-section-fetch';
+import { usePopupLike } from '../hooks/use-popup-like';
 
 interface NotableCard extends BasePopupCard {
   overlay: null;
@@ -24,6 +25,7 @@ export const Notable = () => {
   const notableCards = useSectionFetch<NotableCard>(
     `/api/popups/featured?limit=${NOTABLE_LIMIT}`
   );
+  const { getLikedPopupState, handleClickLike } = usePopupLike<NotableCard>();
   const router = useRouter();
 
   if (notableCards === null) return <NotableSkeleton />;
@@ -56,26 +58,31 @@ export const Notable = () => {
           }}
           carouselOpts={{ align: 'start' }}
           alignArrowToRatio="3/4"
-          items={notableCards.map((notableCard) => (
-            <CardThumbnail
-              key={notableCard.popupId}
-              thumbnailUrl={notableCard.thumbnailUrl ?? undefined}
-              thumbnailRatio="3/4"
-              title={notableCard.title}
-              description={notableCard.subText ?? undefined}
-              caption={notableCard.caption ?? undefined}
-              countView={notableCard.stats.viewCount}
-              countLike={notableCard.stats.likeCount}
-              showButtonLike
-              showCountView
-              showCountLike
-              // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
-              isLiked={notableCard.liked ?? false}
-              onClick={() =>
-                handleClick(notableCard.popupId, notableCard.phase.type)
-              }
-            />
-          ))}
+          items={notableCards.map((notableCard) => {
+            const likedState = getLikedPopupState(notableCard);
+
+            return (
+              <CardThumbnail
+                key={notableCard.popupId}
+                thumbnailUrl={notableCard.thumbnailUrl ?? undefined}
+                thumbnailRatio="3/4"
+                title={notableCard.title}
+                description={notableCard.subText ?? undefined}
+                caption={notableCard.caption ?? undefined}
+                countView={notableCard.stats.viewCount}
+                countLike={likedState.likeCount}
+                showButtonLike
+                showCountView
+                showCountLike
+                // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
+                isLiked={likedState.isLiked}
+                onClickLike={() => handleClickLike(notableCard)}
+                onClick={() =>
+                  handleClick(notableCard.popupId, notableCard.phase.type)
+                }
+              />
+            );
+          })}
         />
       )}
     </Section>

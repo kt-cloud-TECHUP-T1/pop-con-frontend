@@ -7,6 +7,7 @@ import { RecommendSkeleton } from '../components/skeletons';
 import { useRouter } from 'next/navigation';
 import { BasePopupCard } from '../types';
 import { useSectionFetch } from '../hooks/use-section-fetch';
+import { usePopupLike } from '../hooks/use-popup-like';
 
 interface RecommendedCard extends BasePopupCard {
   overlay: null;
@@ -22,6 +23,8 @@ export const Recommend = () => {
   const recommendedCards = useSectionFetch<RecommendedCard>(
     '/api/popups/recommended'
   );
+  const { getLikedPopupState, handleClickLike } =
+    usePopupLike<RecommendedCard>();
   const router = useRouter();
 
   const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
@@ -52,27 +55,35 @@ export const Recommend = () => {
           }}
           carouselOpts={{ align: 'start' }}
           alignArrowToRatio="3/4"
-          items={recommendedCards.map((recommendedCard) => (
-            <CardThumbnail
-              key={recommendedCard.popupId}
-              thumbnailUrl={recommendedCard.thumbnailUrl ?? undefined}
-              thumbnailAlt={recommendedCard.caption ?? undefined}
-              thumbnailRatio="3/4"
-              title={recommendedCard.title}
-              description={recommendedCard.subText ?? undefined}
-              caption={recommendedCard.caption ?? undefined}
-              countView={recommendedCard.stats.viewCount}
-              countLike={recommendedCard.stats.likeCount}
-              showButtonLike
-              showCountView
-              showCountLike
-              // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
-              isLiked={recommendedCard.liked ?? false}
-              onClick={() =>
-                handleClick(recommendedCard.popupId, recommendedCard.phase.type)
-              }
-            />
-          ))}
+          items={recommendedCards.map((recommendedCard) => {
+            const likedState = getLikedPopupState(recommendedCard);
+
+            return (
+              <CardThumbnail
+                key={recommendedCard.popupId}
+                thumbnailUrl={recommendedCard.thumbnailUrl ?? undefined}
+                thumbnailAlt={recommendedCard.caption ?? undefined}
+                thumbnailRatio="3/4"
+                title={recommendedCard.title}
+                description={recommendedCard.subText ?? undefined}
+                caption={recommendedCard.caption ?? undefined}
+                countView={recommendedCard.stats.viewCount}
+                countLike={likedState.likeCount}
+                showButtonLike
+                showCountView
+                showCountLike
+                // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
+                isLiked={likedState.isLiked}
+                onClickLike={() => handleClickLike(recommendedCard)}
+                onClick={() =>
+                  handleClick(
+                    recommendedCard.popupId,
+                    recommendedCard.phase.type
+                  )
+                }
+              />
+            );
+          })}
         />
       )}
     </Section>

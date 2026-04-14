@@ -7,6 +7,7 @@ import { Section } from '../components/section';
 import { RankingSkeleton } from '../components/skeletons';
 import { BasePopupCard, PopupPhase } from '../types';
 import { useSectionFetch } from '../hooks/use-section-fetch';
+import { usePopupLike } from '../hooks/use-popup-like';
 
 interface RankingCard extends BasePopupCard {
   overlay: {
@@ -18,6 +19,7 @@ interface RankingCard extends BasePopupCard {
 
 export const Ranking = () => {
   const rankingCards = useSectionFetch<RankingCard>('/api/popups/rankings');
+  const { getLikedPopupState, handleClickLike } = usePopupLike<RankingCard>();
   const router = useRouter();
 
   const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
@@ -50,27 +52,32 @@ export const Ranking = () => {
           }}
           carouselOpts={{ align: 'start' }}
           alignArrowToRatio="3/4"
-          items={rankingCards.map((rankingCard) => (
-            <CardThumbnail
-              key={rankingCard.popupId}
-              index={rankingCard.overlay.rank}
-              thumbnailUrl={rankingCard.thumbnailUrl ?? undefined}
-              thumbnailRatio="3/4"
-              title={rankingCard.title}
-              description={rankingCard.subText ?? undefined}
-              caption={rankingCard.caption ?? undefined}
-              countView={rankingCard.stats.viewCount}
-              countLike={rankingCard.stats.likeCount}
-              showButtonLike
-              showCountView
-              showCountLike
-              // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
-              isLiked={rankingCard.liked ?? false}
-              onClick={() =>
-                handleClick(rankingCard.popupId, rankingCard.phase.type)
-              }
-            />
-          ))}
+          items={rankingCards.map((rankingCard) => {
+            const likedState = getLikedPopupState(rankingCard);
+
+            return (
+              <CardThumbnail
+                key={rankingCard.popupId}
+                index={rankingCard.overlay.rank}
+                thumbnailUrl={rankingCard.thumbnailUrl ?? undefined}
+                thumbnailRatio="3/4"
+                title={rankingCard.title}
+                description={rankingCard.subText ?? undefined}
+                caption={rankingCard.caption ?? undefined}
+                countView={rankingCard.stats.viewCount}
+                countLike={likedState.likeCount}
+                showButtonLike
+                showCountView
+                showCountLike
+                // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
+                isLiked={likedState.isLiked}
+                onClickLike={() => handleClickLike(rankingCard)}
+                onClick={() =>
+                  handleClick(rankingCard.popupId, rankingCard.phase.type)
+                }
+              />
+            );
+          })}
         />
       )}
     </Section>

@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import { EndingSoonSkeleton } from '../components/skeletons';
 import { BasePopupCard } from '../types';
 import { useSectionFetch } from '../hooks/use-section-fetch';
+import { usePopupLike } from '../hooks/use-popup-like';
 
 interface EndingSoonCard extends BasePopupCard {
   overlay: null;
@@ -24,6 +25,8 @@ export const EndingSoon = () => {
   const endingSoonCards = useSectionFetch<EndingSoonCard>(
     `/api/popups/ending-soon?limit=${ENDING_SOON_LIMIT}`
   );
+  const { getLikedPopupState, handleClickLike } =
+    usePopupLike<EndingSoonCard>();
   const router = useRouter();
 
   if (endingSoonCards === null) return <EndingSoonSkeleton />;
@@ -56,24 +59,31 @@ export const EndingSoon = () => {
           }}
           carouselOpts={{ align: 'start' }}
           alignArrowToRatio="3/4"
-          items={endingSoonCards.map((endingSoonCard) => (
-            <CardThumbnail
-              key={endingSoonCard.popupId}
-              thumbnailUrl={endingSoonCard.thumbnailUrl ?? undefined}
-              thumbnailRatio="3/4"
-              title={endingSoonCard.title}
-              description={endingSoonCard.subText ?? undefined}
-              caption={endingSoonCard.caption ?? undefined}
-              countView={endingSoonCard.stats.viewCount}
-              countLike={endingSoonCard.stats.likeCount}
-              showButtonLike
-              showCountView
-              showCountLike
-              onClick={() => handleClick(endingSoonCard.popupId, endingSoonCard.phase.type)}
-              // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
-              isLiked={endingSoonCard.liked ?? false}
-            />
-          ))}
+          items={endingSoonCards.map((endingSoonCard) => {
+            const likedState = getLikedPopupState(endingSoonCard);
+
+            return (
+              <CardThumbnail
+                key={endingSoonCard.popupId}
+                thumbnailUrl={endingSoonCard.thumbnailUrl ?? undefined}
+                thumbnailRatio="3/4"
+                title={endingSoonCard.title}
+                description={endingSoonCard.subText ?? undefined}
+                caption={endingSoonCard.caption ?? undefined}
+                countView={endingSoonCard.stats.viewCount}
+                countLike={likedState.likeCount}
+                showButtonLike
+                showCountView
+                showCountLike
+                onClick={() =>
+                  handleClick(endingSoonCard.popupId, endingSoonCard.phase.type)
+                }
+                onClickLike={() => handleClickLike(endingSoonCard)}
+                // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
+                isLiked={likedState.isLiked}
+              />
+            );
+          })}
         />
       )}
     </Section>

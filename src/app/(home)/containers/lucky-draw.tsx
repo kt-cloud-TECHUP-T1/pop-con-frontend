@@ -11,6 +11,7 @@ import { LuckyDrawSkeleton } from '../components/skeletons';
 import { Typography } from '@/components/ui/typography';
 import { formatOpenAt } from '@/lib/utils';
 import { BaseCardResponse, BasePopupCard } from '../types';
+import { usePopupLike } from '../hooks/use-popup-like';
 
 type DrawTab = 'UPCOMING' | 'OPEN';
 
@@ -40,6 +41,7 @@ export const LuckyDraw = () => {
     null
   );
   const accessToken = useAuthStore((state) => state.accessToken);
+  const { getLikedPopupState, handleClickLike } = usePopupLike<LuckyDrawCard>();
   const router = useRouter();
 
   useEffect(() => {
@@ -143,6 +145,7 @@ export const LuckyDraw = () => {
           carouselOpts={{ align: 'start' }}
           alignArrowToRatio="3/4"
           items={activeDrawCards.map((activeDrawCard) => {
+            const likedState = getLikedPopupState(activeDrawCard);
             const { datePart, timePart } =
               activeDrawCard.overlay?.type === 'DRAW_OPEN_AT'
                 ? formatOpenAt(activeDrawCard.phase.openAt)
@@ -157,13 +160,13 @@ export const LuckyDraw = () => {
                 description={activeDrawCard.subText ?? undefined}
                 caption={activeDrawCard.caption ?? undefined}
                 countView={activeDrawCard.stats.viewCount}
-                countLike={activeDrawCard.stats.likeCount}
+                countLike={likedState.likeCount}
                 showButtonLike
                 showCountView
                 showCountLike
                 onClick={() => handleClick(activeDrawCard.popupId)}
-                // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
-                isLiked={activeDrawCard.liked ?? false}
+                onClickLike={() => handleClickLike(activeDrawCard)}
+                isLiked={likedState.isLiked}
                 overlayBadge={
                   datePart && timePart ? (
                     <Typography
