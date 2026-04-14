@@ -6,6 +6,16 @@ type SubmitOptions = {
   userId?: string;
 };
 
+async function gzip(text: string): Promise<Blob | null> {
+  if (typeof CompressionStream === 'undefined') return null;
+  try {
+    const stream = new Blob([text]).stream().pipeThrough(new CompressionStream('gzip'));
+    return await new Response(stream).blob();
+  } catch {
+    return null;
+  }
+}
+
 /**
  * 시그널 전송 (프록시 경유)
  * 프록시 서버에 도달하면 백엔드 전달은 서버가 보장
@@ -17,15 +27,25 @@ export async function submitSignals(
   const submission = {
     timestamp: Date.now(),
     payload,
-    ...(options.visitorId && { visitorId: options.visitorId }),
-    ...(options.userId && { userId: options.userId }),
+    ...(options.visitorId && { visitorId: String(options.visitorId) }),
+    ...(options.userId && { userId: String(options.userId) }),
   };
+
+  const json = JSON.stringify(submission);
+  const compressed = await gzip(json);
+
+  const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+  let body: BodyInit = json;
+  if (compressed) {
+    headers['Content-Encoding'] = 'gzip';
+    body = compressed;
+  }
 
   try {
     await fetch(`${ANTI_MACRO_API_BASE}/signals`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(submission),
+      headers,
+      body,
     });
   } catch {
     // 실패해도 무시 (사일런트)

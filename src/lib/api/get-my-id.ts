@@ -17,7 +17,7 @@ export async function getMyId(
     const result: GetMyIdResponse = await response.json();
 
     if (result.code === 'SUCCESS' && result.data) {
-      return result.data.userId;
+      return String(result.data.userId);
     }
 
     return undefined;

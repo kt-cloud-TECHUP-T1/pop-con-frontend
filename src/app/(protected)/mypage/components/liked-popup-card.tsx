@@ -9,6 +9,7 @@ type LikedPopupCardProps = {
   thumbnailUrl: string;
   isLiked?: boolean;
   onClickLike?: () => void;
+  onClick?: () => void;
 };
 
 export function LikedPopupCard({
@@ -18,6 +19,7 @@ export function LikedPopupCard({
   thumbnailUrl,
   isLiked = true,
   onClickLike,
+  onClick,
 }: LikedPopupCardProps) {
   return (
     <CardThumbnail
@@ -31,6 +33,7 @@ export function LikedPopupCard({
       showButtonLike={Boolean(onClickLike)}
       showCountView
       showCountLike
+      onClick={onClick}
     />
   );
 }
