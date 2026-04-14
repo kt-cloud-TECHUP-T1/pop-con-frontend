@@ -1,7 +1,7 @@
 'use client';
 
 import useCountdown from '../hooks/use-countdown';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { formatDateWithWeekdayTime } from '@/lib/utils';
@@ -23,6 +23,8 @@ import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
 import { useCurrentDrawDetail } from '../queries/use-current-draw-detail';
 import { getDrawDetail } from '@/lib/api/draw/get-draw-detail';
 import { useQuery } from '@tanstack/react-query';
+
+type DrawCTAStatus = 'UPCOMING' | 'OPEN' | 'CLOSED';
 
 export default function SaleInfoCTA() {
   const params = useParams<{ popupId: string }>();
@@ -219,7 +221,7 @@ function DrawCTA({
   popupId: string;
   onSubmitSignals: () => Promise<void>;
 }) {
-  const { data: drawData } = useCurrentDrawDetail();
+  const { data: drawData, refetch } = useCurrentDrawDetail();
   const router = useRouter();
   const authStatus = useAuthStore((state) => state.authStatus);
   const accessToken = useAuthStore((state) => state.accessToken);
@@ -321,8 +323,27 @@ function DrawCTA({
     });
   };
 
-  const status =
+  const status: DrawCTAStatus =
     openRemaining > 0 ? 'UPCOMING' : closeRemaining > 0 ? 'OPEN' : 'CLOSED';
+
+  const previousStatusRef = useRef<DrawCTAStatus | null>(null);
+
+  useEffect(() => {
+    if (!drawData) {
+      previousStatusRef.current = null;
+      return;
+    }
+
+    const previousStatus = previousStatusRef.current;
+    previousStatusRef.current = status;
+
+    if (!previousStatus || previousStatus === status) return;
+
+    // 오픈/마감 경계에서만 최신 서버 시간과 상태를 다시 보정합니다.
+    if (status === 'OPEN' || status === 'CLOSED') {
+      void refetch();
+    }
+  }, [drawData, refetch, status]);
 
   const isOpen = status === 'OPEN';
 
