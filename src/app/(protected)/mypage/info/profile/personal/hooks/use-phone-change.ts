@@ -79,7 +79,7 @@ export function usePhoneChange() {
 
       if (response.code !== undefined) {
         snackbar.informative({
-          title: '본인인증이 취소되었습니다.',
+          title: '본인인증에 실패했습니다.',
           description: response.message ?? '다시 시도해주세요.',
         });
         return;
@@ -121,6 +121,10 @@ export function usePhoneChange() {
           return;
         }
 
+        snackbar.destructive({
+          title: '휴대폰 번호 변경에 실패했습니다.',
+          description: result.message ?? '잠시 후 다시 시도해주세요.',
+        });
         console.error(result.message);
         return;
       }

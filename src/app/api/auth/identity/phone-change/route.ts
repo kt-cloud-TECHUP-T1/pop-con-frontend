@@ -48,8 +48,6 @@ export async function POST(request: NextRequest) {
       cache: 'no-store',
     });
 
-    console.log('[identity/phone-change] status:', response.status);
-    console.log('[identity/phone-change] body:', await response.clone().text());
     return handleProxyResponse(response);
   } catch (error) {
     console.error('[identity/phone-change]', error);
