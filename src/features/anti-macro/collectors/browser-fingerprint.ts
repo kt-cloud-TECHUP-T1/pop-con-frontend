@@ -23,19 +23,8 @@ async function collectFingerprint(): Promise<BrowserFingerprint> {
     webdriver: !!navigator.webdriver,
     webglRenderer,
     webglVendor,
-    userAgent: navigator.userAgent,
-    platform: navigator.platform,
     language: navigator.language,
-    languages: navigator.languages,
     timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-    screenResolution: { width: screen.width, height: screen.height },
-    colorDepth: screen.colorDepth,
-    hardwareConcurrency: navigator.hardwareConcurrency,
-    deviceMemory: (navigator as unknown as { deviceMemory?: number })
-      .deviceMemory,
-    components: Object.fromEntries(
-      Object.entries(components).map(([k, v]) => [k, v.value])
-    ),
   };
 }
 

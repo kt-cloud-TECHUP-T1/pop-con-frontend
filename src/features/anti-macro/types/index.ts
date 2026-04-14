@@ -7,22 +7,15 @@ export interface SignalCollector {
 }
 
 // --- 브라우저 핑거프린트 ---
+// 백엔드 스코어링에 실제 사용되는 필드만 전송
 export type BrowserFingerprint = {
   visitorId: string;
   confidence: number;
   webdriver: boolean;
   webglRenderer: string | null;
   webglVendor: string | null;
-  userAgent: string;
-  platform: string;
   language: string;
-  languages: readonly string[];
   timezone: string;
-  screenResolution: { width: number; height: number };
-  colorDepth: number;
-  hardwareConcurrency: number;
-  deviceMemory: number | undefined;
-  components: Record<string, unknown>;
 };
 
 // --- 포인트 / 클릭 ---
