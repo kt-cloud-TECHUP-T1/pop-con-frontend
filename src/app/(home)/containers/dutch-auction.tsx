@@ -65,7 +65,10 @@ export const DutchAuction = () => {
             const likedState = getLikedPopupState(dutchAuctionCard);
 
             return (
-              <div key={dutchAuctionCard.popupId} className="relative">
+              <div
+                key={`dutch-auction-${dutchAuctionCard.popupId}`}
+                className="relative"
+              >
                 <CardThumbnail
                   thumbnailUrl={dutchAuctionCard.thumbnailUrl ?? undefined}
                   thumbnailRatio="16/9"

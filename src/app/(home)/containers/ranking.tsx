@@ -57,7 +57,7 @@ export const Ranking = () => {
 
             return (
               <CardThumbnail
-                key={rankingCard.popupId}
+                key={`ranking-${rankingCard.popupId}`}
                 index={rankingCard.overlay.rank}
                 thumbnailUrl={rankingCard.thumbnailUrl ?? undefined}
                 thumbnailRatio="3/4"

@@ -60,7 +60,7 @@ export const Recommend = () => {
 
             return (
               <CardThumbnail
-                key={recommendedCard.popupId}
+                key={`recommended-${recommendedCard.popupId}`}
                 thumbnailUrl={recommendedCard.thumbnailUrl ?? undefined}
                 thumbnailAlt={recommendedCard.caption ?? undefined}
                 thumbnailRatio="3/4"

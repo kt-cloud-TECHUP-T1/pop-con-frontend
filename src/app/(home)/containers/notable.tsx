@@ -63,7 +63,7 @@ export const Notable = () => {
 
             return (
               <CardThumbnail
-                key={notableCard.popupId}
+                key={`notable-${notableCard.popupId}`}
                 thumbnailUrl={notableCard.thumbnailUrl ?? undefined}
                 thumbnailRatio="3/4"
                 title={notableCard.title}

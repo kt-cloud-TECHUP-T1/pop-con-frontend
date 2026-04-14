@@ -27,9 +27,9 @@ export const CategoryList = () => {
 
   return (
     <div className="flex justify-center items-center flex-wrap gap-10 my-3xl">
-      {categories.map((category) => (
+      {categories.map((category, index) => (
         <Link
-          key={category.popupId}
+          key={`category-${category.popupId}-${index}`}
           href={getCategoryHref(category.popupId, category.phase.type)}
           className="flex flex-col items-center basis-auto cursor-pointer"
         >
