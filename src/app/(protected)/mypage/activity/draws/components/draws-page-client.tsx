@@ -21,7 +21,9 @@ import {
 
 export function DrawsPageClient() {
   const { data: draws, isLoading, isError } = useDrawHistory();
-  const [activeFilter, setActiveFilter] = useState<DrawStatusFilter | null>(null);
+  const [activeFilter, setActiveFilter] = useState<DrawStatusFilter | null>(
+    null
+  );
   const [modalResult, setModalResult] = useState<DrawResult | null>(null);
 
   const handleToggle = (value: DrawStatusFilter) => {
@@ -64,13 +66,13 @@ export function DrawsPageClient() {
         onToggle={handleToggle}
       />
 
-      {draws.length === 0 && (
+      {items.length === 0 && (
         <div className="min-h-[200px] flex items-center justify-center text-[var(--content-extra-low)]">
           드로우 응모 내역이 없어요.
         </div>
       )}
 
-      {draws.length > 0 && (
+      {items.length > 0 && (
         <ActivityHistoryList
           items={items}
           renderRightContent={(item) => {

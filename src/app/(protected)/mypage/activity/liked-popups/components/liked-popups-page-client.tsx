@@ -31,7 +31,6 @@ export function LikedPopupsPageClient() {
           `/api/history/likes?page=${PAGE}&size=${SIZE}`,
           {
             signal: controller.signal,
-            headers: { Authorization: `Bearer ${accessToken}` },
           }
         );
 
