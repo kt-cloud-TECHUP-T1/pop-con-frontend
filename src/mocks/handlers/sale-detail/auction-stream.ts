@@ -16,7 +16,13 @@ function createAuctionPayload(seconds: number): AuctionData {
 
   const nextPrice = Math.max(currentPrice - priceDropUnit, minimumPrice);
 
-  const remainingUntilCloseSeconds = Math.max(578 - seconds, 0);
+  const baseRemainingUntilCloseSeconds = Math.max(578 - seconds, 0);
+  const serverTime = new Date();
+  const auctionCloseAt = '2026-04-15T00:40:00';
+  const isEnded = serverTime.getTime() >= new Date(auctionCloseAt).getTime();
+  const remainingUntilCloseSeconds = isEnded
+    ? 0
+    : baseRemainingUntilCloseSeconds;
 
   const secondsUntilNextDrop =
     currentPrice === minimumPrice
@@ -28,9 +34,9 @@ function createAuctionPayload(seconds: number): AuctionData {
   return {
     auctionId: 100,
     auctionStatus: remainingUntilCloseSeconds > 0 ? 'OPEN' : 'CLOSED',
-    serverTime: new Date().toISOString(),
+    serverTime: serverTime.toISOString(),
     auctionOpenAt: '2026-03-23T11:00:00',
-    auctionCloseAt: '2026-04-20T14:58:10',
+    auctionCloseAt,
     remainingUntilOpenSeconds: 0,
     remainingUntilCloseSeconds,
     startPrice,
@@ -44,7 +50,7 @@ function createAuctionPayload(seconds: number): AuctionData {
       remainingUntilCloseSeconds > 0 ? secondsUntilNextDrop : 0,
     maxPurchaseQuantityPerRound: 10,
     canParticipate: remainingUntilCloseSeconds > 0,
-    buttonStatus: 'ENABLED',
+    buttonStatus: isEnded ? 'ENDED' : 'ENABLED',
   };
 }
 
@@ -67,7 +73,7 @@ export const auctionStreamHandlers = [
       data: createAuctionPayload(seconds),
     });
 
-    const priceTimer = setInterval(() => {
+    setInterval(() => {
       seconds += 1;
       client.send({
         event: 'auction-price',
@@ -75,7 +81,7 @@ export const auctionStreamHandlers = [
       });
     }, 1000);
 
-    const pingTimer = setInterval(() => {
+    setInterval(() => {
       client.send({
         event: 'ping',
         data: 'keep-alive',

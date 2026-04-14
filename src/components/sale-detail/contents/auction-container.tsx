@@ -1,7 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { useQuery } from '@tanstack/react-query';
 
 import { getPopupDetail } from '@/lib/api/popup/get-popup-detail';
@@ -18,6 +18,8 @@ import { ApiError } from '@/lib/api-error';
 import { SaleDetailSkeleton } from '../ui/loading/sale-detail-skeleton';
 import { ErrorPage } from '../ui/error/error-page';
 
+import { snackbar } from '@/components/ui/snackbar';
+
 export function AuctionContainer() {
   const params = useParams<{ popupId: string }>();
   const popupId = params.popupId;
@@ -25,7 +27,7 @@ export function AuctionContainer() {
 
   const { setLiveAuctionData, resetAuctionData } = useAuctionStore();
   const liveAuctionData = useAuctionStore((state) => state.liveData);
-
+  const router = useRouter();
   const [sseError, setSseError] = useState<ApiError | null>(null);
 
   const {
@@ -70,6 +72,21 @@ export function AuctionContainer() {
       resetAuctionData();
     };
   }, [popupData?.auctionId, resetAuctionData, setLiveAuctionData]);
+
+  useEffect(() => {
+    if (liveAuctionData?.auctionStatus !== 'CLOSED') return;
+
+    snackbar.success({
+      title: `경매 종료`,
+      description: `잠시 후 드로우페이지로 이동됩니다.`,
+    });
+
+    const timerId = setTimeout(() => {
+      router.push(`/draw/${popupId}`);
+    }, 1000);
+
+    return () => clearTimeout(timerId);
+  }, [liveAuctionData?.auctionStatus, router, popupId]);
 
   if (!popupId || Number.isNaN(popupIdNumber)) {
     return <ErrorPage code="C001" message="유효하지 않은 popupId입니다." />;

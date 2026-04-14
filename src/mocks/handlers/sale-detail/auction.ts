@@ -5,9 +5,9 @@ import type { AuctionData } from '@/types/sale-detail';
 const mockAuctionData: AuctionData = {
   auctionId: 100,
   auctionStatus: 'OPEN',
-  serverTime: '2026-03-11T14:49:15',
   auctionOpenAt: '2026-03-11T14:48:13',
   auctionCloseAt: '2026-03-11T14:58:53',
+  serverTime: formatLocalDateTime(new Date()),
   remainingUntilOpenSeconds: 0,
   remainingUntilCloseSeconds: 578,
   startPrice: 100000,
@@ -22,6 +22,16 @@ const mockAuctionData: AuctionData = {
   canParticipate: true,
   buttonStatus: 'WAITING',
 };
+function formatLocalDateTime(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+}
 
 const mockAuctionDates = [
   { entryDate: '2026-03-10' },
@@ -185,7 +195,10 @@ export const auctionHandlers = [
     return HttpResponse.json({
       code: 'SUCCESS',
       message: '경매 상세 조회를 성공했습니다',
-      data: mockAuctionData,
+      data: {
+        ...mockAuctionData,
+        serverTime: formatLocalDateTime(new Date()),
+      },
     });
   }),
 ];
