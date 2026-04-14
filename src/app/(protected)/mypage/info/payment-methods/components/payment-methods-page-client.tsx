@@ -251,10 +251,27 @@ export function PaymentMethodsPageClient() {
   return (
     <div className="space-y-4">
       {paymentMethods.length === 0 ? (
-        <div className="flex justify-center py-10">
-          <Typography variant="body-2" className="text-[var(--neutral-50)]">
+        <div className="flex flex-col items-center justify-center py-10">
+          <Typography
+            variant="title-1"
+            weight="bold"
+            className="text-[var(--content-high)]"
+          >
             등록된 결제수단이 없습니다.
           </Typography>
+          <Typography
+            variant="body-1"
+            weight="medium"
+            className="text-[var(--content-low)] mt-2 mb-4"
+          >
+            팝콘 서비스를 이용하기 위해선 최소 1개의 결제수단을 등록해야해요
+          </Typography>
+          <Button size="large" variant="tertiary" onClick={handleRegisterClick}>
+            <Icon name="Plus" size={20} />
+            <Typography variant="label-1" weight="medium">
+              새 결제수단 등록
+            </Typography>
+          </Button>
         </div>
       ) : (
         <div className="grid gap-4 xl:grid-cols-2">
@@ -269,12 +286,14 @@ export function PaymentMethodsPageClient() {
         </div>
       )}
 
-      <Button size="large" variant="tertiary" onClick={handleRegisterClick}>
-        <Icon name="Plus" size={20} />
-        <Typography variant="label-1" weight="medium">
-          새 결제수단 등록
-        </Typography>
-      </Button>
+      {paymentMethods.length > 0 && (
+        <Button size="large" variant="tertiary" onClick={handleRegisterClick}>
+          <Icon name="Plus" size={20} />
+          <Typography variant="label-1" weight="medium">
+            새 결제수단 등록
+          </Typography>
+        </Button>
+      )}
     </div>
   );
 }
