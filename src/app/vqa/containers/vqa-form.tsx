@@ -261,11 +261,11 @@ export default function VqaForm() {
     <div className="relative bg-white rounded-[16px] shadow-[0px_1px_2px_0px_rgba(0,0,0,0.12),0px_0px_1px_0px_rgba(0,0,0,0.08)] flex flex-col gap-[30px] items-center p-8 w-full">
       {/* 차단 모달 오버레이 */}
       {isBlocked && (
-        <div className="absolute inset-0 z-10 flex items-center justify-center rounded-[16px] bg-black/40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
           <div className="bg-white rounded-[16px] shadow-[0px_4px_12px_0px_rgba(0,0,0,0.15)] flex flex-col gap-[20px] items-center px-8 py-6 mx-6 max-w-[360px] w-full">
             <div className="flex flex-col gap-[2px] items-center w-full">
               <Typography
-                variant="heading-1"
+                variant="title-2"
                 weight="bold"
                 className="text-[var(--content-high)] text-center"
               >
