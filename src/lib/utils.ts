@@ -11,7 +11,9 @@ export function formatWon(value: number | null | undefined) {
 }
 
 export function formatDate(isoString: string) {
+  if (!isoString) return '-';
   const date = new Date(isoString);
+  if (Number.isNaN(date.getTime())) return '-';
   return `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, '0')}.${String(date.getDate()).padStart(2, '0')}`;
 }
 

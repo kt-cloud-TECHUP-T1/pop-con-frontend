@@ -7,6 +7,7 @@ import type { ApiResponse } from '@/types/api/common';
 import type { LikedPopup, LikedPopupsData } from '../../../types/liked-popup';
 import { LikedPopupCardSkeleton } from '../../../components/skeletons';
 import { useRouter } from 'next/navigation';
+import { authFetch } from '../../../lib/auth-fetch';
 
 const PAGE = 0;
 const SIZE = 12;
@@ -26,7 +27,7 @@ export function LikedPopupsPageClient() {
     const fetchLikedPopups = async () => {
       setIsLoading(true);
       try {
-        const response = await fetch(
+        const response = await authFetch(
           `/api/history/likes?page=${PAGE}&size=${SIZE}`,
           {
             signal: controller.signal,

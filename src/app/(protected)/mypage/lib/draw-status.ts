@@ -28,8 +28,10 @@ const STATUS_TONE_MAP: Record<DrawStatusFilter, ActivityStatusTone> = {
   pendingResult: 'warning',
 };
 
-export function getDrawStatusFilter(status: string): DrawStatusFilter {
-  const s = status.toUpperCase();
+export function getDrawStatusFilter(
+  status: string | null | undefined
+): DrawStatusFilter {
+  const s = (status ?? '').trim().toUpperCase();
   if (s === 'WON' || s === '당첨') return 'won';
   if (s === 'LOST' || s === '미당첨') return 'notWon';
   if (s === 'IN_PROGRESS' || s === '진행중') return 'inProgress';

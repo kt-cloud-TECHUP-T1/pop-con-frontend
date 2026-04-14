@@ -29,7 +29,7 @@ export async function GET(request: Request) {
 
     return handleProxyResponse(response);
   } catch (error) {
-    console.error('[GET /api/history/bids]', error);
+    console.error('[GET /api/history/auctions]', error);
     return createServerErrorResponse();
   }
 }

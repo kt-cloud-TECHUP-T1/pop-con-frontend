@@ -2,6 +2,7 @@
 
 import { useEffect, type ReactNode } from 'react';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { Button } from '@/components/ui/button';
 
 type AuthGuardProps = {
   children: ReactNode;
@@ -22,7 +23,11 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   }
 
   if (authStatus === 'unauthenticated') {
-    return <div>로그인 후 팝콘 서비스를 이용해보세요.</div>;
+    return (
+      <div>
+        로그인 후 팝콘 서비스를 이용해보세요. <Button>로그인 하러가기</Button>
+      </div>
+    );
   }
 
   return <>{children}</>;
