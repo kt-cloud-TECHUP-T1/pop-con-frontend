@@ -26,6 +26,7 @@ export function LikedPopupsPageClient() {
 
     const fetchLikedPopups = async () => {
       setIsLoading(true);
+      setIsError(false);
       try {
         const response = await authFetch(
           `/api/history/likes?page=${PAGE}&size=${SIZE}`,
@@ -47,6 +48,7 @@ export function LikedPopupsPageClient() {
         setIsError(true);
       } finally {
         setIsLoading(false);
+        setIsError(false);
       }
     };
 

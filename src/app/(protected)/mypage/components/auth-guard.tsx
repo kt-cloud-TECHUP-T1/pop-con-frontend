@@ -2,7 +2,6 @@
 
 import { useEffect, type ReactNode } from 'react';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
-import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
 type AuthGuardProps = {
@@ -17,22 +16,16 @@ export default function AuthGuard({ children }: AuthGuardProps) {
   useEffect(() => {
     if (authStatus === 'unauthenticated') {
       clearAccessToken();
+      router.replace('/login');
     }
-  }, [authStatus, clearAccessToken]);
+  }, [authStatus, clearAccessToken, router]);
 
   if (authStatus === 'loading') {
     return <div>로딩 중...</div>;
   }
 
   if (authStatus === 'unauthenticated') {
-    return (
-      <div>
-        로그인 후 팝콘 서비스를 이용해보세요.{' '}
-        <Button onClick={() => router.replace('/login')}>
-          로그인 하러가기
-        </Button>
-      </div>
-    );
+    return null;
   }
 
   return <>{children}</>;

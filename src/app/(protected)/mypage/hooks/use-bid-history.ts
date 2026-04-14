@@ -30,7 +30,7 @@ export function useBidHistory() {
   const accessToken = useAuthStore((state) => state.accessToken);
 
   return useQuery<BidHistoryItem[]>({
-    queryKey: ['history', 'bids', accessToken],
+    queryKey: ['history', 'bids'],
     queryFn: async () => {
       const response = await authFetch('/api/history/auctions');
       if (!response.ok) throw new Error('bid history fetch failed');

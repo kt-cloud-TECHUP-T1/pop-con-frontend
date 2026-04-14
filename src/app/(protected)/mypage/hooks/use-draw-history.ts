@@ -32,7 +32,7 @@ export function useDrawHistory() {
   const accessToken = useAuthStore((state) => state.accessToken);
 
   return useQuery<DrawHistoryItem[]>({
-    queryKey: ['history', 'draws', accessToken],
+    queryKey: ['history', 'draws'],
     queryFn: async () => {
       const response = await authFetch('/api/history/draws');
       if (!response.ok) throw new Error('draw history fetch failed');
