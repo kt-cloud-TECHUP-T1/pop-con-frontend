@@ -21,8 +21,8 @@ interface VqaStartData {
 
 /** 문제 정보 */
 interface VqaQuestion {
-  video: { id: number; title: string };
-  question: { id: number; text: string };
+  video: { id: string; title: string };
+  question: { id: string; text: string };
   is_exempt: boolean | null;
 }
 
