@@ -1,4 +1,4 @@
-export type LikedPopup = {
+export interface LikedPopup {
   popupId: number;
   title: string;
   supportingText: string;
@@ -15,17 +15,17 @@ export type LikedPopup = {
     rank: number | null;
   } | null;
   phase: {
-    type: string;
+    type: 'AUCTION' | 'DRAW';
     status: string;
     openAt: string;
     closeAt: string;
   };
-};
+}
 
-export type LikedPopupsData = {
+export interface LikedPopupsData {
   content: LikedPopup[];
   first: boolean;
   last: boolean;
   numberOfElements: number;
   empty: boolean;
-};
+}

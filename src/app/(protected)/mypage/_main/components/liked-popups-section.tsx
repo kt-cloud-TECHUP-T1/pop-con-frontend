@@ -8,22 +8,11 @@ import { PageHeader } from '@/components/shared/page-header';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import type { ApiResponse } from '@/types/api/common';
 import { LikedPopup, LikedPopupsData } from '../../types/liked-popup';
+import { LikedPopupCardSkeleton } from '../../components/skeletons';
+import { authFetch } from '@/app/(protected)/mypage/lib/auth-fetch';
 
 const PAGE = 0;
 const SIZE = 8;
-
-function LikedPopupCardSkeleton() {
-  return (
-    <div className="animate-pulse">
-      <div className="aspect-[3/4] rounded-[var(--radius-ML)] bg-[var(--neutral-90)]" />
-      <div className="mt-2 space-y-1.5">
-        <div className="h-4 w-3/4 rounded bg-[var(--neutral-90)]" />
-        <div className="h-3 w-1/2 rounded bg-[var(--neutral-90)]" />
-        <div className="h-3 w-1/3 rounded bg-[var(--neutral-90)]" />
-      </div>
-    </div>
-  );
-}
 
 export function LikedPopupsSection() {
   const [popups, setPopups] = useState<LikedPopup[] | null>(null);
@@ -37,11 +26,10 @@ export function LikedPopupsSection() {
 
     const fetchLikedPopups = async () => {
       try {
-        const response = await fetch(
+        const response = await authFetch(
           `/api/history/likes?page=${PAGE}&size=${SIZE}`,
           {
             signal: controller.signal,
-            headers: { Authorization: `Bearer ${accessToken}` },
           }
         );
 
@@ -63,10 +51,6 @@ export function LikedPopupsSection() {
     return () => controller.abort();
   }, [accessToken]);
 
-  if (isError) {
-    return null;
-  }
-
   return (
     <section>
       <div className="mb-6 flex items-center justify-between gap-4">
@@ -84,7 +68,11 @@ export function LikedPopupsSection() {
         </Link>
       </div>
 
-      {popups !== null && popups.length === 0 ? (
+      {isError ? (
+        <div className="min-h-[200px] flex items-center justify-center text-[var(--content-extra-low)]">
+          찜한 팝업스토어를 불러오지 못했어요.
+        </div>
+      ) : popups !== null && popups.length === 0 ? (
         <div className="min-h-[200px] flex items-center justify-center text-[var(--content-extra-low)]">
           찜한 팝업스토어가 없어요.
         </div>
