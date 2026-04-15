@@ -57,8 +57,6 @@ export default function ReservePaymentSection({
     //추후 날짜 재조회 api 호출
   };
 
-  //혹시 민중님이 작성하신 코드인가...??
-  // 저 아닙니다 ^_^
   useEffect(() => {
     const fetchBilling = async () => {
       try {
@@ -100,6 +98,7 @@ export default function ReservePaymentSection({
         title: '보안퀴즈 필요',
         description: '보안퀴즈를 다시 진행해주세요.',
       });
+      router.back();
       return;
     }
     //서버에서는 위조토큰인지도 진짜 검증

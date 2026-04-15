@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Ranking } from '../ranking';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { useRouter } from 'next/navigation';
@@ -76,6 +77,19 @@ const makeRankingItem = (id: number) => ({
   },
 });
 
+function renderWithQueryClient(ui: React.ReactElement) {
+  const queryClient = new QueryClient({
+    defaultOptions: {
+      queries: { retry: false },
+      mutations: { retry: false },
+    },
+  });
+
+  return render(
+    <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+  );
+}
+
 describe('Ranking', () => {
   const mockPush = jest.fn();
 
@@ -94,10 +108,12 @@ describe('Ranking', () => {
       json: async () => mockRankingResponse([]),
     });
 
-    render(<Ranking />);
+    renderWithQueryClient(<Ranking />);
 
     await waitFor(() => {
-      expect(screen.getByText('순위에 오른 팝업이 없어요.')).toBeInTheDocument();
+      expect(
+        screen.getByText('순위에 오른 팝업이 없어요.')
+      ).toBeInTheDocument();
     });
   });
 
@@ -108,7 +124,7 @@ describe('Ranking', () => {
       json: async () => mockRankingResponse(items),
     });
 
-    render(<Ranking />);
+    renderWithQueryClient(<Ranking />);
 
     await waitFor(() => {
       expect(screen.getByText('랭킹 팝업 1')).toBeInTheDocument();
@@ -130,7 +146,7 @@ describe('Ranking', () => {
       json: async () => mockRankingResponse([]),
     });
 
-    render(<Ranking />);
+    renderWithQueryClient(<Ranking />);
 
     await waitFor(() => {
       expect(global.fetch).toHaveBeenCalledWith(
@@ -150,7 +166,7 @@ describe('Ranking', () => {
       json: async () => mockRankingResponse([]),
     });
 
-    render(<Ranking />);
+    renderWithQueryClient(<Ranking />);
 
     await waitFor(() => {
       const fetchCall = (global.fetch as jest.Mock).mock.calls[0];
@@ -165,7 +181,7 @@ describe('Ranking', () => {
       json: async () => mockRankingResponse([makeRankingItem(42)]),
     });
 
-    render(<Ranking />);
+    renderWithQueryClient(<Ranking />);
 
     const card = await screen.findByTestId('card-thumbnail');
     await userEvent.click(card);
@@ -176,10 +192,12 @@ describe('Ranking', () => {
   it('API 응답이 실패하면 빈 상태 메시지를 표시한다', async () => {
     global.fetch = jest.fn().mockResolvedValue({ ok: false });
 
-    render(<Ranking />);
+    renderWithQueryClient(<Ranking />);
 
     await waitFor(() => {
-      expect(screen.getByText('순위에 오른 팝업이 없어요.')).toBeInTheDocument();
+      expect(
+        screen.getByText('순위에 오른 팝업이 없어요.')
+      ).toBeInTheDocument();
     });
   });
 });

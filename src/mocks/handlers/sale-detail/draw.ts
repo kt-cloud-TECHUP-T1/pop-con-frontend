@@ -3,10 +3,21 @@ import { delay, http, HttpResponse } from 'msw';
 
 const mockDrawData = {
   drawId: 100,
-  drawOpenAt: '2026-03-30T10:00:00',
-  drawCloseAt: '2026-04-01T18:00:00',
-  serverTime: '2026-03-31T19:10:00',
+  drawOpenAt: '2026-04-14T23:02:00',
+  drawCloseAt: '2026-04-14T23:22:00',
+  serverTime: formatLocalDateTime(new Date()),
 };
+
+function formatLocalDateTime(date: Date) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+
+  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+}
 
 const mockDrawDates = [
   { entryDate: '2026-03-10' },
@@ -123,7 +134,10 @@ export const drawHandlers = [
       {
         code: 'SUCCESS',
         message: '드로우 상세 조회를 성공했습니다.',
-        data: mockDrawData,
+        data: {
+          ...mockDrawData,
+          serverTime: formatLocalDateTime(new Date()),
+        },
       },
       { status: 200 }
     );

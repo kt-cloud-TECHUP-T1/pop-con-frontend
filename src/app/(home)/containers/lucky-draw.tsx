@@ -1,16 +1,16 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
 import { useRouter } from 'next/navigation';
-import { useAuthStore } from '@/features/auth/stores/auth-store';
-import { ApiResponse } from '@/types/api/common';
 import { LuckyDrawSkeleton } from '../components/skeletons';
 import { Typography } from '@/components/ui/typography';
 import { formatOpenAt } from '@/lib/utils';
-import { BaseCardResponse, BasePopupCard } from '../types';
+import { BasePopupCard } from '../types';
+import { usePopupLike } from '../hooks/use-popup-like';
+import { useSectionFetch } from '../hooks/use-section-fetch';
 
 type DrawTab = 'UPCOMING' | 'OPEN';
 
@@ -28,69 +28,16 @@ interface LuckyDrawCard extends BasePopupCard {
   };
 }
 
-type LuckyDrawCardResponse = BaseCardResponse<
-  LuckyDrawCard,
-  'DRAWS_OPEN' | 'DRAWS_UPCOMING'
->;
-
 export const LuckyDraw = () => {
   const [activeTab, setActiveTab] = useState<DrawTab>('OPEN');
-  const [openCards, setOpenCards] = useState<LuckyDrawCard[] | null>(null);
-  const [upcomingCards, setUpcomingCards] = useState<LuckyDrawCard[] | null>(
-    null
+  const openCards = useSectionFetch<LuckyDrawCard>(
+    '/api/popups?phaseType=DRAW&phaseStatus=OPEN&limit=10'
   );
-  const accessToken = useAuthStore((state) => state.accessToken);
+  const upcomingCards = useSectionFetch<LuckyDrawCard>(
+    '/api/popups?phaseType=DRAW&phaseStatus=UPCOMING&sort=SOONEST_OPEN&limit=10'
+  );
+  const { getLikedPopupState, handleClickLike } = usePopupLike<LuckyDrawCard>();
   const router = useRouter();
-
-  useEffect(() => {
-    const controller = new AbortController();
-
-    const fetchDraws = async () => {
-      const headers: HeadersInit = {
-        'Content-Type': 'application/json',
-        ...(accessToken && { Authorization: `Bearer ${accessToken}` }),
-      };
-
-      try {
-        const [openResponse, upcomingResponse] = await Promise.all([
-          fetch('/api/popups?phaseType=DRAW&phaseStatus=OPEN&limit=10', {
-            signal: controller.signal,
-            headers,
-          }),
-          fetch(
-            '/api/popups?phaseType=DRAW&phaseStatus=UPCOMING&sort=SOONEST_OPEN&limit=10',
-            { signal: controller.signal, headers }
-          ),
-        ]);
-
-        if (openResponse.ok) {
-          const result =
-            (await openResponse.json()) as ApiResponse<LuckyDrawCardResponse>;
-          setOpenCards(result.data?.items ?? []);
-        } else {
-          setOpenCards([]);
-        }
-
-        if (upcomingResponse.ok) {
-          const result =
-            (await upcomingResponse.json()) as ApiResponse<LuckyDrawCardResponse>;
-          setUpcomingCards(result.data?.items ?? []);
-        } else {
-          setUpcomingCards([]);
-        }
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError')
-          return;
-        console.error('[lucky-draw] 드로우 조회 실패', error);
-        setOpenCards([]);
-        setUpcomingCards([]);
-      }
-    };
-
-    fetchDraws();
-
-    return () => controller.abort();
-  }, [accessToken]);
 
   if (openCards === null || upcomingCards === null)
     return <LuckyDrawSkeleton />;
@@ -143,6 +90,7 @@ export const LuckyDraw = () => {
           carouselOpts={{ align: 'start' }}
           alignArrowToRatio="3/4"
           items={activeDrawCards.map((activeDrawCard) => {
+            const likedState = getLikedPopupState(activeDrawCard);
             const { datePart, timePart } =
               activeDrawCard.overlay?.type === 'DRAW_OPEN_AT'
                 ? formatOpenAt(activeDrawCard.phase.openAt)
@@ -157,13 +105,13 @@ export const LuckyDraw = () => {
                 description={activeDrawCard.subText ?? undefined}
                 caption={activeDrawCard.caption ?? undefined}
                 countView={activeDrawCard.stats.viewCount}
-                countLike={activeDrawCard.stats.likeCount}
+                countLike={likedState.likeCount}
                 showButtonLike
                 showCountView
                 showCountLike
                 onClick={() => handleClick(activeDrawCard.popupId)}
-                // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
-                isLiked={activeDrawCard.liked ?? false}
+                onClickLike={() => handleClickLike(activeDrawCard)}
+                isLiked={likedState.isLiked}
                 overlayBadge={
                   datePart && timePart ? (
                     <Typography
