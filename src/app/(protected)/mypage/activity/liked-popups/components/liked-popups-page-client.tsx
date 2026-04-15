@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { LikedPopupCard } from '@/app/(protected)/mypage/components/liked-popup-card';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import type { ApiResponse } from '@/types/api/common';
@@ -8,53 +8,36 @@ import type { LikedPopup, LikedPopupsData } from '../../../types/liked-popup';
 import { LikedPopupCardSkeleton } from '../../../components/skeletons';
 import { useRouter } from 'next/navigation';
 import { authFetch } from '../../../lib/auth-fetch';
+import { usePopupLike } from '@/app/(home)/hooks/use-popup-like';
+import { snackbar } from '@/components/ui/snackbar';
 
 const PAGE = 0;
 const SIZE = 12;
 
+export const LIKED_POPUPS_QUERY_KEY = ['liked-popups'] as const;
+
 export function LikedPopupsPageClient() {
-  const [popups, setPopups] = useState<LikedPopup[] | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [isError, setIsError] = useState(false);
   const accessToken = useAuthStore((state) => state.accessToken);
   const router = useRouter();
+  const { handleClickLike } = usePopupLike<LikedPopup>({
+    onUnlike: () => snackbar.success({ title: '찜 목록에서 삭제되었습니다.' }),
+  });
 
-  useEffect(() => {
-    if (!accessToken) return;
+  const { data: popups, isLoading, isError } = useQuery({
+    queryKey: [...LIKED_POPUPS_QUERY_KEY, accessToken],
+    queryFn: async ({ signal }) => {
+      const response = await authFetch(
+        `/api/history/likes?page=${PAGE}&size=${SIZE}`,
+        { signal }
+      );
 
-    const controller = new AbortController();
+      if (!response.ok) throw new Error('Failed to fetch liked popups');
 
-    const fetchLikedPopups = async () => {
-      setIsLoading(true);
-      setIsError(false);
-      try {
-        const response = await authFetch(
-          `/api/history/likes?page=${PAGE}&size=${SIZE}`,
-          {
-            signal: controller.signal,
-          }
-        );
-
-        if (!response.ok) {
-          setIsError(true);
-          return;
-        }
-
-        const result = (await response.json()) as ApiResponse<LikedPopupsData>;
-        setPopups(result.data?.content ?? []);
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError')
-          return;
-        setIsError(true);
-      } finally {
-        setIsLoading(false);
-        setIsError(false);
-      }
-    };
-
-    fetchLikedPopups();
-    return () => controller.abort();
-  }, [accessToken]);
+      const result = (await response.json()) as ApiResponse<LikedPopupsData>;
+      return result.data?.content ?? [];
+    },
+    enabled: Boolean(accessToken),
+  });
 
   if (isError) {
     return (
@@ -74,7 +57,7 @@ export function LikedPopupsPageClient() {
     );
   }
 
-  if (popups === null) return null;
+  if (!popups) return null;
 
   if (popups.length === 0) {
     return (
@@ -98,9 +81,11 @@ export function LikedPopupsPageClient() {
         <LikedPopupCard
           key={popup.popupId}
           title={popup.title}
+          isLiked={popup.liked}
           description={popup.supportingText}
           caption={popup.caption}
           thumbnailUrl={popup.thumbnailUrl}
+          onClickLike={() => handleClickLike(popup)}
           onClick={() => handleClick(popup.popupId, popup.phase.type)}
         />
       ))}

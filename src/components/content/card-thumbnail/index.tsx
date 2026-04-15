@@ -6,6 +6,7 @@ import { Icon } from '@/components/Icon/Icon';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
+import { RADIUS } from '@/constants/design-system';
 
 const thumbnailVariants = cva(
   'w-full rounded-ml border border-Line-Line-3/10 object-cover',
@@ -96,12 +97,12 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
         <div
           className={cn(
             'wrapper-thumbnail',
-            'self-stretch relative flex flex-col justify-start items-start gap-4 rounded-ml overflow-hidden'
+            'self-stretch relative flex flex-col justify-start items-start gap-4 overflow-hidden'
           )}
         >
           <img
             className={cn(
-              'thumbnail',
+              `thumbnail ${RADIUS.ML}`,
               thumbnailVariants({ ratio: thumbnailRatio }),
               thumbnailClassName
             )}
@@ -116,20 +117,27 @@ export const CardThumbnail: React.FC<CardThumbnailProps> = ({
               disabled={!isLikeInteractive}
               className={cn(
                 'button-like',
-                'right-0 top-0 p-4 absolute text-white',
-                isLikeInteractive
-                  ? 'cursor-pointer'
-                  : 'cursor-default opacity-70'
+                'right-0 top-0 p-4 absolute',
+                isLiked ? 'text-red-500' : 'text-white',
+                isLikeInteractive ? 'cursor-pointer' : 'cursor-default'
               )}
               onClick={handleLike}
             >
-              <Icon name={isLiked ? 'HeartFill' : 'Heart'} size={32} />
+              <Icon
+                name={isLiked ? 'HeartFill' : 'Heart'}
+                size={32}
+                className="[filter:drop-shadow(0_1px_2px_rgba(0,0,0,0.12))_drop-shadow(0_0_1px_rgba(0,0,0,0.08))]"
+              />
             </button>
           )}
           {index && (
-            <div className="w-10 h-10 p-2.5 bg-orange-500 rounded-ms inline-flex flex-col justify-center items-center text-white text-2xl font-bold absolute bottom-4 left-4">
+            <Box
+              radius="MS"
+              background="var(--orange-50)"
+              className="w-10 h-10 p-2.5 inline-flex flex-col justify-center items-center text-white text-2xl font-bold absolute bottom-4 left-4"
+            >
               {index}
-            </div>
+            </Box>
           )}
           {overlayBadge && (
             <Box

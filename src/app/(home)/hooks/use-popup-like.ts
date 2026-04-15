@@ -3,17 +3,23 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { snackbar } from '@/components/ui/snackbar';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
-import type { BasePopupCard } from '../types';
 import { deleteHomePopupLike, postHomePopupLike } from '../actions';
 import { HOME_SECTION_QUERY_KEY } from './use-section-fetch';
+import { LIKED_POPUPS_QUERY_KEY } from '@/app/(protected)/mypage/activity/liked-popups/components/liked-popups-page-client';
+
+type PopupLikeBase = {
+  popupId: number;
+  liked: boolean | null;
+  stats: { likeCount: number };
+};
 
 function isPopupCardItem(
   item: unknown,
   popupId: number
-): item is BasePopupCard {
+): item is PopupLikeBase {
   if (typeof item !== 'object' || item === null) return false;
 
-  const maybeItem = item as Partial<BasePopupCard>;
+  const maybeItem = item as Partial<PopupLikeBase>;
 
   return (
     maybeItem.popupId === popupId &&
@@ -44,7 +50,9 @@ function updatePopupLikeInItems(
   });
 }
 
-export function usePopupLike<T extends BasePopupCard>() {
+export function usePopupLike<T extends PopupLikeBase>(options?: {
+  onUnlike?: () => void;
+}) {
   const accessToken = useAuthStore((state) => state.accessToken);
   const queryClient = useQueryClient();
 
@@ -65,6 +73,7 @@ export function usePopupLike<T extends BasePopupCard>() {
     },
     onSuccess: (_, popup) => {
       updateHomeSectionQueries(popup, true);
+      queryClient.invalidateQueries({ queryKey: LIKED_POPUPS_QUERY_KEY });
     },
     onError: (error) => {
       snackbar.destructive({
@@ -86,6 +95,8 @@ export function usePopupLike<T extends BasePopupCard>() {
     },
     onSuccess: (_, popup) => {
       updateHomeSectionQueries(popup, false);
+      queryClient.invalidateQueries({ queryKey: LIKED_POPUPS_QUERY_KEY });
+      options?.onUnlike?.();
     },
     onError: (error) => {
       snackbar.destructive({

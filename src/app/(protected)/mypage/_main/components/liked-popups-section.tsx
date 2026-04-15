@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
+import { useQuery } from '@tanstack/react-query';
 import { Icon } from '@/components/Icon/Icon';
 import { LikedPopupCard } from '@/app/(protected)/mypage/components/liked-popup-card';
 import { PageHeader } from '@/components/shared/page-header';
@@ -11,47 +11,35 @@ import { LikedPopup, LikedPopupsData } from '../../types/liked-popup';
 import { LikedPopupCardSkeleton } from '../../components/skeletons';
 import { authFetch } from '@/app/(protected)/mypage/lib/auth-fetch';
 import { useRouter } from 'next/navigation';
+import { LIKED_POPUPS_QUERY_KEY } from '../../activity/liked-popups/components/liked-popups-page-client';
+import { snackbar } from '@/components/ui/snackbar';
+import { usePopupLike } from '@/app/(home)/hooks/use-popup-like';
 
 const PAGE = 0;
 const SIZE = 8;
 
 export function LikedPopupsSection() {
-  const [popups, setPopups] = useState<LikedPopup[] | null>(null);
-  const [isError, setIsError] = useState(false);
   const accessToken = useAuthStore((state) => state.accessToken);
   const router = useRouter();
+  const { handleClickLike } = usePopupLike<LikedPopup>({
+    onUnlike: () => snackbar.success({ title: '찜 목록에서 삭제되었습니다.' }),
+  });
 
-  useEffect(() => {
-    if (!accessToken) return;
+  const { data: popups, isError } = useQuery({
+    queryKey: [...LIKED_POPUPS_QUERY_KEY, PAGE, SIZE, accessToken],
+    queryFn: async ({ signal }) => {
+      const response = await authFetch(
+        `/api/history/likes?page=${PAGE}&size=${SIZE}`,
+        { signal }
+      );
 
-    const controller = new AbortController();
+      if (!response.ok) throw new Error('Failed to fetch liked popups');
 
-    const fetchLikedPopups = async () => {
-      try {
-        const response = await authFetch(
-          `/api/history/likes?page=${PAGE}&size=${SIZE}`,
-          {
-            signal: controller.signal,
-          }
-        );
-
-        if (!response.ok) {
-          setIsError(true);
-          return;
-        }
-
-        const result = (await response.json()) as ApiResponse<LikedPopupsData>;
-        setPopups(result.data?.content ?? []);
-      } catch (error) {
-        if (error instanceof DOMException && error.name === 'AbortError')
-          return;
-        setIsError(true);
-      }
-    };
-
-    fetchLikedPopups();
-    return () => controller.abort();
-  }, [accessToken]);
+      const result = (await response.json()) as ApiResponse<LikedPopupsData>;
+      return result.data?.content ?? [];
+    },
+    enabled: Boolean(accessToken),
+  });
 
   const handleBannersClick = (
     popupId: number,
@@ -85,23 +73,24 @@ export function LikedPopupsSection() {
         <div className="min-h-[200px] flex items-center justify-center text-[var(--content-extra-low)]">
           찜한 팝업스토어를 불러오지 못했어요.
         </div>
-      ) : popups !== null && popups.length === 0 ? (
+      ) : popups !== undefined && popups.length === 0 ? (
         <div className="min-h-[200px] flex items-center justify-center text-[var(--content-extra-low)]">
           찜한 팝업스토어가 없어요.
         </div>
       ) : (
         <div className="grid grid-cols-1 gap-x-2 gap-y-6 sm:grid-cols-2 xl:grid-cols-4">
-          {popups === null
+          {popups === undefined
             ? Array.from({ length: SIZE }).map((_, i) => (
                 <LikedPopupCardSkeleton key={i} />
               ))
-            : popups.map((popup) => (
+            : popups.map((popup: LikedPopup) => (
                 <LikedPopupCard
                   key={popup.popupId}
                   title={popup.title}
                   description={popup.supportingText}
                   caption={popup.caption}
                   thumbnailUrl={popup.thumbnailUrl}
+                  onClickLike={() => handleClickLike(popup)}
                   onClick={() =>
                     handleBannersClick(popup.popupId, popup.phase.type)
                   }
