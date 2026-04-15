@@ -8,10 +8,12 @@ import { HeaderNav } from './header-nav';
 import { Avatar } from '@/components/ui/avatar';
 import { Icon } from '@/components/Icon/Icon';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { Button } from '@/components/ui/button';
+import { useLogout } from '@/features/auth/hooks/use-logout';
 
 const AUTH_PATHS = ['/login', '/signup', '/verify', '/callback'];
 
-export function HeaderWrapper({
+export function Header({
   isLoggedIn: serverIsLoggedIn,
 }: {
   isLoggedIn: boolean;
@@ -23,6 +25,8 @@ export function HeaderWrapper({
     authStatus === 'loading'
       ? serverIsLoggedIn
       : authStatus === 'authenticated';
+
+  const { logout } = useLogout();
 
   const isAuthPage = AUTH_PATHS.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`)
@@ -61,14 +65,14 @@ export function HeaderWrapper({
                 paddingY="XS"
                 paddingX="S"
                 className="w-full pl-10 text-[15px] outline-none placeholder:text-[#9f9f9f]"
-                placeholder="Placeholder"
+                placeholder="궁금한 팝업 스토어를 검색해보세요!"
                 aria-label="검색"
               />
             </label>
 
             {isLoggedIn ? (
               <>
-                {/* 회원: 알림 아이콘 + Avatar */}
+                {/* 회원: 알림 아이콘 + Avatar + 로그아웃 */}
                 <Icon
                   name="Bell"
                   size={24}
@@ -84,15 +88,14 @@ export function HeaderWrapper({
                     }}
                   />
                 </Link>
+                <Button variant="tertiary" onClick={logout}>
+                  로그아웃
+                </Button>
               </>
             ) : (
               /* 비회원: 유저 아이콘 → 클릭 시 로그인 이동 */
               <Link href="/login" aria-label="로그인">
-                <Icon
-                  name="Person"
-                  size={24}
-                  className="text-[var(--neutral-20)]"
-                />
+                <Button variant="tertiary">로그인/회원가입</Button>
               </Link>
             )}
           </Box>
