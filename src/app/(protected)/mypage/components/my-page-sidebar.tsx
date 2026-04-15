@@ -7,6 +7,7 @@ import { Typography } from '@/components/ui/typography';
 import { Box } from '@/components/ui/box';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { snackbar } from '@/components/ui/snackbar';
+import { authFetch } from '../lib/auth-fetch';
 
 type MyPageSidebarItem = {
   label: string;
@@ -77,16 +78,12 @@ const isActiveSidebarItem = (pathname: string, item: MyPageSidebarItem) => {
 export function MyPageSidebar() {
   const pathname = usePathname();
   const router = useRouter();
-  const accessToken = useAuthStore((state) => state.accessToken);
   const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/auth/logout', {
+      const response = await authFetch('/api/auth/logout', {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
       });
 
       const result = (await response.json()) as {
