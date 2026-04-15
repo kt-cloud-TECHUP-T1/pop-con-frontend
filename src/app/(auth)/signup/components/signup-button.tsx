@@ -14,7 +14,7 @@ export default function SignupButton({
   return (
     <Button
       type="button"
-      className={`w-full ${RADIUS.ML}`}
+      className={`w-full ${RADIUS.MS}`}
       size="large"
       variant="primary"
       disabled={disabled}

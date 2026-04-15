@@ -1,6 +1,5 @@
 'use client';
 
-import { useState } from 'react';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
 import { ChevronRight } from 'lucide-react';
@@ -13,15 +12,17 @@ export default function AgreementCheckbox({
   label,
   isRequired,
   detailContent,
+  isExpanded,
+  onToggleExpand,
 }: {
   checked: boolean;
   onCheckedChange: (checked: boolean) => void;
   label: string;
   isRequired: boolean;
   detailContent?: TermsContent;
+  isExpanded: boolean;
+  onToggleExpand: () => void;
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
   return (
     <div>
       <div className="flex justify-between items-center">
@@ -34,13 +35,13 @@ export default function AgreementCheckbox({
         {detailContent && (
           <button
             type="button"
-            onClick={() => setIsExpanded((prev) => !prev)}
+            onClick={onToggleExpand}
             className="p-0.5 shrink-0"
           >
             <ChevronRight
               color="#737373"
               className={cn(
-                'transition-transform duration-200',
+                'transition-transform duration-400',
                 isExpanded && 'rotate-90'
               )}
             />
@@ -50,7 +51,7 @@ export default function AgreementCheckbox({
       {detailContent && (
         <div
           className={cn(
-            'grid transition-all duration-200',
+            'grid transition-all duration-400',
             isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
           )}
         >

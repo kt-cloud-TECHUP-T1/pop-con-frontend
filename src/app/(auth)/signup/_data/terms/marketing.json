@@ -1,6 +1,5 @@
 {
-  "id": "marketing",
-  "required": false,
+  "kind": "table",
   "description": "Pop-con은 회원님께 더 나은 혜택과 맞춤형 서비스를 제공하기 위해 아래와 같이 개인정보를 수집 및 이용하고자 합니다.",
   "table": [
     {

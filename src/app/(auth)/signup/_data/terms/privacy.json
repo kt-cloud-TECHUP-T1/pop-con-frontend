@@ -1,6 +1,5 @@
 {
-  "id": "privacy",
-  "required": true,
+  "kind": "table",
   "description": "회원가입 및 서비스 제공을 위해 아래와 같이 개인정보를 수집·이용합니다.",
   "table": [
     {
