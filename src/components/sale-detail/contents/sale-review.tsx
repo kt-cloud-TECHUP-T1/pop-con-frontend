@@ -31,14 +31,14 @@ export default function SaleReview({ hasStickyTopBar }: SaleReviewProps) {
         </Typography>
         <Button
           className="text-[var(--content-low)]"
-          variant="secondary"
+          variant="ghost"
           leftIcon={<Icon name="Write"></Icon>}
         >
           리뷰 쓰기
         </Button>
       </div>
       {(popupData?.reviewCount as number) > 0 ? (
-        <div>리뷰있음 UI 작업 추후에 진행</div>
+        <div>{''}</div>
       ) : (
         <div className="flex flex-col items-center pt-ms">
           <Typography variant="body-1" weight="bold">
