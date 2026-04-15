@@ -1,13 +1,11 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Typography } from '@/components/ui/typography';
 import { Box } from '@/components/ui/box';
-import { useAuthStore } from '@/features/auth/stores/auth-store';
-import { snackbar } from '@/components/ui/snackbar';
-import { authFetch } from '../lib/auth-fetch';
+import { useLogout } from '@/features/auth/hooks/use-logout';
 
 type MyPageSidebarItem = {
   label: string;
@@ -77,35 +75,7 @@ const isActiveSidebarItem = (pathname: string, item: MyPageSidebarItem) => {
 
 export function MyPageSidebar() {
   const pathname = usePathname();
-  const router = useRouter();
-  const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
-
-  const handleLogout = async () => {
-    try {
-      const response = await authFetch('/api/auth/logout', {
-        method: 'POST',
-      });
-
-      const result = (await response.json()) as {
-        code: string;
-        message: string;
-      };
-
-      if (!response.ok) {
-        snackbar.destructive({
-          title: result.message ?? '로그아웃 중 오류가 발생했습니다.',
-        });
-        return;
-      }
-
-      snackbar.success({ title: result.message ?? '로그아웃되었습니다.' });
-      clearAccessToken();
-      router.push('/');
-    } catch (error) {
-      console.error('[logout]', error);
-      snackbar.destructive({ title: '로그아웃 중 오류가 발생했습니다.' });
-    }
-  };
+  const { logout } = useLogout();
 
   return (
     <Box
@@ -134,7 +104,7 @@ export function MyPageSidebar() {
                 return (
                   <li key={item.label}>
                     {isLogout ? (
-                      <button onClick={handleLogout} className="cursor-pointer">
+                      <button onClick={logout} className="cursor-pointer">
                         <Typography
                           variant="label-2"
                           weight="regular"
