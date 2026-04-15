@@ -13,7 +13,7 @@ export interface AuctionReservationSuccessDetail {
 }
 
 export interface GetAuctionReservationSuccessResponse {
-  status: 'SUCCESS';
+  code: 'SUCCESS';
   message: string;
   data: AuctionReservationSuccessDetail;
 }
