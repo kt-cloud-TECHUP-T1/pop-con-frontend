@@ -1,7 +1,10 @@
 import { DRAW_ERROR_MESSAGES } from '@/constants/draw';
 import { COMMON_ERROR_MESSAGES } from '@/constants/error/common';
 import { ApiError } from '@/lib/api-error';
-import { DrawDetailResponse, DrawErrorResponse } from '@/types/sale-detail';
+import {
+  DrawDetailResponse,
+  DrawErrorResponse,
+} from '@/types/popup/sale-detail';
 
 export async function getDrawDetail(drawId: string | number) {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '');

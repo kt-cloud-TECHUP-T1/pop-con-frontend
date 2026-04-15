@@ -3,7 +3,7 @@ import { ApiError } from '@/lib/api-error';
 import {
   PopupDetailErrorResponse,
   PopupDetailResponse,
-} from '@/types/sale-detail';
+} from '@/types/popup/sale-detail';
 
 export async function getPopupDetail(popupId: number, accessToken?: string) {
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL?.replace(/\/$/, '');

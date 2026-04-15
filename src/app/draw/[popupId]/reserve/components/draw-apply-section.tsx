@@ -11,7 +11,7 @@ import { useApplyPageCollector } from '@/features/anti-macro';
 import { snackbar } from '@/components/ui/snackbar';
 import { DRAW_ENTRY_ERROR_MESSAGE } from '@/constants/draw-apply';
 import { postDrawEntry } from '@/lib/api/draw-apply';
-import { DrawEntrySuccessData } from '@/types/applay/draw-apply';
+import { DrawEntrySuccessData } from '@/types/draw/draw-apply';
 import DrawEntrySuccessModal from '@/components/sale-detail/info/draw-entry-success-modal';
 import DrawEntryDuplicateModal from '@/components/sale-detail/info/draw-entry-duplicate-modal';
 import { quizPassedTokenStorage } from '@/lib/utils';

@@ -1,4 +1,4 @@
-import { AuctionData } from '@/types/sale-detail';
+import { AuctionData } from '@/types/popup/sale-detail';
 
 interface ConnectAuctionStreamParams {
   auctionId: number;

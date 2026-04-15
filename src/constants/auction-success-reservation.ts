@@ -1,6 +1,6 @@
 // src/constants/auction-reservation.ts
 
-import { GetAuctionReservationErrorCode } from '@/types/auction-success/auction-success';
+import { GetAuctionReservationErrorCode } from '@/types/auction/auction-success';
 
 export const AUCTION_RESERVATION_ERROR_MESSAGES: Record<
   GetAuctionReservationErrorCode,

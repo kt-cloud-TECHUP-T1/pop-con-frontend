@@ -1,4 +1,4 @@
-import { GetAuctionReservationResponse } from '@/types/auction-success/auction-success';
+import { GetAuctionReservationResponse } from '@/types/auction/auction-success';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 

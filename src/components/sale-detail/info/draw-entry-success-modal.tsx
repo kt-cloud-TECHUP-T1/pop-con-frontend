@@ -3,7 +3,7 @@
 import Image from 'next/image';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
-import { DrawEntrySuccessData } from '@/types/applay/draw-apply';
+import { DrawEntrySuccessData } from '@/types/draw/draw-apply';
 import { Icon } from '@/components/Icon/Icon';
 import { formatEntryDate, formatEntryTime } from '@/lib/utils';
 import { useRouter } from 'next/navigation';

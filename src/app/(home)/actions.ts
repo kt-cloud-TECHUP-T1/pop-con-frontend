@@ -5,7 +5,7 @@ import { postPopupLike } from '@/lib/api/popup/post-popup-like';
 import type {
   PopupLikeResponse,
   PopupUnlikeResponse,
-} from '@/types/popup-like';
+} from '@/types/popup/popup-like';
 
 export async function postHomePopupLike(
   popupId: number,

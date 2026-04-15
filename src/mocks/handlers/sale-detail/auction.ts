@@ -1,6 +1,6 @@
 // src/mocks/handlers/auction.ts
 import { delay, http, HttpResponse } from 'msw';
-import type { AuctionData } from '@/types/sale-detail';
+import type { AuctionData } from '@/types/popup/sale-detail';
 
 const mockAuctionData: AuctionData = {
   auctionId: 100,

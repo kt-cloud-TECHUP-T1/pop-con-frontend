@@ -4,7 +4,7 @@ import { ApiError } from '@/lib/api-error';
 import type {
   PopupLikeErrorResponse,
   PopupLikeResponse,
-} from '@/types/popup-like';
+} from '@/types/popup/popup-like';
 
 export async function postPopupLike(
   popupId: number,

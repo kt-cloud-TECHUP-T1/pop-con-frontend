@@ -5,7 +5,7 @@ import {
 import {
   AuctionBidRequest,
   AuctionBidResult,
-} from '@/types/applay/auction-bid';
+} from '@/types/auction/auction-bid';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? '';
 

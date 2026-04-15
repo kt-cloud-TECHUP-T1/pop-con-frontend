@@ -5,7 +5,7 @@ import type {
   AuctionData,
   AuctionDetailResponse,
   AuctionErrorResponse,
-} from '@/types/sale-detail';
+} from '@/types/popup/sale-detail';
 
 //auction 초기 렌더링용 데이터 패칭 함수
 export async function getAuctionDetail(
