@@ -1,10 +1,13 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Typography } from '@/components/ui/typography';
 import { Box } from '@/components/ui/box';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { snackbar } from '@/components/ui/snackbar';
+import { authFetch } from '../lib/auth-fetch';
 
 type MyPageSidebarItem = {
   label: string;
@@ -60,6 +63,10 @@ const MY_PAGE_SIDEBAR: MyPageSidebarSection[] = [
         label: '고객센터',
         href: '/support',
       },
+      {
+        label: '로그아웃',
+        href: '',
+      },
     ],
   },
 ];
@@ -70,6 +77,35 @@ const isActiveSidebarItem = (pathname: string, item: MyPageSidebarItem) => {
 
 export function MyPageSidebar() {
   const pathname = usePathname();
+  const router = useRouter();
+  const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
+
+  const handleLogout = async () => {
+    try {
+      const response = await authFetch('/api/auth/logout', {
+        method: 'POST',
+      });
+
+      const result = (await response.json()) as {
+        code: string;
+        message: string;
+      };
+
+      if (!response.ok) {
+        snackbar.destructive({
+          title: result.message ?? '로그아웃 중 오류가 발생했습니다.',
+        });
+        return;
+      }
+
+      snackbar.success({ title: result.message ?? '로그아웃되었습니다.' });
+      clearAccessToken();
+      router.push('/');
+    } catch (error) {
+      console.error('[logout]', error);
+      snackbar.destructive({ title: '로그아웃 중 오류가 발생했습니다.' });
+    }
+  };
 
   return (
     <Box
@@ -93,25 +129,39 @@ export function MyPageSidebar() {
               {section.items.map((item) => {
                 const isActive = isActiveSidebarItem(pathname, item);
 
+                const isLogout = item.label === '로그아웃';
+
                 return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      aria-current={isActive ? 'page' : undefined}
-                    >
-                      <Typography
-                        variant="label-2"
-                        weight={isActive ? 'bold' : 'regular'}
-                        className={cn(
-                          'transition-colors',
-                          isActive
-                            ? 'text-[var(--orange-50)]'
-                            : 'text-[var(--neutral-60)]'
-                        )}
+                  <li key={item.label}>
+                    {isLogout ? (
+                      <button onClick={handleLogout} className="cursor-pointer">
+                        <Typography
+                          variant="label-2"
+                          weight="regular"
+                          className="text-[var(--neutral-60)] transition-colors"
+                        >
+                          {item.label}
+                        </Typography>
+                      </button>
+                    ) : (
+                      <Link
+                        href={item.href}
+                        aria-current={isActive ? 'page' : undefined}
                       >
-                        {item.label}
-                      </Typography>
-                    </Link>
+                        <Typography
+                          variant="label-2"
+                          weight={isActive ? 'bold' : 'regular'}
+                          className={cn(
+                            'transition-colors',
+                            isActive
+                              ? 'text-[var(--orange-50)]'
+                              : 'text-[var(--neutral-60)]'
+                          )}
+                        >
+                          {item.label}
+                        </Typography>
+                      </Link>
+                    )}
                   </li>
                 );
               })}
