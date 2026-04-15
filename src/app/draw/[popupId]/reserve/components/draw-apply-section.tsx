@@ -17,6 +17,7 @@ import DrawEntryDuplicateModal from '@/components/sale-detail/info/draw-entry-du
 import { quizPassedTokenStorage } from '@/lib/utils';
 import { Box } from '@/components/ui/box';
 import { useUserMeQuery } from '@/features/user/queries/use-user-me-query';
+import { useRouter } from 'next/navigation';
 
 const DEFAULT_SUBMIT_ERROR =
   '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
@@ -50,6 +51,7 @@ export default function DrawApplySection({
   const [successData, setSuccessData] = useState<DrawEntrySuccessData | null>(
     null
   );
+  const router = useRouter();
 
   //예약 신청 페이지 버튼
   const handleCheck = (index: number, checked: boolean) => {
@@ -245,7 +247,14 @@ export default function DrawApplySection({
           번호로 알려드려요.
         </Typography>
         <div>
-          <Button variant="secondary">정보 수정하기</Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              router.push('/mypage/info/profile/personal');
+            }}
+          >
+            정보 수정하기
+          </Button>
         </div>
       </Box>
       <div className=" border-b border-[var(--line-3)]"></div>
