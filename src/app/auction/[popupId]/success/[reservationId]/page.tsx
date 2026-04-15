@@ -40,36 +40,37 @@ export default function SuccessPage() {
     const fetchReservationDetail = async () => {
       setIsLoading(true);
 
-      const result = await getAuctionReservation(reservationId, accessToken);
+      try {
+        const result = await getAuctionReservation(reservationId, accessToken);
 
-      if ('status' in result && result.status === 'SUCCESS') {
-        setReservationDetail(result.data);
-        setIsLoading(false);
-        return;
-      }
+        if (result.code === 'SUCCESS') {
+          setReservationDetail(result.data);
+          setErrorMessage(null);
+          return;
+        }
 
-      if ('code' in result) {
         const message =
           AUCTION_RESERVATION_ERROR_MESSAGES[result.code] ??
           DEFAULT_AUCTION_RESERVATION_ERROR_MESSAGE;
 
+        setReservationDetail(null);
         setErrorMessage(message);
-        setIsLoading(false);
 
         snackbar.destructive({
           title: '조회 실패',
           description: message,
         });
-        return;
+      } catch {
+        setReservationDetail(null);
+        setErrorMessage(DEFAULT_AUCTION_RESERVATION_ERROR_MESSAGE);
+
+        snackbar.destructive({
+          title: '조회 실패',
+          description: DEFAULT_AUCTION_RESERVATION_ERROR_MESSAGE,
+        });
+      } finally {
+        setIsLoading(false);
       }
-
-      setErrorMessage(DEFAULT_AUCTION_RESERVATION_ERROR_MESSAGE);
-      setIsLoading(false);
-
-      snackbar.destructive({
-        title: '조회 실패',
-        description: DEFAULT_AUCTION_RESERVATION_ERROR_MESSAGE,
-      });
     };
 
     fetchReservationDetail();
