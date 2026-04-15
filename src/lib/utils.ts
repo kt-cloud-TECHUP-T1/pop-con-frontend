@@ -48,6 +48,25 @@ export function formatOpenAt(openAt: string) {
   return { datePart, timePart };
 }
 
+export function formatTimeToHourMinute(time: string) {
+  const [hourText, minuteText = '00'] = time.split(':');
+  const hour = Number(hourText);
+  const minute = Number(minuteText);
+
+  if (
+    Number.isNaN(hour) ||
+    Number.isNaN(minute) ||
+    hour < 0 ||
+    hour > 23 ||
+    minute < 0 ||
+    minute > 59
+  ) {
+    return time;
+  }
+
+  return `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+}
+
 const KEY = 'quiz_passed_token';
 
 export const quizPassedTokenStorage = {

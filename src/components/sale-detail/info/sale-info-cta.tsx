@@ -124,14 +124,20 @@ function AuctionCTA({
 
             if (result.data.status === 'ACTIVE') {
               //퀴즈페이지로 이동
-              sessionStorage.setItem('vqa_redirect', `/auction/${popupId}/reserve`);
+              sessionStorage.setItem(
+                'vqa_redirect',
+                `/auction/${popupId}/reserve`
+              );
               router.push('/vqa');
               return;
             }
 
             if (result.data.status === 'WAITING') {
               //재진입시 api 전달용
-              sessionStorage.setItem('vqa_redirect', `/auction/${popupId}/reserve`);
+              sessionStorage.setItem(
+                'vqa_redirect',
+                `/auction/${popupId}/reserve`
+              );
               sessionStorage.setItem(
                 'queue_auction_id',
                 String(auctionData.auctionId)
@@ -278,11 +284,17 @@ function DrawCTA({
 
           const statusHandler: Record<string, () => void> = {
             ACTIVE: () => {
-              sessionStorage.setItem('vqa_redirect', `/draw/${popupId}/reserve`);
+              sessionStorage.setItem(
+                'vqa_redirect',
+                `/draw/${popupId}/reserve`
+              );
               router.push('/vqa');
             },
             WAITING: () => {
-              sessionStorage.setItem('vqa_redirect', `/draw/${popupId}/reserve`);
+              sessionStorage.setItem(
+                'vqa_redirect',
+                `/draw/${popupId}/reserve`
+              );
               sessionStorage.setItem('queue_draw_id', String(drawData.drawId));
               setDrawId(String(drawData.drawId));
               router.push('/queue');
@@ -358,7 +370,7 @@ function DrawCTA({
       <Typography variant="label-1">
         {status === 'UPCOMING' &&
           `${formatDateWithWeekdayTime(drawData?.drawOpenAt ?? '')} 드로우 오픈`}
-        {status === 'OPEN' && '드로우 응모하기'}
+        {status === 'OPEN' && '드로우 참여하기'}
         {status === 'CLOSED' && '응모 마감'}
       </Typography>
     </Button>
