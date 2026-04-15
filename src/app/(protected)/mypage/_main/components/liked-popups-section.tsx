@@ -90,6 +90,7 @@ export function LikedPopupsSection() {
                   description={popup.supportingText}
                   caption={popup.caption}
                   thumbnailUrl={popup.thumbnailUrl}
+                  isLiked={popup.liked}
                   onClickLike={() => handleClickLike(popup)}
                   onClick={() =>
                     handleBannersClick(popup.popupId, popup.phase.type)
