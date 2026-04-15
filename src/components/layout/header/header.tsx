@@ -11,7 +11,7 @@ import { useAuthStore } from '@/features/auth/stores/auth-store';
 
 const AUTH_PATHS = ['/login', '/signup', '/verify', '/callback'];
 
-export function HeaderWrapper({
+export function Header({
   isLoggedIn: serverIsLoggedIn,
 }: {
   isLoggedIn: boolean;
