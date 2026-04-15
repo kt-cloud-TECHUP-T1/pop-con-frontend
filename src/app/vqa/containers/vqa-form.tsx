@@ -343,6 +343,9 @@ export default function VqaForm() {
               muted
               loop
               playsInline
+              controlsList="nodownload"
+              disablePictureInPicture
+              onContextMenu={(e) => e.preventDefault()}
               className="w-full h-full object-cover"
             />
           </div>
