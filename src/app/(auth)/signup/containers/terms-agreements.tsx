@@ -5,7 +5,19 @@ import AgreementCheckbox from '../components/agreement-checkbox';
 import SignupButton from '../components/signup-button';
 import { Separator } from '@/components/ui/separator';
 import { AUTH_ERROR_CODES, AUTH_MESSAGES, TERMS } from '@/constants/auth';
+import { TermsContent } from '../components/terms-detail-content';
+import ageContent from '@/features/terms/age.json';
+import privacyContent from '@/features/terms/privacy.json';
+import termsContent from '@/features/terms/terms.json';
+import marketingContent from '@/features/terms/marketing.json';
 import { useState } from 'react';
+
+const TERMS_DETAIL_MAP: Record<string, TermsContent> = {
+  privacy: ageContent as unknown as TermsContent,
+  identifierPolicy: privacyContent as unknown as TermsContent,
+  servicePolicy: termsContent as unknown as TermsContent,
+  marketing: marketingContent as unknown as TermsContent,
+};
 import { snackbar } from '@/components/ui/snackbar';
 import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
 import { useRouter } from 'next/navigation';
@@ -166,6 +178,7 @@ export default function TermsAgreements() {
             onCheckedChange={() => handleClickTerm(term.id)}
             label={term.label}
             isRequired={term.isRequired}
+            detailContent={TERMS_DETAIL_MAP[term.id]}
           />
         ))}
       </section>
