@@ -5,16 +5,25 @@ import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { PageHeader } from '@/components/shared/page-header';
 import type { ApiResponse } from '@/types/api/common';
 import { TicketCard } from './ticket-card';
+import { authFetch } from '../../../lib/auth-fetch';
+import { TicketCardSkeleton } from '../../../components/skeletons';
 
 interface Ticket {
   ticketId: number;
+  userId: number;
   popupId: number;
   ticketNumber: string;
   reservationNo: string | null;
   status: 'ISSUED' | 'USED' | 'CANCELLED';
   sourceType: 'AUCTION' | 'DRAW';
+  sourceId: number;
   entryDate: string;
   entryTime: string;
+  issuedAt: string;
+  popupTitle: string;
+  popupAddress: string;
+  thumbnailUrl: string;
+  displayStatus: string;
 }
 
 interface TicketsResponse {
@@ -24,19 +33,6 @@ interface TicketsResponse {
 
 const TICKETS_PAGE_LIMIT = 0;
 const TICKETS_SIZE_LIMIT = 20;
-
-function TicketCardSkeleton() {
-  return (
-    <div className="animate-pulse rounded-[var(--radius-ML)] border border-[var(--neutral-90)] p-4 flex items-center gap-4">
-      <div className="w-20 h-[104px] rounded-[var(--radius-S)] bg-[var(--neutral-90)]" />
-      <div className="flex-1 space-y-2">
-        <div className="h-4 w-3/4 rounded bg-[var(--neutral-90)]" />
-        <div className="h-3 w-1/2 rounded bg-[var(--neutral-90)]" />
-        <div className="h-3 w-1/3 rounded bg-[var(--neutral-90)]" />
-      </div>
-    </div>
-  );
-}
 
 export function TicketsClient() {
   const [tickets, setTickets] = useState<Ticket[] | null>(null);
@@ -48,7 +44,7 @@ export function TicketsClient() {
 
     const fetchTickets = async () => {
       try {
-        const response = await fetch(
+        const response = await authFetch(
           `/api/history/tickets?page=${TICKETS_PAGE_LIMIT}&size=${TICKETS_SIZE_LIMIT}`,
           {
             headers: { Authorization: `Bearer ${accessToken}` },
