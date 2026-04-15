@@ -1,8 +1,13 @@
+'use client';
+
 import Image from 'next/image';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Box } from '@/components/ui/box';
 import { Typography } from '../ui/typography';
 import { Icon, IconName } from '../Icon/Icon';
+
+const AUTH_PATHS = ['/login', '/signup', '/verify', '/callback'];
 
 type FooterLink = {
   label: string;
@@ -52,6 +57,14 @@ const FOOTER_SOCIAL_LINKS: FooterSocialLink[] = [
 ];
 
 export const Footer = () => {
+  const pathname = usePathname();
+
+  const isAuthPage = AUTH_PATHS.some(
+    (path) => pathname === path || pathname.startsWith(`${path}/`)
+  );
+
+  if (isAuthPage) return null;
+
   return (
     <footer className="w-full pt-10 pb-12 border-t border-[#ebebeb]">
       <Box className="max-w-[1280px] mx-auto px-10">

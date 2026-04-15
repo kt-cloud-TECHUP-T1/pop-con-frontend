@@ -9,7 +9,7 @@ import { cookies } from 'next/headers';
 import { Footer } from '@/components/layout/footer';
 import { SnackbarToaster } from '@/components/ui/snackbar';
 import { AppProviders } from './providers';
-import { HeaderWrapper } from '@/components/layout/header/header-wrapper';
+import { Header } from '@/components/layout/header/header';
 import { SnackbarHandler } from './(auth)/callback/utils/snakbar-handler';
 
 const pretendard = localFont({
@@ -40,7 +40,7 @@ export default async function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.variable} antialiased`}>
         <ConditionalAuthSessionRestore isLoggedIn={isLoggedIn} />
-        <HeaderWrapper isLoggedIn={isLoggedIn} />
+        <Header isLoggedIn={isLoggedIn} />
         <AppProviders>{children}</AppProviders>
         <Footer />
         <LoginRequiredModal></LoginRequiredModal>
