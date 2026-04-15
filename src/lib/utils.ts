@@ -48,6 +48,13 @@ export function formatOpenAt(openAt: string) {
   return { datePart, timePart };
 }
 
+export function formatDateKorean(dateString: string | null) {
+  if (!dateString) return null;
+  const date = new Date(dateString);
+  if (Number.isNaN(date.getTime())) return null;
+  return `${date.getMonth() + 1}월 ${date.getDate()}일`;
+}
+
 const KEY = 'quiz_passed_token';
 
 export const quizPassedTokenStorage = {
