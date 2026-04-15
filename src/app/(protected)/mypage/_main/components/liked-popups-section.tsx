@@ -10,6 +10,7 @@ import type { ApiResponse } from '@/types/api/common';
 import { LikedPopup, LikedPopupsData } from '../../types/liked-popup';
 import { LikedPopupCardSkeleton } from '../../components/skeletons';
 import { authFetch } from '@/app/(protected)/mypage/lib/auth-fetch';
+import { useRouter } from 'next/navigation';
 
 const PAGE = 0;
 const SIZE = 8;
@@ -18,6 +19,7 @@ export function LikedPopupsSection() {
   const [popups, setPopups] = useState<LikedPopup[] | null>(null);
   const [isError, setIsError] = useState(false);
   const accessToken = useAuthStore((state) => state.accessToken);
+  const router = useRouter();
 
   useEffect(() => {
     if (!accessToken) return;
@@ -50,6 +52,17 @@ export function LikedPopupsSection() {
     fetchLikedPopups();
     return () => controller.abort();
   }, [accessToken]);
+
+  const handleBannersClick = (
+    popupId: number,
+    phaseType: 'AUCTION' | 'DRAW'
+  ) => {
+    if (phaseType === 'AUCTION') {
+      router.push(`/auction/${popupId}`);
+    } else {
+      router.push(`/draw/${popupId}`);
+    }
+  };
 
   return (
     <section>
@@ -89,6 +102,9 @@ export function LikedPopupsSection() {
                   description={popup.supportingText}
                   caption={popup.caption}
                   thumbnailUrl={popup.thumbnailUrl}
+                  onClick={() =>
+                    handleBannersClick(popup.popupId, popup.phase.type)
+                  }
                 />
               ))}
         </div>
