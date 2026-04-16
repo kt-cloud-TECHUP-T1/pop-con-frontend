@@ -87,12 +87,12 @@ export const Snackbar = React.forwardRef<HTMLDivElement, SnackbarProps>(
           paddingY="S"
           className={cn(snackbarClassName, className)}
         >
-          <div className="flex min-w-0 flex-1 items-center gap-2">
+          <div className="flex min-w-0 flex-1 items-start gap-2">
             {statusIcon ? (
               <Icon
                 name={statusIcon}
                 size={24}
-                className={cn('mt-0.5 shrink-0', statusColorMap[variant])}
+                className={cn('shrink-0', statusColorMap[variant])}
               />
             ) : null}
 
@@ -144,7 +144,7 @@ Snackbar.displayName = 'Snackbar';
 export function SnackbarToaster() {
   return (
     <Toaster
-      position="bottom-center"
+      position="top-center"
       expand={false}
       visibleToasts={3}
       closeButton={false}
