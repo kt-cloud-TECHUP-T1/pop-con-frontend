@@ -17,12 +17,19 @@ import { ActivityItemSkeleton } from '../../../components/skeletons';
 import {
   useDrawHistory,
   toDrawActivityItem,
+  useConfirmDrawResult,
 } from '@/app/(protected)/mypage/hooks/use-draw-history';
 
-export function DrawsPageClient() {
+type Props = {
+  initialFilter?: DrawStatusFilter | null;
+};
+
+export function DrawsPageClient({ initialFilter = null }: Props) {
   const { data: draws, isLoading, isError } = useDrawHistory();
+  const { mutate: confirmResult, isPending: isConfirming } =
+    useConfirmDrawResult();
   const [activeFilter, setActiveFilter] = useState<DrawStatusFilter | null>(
-    null
+    initialFilter
   );
   const [modalResult, setModalResult] = useState<DrawResult | null>(null);
 
@@ -33,7 +40,7 @@ export function DrawsPageClient() {
   if (isError) {
     return (
       <div className="min-h-[200px] flex items-center justify-center text-[var(--content-extra-low)]">
-        드로우 응모 내역을 불러오지 못했어요.
+        드로우 내역을 불러오지 못했어요.
       </div>
     );
   }
@@ -58,6 +65,10 @@ export function DrawsPageClient() {
 
   const items = filteredDraws.map(toDrawActivityItem);
 
+  const emptyMessage = activeFilter
+    ? `${DRAW_STATUS_FILTERS.find((f) => f.value === activeFilter)?.label} 내역이 없어요.`
+    : '드로우 응모 내역이 없어요.';
+
   return (
     <section>
       <ActivityStatusFilters
@@ -68,7 +79,7 @@ export function DrawsPageClient() {
 
       {items.length === 0 && (
         <div className="min-h-[200px] flex items-center justify-center text-[var(--content-extra-low)]">
-          드로우 응모 내역이 없어요.
+          {emptyMessage}
         </div>
       )}
 
@@ -85,8 +96,13 @@ export function DrawsPageClient() {
                 type="button"
                 paddingX="S"
                 radius="XS"
-                className="bg-[var(--orange-50)] py-2 text-white flex gap-1"
-                onClick={() => setModalResult('won')}
+                className="bg-[var(--orange-50)] py-2 text-white flex gap-1 disabled:opacity-50"
+                disabled={isConfirming}
+                onClick={() =>
+                  confirmResult(draw.id, {
+                    onSuccess: (result) => setModalResult(result),
+                  })
+                }
               >
                 <Icon name="Search" size={18} className="text-white" />
                 <Typography as="p" variant="label-3">

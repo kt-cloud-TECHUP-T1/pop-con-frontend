@@ -33,3 +33,16 @@ export interface BidHistoryItem {
   paidAt: string;
   displayStatus: string;
 }
+
+export interface UserStatistics {
+  ticketCount: number;
+  totalDrawCount: number;
+  totalAuctionCount: number;
+  reviewCount: number;
+  wonDrawCount: number;
+  lostDrawCount: number;
+  ongoingDrawCount: number;
+  waitingResultDrawCount: number;
+  wonAuctionCount: number;
+  likedPopupCount: number;
+}
