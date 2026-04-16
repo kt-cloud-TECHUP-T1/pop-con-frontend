@@ -1,3 +1,6 @@
+import { Box } from '@/components/ui/box';
+import { RADIUS } from '@/constants/design-system';
+
 const CARD_COUNT = 8;
 const PREVIEW_COUNT = 3;
 
@@ -5,7 +8,7 @@ export function ProfileSummarySectionSkeleton() {
   return (
     <section className="space-y-2 animate-pulse">
       {/* 프로필 카드 */}
-      <div className="rounded-ml border border-[#0A0A0A14] p-6 mb-[80px]">
+      <div className={`${RADIUS.ML} border border-[#0A0A0A14] p-6 mb-[80px]`}>
         <div className="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
           <div className="flex items-center gap-4">
             <div className="h-[72px] w-[72px] rounded-full bg-[var(--neutral-90)]" />
@@ -23,13 +26,15 @@ export function ProfileSummarySectionSkeleton() {
         {Array.from({ length: 4 }).map((_, i) => (
           <div
             key={i}
-            className="rounded-ml h-32 border border-[#0A0A0A14] p-6 bg-[var(--neutral-90)]"
+            className={`${RADIUS.ML} h-32 border border-[#0A0A0A14] p-6 bg-[var(--neutral-90)]`}
           ></div>
         ))}
       </div>
 
       {/* 통계 6개 */}
-      <div className="rounded-ml border border-[var(--component-disabled)] p-4 grid gap-4 md:grid-cols-3 xl:grid-cols-6">
+      <div
+        className={`${RADIUS.ML} border border-[var(--component-disabled)] p-4 grid gap-4 md:grid-cols-3 xl:grid-cols-6`}
+      >
         {Array.from({ length: 6 }).map((_, i) => (
           <div
             key={i}
@@ -47,7 +52,9 @@ export function ProfileSummarySectionSkeleton() {
 export function LikedPopupCardSkeleton() {
   return (
     <div className="animate-pulse">
-      <div className="aspect-[3/4] rounded-[var(--radius-ML)] bg-[var(--neutral-90)] border-[var(--line-3)] rounded-ml" />
+      <div
+        className={`aspect-[3/4] ${RADIUS.ML} bg-[var(--neutral-90)] border-[var(--line-3)] rounded-ml`}
+      />
       <div className="mt-4 space-y-2">
         <div className="h-6 w-3/4 rounded bg-[var(--neutral-90)]" />
         <div className="h-6 w-1/2 rounded bg-[var(--neutral-90)]" />
@@ -79,7 +86,7 @@ export function LikedPopupsSectionSkeleton() {
 export function ActivityItemSkeleton() {
   return (
     <div className="animate-pulse grid grid-cols-1 gap-4 py-2 md:grid-cols-[80px_minmax(0,1fr)_160px_140px_160px] md:items-center md:gap-6">
-      <div className="w-20 h-[104px] rounded-[var(--radius-ML)] bg-[var(--neutral-90)]" />
+      <div className={`w-20 h-[104px] ${RADIUS.S} bg-[var(--neutral-90)]`} />
       <div className="h-5 w-2/3 rounded bg-[var(--neutral-90)]" />
       <div className="h-5 w-24 rounded bg-[var(--neutral-90)]" />
       <div className="space-y-1.5">
@@ -112,5 +119,27 @@ export function ActivityHistorySectionSkeleton() {
         ))}
       </ul>
     </section>
+  );
+}
+
+export function TicketCardSkeleton() {
+  return (
+    <Box
+      radius="ML"
+      padding="MS"
+      border="var(--neutral-90)"
+      className="animate-pulse flex items-center gap-4"
+    >
+      <Box
+        radius="S"
+        background="var(--component-disabled)"
+        className="w-20 h-[104px] bg-[var(--neutral-90)]"
+      />
+      <div className="flex-1 space-y-2">
+        <div className="h-8 w-3/4 rounded bg-[var(--neutral-90)]" />
+        <div className="h-5 w-1/2 rounded bg-[var(--neutral-90)]" />
+        <div className="h-6 w-1/3 rounded bg-[var(--neutral-90)]" />
+      </div>
+    </Box>
   );
 }
