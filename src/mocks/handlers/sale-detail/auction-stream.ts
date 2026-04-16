@@ -1,6 +1,6 @@
 // src/mocks/handlers/auction-stream.ts
 import { sse } from 'msw';
-import type { AuctionData } from '@/types/sale-detail';
+import type { AuctionData } from '@/types/popup/sale-detail';
 
 function createAuctionPayload(seconds: number): AuctionData {
   const startPrice = 100000;

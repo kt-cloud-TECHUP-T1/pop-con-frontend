@@ -11,12 +11,13 @@ import { useApplyPageCollector } from '@/features/anti-macro';
 import { snackbar } from '@/components/ui/snackbar';
 import { DRAW_ENTRY_ERROR_MESSAGE } from '@/constants/draw-apply';
 import { postDrawEntry } from '@/lib/api/draw-apply';
-import { DrawEntrySuccessData } from '@/types/applay/draw-apply';
+import { DrawEntrySuccessData } from '@/types/draw/draw-apply';
 import DrawEntrySuccessModal from '@/components/sale-detail/info/draw-entry-success-modal';
 import DrawEntryDuplicateModal from '@/components/sale-detail/info/draw-entry-duplicate-modal';
 import { quizPassedTokenStorage, formatDateKorean } from '@/lib/utils';
 import { Box } from '@/components/ui/box';
 import { useUserMeQuery } from '@/features/user/queries/use-user-me-query';
+import { useRouter } from 'next/navigation';
 
 const DEFAULT_SUBMIT_ERROR =
   '드로우 신청에 실패했습니다. 잠시 후 다시 시도해주세요.';
@@ -50,6 +51,7 @@ export default function DrawApplySection({
   const [successData, setSuccessData] = useState<DrawEntrySuccessData | null>(
     null
   );
+  const router = useRouter();
 
   //예약 신청 페이지 버튼
   const handleCheck = (index: number, checked: boolean) => {
@@ -245,7 +247,14 @@ export default function DrawApplySection({
           번호로 알려드려요.
         </Typography>
         <div>
-          <Button variant="secondary">정보 수정하기</Button>
+          <Button
+            variant="secondary"
+            onClick={() => {
+              router.push('/mypage/info/profile/personal');
+            }}
+          >
+            정보 수정하기
+          </Button>
         </div>
       </Box>
       <div className=" border-b border-[var(--line-3)]"></div>
@@ -255,18 +264,15 @@ export default function DrawApplySection({
           이용 약관 동의
         </Typography>
 
-        <div className="flex flex-col gap-2xs">
+        <div className="flex flex-col gap-s">
           <div className="flex gap-xs">
             <Checkbox
               checked={checks[0]}
               onCheckedChange={(checked) => handleCheck(0, checked === true)}
             />
             <Typography variant="body-2" weight="regular">
-              (필수){' '}
-              <Link className="underline" href={`/draw/${drawId}`}>
-                드로우 이용약관
-              </Link>
-              을 동의합니다.
+              (필수) 개인정보 제3자 제공 동의: 당첨 시 본인 확인 및 안내를 위해
+              주최측에 정보를 제공합니다.
             </Typography>
           </div>
           <div className="flex gap-xs">
@@ -275,11 +281,9 @@ export default function DrawApplySection({
               onCheckedChange={(checked) => handleCheck(1, checked === true)}
             />
             <Typography variant="body-2" weight="regular">
-              (필수){' '}
-              <Link className="underline" href={`/draw/${drawId}`}>
-                개인정보 제 3자 제공
-              </Link>
-              을 동의합니다.
+              (필수) 응모 정보 확인 동의: 마이페이지에 등록된 정보가 본인의
+              것임을 확인하며, 허위 정보일 경우 당첨이 취소될 수 있음에
+              동의합니다.
             </Typography>
           </div>
         </div>

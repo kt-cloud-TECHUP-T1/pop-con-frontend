@@ -12,7 +12,7 @@ import { Typography } from '@/components/ui/typography';
 import { snackbar } from '@/components/ui/snackbar';
 import { formatWon } from '@/lib/utils';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
-import { AuctionReservationSuccessDetail } from '@/types/auction-success/auction-success';
+import { AuctionReservationSuccessDetail } from '@/types/auction/auction-success';
 import { getAuctionReservation } from '@/features/auction-success/get-auction-reservation';
 import {
   AUCTION_RESERVATION_ERROR_MESSAGES,
