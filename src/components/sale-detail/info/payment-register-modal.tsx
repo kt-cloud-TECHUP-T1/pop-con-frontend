@@ -56,6 +56,14 @@ export default function PaymentRegisterModal() {
       });
       const data = await res.json();
       if (!res.ok) {
+        if (data.code === 'P006') {
+          snackbar.destructive({
+            title: '등록 실패',
+            description: '이미 등록된 결제 수단입니다.',
+          });
+          return;
+        }
+
         throw new Error(data.message || '빌링키 등록 실패');
       }
 
@@ -98,6 +106,14 @@ export default function PaymentRegisterModal() {
         snackbar.destructive({
           title: '등록 실패',
           description: '결제 수단 정보 조회에 실패했습니다.',
+        });
+        return;
+      }
+
+      if (errorCode === 'P006') {
+        snackbar.destructive({
+          title: '등록 실패',
+          description: '이미 등록된 결제 수단입니다.',
         });
         return;
       }
