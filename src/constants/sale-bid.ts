@@ -10,3 +10,6 @@ export const AUCTION_BID_ERROR_MESSAGES = {
 } as const;
 
 export type AuctionBidErrorCode = keyof typeof AUCTION_BID_ERROR_MESSAGES;
+
+export const AUCTION_BID_SUCCESS = '낙찰 성공!';
+export const AUCTION_BID_FAIL = '낙찰 실패';
