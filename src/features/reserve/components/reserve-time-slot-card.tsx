@@ -48,8 +48,12 @@ export function ReserveTimeSlotCard(props: ReserveTimeSlotCardProps) {
         onClick={() => onSelect(slot.optionId)}
         className={cn(
           'flex flex-col items-center justify-center text-center transition-all',
+          !isSelected &&
+            !isSoldOut &&
+            'hover:bg-[var(--orange-95)] active:bg-[var(--orange-90)]',
           isSelected && 'border-[var(--orange-50)] bg-[var(--orange-50)]',
-          isSoldOut && 'border-[var(--neutral-90)] bg-[var(--neutral-99)]'
+          isSoldOut &&
+            'border-[var(--neutral-90)] bg-[var(--neutral-99)] cursor-not-allowed'
         )}
       >
         <Typography
@@ -87,10 +91,12 @@ export function ReserveTimeSlotCard(props: ReserveTimeSlotCardProps) {
       type="button"
       border="#0A0A0A14"
       radius="ML"
-      padding="S"
+      padding="MS"
       onClick={() => onSelect(slot.optionId)}
       className={cn(
         'flex flex-col items-center justify-center text-center transition-all',
+        !isSelected &&
+          'hover:bg-[var(--orange-95)] hover:border-[var(--orange-45)] active:bg-[var(--orange-90)]',
         isSelected && 'border-[var(--orange-50)] bg-[var(--orange-50)]'
       )}
     >

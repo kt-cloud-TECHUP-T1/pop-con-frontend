@@ -86,6 +86,7 @@ export function DrawReservePageClient({ drawId }: DrawReservePageClientProps) {
                     onSelectSlot={setSelectedOptionId}
                     errorMessage={slotsErrorMessage}
                     isLoading={isSlotsLoading}
+                    slotLabel="몇시에 방문하시겠어요?"
                     renderSlot={(slot, isSelected) => (
                       <ReserveTimeSlotCard
                         variant="draw"
