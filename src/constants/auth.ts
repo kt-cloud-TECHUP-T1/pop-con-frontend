@@ -96,19 +96,19 @@ export const TERMS: readonly {
   apiKey: string;
 }[] = [
   {
-    id: 'privacy',
+    id: 'age',
     label: '만 14세 이상입니다',
     isRequired: true,
     apiKey: 'isPrivacyPolicyAgreed',
   },
   {
-    id: 'identifierPolicy',
+    id: 'privacy',
     label: '개인정보 수집 및 이용 동의',
     isRequired: true,
     apiKey: 'isIdentifierPolicyAgreed',
   },
   {
-    id: 'servicePolicy',
+    id: 'terms',
     label: 'Pop-con 서비스 이용약관 동의',
     isRequired: true,
     apiKey: 'isServicePolicyAgreed',
