@@ -17,6 +17,7 @@ import { useAuctionStore } from '@/components/sale-detail/stores/auction-store';
 import { snackbar } from '@/components/ui/snackbar';
 import { SoldOutModal } from '@/components/sale-detail/info/soldout-modal';
 import { quizPassedTokenStorage } from '@/lib/utils';
+import { AUCTION_BID_FAIL, AUCTION_BID_SUCCESS } from '@/constants/sale-bid';
 
 type BillingCard = {
   id: number;
@@ -115,7 +116,7 @@ export default function ReservePaymentSection({
       const reservationId = result.data?.reservationNo;
       quizPassedTokenStorage.remove();
       snackbar.success({
-        title: '낙찰 성공!',
+        title: AUCTION_BID_SUCCESS,
         description: '잠시 후 완료 페이지로 이동합니다.',
       });
 
@@ -134,7 +135,7 @@ export default function ReservePaymentSection({
     }
     // 3. 그 외 에러
     snackbar.destructive({
-      title: result.message,
+      title: AUCTION_BID_FAIL,
       description: result.message,
     });
   };
