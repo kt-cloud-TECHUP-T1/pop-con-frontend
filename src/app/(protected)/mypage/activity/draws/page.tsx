@@ -1,7 +1,18 @@
 import { DrawsPageClient } from './components/draws-page-client';
 import { PageHeader } from '@/components/shared/page-header';
+import type { DrawStatusFilter } from '@/app/(protected)/mypage/lib/draw-status';
+import { DRAW_STATUS_FILTERS } from '@/app/(protected)/mypage/lib/draw-status';
 
-export default function MyPageActivityDrawsPage() {
+type Props = {
+  searchParams: Promise<{ filter?: string }>;
+};
+
+export default async function MyPageActivityDrawsPage({ searchParams }: Props) {
+  const { filter } = await searchParams;
+  const initialFilter = DRAW_STATUS_FILTERS.some((f) => f.value === filter)
+    ? (filter as DrawStatusFilter)
+    : null;
+
   return (
     <>
       <PageHeader
@@ -9,7 +20,7 @@ export default function MyPageActivityDrawsPage() {
         titleVariant="heading-1"
         titleWeight="bold"
       />
-      <DrawsPageClient />
+      <DrawsPageClient initialFilter={initialFilter} />
     </>
   );
 }

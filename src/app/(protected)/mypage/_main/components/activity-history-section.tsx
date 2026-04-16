@@ -1,6 +1,5 @@
 'use client';
 
-import Link from 'next/link';
 import { type KeyboardEvent, type Ref, useRef, useState } from 'react';
 import { Typography } from '@/components/ui/typography';
 import { useTabIndicator } from '@/hooks/use-tab-indicator';
@@ -19,6 +18,7 @@ import { ActivityItemSkeleton } from '../../components/skeletons';
 import {
   useDrawHistory,
   toDrawActivityItem,
+  useConfirmDrawResult,
 } from '@/app/(protected)/mypage/hooks/use-draw-history';
 import {
   useBidHistory,
@@ -36,6 +36,8 @@ const activityTabs = [
 export function ActivityHistorySection() {
   const [activeTab, setActiveTab] = useState<ActivityTab>('draw');
   const [modalResult, setModalResult] = useState<DrawResult | null>(null);
+  const { mutate: confirmResult, isPending: isConfirming } =
+    useConfirmDrawResult();
   const { indicator, setContainerRef, setItemRef } = useTabIndicator(activeTab);
   const tabButtonRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -85,10 +87,6 @@ export function ActivityHistorySection() {
   const bidItems = (bids ?? []).slice(0, PREVIEW_COUNT).map(toBidActivityItem);
 
   const items = isDrawTab ? drawItems : bidItems;
-  const totalCount = isDrawTab ? (draws?.length ?? 0) : (bids?.length ?? 0);
-  const moreHref = isDrawTab
-    ? '/mypage/activity/draws'
-    : '/mypage/activity/bids';
 
   return (
     <section>
@@ -193,8 +191,13 @@ export function ActivityHistorySection() {
                           type="button"
                           paddingX="S"
                           radius="XS"
-                          className="bg-[var(--orange-50)] py-2 text-white flex gap-1"
-                          onClick={() => setModalResult('won')}
+                          className="bg-[var(--orange-50)] py-2 text-white flex gap-1 disabled:opacity-50"
+                          disabled={isConfirming}
+                          onClick={() =>
+                            confirmResult(item.id, {
+                              onSuccess: (result) => setModalResult(result),
+                            })
+                          }
                         >
                           <Icon
                             name="Search"
@@ -222,16 +225,6 @@ export function ActivityHistorySection() {
                     }
               }
             />
-            {totalCount > PREVIEW_COUNT && (
-              <div className="mt-6 text-center">
-                <Link
-                  href={moreHref}
-                  className="text-[var(--neutral-40)] text-sm underline underline-offset-4 hover:text-[var(--neutral-20)] transition-colors"
-                >
-                  더보기 ({totalCount}개 전체)
-                </Link>
-              </div>
-            )}
           </>
         )}
       </div>
