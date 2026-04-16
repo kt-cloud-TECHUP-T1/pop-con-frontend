@@ -271,7 +271,7 @@ export default function DrawApplySection({
               onCheckedChange={(checked) => handleCheck(0, checked === true)}
             />
             <Typography variant="body-2" weight="regular">
-              (필수) 개인정보 제3자 제공 동의: 당첨 시 본인 확인 및안내를 위해
+              (필수) 개인정보 제3자 제공 동의: 당첨 시 본인 확인 및 안내를 위해
               주최측에 정보를 제공합니다.
             </Typography>
           </div>

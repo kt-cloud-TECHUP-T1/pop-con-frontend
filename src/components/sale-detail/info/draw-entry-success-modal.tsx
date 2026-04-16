@@ -104,7 +104,13 @@ export default function DrawEntrySuccessModal({
         </div>
 
         <div className="py-s px-ms">
-          <Button className="w-full" onClick={() => router.push('/')}>
+          <Button
+            className="w-full"
+            onClick={() => {
+              onClose?.();
+              router.push('/');
+            }}
+          >
             확인
           </Button>
         </div>
