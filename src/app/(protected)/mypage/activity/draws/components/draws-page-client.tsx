@@ -66,7 +66,7 @@ export function DrawsPageClient({ initialFilter = null }: Props) {
   const items = filteredDraws.map(toDrawActivityItem);
 
   const emptyMessage = activeFilter
-    ? `${DRAW_STATUS_FILTERS.find((f) => f.value === activeFilter)?.label} 내역이 없어요.`
+    ? `${DRAW_STATUS_FILTERS.find((f) => f.value === activeFilter)?.label ?? '드로우'} 내역이 없어요.`
     : '드로우 응모 내역이 없어요.';
 
   return (
