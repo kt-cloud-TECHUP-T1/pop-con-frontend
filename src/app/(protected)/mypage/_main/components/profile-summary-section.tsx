@@ -7,31 +7,22 @@ import { Icon } from '@/components/Icon/Icon';
 import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
 import { useUserMeQuery } from '@/features/user/queries/use-user-me-query';
+import { useUserStatistics } from '@/app/(protected)/mypage/hooks/use-user-statistics';
 
-const summaryCards: {
-  label: string;
-  value: string;
-  icon: IconName;
-}[] = [
-  { label: '내 티켓', value: '3', icon: 'Ticket' },
-  { label: '드로우 내역', value: '6', icon: 'Roulette' },
-  { label: '낙찰 내역', value: '2', icon: 'Gavel' },
-  { label: '작성한 리뷰', value: '2', icon: 'Like' },
-];
-
-const summaryStats: { label: string; value: number }[] = [
-  { label: '드로우 당첨', value: 1 },
-  { label: '드로우 미당첨', value: 1 },
-  { label: '진행중인 드로우', value: 1 },
-  { label: '결과 확인 대기중', value: 3 },
-  { label: '낙찰 수', value: 2 },
-  { label: '찜한 수', value: 12 },
+const SUMMARY_STATS_META: { label: string; link: string }[] = [
+  { label: '드로우 당첨', link: '/mypage/activity/draws?filter=won' },
+  { label: '드로우 미당첨', link: '/mypage/activity/draws?filter=notWon' },
+  { label: '진행중인 드로우', link: '/mypage/activity/draws?filter=inProgress' },
+  { label: '결과 확인 대기중', link: '/mypage/activity/draws?filter=pendingResult' },
+  { label: '낙찰 수', link: '/mypage/activity/bids' },
+  { label: '찜한 수', link: '/mypage/activity/liked-popups' },
 ];
 
 const FALLBACK_PROFILE_IMAGE = '/images/temp/no-image.png';
 
 export function ProfileSummarySection() {
   const { data: userMe } = useUserMeQuery();
+  const { data: statistics } = useUserStatistics();
 
   const profileImage = userMe?.profileImage || FALLBACK_PROFILE_IMAGE;
   const nickname = userMe?.nickname ?? '';
@@ -40,6 +31,25 @@ export function ProfileSummarySection() {
   const joinDate = userMe?.joinDate
     ? `가입일 ${userMe.joinDate.replace(/-/g, '.')}`
     : '';
+
+  const summaryCards: { label: string; value: number | string; icon: IconName; link: string }[] = [
+    { label: '내 티켓', value: statistics?.ticketCount ?? '-', icon: 'Ticket', link: '/mypage/info/tickets' },
+    { label: '드로우 내역', value: statistics?.totalDrawCount ?? '-', icon: 'Roulette', link: '/mypage/activity/draws' },
+    { label: '낙찰 내역', value: statistics?.totalAuctionCount ?? '-', icon: 'Gavel', link: '/mypage/activity/bids' },
+    { label: '작성한 리뷰', value: statistics?.reviewCount ?? '-', icon: 'Like', link: '/mypage/activity/reviews' },
+  ];
+
+  const summaryStats = SUMMARY_STATS_META.map((meta, i) => ({
+    ...meta,
+    value: [
+      statistics?.wonDrawCount,
+      statistics?.lostDrawCount,
+      statistics?.ongoingDrawCount,
+      statistics?.waitingResultDrawCount,
+      statistics?.wonAuctionCount,
+      statistics?.likedPopupCount,
+    ][i] ?? '-',
+  }));
 
   return (
     <section className="space-y-2">
@@ -95,7 +105,8 @@ export function ProfileSummarySection() {
       <div className="grid gap-2 xl:grid-cols-4">
         {summaryCards.map((card) => (
           <Box
-            as="article"
+            as="a"
+            href={card.link}
             key={card.label}
             radius="ML"
             border="#0A0A0A14"
@@ -129,6 +140,8 @@ export function ProfileSummarySection() {
       >
         {summaryStats.map((stat) => (
           <Box
+            as={Link}
+            href={stat.link}
             key={stat.label}
             padding="XS"
             className="
@@ -139,6 +152,7 @@ export function ProfileSummarySection() {
               after:bg-[#0A0A0A]/8
               last:after:hidden
               text-right
+              hover:opacity-70 transition-opacity
             "
           >
             <Typography variant="label-2" weight="bold">
