@@ -18,6 +18,7 @@ import {
   AUCTION_RESERVATION_ERROR_MESSAGES,
   DEFAULT_AUCTION_RESERVATION_ERROR_MESSAGE,
 } from '@/constants/auction-success-reservation';
+import { AuctionReservationSuccessSkeleton } from '@/components/sale-detail/ui/loading/auction-reservation-success-skeleton';
 
 export default function SuccessPage() {
   const router = useRouter();
@@ -83,29 +84,7 @@ export default function SuccessPage() {
   };
 
   if (isLoading) {
-    return (
-      <Wrapper className="py-3xl max-w-[762px]">
-        <div className="flex flex-col gap-m w-full">
-          <div className="flex flex-col gap-xs items-center">
-            <Icon
-              name="CircleCheckFill"
-              size={72}
-              className="text-[var(--btn-primary-default)]"
-            />
-            <Typography variant="heading-1" weight="bold">
-              낙찰 완료
-            </Typography>
-            <Typography
-              variant="body-1"
-              weight="regular"
-              className="text-[var(--content-extra-low)]"
-            >
-              예약 정보를 불러오는 중입니다.
-            </Typography>
-          </div>
-        </div>
-      </Wrapper>
-    );
+    return <AuctionReservationSuccessSkeleton />;
   }
 
   if (errorMessage || !reservationDetail) {
