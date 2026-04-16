@@ -10,7 +10,7 @@ import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Typography } from '@/components/ui/typography';
 import { snackbar } from '@/components/ui/snackbar';
-import { formatWon } from '@/lib/utils';
+import { formatEntryDate, formatEntryTime, formatWon } from '@/lib/utils';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { AuctionReservationSuccessDetail } from '@/types/auction/auction-success';
 import { getAuctionReservation } from '@/features/auction-success/get-auction-reservation';
@@ -144,6 +144,10 @@ export default function SuccessPage() {
     );
   }
 
+  const entrySchedule = `${formatEntryDate(
+    reservationDetail.entryDate
+  )} ${formatEntryTime(reservationDetail.entryTime)}`;
+
   return (
     <Wrapper className="py-3xl max-w-[762px]">
       <div className="flex flex-col gap-m w-full">
@@ -211,7 +215,7 @@ export default function SuccessPage() {
                     weight="regular"
                     className="text-[var(--content-extra-low)]"
                   >
-                    {reservationDetail.entryDate} {reservationDetail.entryTime}
+                    {entrySchedule}
                   </Typography>
 
                   <Typography
