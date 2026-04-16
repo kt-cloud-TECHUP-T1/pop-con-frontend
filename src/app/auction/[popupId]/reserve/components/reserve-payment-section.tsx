@@ -1,13 +1,12 @@
 'use client';
 
-import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Icon } from '@/components/Icon/Icon';
 import { Box } from '@/components/ui/box';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Typography } from '@/components/ui/typography';
-import { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { useMyId } from '@/hooks/use-my-id';
 import { useApplyPageCollector } from '@/features/anti-macro';
@@ -16,16 +15,23 @@ import { postAuctionBid } from '@/lib/api/auction-bid';
 import { useAuctionStore } from '@/components/sale-detail/stores/auction-store';
 import { snackbar } from '@/components/ui/snackbar';
 import { SoldOutModal } from '@/components/sale-detail/info/soldout-modal';
-import { quizPassedTokenStorage } from '@/lib/utils';
+import { cn, quizPassedTokenStorage } from '@/lib/utils';
 import { AUCTION_BID_FAIL, AUCTION_BID_SUCCESS } from '@/constants/sale-bid';
+import auctionPaymentTerms from '../_data/terms/auction-payment-terms.json';
+import AuctionTermsDetailContent, {
+  AuctionTermsSection,
+} from './auction-terms-detail-content';
 
 type BillingCard = {
   id: number;
   cardName: string;
   cardNumber: string;
   isDefault: boolean;
-  registeredAt: string; // ISO 날짜 문자열
+  registeredAt: string;
 };
+
+const auctionTermSections =
+  auctionPaymentTerms.sections as AuctionTermsSection[];
 
 export default function ReservePaymentSection({
   selectedOptionId,
@@ -33,6 +39,9 @@ export default function ReservePaymentSection({
   selectedOptionId: number | null;
 }) {
   const [checks, setChecks] = useState([false, false, false]);
+  const [expandedTermIndex, setExpandedTermIndex] = useState<number | null>(
+    null
+  );
   const router = useRouter();
   const accessToken = useAuthStore((state) => state.accessToken);
   const userId = useMyId();
@@ -50,12 +59,14 @@ export default function ReservePaymentSection({
     null
   );
   const [isSoldOutModalOpen, setIsSoldOutModalOpen] = useState(false);
+
   const openSoldOutModal = () => {
     setIsSoldOutModalOpen(true);
   };
+
   const closeSoldOutModal = () => {
     setIsSoldOutModalOpen(false);
-    //추후 날짜 재조회 api 호출
+    // 추후 날짜 재조회 api 호출
   };
 
   useEffect(() => {
@@ -83,8 +94,12 @@ export default function ReservePaymentSection({
     });
   };
 
+  const handleToggleTerm = (index: number) => {
+    setExpandedTermIndex((prev) => (prev === index ? null : index));
+  };
+
   const handleBidSubmit = async () => {
-    //구매요청 api 호출
+    // 구매요청 api 호출
     if (!accessToken) return;
     if (selectedOptionId === null) return;
     if (currentPrice === null) return;
@@ -93,7 +108,7 @@ export default function ReservePaymentSection({
 
     const quizPassedToken = quizPassedTokenStorage.get();
 
-    //프론트쪽에서는 토큰 유무판변
+    // 프론트에서 보안퀴즈 토큰 유무 확인
     if (!quizPassedToken) {
       snackbar.destructive({
         title: '보안퀴즈 필요',
@@ -102,7 +117,8 @@ export default function ReservePaymentSection({
       router.back();
       return;
     }
-    //서버에서는 위조토큰인지도 진짜 검증
+
+    // 서버에서 보안퀴즈 토큰 진위 검증
     const result = await postAuctionBid(
       {
         auctionOptionId: selectedOptionId,
@@ -111,7 +127,7 @@ export default function ReservePaymentSection({
       accessToken,
       quizPassedToken
     );
-    //성공 처리
+
     if (result.code === 'SUCCESS') {
       const reservationId = result.data?.reservationNo;
       quizPassedTokenStorage.remove();
@@ -128,12 +144,12 @@ export default function ReservePaymentSection({
 
       return;
     }
-    // 2. 매진
+
     if (result.code === 'AU007') {
       openSoldOutModal();
       return;
     }
-    // 3. 그 외 에러
+
     snackbar.destructive({
       title: AUCTION_BID_FAIL,
       description: result.message,
@@ -141,6 +157,7 @@ export default function ReservePaymentSection({
   };
 
   const isAllChecked = checks.every(Boolean) && selectedOptionId !== null;
+
   return (
     <>
       <div className="flex flex-col gap-ms">
@@ -167,57 +184,105 @@ export default function ReservePaymentSection({
             <Icon
               name="ChevronRight"
               className="text-[var(--content-extra-low)]"
-            ></Icon>
+            />
           </Box>
         </div>
+
         <div className="assign flex flex-col gap-s">
           <Typography variant="body-1" weight="bold">
             이용 약관 동의
           </Typography>
 
           <div className="flex flex-col gap-2xs">
-            <div className="flex gap-xs">
-              <Checkbox
-                checked={checks[0]}
-                onCheckedChange={(checked) => handleCheck(0, checked === true)}
-              ></Checkbox>
-              <Typography variant="body-2" weight="regular">
-                (필수){' '}
-                <Link className="underline" href="/auction/1">
-                  전자금융거래 이용약관
-                </Link>
-                을 동의합니다.
-              </Typography>
-            </div>
-            <div className="flex gap-xs">
-              <Checkbox
-                checked={checks[1]}
-                onCheckedChange={(checked) => handleCheck(1, checked === true)}
-              ></Checkbox>
-              <Typography variant="body-2" weight="regular">
-                (필수){' '}
-                <Link className="underline" href="/auction/1">
-                  개인정보 제 3자 제공
-                </Link>
-                을 동의합니다.
-              </Typography>
-            </div>
-            <div className="flex gap-xs">
-              <Checkbox
-                checked={checks[2]}
-                onCheckedChange={(checked) => handleCheck(2, checked === true)}
-              ></Checkbox>
-              <Typography variant="body-2" weight="regular">
-                (필수) 등록된 카드로 즉시 결제됨을 확인합니다.
-              </Typography>
-            </div>
+            <AuctionAgreementItem
+              checked={checks[0]}
+              isExpanded={expandedTermIndex === 0}
+              label="전자금융거래 이용약관"
+              suffix="에 동의합니다."
+              section={auctionTermSections[0]}
+              onCheckedChange={(checked) => handleCheck(0, checked)}
+              onToggleExpand={() => handleToggleTerm(0)}
+            />
+            <AuctionAgreementItem
+              checked={checks[1]}
+              isExpanded={expandedTermIndex === 1}
+              label="개인정보 제3자 제공"
+              suffix="에 동의합니다."
+              section={auctionTermSections[1]}
+              onCheckedChange={(checked) => handleCheck(1, checked)}
+              onToggleExpand={() => handleToggleTerm(1)}
+            />
+            <AuctionAgreementItem
+              checked={checks[2]}
+              isExpanded={expandedTermIndex === 2}
+              label="등록된 카드로 즉시 결제됨"
+              suffix="을 확인합니다."
+              section={auctionTermSections[2]}
+              onCheckedChange={(checked) => handleCheck(2, checked)}
+              onToggleExpand={() => handleToggleTerm(2)}
+            />
           </div>
         </div>
+
         <Button disabled={!isAllChecked} onClick={handleBidSubmit}>
           낙찰하기
         </Button>
       </div>
       <SoldOutModal isOpen={isSoldOutModalOpen} onClose={closeSoldOutModal} />
     </>
+  );
+}
+
+function AuctionAgreementItem({
+  checked,
+  isExpanded,
+  label,
+  suffix,
+  section,
+  onCheckedChange,
+  onToggleExpand,
+}: {
+  checked: boolean;
+  isExpanded: boolean;
+  label: string;
+  suffix: string;
+  section: AuctionTermsSection;
+  onCheckedChange: (checked: boolean) => void;
+  onToggleExpand: () => void;
+}) {
+  return (
+    <div>
+      <div className="flex gap-xs">
+        <Checkbox
+          checked={checked}
+          onCheckedChange={(nextChecked) =>
+            onCheckedChange(nextChecked === true)
+          }
+        />
+        <Typography variant="body-2" weight="regular">
+          (필수){' '}
+          <button
+            type="button"
+            className="underline text-left"
+            onClick={onToggleExpand}
+          >
+            {label}
+          </button>
+          {suffix}
+        </Typography>
+      </div>
+      <div
+        className={cn(
+          'grid transition-all duration-400',
+          isExpanded ? 'grid-rows-[1fr]' : 'grid-rows-[0fr]'
+        )}
+      >
+        <div className="overflow-hidden">
+          <div className="pt-3 pb-1 pl-7 pr-1 max-h-[300px] overflow-y-auto">
+            <AuctionTermsDetailContent section={section} />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

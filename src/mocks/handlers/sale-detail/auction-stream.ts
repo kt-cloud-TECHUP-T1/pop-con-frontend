@@ -18,7 +18,7 @@ function createAuctionPayload(seconds: number): AuctionData {
 
   const baseRemainingUntilCloseSeconds = Math.max(578 - seconds, 0);
   const serverTime = new Date();
-  const auctionCloseAt = '2026-04-15T00:40:00';
+  const auctionCloseAt = '2026-04-20T00:40:00';
   const isEnded = serverTime.getTime() >= new Date(auctionCloseAt).getTime();
   const remainingUntilCloseSeconds = isEnded
     ? 0
