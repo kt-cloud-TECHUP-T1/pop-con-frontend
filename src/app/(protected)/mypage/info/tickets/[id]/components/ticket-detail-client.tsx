@@ -128,14 +128,14 @@ export function TicketDetailClient() {
             variant="body-2"
             className="text-[var(--content-extra-low)] mt-2"
           >
-            예매 번호
+            티켓 번호
           </Typography>
           <Typography
             variant="title-1"
             weight="bold"
             className="text-[var(--content-high)]"
           >
-            {ticket.reservationNo}
+            {ticket.ticketNumber}
           </Typography>
         </Box>
 
