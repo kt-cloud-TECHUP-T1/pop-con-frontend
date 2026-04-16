@@ -1,5 +1,6 @@
 import { Typography } from '@/components/ui/typography';
 import { Button } from '@/components/ui/button';
+import { RADIUS } from '@/constants/design-system';
 
 export default function SignupButton({
   disabled,
@@ -13,7 +14,7 @@ export default function SignupButton({
   return (
     <Button
       type="button"
-      className="w-full"
+      className={`w-full ${RADIUS.MS}`}
       size="large"
       variant="primary"
       disabled={disabled}

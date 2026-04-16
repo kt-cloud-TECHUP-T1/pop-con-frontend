@@ -9,19 +9,23 @@ const API_BASE_URL = getServiceBaseUrl('user');
 
 export async function GET(
   request: Request,
-  { params }: { params: Promise<{ reservationNo: string }> }
+  { params }: { params: Promise<{ ticketId: string }> }
 ) {
+  if (!API_BASE_URL) {
+    return createServerErrorResponse();
+  }
+
   const authorization = request.headers.get('Authorization');
 
   if (!authorization) {
     return createUnauthorizedResponse();
   }
 
-  const { reservationNo } = await params;
+  const { ticketId } = await params;
 
   try {
     const response = await fetch(
-      `${API_BASE_URL}/history/tickets/reservations/${reservationNo}`,
+      `${API_BASE_URL}/history/tickets/${ticketId}`,
       {
         method: 'GET',
         headers: {
@@ -32,7 +36,7 @@ export async function GET(
 
     return handleProxyResponse(response);
   } catch (error) {
-    console.error('[GET /api/history/tickets/reservations/:reservationNo]', error);
+    console.error('[GET /api/history/tickets/:ticketId]', error);
     return createServerErrorResponse();
   }
 }

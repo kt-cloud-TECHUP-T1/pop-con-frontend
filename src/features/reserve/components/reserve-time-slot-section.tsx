@@ -3,6 +3,7 @@
 import { Fragment } from 'react';
 import { Typography } from '@/components/ui/typography';
 import { SlotSkeleton } from './reserve-panel-skeleton';
+import { formatDateKorean } from '@/lib/utils';
 
 interface ReserveTimeSlotSectionProps<TSlot extends { optionId: number }> {
   selectedDate: string | null;
@@ -12,6 +13,7 @@ interface ReserveTimeSlotSectionProps<TSlot extends { optionId: number }> {
   errorMessage?: string | null;
   isLoading?: boolean;
   renderSlot: (slot: TSlot, isSelected: boolean) => React.ReactNode;
+  slotLabel?: string;
 }
 
 export function ReserveTimeSlotSection<TSlot extends { optionId: number }>({
@@ -22,12 +24,16 @@ export function ReserveTimeSlotSection<TSlot extends { optionId: number }>({
   errorMessage,
   isLoading,
   renderSlot,
+  slotLabel = '회차를 선택해주세요',
 }: ReserveTimeSlotSectionProps<TSlot>) {
   return (
     <section>
       <div className="flex flex-col gap-xs">
         <Typography variant="heading-2" weight="bold">
-          회차를 선택해주세요
+          <span className="text-[var(--orange-50)]">
+            {formatDateKorean(selectedDate)}
+          </span>{' '}
+          {slotLabel}
         </Typography>
       </div>
 

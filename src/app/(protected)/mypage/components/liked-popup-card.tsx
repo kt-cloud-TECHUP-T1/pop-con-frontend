@@ -30,7 +30,7 @@ export function LikedPopupCard({
       title={title}
       description={description}
       caption={caption}
-      showButtonLike={Boolean(onClickLike)}
+      showButtonLike
       showCountView
       showCountLike
       onClick={onClick}

@@ -10,6 +10,10 @@ interface Ticket {
   sourceType: 'AUCTION' | 'DRAW';
   entryDate: string;
   entryTime: string;
+  popupTitle: string;
+  popupAddress: string;
+  thumbnailUrl: string;
+  displayStatus: string;
 }
 
 interface TicketCardProps {
@@ -17,16 +21,24 @@ interface TicketCardProps {
 }
 
 export function TicketCard({ ticket }: TicketCardProps) {
+  console.log(ticket);
   const isAuction = ticket.sourceType === 'AUCTION';
 
   const content = (
     <>
-      <ThumbnailImage width={80} height={104} radius="S" />
+      <ThumbnailImage
+        src={ticket.thumbnailUrl}
+        width={80}
+        height={104}
+        radius="S"
+      />
 
       <div className="min-w-0 flex-1">
-        <Typography variant="title-2" weight="medium" className="mb-2">
-          TODO: 팝업 이름 API 연동 필요
-        </Typography>
+        <div className="flex items-center justify-between gap-2 mb-2">
+          <Typography variant="title-2" weight="medium" className="truncate">
+            {ticket.popupTitle}
+          </Typography>
+        </div>
         <Typography variant="caption-1" className="text-[var(--neutral-60)]">
           {ticket.entryDate} {ticket.entryTime}
         </Typography>
@@ -35,7 +47,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
           variant="caption-1"
           className="text-[var(--neutral-60)] mb-1"
         >
-          TODO: 팝업 장소 API 연동 필요
+          {ticket.popupAddress}
         </Typography>
         <Typography variant="caption-1" className="text-[var(--neutral-60)]">
           {isAuction
@@ -48,25 +60,12 @@ export function TicketCard({ ticket }: TicketCardProps) {
     </>
   );
 
-  const boxClassName = "flex items-center gap-4";
-
-  if (isAuction && ticket.reservationNo) {
-    return (
-      <Box
-        as="a"
-        href={`/mypage/info/tickets/${ticket.reservationNo}`}
-        radius="ML"
-        border="--neutral-90"
-        padding="M"
-        className={boxClassName}
-      >
-        {content}
-      </Box>
-    );
-  }
+  const boxClassName = 'flex items-center gap-4';
 
   return (
     <Box
+      as="a"
+      href={`/mypage/info/tickets/${ticket.ticketId}`}
       radius="ML"
       border="--neutral-90"
       padding="M"

@@ -14,7 +14,7 @@ import { postDrawEntry } from '@/lib/api/draw-apply';
 import { DrawEntrySuccessData } from '@/types/draw/draw-apply';
 import DrawEntrySuccessModal from '@/components/sale-detail/info/draw-entry-success-modal';
 import DrawEntryDuplicateModal from '@/components/sale-detail/info/draw-entry-duplicate-modal';
-import { quizPassedTokenStorage } from '@/lib/utils';
+import { quizPassedTokenStorage, formatDateKorean } from '@/lib/utils';
 import { Box } from '@/components/ui/box';
 import { useUserMeQuery } from '@/features/user/queries/use-user-me-query';
 import { useRouter } from 'next/navigation';
@@ -185,7 +185,7 @@ export default function DrawApplySection({
               variant="label-1"
               className="text-[var(--content-high)]"
             >
-              {selectedDate ?? '날짜를 선택해주세요'}
+              {formatDateKorean(selectedDate) ?? '날짜를 선택해주세요'}
             </Typography>
           </div>
           <div className="flex justify-between pt-[5px]">

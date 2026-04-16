@@ -3,13 +3,13 @@ import type { NextConfig } from 'next';
 const nextConfig: NextConfig = {
   output: 'standalone',
   /* config options here */
-  reactStrictMode:false,
+  reactStrictMode: false,
   reactCompiler: true,
   images: {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'assets.popcon.store',
+        hostname: 'api.qrserver.com',
       },
       {
         protocol: 'https',

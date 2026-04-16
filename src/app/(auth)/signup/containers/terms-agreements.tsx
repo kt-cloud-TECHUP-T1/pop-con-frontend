@@ -1,15 +1,27 @@
 'use client';
 
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import AllAgreeCheckbox from '../components/all-agree-checkbox';
 import AgreementCheckbox from '../components/agreement-checkbox';
 import SignupButton from '../components/signup-button';
 import { Separator } from '@/components/ui/separator';
-import { AUTH_ERROR_CODES, AUTH_MESSAGES, TERMS } from '@/constants/auth';
-import { useState } from 'react';
 import { snackbar } from '@/components/ui/snackbar';
+import { AUTH_ERROR_CODES, AUTH_MESSAGES, TERMS } from '@/constants/auth';
 import { API_ERROR_CODES, API_MESSAGES } from '@/constants/api';
-import { useRouter } from 'next/navigation';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { TermsContent } from '../components/terms-detail-content';
+import ageContent from '../_data/terms/age.json';
+import privacyContent from '../_data/terms/privacy.json';
+import termsContent from '../_data/terms/terms.json';
+import marketingContent from '../_data/terms/marketing.json';
+
+const TERMS_DETAIL_MAP: Record<string, TermsContent> = {
+  age: ageContent as TermsContent,
+  privacy: privacyContent as TermsContent,
+  terms: termsContent as TermsContent,
+  marketing: marketingContent as TermsContent,
+};
 
 const initialTerms = TERMS.map((term) => ({ ...term, isAgreed: false }));
 
@@ -40,6 +52,7 @@ const SIGNUP_ERROR_SNACKBAR: Record<
 export default function TermsAgreements() {
   const [terms, setTerms] = useState(initialTerms);
   const [isPending, setIsPending] = useState(false);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
   const router = useRouter();
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const setPaymentRegistered = useAuthStore(
@@ -62,10 +75,12 @@ export default function TermsAgreements() {
   };
 
   const handleAllAgreedChange = () => {
-    setTerms((prev) => {
-      const allAgreed = prev.every((term) => term.isAgreed);
-      return prev.map((term) => ({ ...term, isAgreed: !allAgreed }));
-    });
+    setTerms((prev) => prev.map((term) => ({ ...term, isAgreed: !isAllAgreed })));
+  };
+
+  // 펼침 토글: 이미 열려있는 항목을 누르면 닫고, 다른 항목을 누르면 그 항목만 열림
+  const handleToggleExpand = (id: string) => {
+    setExpandedId((prev) => (prev === id ? null : id));
   };
 
   const handleSubmit = async () => {
@@ -166,6 +181,9 @@ export default function TermsAgreements() {
             onCheckedChange={() => handleClickTerm(term.id)}
             label={term.label}
             isRequired={term.isRequired}
+            detailContent={TERMS_DETAIL_MAP[term.id]}
+            isExpanded={expandedId === term.id}
+            onToggleExpand={() => handleToggleExpand(term.id)}
           />
         ))}
       </section>
