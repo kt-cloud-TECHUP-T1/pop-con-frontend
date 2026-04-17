@@ -78,9 +78,8 @@ export default function SuccessPage() {
   }, [reservationId, accessToken]);
 
   const handleDetailClick = () => {
-    // if (!popupId || !reservationId) return;
-    // router.push(`/auction/${popupId}/success/${reservationId}`);
-    //낙찰 상세보기 예정
+    if (!reservationDetail?.ticketId) return;
+    router.push(`/mypage/info/tickets/${reservationDetail.ticketId}`);
   };
 
   if (isLoading) {
