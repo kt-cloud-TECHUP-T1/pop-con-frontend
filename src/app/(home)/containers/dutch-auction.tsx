@@ -59,7 +59,7 @@ export const DutchAuction = () => {
             default: 1,
             md: 2,
           }}
-          carouselOpts={{ align: 'start' }}
+          carouselOpts={{ align: 'start', loop: true }}
           alignArrowToRatio="16/9"
           items={dutchAuctionCards.map((dutchAuctionCard) => {
             const likedState = getLikedPopupState(dutchAuctionCard);

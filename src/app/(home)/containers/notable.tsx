@@ -56,7 +56,7 @@ export const Notable = () => {
             md: 3,
             lg: 5,
           }}
-          carouselOpts={{ align: 'start' }}
+          carouselOpts={{ align: 'start', loop: true }}
           alignArrowToRatio="3/4"
           items={notableCards.map((notableCard) => {
             const likedState = getLikedPopupState(notableCard);

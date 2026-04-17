@@ -53,7 +53,7 @@ export const Recommend = () => {
             md: 3,
             lg: 4,
           }}
-          carouselOpts={{ align: 'start' }}
+          carouselOpts={{ align: 'start', loop: true }}
           alignArrowToRatio="3/4"
           items={recommendedCards.map((recommendedCard) => {
             const likedState = getLikedPopupState(recommendedCard);
