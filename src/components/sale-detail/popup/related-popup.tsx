@@ -1,70 +1,82 @@
 'use client';
 
-import React from 'react';
+import { useRouter } from 'next/navigation';
 
+import { Section } from '@/app/(home)/components/section';
+import { usePopupLike } from '@/app/(home)/hooks/use-popup-like';
+import { useSectionFetch } from '@/app/(home)/hooks/use-section-fetch';
+import { BasePopupCard } from '@/app/(home)/types';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
-import { Section } from '@/app/(home)/components/section';
 
-const dummy = Array.from({ length: 10 }).map((_, index) => {
-  return {
-    id: index,
-    title: `Title ${index}`,
-    description: `Sub Text ${index}`,
-    thumbnailUrl: 'https://placehold.co/300x300',
-    caption: `Caption ${index}`,
-    countView: 0,
-    countLike: 0,
-  };
-});
+interface RelatedPopupCard extends BasePopupCard {
+  overlay: null;
+}
+
+const RELATED_POPUP_LIMIT = 10;
 
 export const RelatedPopup = () => {
-  const [item, setItems] = React.useState(dummy);
+  const relatedPopups = useSectionFetch<RelatedPopupCard>(
+    `/api/popups/featured?limit=${RELATED_POPUP_LIMIT}`
+  );
+  const { getLikedPopupState, handleClickLike } =
+    usePopupLike<RelatedPopupCard>();
+  const router = useRouter();
 
-  const handleClick = (id: number) => {
-    console.log('clicked item id: ', id);
+  const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
+    router.push(
+      phaseType === 'DRAW' ? `/draw/${popupId}` : `/auction/${popupId}`
+    );
   };
 
-  const handleClickLike = (id: number) => {
-    console.log('liked item id: ', id);
-  };
-
-  const handleClickMore = () => {
-    console.log('more');
-  };
+  if (relatedPopups === null) return null;
 
   return (
     <Section
-      title="비슷한 팝업 스토어"
+      title="주목할 만한 팝업"
       showButtonMore
-      onClickMore={handleClickMore}
+      // TODO 더보기 작업 필요
+      // onClickMore={handleClickMore}
     >
-      <GridCarousel
-        gridSize={{
-          default: 2,
-          md: 3,
-          lg: 5,
-        }}
-        carouselOpts={{ align: 'start' }}
-        alignArrowToRatio="3/4"
-        items={item.map((item) => (
-          <CardThumbnail
-            key={item.id}
-            thumbnailUrl={item.thumbnailUrl}
-            thumbnailRatio="3/4"
-            title={item.title}
-            description={item.description}
-            caption={item.caption}
-            countView={item.countView}
-            countLike={item.countLike}
-            showButtonLike
-            showCountView
-            showCountLike
-            onClick={() => handleClick(item.id)}
-            onClickLike={() => handleClickLike(item.id)}
-          />
-        ))}
-      />
+      {relatedPopups.length === 0 ? (
+        <div className="min-h-[250px] flex items-center justify-center">
+          주목할 만한 팝업이 아직 없어요.
+        </div>
+      ) : (
+        <GridCarousel
+          gridSize={{
+            default: 2,
+            md: 3,
+            lg: 5,
+          }}
+          carouselOpts={{ align: 'start' }}
+          alignArrowToRatio="3/4"
+          items={relatedPopups.map((relatedPopup) => {
+            const likedState = getLikedPopupState(relatedPopup);
+
+            return (
+              <CardThumbnail
+                key={`related-${relatedPopup.popupId}`}
+                thumbnailUrl={relatedPopup.thumbnailUrl ?? undefined}
+                thumbnailRatio="3/4"
+                title={relatedPopup.title}
+                description={relatedPopup.subText ?? undefined}
+                caption={relatedPopup.caption ?? undefined}
+                countView={relatedPopup.stats.viewCount}
+                countLike={likedState.likeCount}
+                showButtonLike
+                showCountView
+                showCountLike
+                isLiked={likedState.isLiked}
+                onClickLike={() => handleClickLike(relatedPopup)}
+                onClick={() =>
+                  handleClick(relatedPopup.popupId, relatedPopup.phase.type)
+                }
+              />
+            );
+          })}
+        />
+      )}
     </Section>
   );
 };
