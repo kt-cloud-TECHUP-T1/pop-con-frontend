@@ -17,6 +17,7 @@ import {
 } from '@/features/auth/stores/auth-store';
 import { snackbar } from '@/components/ui/snackbar';
 import { API_ERROR_CODES } from '@/constants/api';
+import { AUTH_ERROR_CODES } from '@/constants/auth';
 
 function billingCardToPaymentMethod(card: BillingCard): PaymentMethod {
   return {
@@ -36,7 +37,10 @@ export function PaymentMethodsPageClient() {
 
   const handleAuthError = useCallback(
     (data: { code?: string }) => {
-      if (data.code === 'A002' || data.code === 'A003') {
+      if (
+        data.code === AUTH_ERROR_CODES.AUTH.INVALID_AUTH ||
+        data.code === AUTH_ERROR_CODES.AUTH.LOGIN_REQUIRED
+      ) {
         clearAccessToken();
         snackbar.destructive({
           title: '세션 만료',
@@ -114,6 +118,14 @@ export function PaymentMethodsPageClient() {
           snackbar.destructive({
             title: '등록 실패',
             description: '빌링키 정보가 올바르지 않습니다.',
+          });
+          return;
+        }
+
+        if (data.code === 'P006') {
+          snackbar.destructive({
+            title: '등록 실패',
+            description: '이미 등록된 결제 수단입니다.',
           });
           return;
         }

@@ -85,6 +85,8 @@ export function LikedPopupsPageClient() {
           description={popup.supportingText}
           caption={popup.caption}
           thumbnailUrl={popup.thumbnailUrl}
+          countLike={popup.stats.likeCount}
+          countView={popup.stats.viewCount}
           onClickLike={() => handleClickLike(popup)}
           onClick={() => handleClick(popup.popupId, popup.phase.type)}
         />
