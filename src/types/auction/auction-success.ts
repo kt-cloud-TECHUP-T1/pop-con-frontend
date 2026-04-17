@@ -10,6 +10,7 @@ export interface AuctionReservationSuccessDetail {
   finalPrice: number;
   paidAt: string;
   popupThumbnail: string;
+  ticketId: number;
 }
 
 export interface GetAuctionReservationSuccessResponse {
