@@ -87,7 +87,7 @@ export const LuckyDraw = () => {
       ) : (
         <GridCarousel
           gridSize={{ default: 2, md: 3, lg: 4 }}
-          carouselOpts={{ align: 'start' }}
+          carouselOpts={{ align: 'start', loop: true }}
           alignArrowToRatio="3/4"
           items={activeDrawCards.map((activeDrawCard) => {
             const likedState = getLikedPopupState(activeDrawCard);

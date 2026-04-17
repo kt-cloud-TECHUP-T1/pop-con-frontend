@@ -57,7 +57,7 @@ export const EndingSoon = () => {
             md: 3,
             lg: 5,
           }}
-          carouselOpts={{ align: 'start' }}
+          carouselOpts={{ align: 'start', loop: true }}
           alignArrowToRatio="3/4"
           items={endingSoonCards.map((endingSoonCard) => {
             const likedState = getLikedPopupState(endingSoonCard);

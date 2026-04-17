@@ -47,9 +47,8 @@ export const MainBanner = () => {
     <GridCarousel
       gridSize="auto"
       carouselOpts={{ loop: true, align: 'center' }}
-      contentWrapperClassName="overflow-visible"
-      contentClassName="justify-center"
       showIndexes
+      contentClassName="max-w-[1536px] mx-auto"
       items={bannerCards.map((bannerCard) => (
         <div key={`banner-${bannerCard.popupId}`} className="w-[384px]">
           <CardOverlay

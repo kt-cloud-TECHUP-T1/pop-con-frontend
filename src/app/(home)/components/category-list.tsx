@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { useSectionFetch } from '../hooks/use-section-fetch';
 import { CategoryListSkeleton } from './skeletons';
 import { PopupPhase } from '../types';
+import { Box } from '@/components/ui/box';
 
 interface CategoryItem {
   iconUrl: string | null;
@@ -33,7 +34,11 @@ export const CategoryList = () => {
           href={getCategoryHref(category.popupId, category.phase.type)}
           className="flex flex-col items-center basis-auto cursor-pointer"
         >
-          <div className="mb-2 flex h-20 w-20 items-center justify-center rounded-xl bg-gray-100 overflow-hidden">
+          <Box
+            radius="XL"
+            background="var(--neutral-90)"
+            className="mb-2 flex h-20 w-20 items-center justify-center overflow-hidden"
+          >
             <img
               src={category.iconUrl ?? '/images/temp/no-image.png'}
               alt={category.iconName}
@@ -41,7 +46,7 @@ export const CategoryList = () => {
               height={80}
               className="object-cover w-full h-full"
             />
-          </div>
+          </Box>
           <span className="text-Contents-High text-base font-normal leading-6">
             {category.iconName}
           </span>

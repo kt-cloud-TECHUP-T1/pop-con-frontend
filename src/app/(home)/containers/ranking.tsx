@@ -50,7 +50,7 @@ export const Ranking = () => {
             md: 3,
             lg: 5,
           }}
-          carouselOpts={{ align: 'start' }}
+          carouselOpts={{ align: 'start', loop: true }}
           alignArrowToRatio="3/4"
           items={rankingCards.map((rankingCard) => {
             const likedState = getLikedPopupState(rankingCard);
