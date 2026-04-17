@@ -1,0 +1,57 @@
+export const PROFILE_MESSAGES = {
+  SUCCESS: {
+    TITLE: '프로필 변경 성공',
+    DESCRIPTION: '프로필 변경을 성공하였습니다.',
+  },
+  ERROR: {
+    TITLE: '프로필 변경 실패',
+    DEFAULT: '프로필 변경에 실패했습니다. 잠시 후 다시 시도해주세요.',
+    INVALID_NICKNAME: '한글영문숫자 혼합 2~20자만 가능합니다.',
+    DUPLICATE_NICKNAME: '이미 사용중인 닉네임 입니다. 다른 닉네임을 사용해주세요.',
+    INVALID_FILE_TYPE: 'JPG, PNG 형식의 파일만 업로드 가능합니다.',
+    FILE_SIZE_EXCEEDED: '파일 크기는 5MB 이하여야 합니다.',
+    INVALID_TOKEN: '유효하지 않은 토큰입니다.',
+    EXPIRED_TOKEN: '인증이 만료되었습니다. 다시 로그인해주세요.',
+    SYSTEM: '시스템 오류가 발생했습니다.',
+  },
+  MODAL: {
+    DUPLICATE_NICKNAME_TITLE: '이미 사용중인 닉네임 입니다.',
+    DUPLICATE_NICKNAME_DESCRIPTION: '다른 닉네임을 사용해주세요.',
+  },
+} as const;
+
+export const PROFILE_ERROR_CODES = {
+  COMMON: {
+    INVALID_INPUT: 'C001',
+  },
+  USER: {
+    DUPLICATE_NICKNAME: 'U003',
+  },
+  FILE: {
+    INVALID_TYPE: 'F001',
+    SIZE_EXCEEDED: 'F002',
+  },
+  AUTH: {
+    INVALID_TOKEN: 'A002',
+    EXPIRED_TOKEN: 'A003',
+  },
+  SYSTEM: {
+    ERROR: 'S001',
+  },
+} as const;
+
+export const PROFILE_ERROR_MESSAGE_MAP: Record<string, string> = {
+  [PROFILE_ERROR_CODES.COMMON.INVALID_INPUT]:
+    PROFILE_MESSAGES.ERROR.INVALID_NICKNAME,
+  [PROFILE_ERROR_CODES.USER.DUPLICATE_NICKNAME]:
+    PROFILE_MESSAGES.ERROR.DUPLICATE_NICKNAME,
+  [PROFILE_ERROR_CODES.FILE.INVALID_TYPE]:
+    PROFILE_MESSAGES.ERROR.INVALID_FILE_TYPE,
+  [PROFILE_ERROR_CODES.FILE.SIZE_EXCEEDED]:
+    PROFILE_MESSAGES.ERROR.FILE_SIZE_EXCEEDED,
+  [PROFILE_ERROR_CODES.AUTH.INVALID_TOKEN]:
+    PROFILE_MESSAGES.ERROR.INVALID_TOKEN,
+  [PROFILE_ERROR_CODES.AUTH.EXPIRED_TOKEN]:
+    PROFILE_MESSAGES.ERROR.EXPIRED_TOKEN,
+  [PROFILE_ERROR_CODES.SYSTEM.ERROR]: PROFILE_MESSAGES.ERROR.SYSTEM,
+};

@@ -40,8 +40,10 @@ export default async function RootLayout({
     <html lang="ko">
       <body className={`${pretendard.variable} antialiased`}>
         <ConditionalAuthSessionRestore isLoggedIn={isLoggedIn} />
-        <Header isLoggedIn={isLoggedIn} />
-        <AppProviders>{children}</AppProviders>
+        <AppProviders>
+          <Header isLoggedIn={isLoggedIn} />
+          {children}
+        </AppProviders>
         <Footer />
         <LoginRequiredModal></LoginRequiredModal>
         <PaymentRequiredModal />

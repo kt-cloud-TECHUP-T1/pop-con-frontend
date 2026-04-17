@@ -10,6 +10,7 @@ import { Icon } from '@/components/Icon/Icon';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { Button } from '@/components/ui/button';
 import { useLogout } from '@/features/auth/hooks/use-logout';
+import { useUserMeQuery } from '@/features/user/queries/use-user-me-query';
 
 const AUTH_PATHS = ['/login', '/signup', '/verify', '/callback'];
 
@@ -27,6 +28,8 @@ export function Header({
       : authStatus === 'authenticated';
 
   const { logout } = useLogout();
+  const { data: userMe } = useUserMeQuery();
+  const profileImage = userMe?.profileImage ?? undefined;
 
   const isAuthPage = AUTH_PATHS.some(
     (path) => pathname === path || pathname.startsWith(`${path}/`)
@@ -80,6 +83,8 @@ export function Header({
                 />
                 <Link href="/mypage" aria-label="마이페이지">
                   <Avatar
+                    src={profileImage}
+                    alt="프로필 이미지"
                     className="bg-[var(--neutral-90)]"
                     icon={{
                       name: 'PersonFill',
