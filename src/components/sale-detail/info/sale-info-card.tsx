@@ -5,6 +5,7 @@ import SaleInfoCTA from './sale-info-cta';
 import SaleScheduleInfo from './sale-schedule-info';
 import { useParams } from 'next/navigation';
 import { usePopupDetailQuery } from '../queries/use-popup-detail-query';
+import { Box } from '@/components/ui/box';
 
 export default function SaleInfoCard() {
   const params = useParams<{ popupId: string }>();
@@ -12,11 +13,11 @@ export default function SaleInfoCard() {
   const { data: popupData } = usePopupDetailQuery(popupIdNumber);
 
   return (
-    <div className="border border-[var(--line-3)] rounded-ml p-ms">
+    <Box border="var(--line-3)" radius="ML" padding="MS">
       {popupData?.phaseType === 'AUCTION' && <SaleInfoPrice />}
 
       <SaleScheduleInfo />
       <SaleInfoCTA></SaleInfoCTA>
-    </div>
+    </Box>
   );
 }

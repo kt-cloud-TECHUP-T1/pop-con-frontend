@@ -67,20 +67,6 @@ html {
   --radius-3xl: calc(var(--radius) + 12px);
   --radius-4xl: calc(var(--radius) + 16px);
 
-  /* 디자인 시스템 설계도에 따른 border-radius */
-  --radius-shape-none: 0;
-  --radius-2xs: 4px;
-  --radius-xs: 6px;
-  --radius-s: 8px;
-  --radius-ms: 10px;
-  --radius-m: 12px;
-  --radius-ml: 16px;
-  --radius-lg: 20px;
-  --radius-xl: 24px;
-  --radius-2xl: 32px;
-  --radius-3xl: 48px;
-  --radius-shape-full: 1000px;
-  /* END 디자인 시스템 설계도에 따른 border-radius */
 
   /* Spacing – Desktop 기준 => s,m,l등 모바일기준은 media 사이즈에 따라 모바일사이즈 적용, gap, padding, margin 에 적용*/
   --spacing-none: 0px;
@@ -99,6 +85,23 @@ html {
 
   --spacing-page: 120px;
 }
+
+/* 디자인 시스템 설계도에 따른 border-radius */
+@theme {
+  --radius-shape-none: 0;
+  --radius-ds-2xs: 4px;
+  --radius-ds-xs: 6px;
+  --radius-ds-s: 8px;
+  --radius-ds-ms: 10px;
+  --radius-ds-m: 12px;
+  --radius-ds-ml: 16px;
+  --radius-ds-lg: 20px;
+  --radius-ds-xl: 24px;
+  --radius-ds-2xl: 32px;
+  --radius-ds-3xl: 48px;
+  --radius-shape-full: 1000px;
+}
+/* END 디자인 시스템 설계도에 따른 border-radius */
 
 /* =========================
    Primitive Colors

@@ -15,7 +15,7 @@ export function SaleDetailSkeleton() {
         <div className="grid gap-[54px] lg:grid-cols-[minmax(0,1fr)_384px]">
           <section className="min-w-0">
             <div className="flex flex-col">
-              <SkeletonBlock className="aspect-[4/5] w-full rounded-ml" />
+              <SkeletonBlock className="aspect-[4/5] w-full rounded-ds-ml" />
 
               <div className="border-b border-[var(--line-2)] px-s py-[28px]">
                 <SkeletonBlock className="mb-3 h-5 w-24" />
@@ -66,14 +66,14 @@ export function SaleDetailSkeleton() {
 
           <aside className="h-fit">
             <div className="flex flex-col gap-s">
-              <div className="rounded-ml border border-[var(--line-3)] p-ms">
+              <div className="rounded-ds-ml border border-[var(--line-3)] p-ms">
                 <SkeletonBlock className="mb-4 h-6 w-28" />
                 <SkeletonBlock className="mb-3 h-10 w-full rounded-xl" />
                 <SkeletonBlock className="mb-6 h-10 w-full rounded-xl" />
                 <SkeletonBlock className="h-12 w-full rounded-xl" />
               </div>
 
-              <div className="rounded-ml border border-[var(--line-3)] p-ms">
+              <div className="rounded-ds-ml border border-[var(--line-3)] p-ms">
                 <SkeletonBlock className="mb-4 h-6 w-24" />
                 <div className="space-y-3">
                   <SkeletonBlock className="h-5 w-full" />

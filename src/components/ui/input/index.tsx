@@ -18,7 +18,7 @@ interface InputMessages {
 const inputVariants = cva(
   [
     'w-full',
-    'rounded-[var(--radius-s)]',
+    'rounded-[var(--radius-ds-s)]',
     'bg-[var(--bg-default)]',
     'border',
     'transition-colors',

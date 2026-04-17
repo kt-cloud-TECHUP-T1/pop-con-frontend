@@ -1,3 +1,4 @@
+import { Box } from '@/components/ui/box';
 import { Typography } from '@/components/ui/typography';
 import { ReactNode } from 'react';
 
@@ -13,7 +14,14 @@ export default function SaleNoticeCard({
   slot,
 }: NoticeCardProps) {
   return (
-    <section className="w-full rounded-ml border border-[var(--line-3)] bg-[var(--component-default)] p-ms">
+    <Box
+      as="section"
+      radius="ML"
+      border="var(--line-3)"
+      background="var(--component-default)"
+      padding="MS"
+      className="w-full"
+    >
       <header>
         <Typography
           variant="body-1"
@@ -33,6 +41,6 @@ export default function SaleNoticeCard({
           </li>
         ))}
       </ul>
-    </section>
+    </Box>
   );
 }

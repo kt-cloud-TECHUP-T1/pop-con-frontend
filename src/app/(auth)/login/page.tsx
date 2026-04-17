@@ -12,6 +12,7 @@ import {
   AUTH_MESSAGES,
   LOGIN_REDIRECT_KEY,
 } from '@/constants/auth';
+import { RADIUS } from '@/constants/design-system';
 import { useLoginCollector } from '@/features/anti-macro';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
@@ -113,7 +114,7 @@ export default function Login() {
       <div className="btn-group w-full max-w-[360px] mx-auto flex flex-col gap-3 pt-ml">
         <Button
           size="large"
-          className="w-full bg-[#FEE500] hover:bg-[#FEE500] active:bg-[#FEE500] disabled:bg-[#FEE500] disabled:text-[var(--content-high)]"
+          className={`w-full bg-[#FEE500] hover:bg-[#FEE500] active:bg-[#FEE500] disabled:bg-[#FEE500] disabled:text-[var(--content-high)] ${RADIUS.MS}`}
           leftIcon={
             <Icon
               name="LogoKakao"
@@ -134,7 +135,7 @@ export default function Login() {
         </Button>
         <Button
           size="large"
-          className="w-full bg-[#03C75A] hover:bg-[#03C75A] active:bg-[#03C75A] disabled:bg-[#03C75A] disabled:text-white"
+          className={`w-full bg-[#03C75A] hover:bg-[#03C75A] active:bg-[#03C75A] disabled:bg-[#03C75A] disabled:text-white ${RADIUS.MS}`}
           leftIcon={<Icon name="LogoNaver" size={24}></Icon>}
           onClick={() => socialLoginHandler('naver')}
           disabled={isLoggingIn}

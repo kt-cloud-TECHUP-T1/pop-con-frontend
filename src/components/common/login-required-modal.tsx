@@ -19,7 +19,7 @@ export default function LoginRequiredModal() {
   };
 
   return (
-    <Box className="fixed inset-0 flex items-center justify-center bg-black/50 ">
+    <Box className="fixed inset-0 flex items-center justify-center bg-black/50 z-50">
       <Box radius="LG" className="py-s bg-[var(--bg-default)] w-[480px]">
         <div className="flex flex-col items-center gap-xs py-s px-ms">
           <Typography variant="title-1" weight="bold">
