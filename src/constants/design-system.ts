@@ -1,16 +1,16 @@
 // globals.css에도 등록을 해줘야 함
 export const RADIUS = {
   NONE: 'rounded-shape-none', // 0
-  XXS: 'rounded-2xs', // 4px;
-  XS: 'rounded-xs', // 6px
-  S: 'rounded-s', // 8px
-  MS: 'rounded-ms', // 10px
-  M: 'rounded-m', // 12px
-  ML: 'rounded-ml', // 16px
-  LG: 'rounded-lg', // 20px
-  XL: 'rounded-xl', // 24px
-  _2XL: 'rounded-2xl', // 32px
-  _3XL: 'rounded-3xl', // 48px
+  XXS: 'rounded-ds-2xs', // 4px;
+  XS: 'rounded-ds-xs', // 6px
+  S: 'rounded-ds-s', // 8px
+  MS: 'rounded-ds-ms', // 10px
+  M: 'rounded-ds-m', // 12px
+  ML: 'rounded-ds-ml', // 16px
+  LG: 'rounded-ds-lg', // 20px
+  XL: 'rounded-ds-xl', // 24px
+  _2XL: 'rounded-ds-2xl', // 32px
+  _3XL: 'rounded-ds-3xl', // 48px
   FULL: 'rounded-shape-full', // 1000px
 } as const;
 

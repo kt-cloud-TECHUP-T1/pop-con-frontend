@@ -4,7 +4,6 @@ import * as React from 'react';
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from 'embla-carousel-react';
-import { ArrowLeft, ArrowRight } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/button';
@@ -64,9 +63,9 @@ function Carousel({
 
   const onSelect = React.useCallback((api: CarouselApi) => {
     if (!api) return;
-    setCanScrollPrev(api.canScrollPrev());
-    setCanScrollNext(api.canScrollNext());
-  }, []);
+    setCanScrollPrev(!!opts?.loop || api.canScrollPrev());
+    setCanScrollNext(!!opts?.loop || api.canScrollNext());
+  }, [opts?.loop]);
 
   const scrollPrev = React.useCallback(() => {
     api?.scrollPrev();

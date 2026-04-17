@@ -22,13 +22,13 @@ const buttonVariants = cva(
       // 사이즈에 관한건 아직 맵핑된 inline 사이즈 사용전
       size: {
         large:
-          'h-12 min-w-[88px] px-3 py-2  gap-xs  text-base rounded-[var(--radius-ms)]',
+          'h-12 min-w-[88px] px-3 py-2  gap-xs  text-base rounded-[var(--radius-ds-ms)]',
         medium:
-          'h-10 min-w-[72px] px-2.5 py-2  gap-xs text-sm rounded-[var(--radius-s)]',
+          'h-10 min-w-[72px] px-2.5 py-2  gap-xs text-sm rounded-[var(--radius-ds-s)]',
         small:
-          'h-9 min-w-[68px] px-2.5 py-2  gap-2xs text-sm rounded-[var(--radius-ms)]',
+          'h-9 min-w-[68px] px-2.5 py-2  gap-2xs text-sm rounded-[var(--radius-ds-ms)]',
         xsmall:
-          'h-7 min-w-[50px] px-2 py-1  gap-2xs  text-xs rounded-[var(--radius-xs)]',
+          'h-7 min-w-[50px] px-2 py-1  gap-2xs  text-xs rounded-[var(--radius-ds-xs)]',
       },
     },
 
@@ -70,11 +70,17 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         {...props}
       >
-        {asChild ? children : (
+        {asChild ? (
+          children
+        ) : (
           <>
-            {leftIcon && <span className="inline-flex shrink-0">{leftIcon}</span>}
+            {leftIcon && (
+              <span className="inline-flex shrink-0">{leftIcon}</span>
+            )}
             {children}
-            {rightIcon && <span className="inline-flex shrink-0">{rightIcon}</span>}
+            {rightIcon && (
+              <span className="inline-flex shrink-0">{rightIcon}</span>
+            )}
           </>
         )}
       </Comp>

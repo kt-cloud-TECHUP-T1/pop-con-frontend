@@ -7,6 +7,7 @@ import { DrawEntrySuccessData } from '@/types/draw/draw-apply';
 import { Icon } from '@/components/Icon/Icon';
 import { formatEntryDate, formatEntryTime } from '@/lib/utils';
 import { useRouter } from 'next/navigation';
+import { Box } from '@/components/ui/box';
 
 interface DrawEntrySuccessModalProps {
   open: boolean;
@@ -29,7 +30,7 @@ export default function DrawEntrySuccessModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 px-5">
-      <div className="w-full max-w-[480px] rounded-ml bg-white py-s">
+      <Box radius="ML" paddingY="S" className="w-full max-w-[480px] bg-white">
         <div className=" flex flex-col items-center gap-xs py-s">
           <Icon
             name="CircleCheckFill"
@@ -114,7 +115,7 @@ export default function DrawEntrySuccessModal({
             확인
           </Button>
         </div>
-      </div>
+      </Box>
     </div>
   );
 }

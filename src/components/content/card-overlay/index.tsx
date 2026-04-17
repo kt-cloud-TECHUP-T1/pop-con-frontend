@@ -1,8 +1,9 @@
 'use client';
 
 import { Typography } from '@/components/ui/typography';
+import { RADIUS } from '@/constants/design-system';
 import { cn } from '@/lib/utils';
-import { cva, type VariantProps } from 'class-variance-authority';
+import { cva } from 'class-variance-authority';
 
 const thumbnailVariants = cva('w-full object-cover', {
   variants: {
@@ -39,7 +40,7 @@ export const CardOverlay: React.FC<CardOverlayProps> = ({
     <div
       className={cn(
         'card-overlay',
-        'relative rounded-ml border border-Line-Line-3/10 overflow-hidden',
+        `relative ${RADIUS.ML} border border-Line-Line-3/10 overflow-hidden`,
         onClick && 'cursor-pointer'
       )}
       onClick={onClick}
@@ -58,7 +59,7 @@ export const CardOverlay: React.FC<CardOverlayProps> = ({
     >
       <img
         className={cn(
-          'thumbnail',
+          `thumbnail ${RADIUS.ML}`,
           thumbnailVariants({ ratio: thumbnailRatio })
         )}
         src={thumbnailUrl ?? '/images/temp/no-image.png'}

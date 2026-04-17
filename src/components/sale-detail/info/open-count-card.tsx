@@ -3,6 +3,7 @@ import { Typography } from '@/components/ui/typography';
 import useCountdown from '../hooks/use-countdown';
 import { splitRemainingTime } from '../utils/sale-detail-utils';
 import { useAuctionStore } from '../stores/auction-store';
+import { Box } from '@/components/ui/box';
 
 export default function OpenCountCard() {
   const auctionData = useAuctionStore((state) => state.liveData);
@@ -15,7 +16,12 @@ export default function OpenCountCard() {
   if (auctionData?.auctionStatus !== 'SCHEDULED') return;
   return (
     <>
-      <div className="p-ms bg-[var(--neutral-20)] text-[var(--white)] rounded-ml flex flex-col gap-xs items-center">
+      <Box
+        background="var(--neutral-20)"
+        radius="ML"
+        padding="MS"
+        className="text-[var(--white)] flex flex-col gap-xs items-center"
+      >
         <Typography variant="body-2" weight="regular">
           경매 오픈까지
         </Typography>
@@ -28,7 +34,7 @@ export default function OpenCountCard() {
           <Separator />
           <CountItem value={seconds} label="초" />
         </div>
-      </div>
+      </Box>
     </>
   );
 }
