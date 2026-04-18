@@ -130,6 +130,7 @@ export function DrawsPageClient({ initialFilter = null }: Props) {
         <DrawResultModal
           isOpen={!!modalResult}
           result={modalResult.result}
+          winningRatePercent={modalResult.winningRatePercent}
           onClose={() => setModalResult(null)}
         />
       )}
