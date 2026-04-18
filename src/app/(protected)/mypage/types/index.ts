@@ -14,6 +14,7 @@ export type ActivityItem = {
   drawResult?: 'lucky' | 'won' | 'notWon';
 };
 
+export type DrawHistoryStatus = 'APPLIED' | 'WINNER' | 'FAILED';
 export interface DrawHistoryItem {
   id: number;
   drawId: number;
@@ -22,7 +23,11 @@ export interface DrawHistoryItem {
   price: number;
   paidAt: string | null;
   displayStatus: string;
-  status: string;
+  status: DrawHistoryStatus;
+  announcementAt: string | null;
+  resultAvailable: boolean;
+  resultChecked: boolean;
+  clickable: boolean;
 }
 
 export interface BidHistoryItem {
