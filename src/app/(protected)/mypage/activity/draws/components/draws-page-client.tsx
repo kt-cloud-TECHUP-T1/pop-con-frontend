@@ -31,7 +31,10 @@ export function DrawsPageClient({ initialFilter = null }: Props) {
   const [activeFilter, setActiveFilter] = useState<DrawStatusFilter | null>(
     initialFilter
   );
-  const [modalResult, setModalResult] = useState<DrawResult | null>(null);
+  const [modalResult, setModalResult] = useState<{
+    result: DrawResult;
+    winningRatePercent: string | null;
+  } | null>(null);
 
   const handleToggle = (value: DrawStatusFilter) => {
     setActiveFilter((prev) => (prev === value ? null : value));
@@ -60,7 +63,7 @@ export function DrawsPageClient({ initialFilter = null }: Props) {
   if (!draws) return null;
 
   const filteredDraws = activeFilter
-    ? draws.filter((item) => getDrawStatusFilter(item.status) === activeFilter)
+    ? draws.filter((item) => getDrawStatusFilter(item) === activeFilter)
     : draws;
 
   const items = filteredDraws.map(toDrawActivityItem);
@@ -88,7 +91,7 @@ export function DrawsPageClient({ initialFilter = null }: Props) {
           items={items}
           renderRightContent={(item) => {
             const draw = filteredDraws.find((d) => d.id === item.id)!;
-            const filter = getDrawStatusFilter(draw.status);
+            const filter = getDrawStatusFilter(draw);
 
             return filter === 'pendingResult' ? (
               <Box
@@ -100,7 +103,11 @@ export function DrawsPageClient({ initialFilter = null }: Props) {
                 disabled={isConfirming}
                 onClick={() =>
                   confirmResult(draw.id, {
-                    onSuccess: (result) => setModalResult(result),
+                    onSuccess: (payload) =>
+                      setModalResult({
+                        result: payload.result,
+                        winningRatePercent: payload.winningRatePercent,
+                      }),
                   })
                 }
               >
@@ -122,7 +129,8 @@ export function DrawsPageClient({ initialFilter = null }: Props) {
       {modalResult && (
         <DrawResultModal
           isOpen={!!modalResult}
-          result={modalResult}
+          result={modalResult.result}
+          winningRatePercent={modalResult.winningRatePercent}
           onClose={() => setModalResult(null)}
         />
       )}

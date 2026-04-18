@@ -12,32 +12,45 @@ type DrawResultModalProps = {
   isOpen: boolean;
   onClose: () => void;
   result: DrawResult;
+  winningRatePercent?: string | null;
 };
 
-const RESULT_CONFIG: Record<
-  DrawResult,
-  { title: string; description: string }
-> = {
-  lucky: {
-    title: '축하해요!',
-    description: '상위 13%의 행운을 잡으셨어요',
-  },
-  won: {
-    title: '축하해요!',
-    description: '드로우에 당첨되었어요',
-  },
-  notWon: {
+function getResult(
+  result: DrawResult,
+  winningRatePercent?: string | null
+): {
+  title: string;
+  description: string;
+} {
+  if (result === 'lucky') {
+    return {
+      title: '축하해요!',
+      description: winningRatePercent
+        ? `상위 ${winningRatePercent}의 행운을 잡으셨어요`
+        : `상위권의 행운을 잡으셨어요`,
+    };
+  }
+
+  if (result === 'won') {
+    return {
+      title: '축하해요!',
+      description: '드로우에 당첨되었어요',
+    };
+  }
+
+  return {
     title: '아쉽지만 이번 드로우에는',
     description: '당첨되지 않았어요',
-  },
-};
+  };
+}
 
 export default function DrawResultModal({
   isOpen,
   onClose,
   result,
+  winningRatePercent,
 }: DrawResultModalProps) {
-  const { title, description } = RESULT_CONFIG[result];
+  const { title, description } = getResult(result, winningRatePercent);
 
   return (
     <Modal

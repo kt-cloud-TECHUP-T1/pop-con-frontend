@@ -1,4 +1,7 @@
-import type { ActivityStatusTone } from '@/app/(protected)/mypage/types';
+import type {
+  ActivityStatusTone,
+  DrawHistoryItem,
+} from '@/app/(protected)/mypage/types';
 
 export type DrawStatusFilter =
   | 'won'
@@ -28,20 +31,24 @@ const STATUS_TONE_MAP: Record<DrawStatusFilter, ActivityStatusTone> = {
   pendingResult: 'warning',
 };
 
-export function getDrawStatusFilter(
-  status: string | null | undefined
-): DrawStatusFilter {
-  const s = (status ?? '').trim().toUpperCase();
-  if (s === 'WON' || s === '당첨') return 'won';
-  if (s === 'LOST' || s === '미당첨') return 'notWon';
-  if (s === 'IN_PROGRESS' || s === '진행중') return 'inProgress';
-  return 'pendingResult';
+type DrawStatusInput = Pick<
+  DrawHistoryItem,
+  'status' | 'resultAvailable' | 'resultChecked' | 'clickable'
+>;
+
+export function getDrawStatusFilter(item: DrawStatusInput): DrawStatusFilter {
+  if (item.status === 'WINNER') return 'won';
+  if (item.status === 'FAILED') return 'notWon';
+  if (item.resultAvailable && !item.resultChecked && item.clickable) {
+    return 'pendingResult';
+  }
+  return 'inProgress';
 }
 
-export function getDrawStatusLabel(status: string): string {
-  return STATUS_LABEL_MAP[getDrawStatusFilter(status)];
+export function getDrawStatusLabel(item: DrawStatusInput): string {
+  return STATUS_LABEL_MAP[getDrawStatusFilter(item)];
 }
 
-export function getDrawStatusTone(status: string): ActivityStatusTone {
-  return STATUS_TONE_MAP[getDrawStatusFilter(status)];
+export function getDrawStatusTone(item: DrawStatusInput): ActivityStatusTone {
+  return STATUS_TONE_MAP[getDrawStatusFilter(item)];
 }

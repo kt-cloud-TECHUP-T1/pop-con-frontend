@@ -35,7 +35,10 @@ const activityTabs = [
 
 export function ActivityHistorySection() {
   const [activeTab, setActiveTab] = useState<ActivityTab>('draw');
-  const [modalResult, setModalResult] = useState<DrawResult | null>(null);
+  const [modalResult, setModalResult] = useState<{
+    result: DrawResult;
+    winningRatePercent: string | null;
+  } | null>(null);
   const { mutate: confirmResult, isPending: isConfirming } =
     useConfirmDrawResult();
   const { indicator, setContainerRef, setItemRef } = useTabIndicator(activeTab);
@@ -195,7 +198,12 @@ export function ActivityHistorySection() {
                           disabled={isConfirming}
                           onClick={() =>
                             confirmResult(item.id, {
-                              onSuccess: (result) => setModalResult(result),
+                              onSuccess: (payload) =>
+                                setModalResult({
+                                  result: payload.result,
+                                  winningRatePercent:
+                                    payload.winningRatePercent,
+                                }),
                             })
                           }
                         >
@@ -232,7 +240,8 @@ export function ActivityHistorySection() {
       {modalResult && (
         <DrawResultModal
           isOpen={!!modalResult}
-          result={modalResult}
+          result={modalResult.result}
+          winningRatePercent={modalResult.winningRatePercent}
           onClose={() => setModalResult(null)}
         />
       )}
