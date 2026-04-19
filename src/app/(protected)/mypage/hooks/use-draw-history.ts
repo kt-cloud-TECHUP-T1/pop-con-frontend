@@ -11,7 +11,6 @@ import type {
 } from '@/app/(protected)/mypage/types';
 import {
   getDrawStatusFilter,
-  getDrawStatusLabel,
   getDrawStatusTone,
 } from '@/app/(protected)/mypage/lib/draw-status';
 import type { DrawResult } from '@/app/(protected)/mypage/activity/draws/components/draw-result-modal';
@@ -28,7 +27,7 @@ export function toDrawActivityItem(item: DrawHistoryItem): ActivityItem {
     image: item.thumbnailUrl,
     price: formatWon(item.price),
     paidAt: item.paidAt ? formatDate(item.paidAt) : '-',
-    stateLabel: getDrawStatusLabel(item),
+    stateLabel: item.displayStatus,
     stateTone: getDrawStatusTone(item),
     isResultPending: getDrawStatusFilter(item) === 'pendingResult',
   };
