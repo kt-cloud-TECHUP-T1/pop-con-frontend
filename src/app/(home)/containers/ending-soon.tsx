@@ -7,7 +7,10 @@ import { useRouter } from 'next/navigation';
 import { EndingSoonSkeleton } from '../components/skeletons';
 import { BasePopupCard } from '../types';
 import { useSectionFetch } from '../hooks/use-section-fetch';
-import { usePopupLike } from '../hooks/use-popup-like';
+import { usePopupLike } from '@/features/popups/hooks/use-popup-like';
+import { FetchError } from '@/components/common/fetch-error';
+import { NoContent } from '@/components/common/no-content';
+import { getPopupHref } from '@/lib/utils';
 
 interface EndingSoonCard extends BasePopupCard {
   overlay: null;
@@ -22,22 +25,18 @@ interface EndingSoonCard extends BasePopupCard {
 const ENDING_SOON_LIMIT = 10;
 
 export const EndingSoon = () => {
-  const endingSoonCards = useSectionFetch<EndingSoonCard>(
+  const { data: endingSoonCards, isError } = useSectionFetch<EndingSoonCard>(
     `/api/popups/ending-soon?limit=${ENDING_SOON_LIMIT}`
   );
   const { getLikedPopupState, handleClickLike } =
     usePopupLike<EndingSoonCard>();
   const router = useRouter();
 
+  if (isError) return <FetchError sectionTitle="곧 종료되는 팝업" />;
   if (endingSoonCards === null) return <EndingSoonSkeleton />;
-
-  const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
-    if (phaseType === 'AUCTION') {
-      router.push(`/auction/${popupId}`);
-    } else {
-      router.push(`/draw/${popupId}`);
-    }
-  };
+  if (endingSoonCards.length === 0) {
+    return <NoContent message="곧 종료되는 팝업이 없어요." />;
+  }
 
   return (
     <Section
@@ -46,46 +45,44 @@ export const EndingSoon = () => {
       // TODO 더보기 작업 필요
       // onClickMore={handleClickMore}
     >
-      {endingSoonCards.length === 0 ? (
-        <div className="min-h-[250px] flex items-center justify-center">
-          곧 종료되는 팝업이 없어요.
-        </div>
-      ) : (
-        <GridCarousel
-          gridSize={{
-            default: 2,
-            md: 3,
-            lg: 5,
-          }}
-          carouselOpts={{ align: 'start', loop: true }}
-          alignArrowToRatio="3/4"
-          items={endingSoonCards.map((endingSoonCard) => {
-            const likedState = getLikedPopupState(endingSoonCard);
+      <GridCarousel
+        gridSize={{
+          default: 2,
+          md: 3,
+          lg: 5,
+        }}
+        carouselOpts={{ align: 'start', loop: true }}
+        alignArrowToRatio="3/4"
+        items={endingSoonCards.map((endingSoonCard) => {
+          const likedState = getLikedPopupState(endingSoonCard);
 
-            return (
-              <CardThumbnail
-                key={`ending-soon-${endingSoonCard.popupId}`}
-                thumbnailUrl={endingSoonCard.thumbnailUrl ?? undefined}
-                thumbnailRatio="3/4"
-                title={endingSoonCard.title}
-                description={endingSoonCard.subText ?? undefined}
-                caption={endingSoonCard.caption ?? undefined}
-                countView={endingSoonCard.stats.viewCount}
-                countLike={likedState.likeCount}
-                showButtonLike
-                showCountView
-                showCountLike
-                onClick={() =>
-                  handleClick(endingSoonCard.popupId, endingSoonCard.phase.type)
-                }
-                onClickLike={() => handleClickLike(endingSoonCard)}
-                // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
-                isLiked={likedState.isLiked}
-              />
-            );
-          })}
-        />
-      )}
+          return (
+            <CardThumbnail
+              key={`ending-soon-${endingSoonCard.popupId}`}
+              thumbnailUrl={endingSoonCard.thumbnailUrl ?? undefined}
+              thumbnailRatio="3/4"
+              title={endingSoonCard.title}
+              description={endingSoonCard.subText ?? undefined}
+              caption={endingSoonCard.caption ?? undefined}
+              countView={endingSoonCard.stats?.viewCount || 0}
+              countLike={likedState.likeCount}
+              showButtonLike
+              showCountView
+              showCountLike
+              onClick={() =>
+                router.push(
+                  getPopupHref(
+                    endingSoonCard.popupId,
+                    endingSoonCard.phase.type
+                  )
+                )
+              }
+              onClickLike={() => handleClickLike(endingSoonCard)}
+              isLiked={likedState.isLiked}
+            />
+          );
+        })}
+      />
     </Section>
   );
 };

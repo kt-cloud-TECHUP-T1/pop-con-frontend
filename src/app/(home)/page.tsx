@@ -1,5 +1,5 @@
 import { Wrapper } from '@/components/layout/wrapper';
-import { CategoryList } from './components/category-list';
+import { CategoryList } from './containers/category-list';
 import { DutchAuction } from './containers/dutch-auction';
 import { EndingSoon } from './containers/ending-soon';
 import { LuckyDraw } from './containers/lucky-draw';
