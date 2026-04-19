@@ -12,22 +12,13 @@ import { FetchError } from '@/components/common/fetch-error';
 import { NoContent } from '@/components/common/no-content';
 import { getPopupHref } from '@/lib/utils';
 
-interface NotableCard extends BasePopupCard {
-  phase: {
-    type: 'AUCTION' | 'DRAW';
-    status: 'UPCOMING' | 'OPEN' | 'CLOSED';
-    openAt: string;
-    closeAt: string;
-  };
-}
-
 const NOTABLE_LIMIT = 10;
 
 export const Notable = () => {
-  const { data: notableCards, isError } = useSectionFetch<NotableCard>(
+  const { data: notableCards, isError } = useSectionFetch<BasePopupCard>(
     `/api/popups/featured?limit=${NOTABLE_LIMIT}`
   );
-  const { getLikedPopupState, handleClickLike } = usePopupLike<NotableCard>();
+  const { getLikedPopupState, handleClickLike } = usePopupLike<BasePopupCard>();
   const router = useRouter();
 
   if (isError) return <FetchError sectionTitle="주목할 만한 팝업" />;

@@ -5,31 +5,20 @@ import { GridCarousel } from '@/components/content/grid-carousel';
 import { Section } from '../components/section';
 import { useRouter } from 'next/navigation';
 import { EndingSoonSkeleton } from '../components/skeletons';
-import { BasePopupCard } from '../types';
 import { useSectionFetch } from '../hooks/use-section-fetch';
 import { usePopupLike } from '@/features/popups/hooks/use-popup-like';
 import { FetchError } from '@/components/common/fetch-error';
 import { NoContent } from '@/components/common/no-content';
 import { getPopupHref } from '@/lib/utils';
-
-interface EndingSoonCard extends BasePopupCard {
-  overlay: null;
-  phase: {
-    type: 'AUCTION' | 'DRAW';
-    status: 'UPCOMING' | 'OPEN' | 'CLOSED';
-    openAt: string;
-    closeAt: string;
-  };
-}
+import { BasePopupCard } from '../types';
 
 const ENDING_SOON_LIMIT = 10;
 
 export const EndingSoon = () => {
-  const { data: endingSoonCards, isError } = useSectionFetch<EndingSoonCard>(
+  const { data: endingSoonCards, isError } = useSectionFetch<BasePopupCard>(
     `/api/popups/ending-soon?limit=${ENDING_SOON_LIMIT}`
   );
-  const { getLikedPopupState, handleClickLike } =
-    usePopupLike<EndingSoonCard>();
+  const { getLikedPopupState, handleClickLike } = usePopupLike<BasePopupCard>();
   const router = useRouter();
 
   if (isError) return <FetchError sectionTitle="곧 종료되는 팝업" />;

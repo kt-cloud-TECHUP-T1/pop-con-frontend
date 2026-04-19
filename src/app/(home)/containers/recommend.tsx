@@ -12,21 +12,11 @@ import { FetchError } from '@/components/common/fetch-error';
 import { NoContent } from '@/components/common/no-content';
 import { getPopupHref } from '@/lib/utils';
 
-interface RecommendedCard extends BasePopupCard {
-  phase: {
-    type: 'AUCTION' | 'DRAW';
-    status: 'UPCOMING' | 'OPEN' | 'CLOSED';
-    openAt: string;
-    closeAt: string;
-  };
-}
-
 export const Recommend = () => {
-  const { data: recommendedCards, isError } = useSectionFetch<RecommendedCard>(
+  const { data: recommendedCards, isError } = useSectionFetch<BasePopupCard>(
     '/api/popups/recommended'
   );
-  const { getLikedPopupState, handleClickLike } =
-    usePopupLike<RecommendedCard>();
+  const { getLikedPopupState, handleClickLike } = usePopupLike<BasePopupCard>();
   const router = useRouter();
 
   if (isError) return <FetchError sectionTitle="팝업 추천" />;
