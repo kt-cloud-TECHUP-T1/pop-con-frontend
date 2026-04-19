@@ -8,7 +8,7 @@ import type { LikedPopup, LikedPopupsData } from '../../../types/liked-popup';
 import { LikedPopupCardSkeleton } from '../../../components/skeletons';
 import { useRouter } from 'next/navigation';
 import { authFetch } from '../../../lib/auth-fetch';
-import { usePopupLike } from '@/app/(home)/hooks/use-popup-like';
+import { usePopupLike } from '@/features/popups/hooks/use-popup-like';
 import { snackbar } from '@/components/ui/snackbar';
 
 const PAGE = 0;

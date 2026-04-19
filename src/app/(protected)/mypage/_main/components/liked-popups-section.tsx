@@ -13,7 +13,7 @@ import { authFetch } from '@/app/(protected)/mypage/lib/auth-fetch';
 import { useRouter } from 'next/navigation';
 import { LIKED_POPUPS_QUERY_KEY } from '../../activity/liked-popups/components/liked-popups-page-client';
 import { snackbar } from '@/components/ui/snackbar';
-import { usePopupLike } from '@/app/(home)/hooks/use-popup-like';
+import { usePopupLike } from '@/features/popups/hooks/use-popup-like';
 
 const PAGE = 0;
 const SIZE = 8;
