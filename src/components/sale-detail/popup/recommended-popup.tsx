@@ -3,30 +3,30 @@
 import { useRouter } from 'next/navigation';
 
 import { Section } from '@/app/(home)/components/section';
-import { usePopupLike } from '@/app/(home)/hooks/use-popup-like';
+import { usePopupLike } from '@/features/popups/hooks/use-popup-like';
 import { useSectionFetch } from '@/app/(home)/hooks/use-section-fetch';
 import { BasePopupCard } from '@/app/(home)/types';
 import { CardThumbnail } from '@/components/content/card-thumbnail';
 import { GridCarousel } from '@/components/content/grid-carousel';
+import { NoContent } from '@/components/common/no-content';
+import { getPopupHref } from '@/lib/utils';
 
 interface RecommendedPopupCard extends BasePopupCard {
   overlay: null;
 }
 
 export const RecommendedPopup = () => {
-  const recommendedPopups =
+  const { data: recommendedPopups, isError } =
     useSectionFetch<RecommendedPopupCard>('/api/popups/recommended');
   const { getLikedPopupState, handleClickLike } =
     usePopupLike<RecommendedPopupCard>();
   const router = useRouter();
 
-  const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
-    router.push(
-      phaseType === 'DRAW' ? `/draw/${popupId}` : `/auction/${popupId}`
-    );
-  };
-
+  if (isError) return null;
   if (recommendedPopups === null) return null;
+  if (recommendedPopups.length === 0) {
+    return <NoContent message="추천 팝업이 없어요." />;
+  }
 
   return (
     <Section
@@ -60,7 +60,7 @@ export const RecommendedPopup = () => {
                 title={recommendedPopup.title}
                 description={recommendedPopup.subText ?? undefined}
                 caption={recommendedPopup.caption ?? undefined}
-                countView={recommendedPopup.stats.viewCount}
+                countView={recommendedPopup.stats?.viewCount || 0}
                 countLike={likedState.likeCount}
                 showButtonLike
                 showCountView
@@ -68,9 +68,11 @@ export const RecommendedPopup = () => {
                 isLiked={likedState.isLiked}
                 onClickLike={() => handleClickLike(recommendedPopup)}
                 onClick={() =>
-                  handleClick(
-                    recommendedPopup.popupId,
-                    recommendedPopup.phase.type
+                  router.push(
+                    getPopupHref(
+                      recommendedPopup.popupId,
+                      recommendedPopup.phase.type
+                    )
                   )
                 }
               />
