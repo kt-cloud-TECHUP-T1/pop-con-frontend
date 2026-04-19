@@ -47,7 +47,7 @@ export default function DrawEntrySuccessModal({
           <div className="flex gap-[16px] border-b border-[var(--line-3)] pb-ms">
             <div className="relative w-[62px] aspect-[3/4] rounded-s border overflow-hidden">
               <Image
-                src={data.vThumbnailUrl}
+                src={data.thumbnailUrl}
                 alt={data.popupTitle}
                 fill
                 className="object-cover"
