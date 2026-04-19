@@ -25,7 +25,7 @@ export function toDrawActivityItem(item: DrawHistoryItem): ActivityItem {
   return {
     id: item.id,
     title: item.title,
-    image: item.vthumbnailUrl,
+    image: item.thumbnailUrl,
     price: formatWon(item.price),
     paidAt: item.paidAt ? formatDate(item.paidAt) : '-',
     stateLabel: getDrawStatusLabel(item),

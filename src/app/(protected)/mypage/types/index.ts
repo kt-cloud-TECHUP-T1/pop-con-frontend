@@ -18,7 +18,7 @@ export type DrawHistoryStatus = 'APPLIED' | 'WINNER' | 'FAILED';
 export interface DrawHistoryItem {
   id: number;
   drawId: number;
-  vthumbnailUrl: string | null;
+  thumbnailUrl: string | null;
   title: string;
   price: number;
   paidAt: string | null;

@@ -11,7 +11,7 @@ export type DrawEntryValidationErrorData = {
 };
 
 export type DrawEntrySuccessData = {
-  vThumbnailUrl: string;
+  thumbnailUrl: string;
   popupTitle: string;
   popupAddress: string;
   entryDate: string;
