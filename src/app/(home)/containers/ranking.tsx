@@ -7,7 +7,10 @@ import { Section } from '../components/section';
 import { RankingSkeleton } from '../components/skeletons';
 import { BasePopupCard, PopupPhase } from '../types';
 import { useSectionFetch } from '../hooks/use-section-fetch';
-import { usePopupLike } from '../hooks/use-popup-like';
+import { usePopupLike } from '@/features/popups/hooks/use-popup-like';
+import { FetchError } from '@/components/common/fetch-error';
+import { NoContent } from '@/components/common/no-content';
+import { getPopupHref } from '@/lib/utils';
 
 interface RankingCard extends BasePopupCard {
   overlay: {
@@ -18,19 +21,16 @@ interface RankingCard extends BasePopupCard {
 }
 
 export const Ranking = () => {
-  const rankingCards = useSectionFetch<RankingCard>('/api/popups/rankings');
+  const { data: rankingCards, isError } = useSectionFetch<RankingCard>(
+    '/api/popups/rankings'
+  );
   const { getLikedPopupState, handleClickLike } = usePopupLike<RankingCard>();
   const router = useRouter();
 
-  const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
-    if (phaseType === 'AUCTION') {
-      router.push(`/auction/${popupId}`);
-    } else {
-      router.push(`/draw/${popupId}`);
-    }
-  };
-
+  if (isError) return <FetchError sectionTitle="랭킹" />;
   if (rankingCards === null) return <RankingSkeleton />;
+  if (rankingCards.length === 0)
+    return <NoContent message="순위에 오른 팝업이 없어요." />;
 
   return (
     <Section
@@ -39,47 +39,42 @@ export const Ranking = () => {
       // TODO 더보기 작업 필요
       // onClickMore={handleClickMore}
     >
-      {rankingCards.length === 0 ? (
-        <div className="min-h-[250px] flex items-center justify-center">
-          순위에 오른 팝업이 없어요.
-        </div>
-      ) : (
-        <GridCarousel
-          gridSize={{
-            default: 2,
-            md: 3,
-            lg: 5,
-          }}
-          carouselOpts={{ align: 'start', loop: true }}
-          alignArrowToRatio="3/4"
-          items={rankingCards.map((rankingCard) => {
-            const likedState = getLikedPopupState(rankingCard);
+      <GridCarousel
+        gridSize={{
+          default: 2,
+          md: 3,
+          lg: 5,
+        }}
+        carouselOpts={{ align: 'start', loop: true }}
+        alignArrowToRatio="3/4"
+        items={rankingCards.map((rankingCard) => {
+          const likedState = getLikedPopupState(rankingCard);
 
-            return (
-              <CardThumbnail
-                key={`ranking-${rankingCard.popupId}`}
-                index={rankingCard.overlay.rank}
-                thumbnailUrl={rankingCard.thumbnailUrl ?? undefined}
-                thumbnailRatio="3/4"
-                title={rankingCard.title}
-                description={rankingCard.subText ?? undefined}
-                caption={rankingCard.caption ?? undefined}
-                countView={rankingCard.stats.viewCount}
-                countLike={likedState.likeCount}
-                showButtonLike
-                showCountView
-                showCountLike
-                // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
-                isLiked={likedState.isLiked}
-                onClickLike={() => handleClickLike(rankingCard)}
-                onClick={() =>
-                  handleClick(rankingCard.popupId, rankingCard.phase.type)
-                }
-              />
-            );
-          })}
-        />
-      )}
+          return (
+            <CardThumbnail
+              key={`ranking-${rankingCard.popupId}`}
+              index={rankingCard.overlay.rank}
+              thumbnailUrl={rankingCard.thumbnailUrl ?? undefined}
+              thumbnailRatio="3/4"
+              title={rankingCard.title}
+              description={rankingCard.subText ?? undefined}
+              caption={rankingCard.caption ?? undefined}
+              countView={rankingCard.stats?.viewCount || 0}
+              countLike={likedState.likeCount}
+              showButtonLike
+              showCountView
+              showCountLike
+              isLiked={likedState.isLiked}
+              onClickLike={() => handleClickLike(rankingCard)}
+              onClick={() =>
+                router.push(
+                  getPopupHref(rankingCard.popupId, rankingCard.phase.type)
+                )
+              }
+            />
+          );
+        })}
+      />
     </Section>
   );
 };

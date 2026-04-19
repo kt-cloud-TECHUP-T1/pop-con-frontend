@@ -2,46 +2,24 @@
 
 import { CardOverlay } from '@/components/content/card-overlay';
 import { GridCarousel } from '@/components/content/grid-carousel';
-import { useRouter } from 'next/navigation';
 import { MainBannerSkeleton } from '../components/skeletons';
 import { useSectionFetch } from '../hooks/use-section-fetch';
-import { PopupPhase } from '../types';
-
-interface BannerCard {
-  popupId: number;
-  title: string;
-  supportingText: string | null;
-  subText: string | null;
-  caption: string | null;
-  thumbnailUrl: string | null;
-  liked: boolean | null;
-  stats: null;
-  overlay: null;
-  phase: PopupPhase;
-}
+import { BasePopupCard } from '../types';
+import { FetchError } from '@/components/common/fetch-error';
+import { useRouter } from 'next/navigation';
+import { getPopupHref } from '@/lib/utils';
 
 const BANNER_LIMIT = 5;
 
 export const MainBanner = () => {
-  const bannerCards = useSectionFetch<BannerCard>(
+  const { data: bannerCards, isError } = useSectionFetch<BasePopupCard>(
     `/api/popups/banners?limit=${BANNER_LIMIT}`
   );
   const router = useRouter();
 
+  if (isError) return <FetchError sectionTitle="메인 배너" />;
   if (bannerCards === null) return <MainBannerSkeleton />;
-
   if (bannerCards.length === 0) return null;
-
-  const handleBannersClick = (
-    popupId: number,
-    phaseType: 'AUCTION' | 'DRAW'
-  ) => {
-    if (phaseType === 'AUCTION') {
-      router.push(`/auction/${popupId}`);
-    } else {
-      router.push(`/draw/${popupId}`);
-    }
-  };
 
   return (
     <GridCarousel
@@ -58,7 +36,9 @@ export const MainBanner = () => {
             description={bannerCard.supportingText ?? undefined}
             caption={bannerCard.caption ?? undefined}
             onClick={() =>
-              handleBannersClick(bannerCard.popupId, bannerCard.phase.type)
+              router.push(
+                getPopupHref(bannerCard.popupId, bannerCard.phase.type)
+              )
             }
           />
         </div>

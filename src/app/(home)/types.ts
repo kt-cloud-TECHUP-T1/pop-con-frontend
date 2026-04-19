@@ -16,13 +16,7 @@ export interface BasePopupCard {
   stats: {
     likeCount: number;
     viewCount: number;
-  };
+  } | null;
   overlay: { type: string; rank: number | null } | null;
   phase: PopupPhase;
-}
-
-export interface BaseCardResponse<T, S extends string = string> {
-  sectionKey: S;
-  itemCount: number;
-  items: T[];
 }

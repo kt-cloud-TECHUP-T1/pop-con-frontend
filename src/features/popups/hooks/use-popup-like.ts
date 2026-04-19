@@ -3,14 +3,14 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { snackbar } from '@/components/ui/snackbar';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
-import { deleteHomePopupLike, postHomePopupLike } from '../actions';
-import { HOME_SECTION_QUERY_KEY } from './use-section-fetch';
+import { deleteHomePopupLike, postHomePopupLike } from '@/app/(home)/actions';
+import { HOME_SECTION_QUERY_KEY } from '@/app/(home)/hooks/use-section-fetch';
 import { LIKED_POPUPS_QUERY_KEY } from '@/app/(protected)/mypage/activity/liked-popups/components/liked-popups-page-client';
 
 type PopupLikeBase = {
   popupId: number;
   liked: boolean | null;
-  stats: { likeCount: number };
+  stats: { likeCount: number | null } | null;
 };
 
 function isPopupCardItem(
@@ -44,7 +44,10 @@ function updatePopupLikeInItems(
       liked: nextIsLiked,
       stats: {
         ...item.stats,
-        likeCount: Math.max(0, item.stats.likeCount + (nextIsLiked ? 1 : -1)),
+        likeCount: Math.max(
+          0,
+          (item.stats?.likeCount || 0) + (nextIsLiked ? 1 : -1)
+        ),
       },
     };
   });
@@ -110,7 +113,7 @@ export function usePopupLike<T extends PopupLikeBase>(options?: {
 
   const getLikedPopupState = (popup: T) => ({
     isLiked: popup.liked ?? false,
-    likeCount: popup.stats.likeCount,
+    likeCount: popup.stats?.likeCount || 0,
   });
 
   const handleClickLike = (popup: T) => {

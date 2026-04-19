@@ -7,10 +7,12 @@ import { RecommendSkeleton } from '../components/skeletons';
 import { useRouter } from 'next/navigation';
 import { BasePopupCard } from '../types';
 import { useSectionFetch } from '../hooks/use-section-fetch';
-import { usePopupLike } from '../hooks/use-popup-like';
+import { usePopupLike } from '@/features/popups/hooks/use-popup-like';
+import { FetchError } from '@/components/common/fetch-error';
+import { NoContent } from '@/components/common/no-content';
+import { getPopupHref } from '@/lib/utils';
 
 interface RecommendedCard extends BasePopupCard {
-  overlay: null;
   phase: {
     type: 'AUCTION' | 'DRAW';
     status: 'UPCOMING' | 'OPEN' | 'CLOSED';
@@ -20,20 +22,17 @@ interface RecommendedCard extends BasePopupCard {
 }
 
 export const Recommend = () => {
-  const recommendedCards = useSectionFetch<RecommendedCard>(
+  const { data: recommendedCards, isError } = useSectionFetch<RecommendedCard>(
     '/api/popups/recommended'
   );
   const { getLikedPopupState, handleClickLike } =
     usePopupLike<RecommendedCard>();
   const router = useRouter();
 
-  const handleClick = (popupId: number, phaseType: 'AUCTION' | 'DRAW') => {
-    router.push(
-      phaseType === 'DRAW' ? `/draw/${popupId}` : `/auction/${popupId}`
-    );
-  };
-
+  if (isError) return <FetchError sectionTitle="팝업 추천" />;
   if (recommendedCards === null) return <RecommendSkeleton />;
+  if (recommendedCards.length === 0)
+    return <NoContent message="추천 팝업이 없어요." />;
 
   return (
     <Section
@@ -42,50 +41,45 @@ export const Recommend = () => {
       // TODO 더보기 작업 필요
       // onClickMore={handleClickMore}
     >
-      {recommendedCards.length === 0 ? (
-        <div className="min-h-[250px] flex items-center justify-center">
-          추천 팝업이 없어요.
-        </div>
-      ) : (
-        <GridCarousel
-          gridSize={{
-            default: 2,
-            md: 3,
-            lg: 4,
-          }}
-          carouselOpts={{ align: 'start', loop: true }}
-          alignArrowToRatio="3/4"
-          items={recommendedCards.map((recommendedCard) => {
-            const likedState = getLikedPopupState(recommendedCard);
+      <GridCarousel
+        gridSize={{
+          default: 2,
+          md: 3,
+          lg: 4,
+        }}
+        carouselOpts={{ align: 'start', loop: true }}
+        alignArrowToRatio="3/4"
+        items={recommendedCards.map((recommendedCard) => {
+          const likedState = getLikedPopupState(recommendedCard);
 
-            return (
-              <CardThumbnail
-                key={`recommended-${recommendedCard.popupId}`}
-                thumbnailUrl={recommendedCard.thumbnailUrl ?? undefined}
-                thumbnailAlt={recommendedCard.caption ?? undefined}
-                thumbnailRatio="3/4"
-                title={recommendedCard.title}
-                description={recommendedCard.subText ?? undefined}
-                caption={recommendedCard.caption ?? undefined}
-                countView={recommendedCard.stats.viewCount}
-                countLike={likedState.likeCount}
-                showButtonLike
-                showCountView
-                showCountLike
-                // TODO 좋아요 작업 필요. 현재는 초기 표시 상태만 넘김
-                isLiked={likedState.isLiked}
-                onClickLike={() => handleClickLike(recommendedCard)}
-                onClick={() =>
-                  handleClick(
+          return (
+            <CardThumbnail
+              key={`recommended-${recommendedCard.popupId}`}
+              thumbnailUrl={recommendedCard.thumbnailUrl ?? undefined}
+              thumbnailAlt={recommendedCard.caption ?? undefined}
+              thumbnailRatio="3/4"
+              title={recommendedCard.title}
+              description={recommendedCard.subText ?? undefined}
+              caption={recommendedCard.caption ?? undefined}
+              countView={recommendedCard.stats?.viewCount || 0}
+              countLike={likedState.likeCount}
+              showButtonLike
+              showCountView
+              showCountLike
+              isLiked={likedState.isLiked}
+              onClickLike={() => handleClickLike(recommendedCard)}
+              onClick={() =>
+                router.push(
+                  getPopupHref(
                     recommendedCard.popupId,
                     recommendedCard.phase.type
                   )
-                }
-              />
-            );
-          })}
-        />
-      )}
+                )
+              }
+            />
+          );
+        })}
+      />
     </Section>
   );
 };

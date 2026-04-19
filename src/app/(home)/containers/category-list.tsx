@@ -2,9 +2,11 @@
 
 import Link from 'next/link';
 import { useSectionFetch } from '../hooks/use-section-fetch';
-import { CategoryListSkeleton } from './skeletons';
+import { CategoryListSkeleton } from '../components/skeletons';
 import { PopupPhase } from '../types';
 import { Box } from '@/components/ui/box';
+import { FetchError } from '@/components/common/fetch-error';
+import { getPopupHref } from '@/lib/utils';
 
 interface CategoryItem {
   iconUrl: string | null;
@@ -16,22 +18,20 @@ interface CategoryItem {
 const CATEGORY_LIMIT = 6;
 
 export const CategoryList = () => {
-  const categories = useSectionFetch<CategoryItem>(
+  const { data: categories, isError } = useSectionFetch<CategoryItem>(
     `/api/popups/categories?limit=${CATEGORY_LIMIT}`
   );
 
+  if (isError) return <FetchError sectionTitle="카테고리 목록" />;
   if (categories === null) return <CategoryListSkeleton />;
   if (categories.length === 0) return null;
-
-  const getCategoryHref = (popupId: number, phaseType: PopupPhase['type']) =>
-    phaseType === 'AUCTION' ? `/auction/${popupId}` : `/draw/${popupId}`;
 
   return (
     <div className="flex justify-center items-center flex-wrap gap-10 my-3xl">
       {categories.map((category, index) => (
         <Link
           key={`category-${category.popupId}-${index}`}
-          href={getCategoryHref(category.popupId, category.phase.type)}
+          href={getPopupHref(category.popupId, category.phase.type)}
           className="flex flex-col items-center basis-auto cursor-pointer"
         >
           <Box
