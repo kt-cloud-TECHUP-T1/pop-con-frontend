@@ -34,10 +34,10 @@ interface TicketDetail {
   paymentMethod: string | null;
   cardName: string | null;
   cardNumber: string | null;
-  paidAt: string;
-  originalPrice: number;
-  discountAmount: number;
-  finalPrice: number;
+  paidAt: string | null;
+  originalPrice: number | null;
+  discountAmount: number | null;
+  finalPrice: number | null;
 }
 
 function TicketDetailSkeleton() {
@@ -139,7 +139,7 @@ export function TicketDetailClient() {
           </Typography>
         </Box>
 
-        <div className="rounded-[var(--radius-s)] border-4 border-[var(--btn-primary-default)] p-4">
+        <div className="rounded-[var(--radius-ds-s)] border-4 border-[var(--btn-primary-default)] p-4">
           <Image
             src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(ticket.qrValue)}`}
             alt="QR 코드"
@@ -179,11 +179,16 @@ export function TicketDetailClient() {
           },
           {
             label: '결제 금액',
-            value: `${ticket.finalPrice.toLocaleString('ko-KR')}원`,
+            value:
+              ticket.finalPrice != null
+                ? `${ticket.finalPrice.toLocaleString('ko-KR')}원`
+                : '-',
           },
           {
             label: '결제 일시',
-            value: ticket.paidAt.replace('T', ' ').slice(0, 16),
+            value: ticket.paidAt
+              ? ticket.paidAt.replace('T', ' ').slice(0, 16)
+              : '-',
           },
         ]}
       />

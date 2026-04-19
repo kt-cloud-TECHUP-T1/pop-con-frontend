@@ -56,7 +56,7 @@ export function TicketCard({ ticket }: TicketCardProps) {
         </Typography>
       </div>
 
-      {isAuction && <Icon name="ChevronRight" size={24} className="shrink-0" />}
+      <Icon name="ChevronRight" size={24} className="shrink-0" />
     </>
   );
 

@@ -14,14 +14,14 @@ export const DRAW_STATUS_FILTERS: { value: DrawStatusFilter; label: string }[] =
     { value: 'won', label: '드로우 당첨' },
     { value: 'notWon', label: '드로우 미당첨' },
     { value: 'inProgress', label: '드로우 진행중' },
-    { value: 'pendingResult', label: '결과 확인 대기중' },
+    { value: 'pendingResult', label: '결과 발표 대기중' },
   ];
 
 const STATUS_LABEL_MAP: Record<DrawStatusFilter, string> = {
   won: '드로우 당첨',
   notWon: '드로우 미당첨',
   inProgress: '드로우 진행중',
-  pendingResult: '결과 확인 대기중',
+  pendingResult: '결과 발표 대기중',
 };
 
 const STATUS_TONE_MAP: Record<DrawStatusFilter, ActivityStatusTone> = {
@@ -31,18 +31,23 @@ const STATUS_TONE_MAP: Record<DrawStatusFilter, ActivityStatusTone> = {
   pendingResult: 'warning',
 };
 
-type DrawStatusInput = Pick<
-  DrawHistoryItem,
-  'status' | 'resultAvailable' | 'resultChecked' | 'clickable'
->;
+type DrawStatusInput = Pick<DrawHistoryItem, 'displayStatus'>;
 
 export function getDrawStatusFilter(item: DrawStatusInput): DrawStatusFilter {
-  if (item.status === 'WINNER') return 'won';
-  if (item.status === 'FAILED') return 'notWon';
-  if (item.resultAvailable && !item.resultChecked && item.clickable) {
-    return 'pendingResult';
+  switch (item.displayStatus) {
+    case '진행 중':
+      return 'inProgress';
+    case '추첨 대기':
+    case '결과 발표 대기':
+      return 'pendingResult';
+    case '당첨':
+    case '티켓 발급 완료':
+      return 'won';
+    case '미당첨':
+      return 'notWon';
+    default:
+      return 'inProgress';
   }
-  return 'inProgress';
 }
 
 export function getDrawStatusLabel(item: DrawStatusInput): string {
