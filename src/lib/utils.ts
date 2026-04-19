@@ -123,3 +123,7 @@ export function formatEntryTime(entryTime: string) {
 
   return `${period} ${displayHour}:${minuteText.padStart(2, '0')}`;
 }
+
+export function getPopupHref(popupId: number, phaseType: 'AUCTION' | 'DRAW') {
+  return phaseType === 'AUCTION' ? `/auction/${popupId}` : `/draw/${popupId}`;
+}
