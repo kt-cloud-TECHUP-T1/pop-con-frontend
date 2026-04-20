@@ -27,7 +27,7 @@ export const Magazine = () => {
   if (isError) return <FetchError sectionTitle="매거진" />;
   if (magazineCards === null) return <MagazineSkeleton />;
   if (magazineCards.length === 0) {
-    return <NoContent message="현재 매거진이 없어요." />;
+    return <NoContent title="매거진" message="현재 매거진이 없어요." />;
   }
 
   const handleClick = (magazineId: number) => {
