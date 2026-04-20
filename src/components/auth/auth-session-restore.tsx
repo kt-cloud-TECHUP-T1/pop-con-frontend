@@ -45,6 +45,15 @@ export default function AuthSessionRestore({
         : null;
     if (superToken) {
       setAccessToken(superToken);
+      void (async () => {
+        try {
+          const billingList = await getBillingList(superToken);
+          setPaymentRegistered(billingList.length > 0);
+        } catch (error: unknown) {
+          console.error('[billing] error:', error);
+          setPaymentRegistered(null);
+        }
+      })();
       return;
     }
 

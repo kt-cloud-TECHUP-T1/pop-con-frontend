@@ -46,7 +46,13 @@ type SocialProvider = 'kakao' | 'naver';
 const REDIRECT_DELAY = 1000;
 
 const isValidRedirectPath = (value: string | null): value is string => {
-  return typeof value === 'string' && value.startsWith('/');
+  return (
+    typeof value === 'string' &&
+    value.startsWith('/') &&
+    // 프로토콜 상대 URL(//evil.com) 및 백슬래시 기반 외부 리다이렉트 방지
+    !value.startsWith('//') &&
+    !value.includes('\\')
+  );
 };
 
 export default function Login() {
