@@ -125,8 +125,7 @@ export default function Login() {
       try {
         const billingList = await getBillingList(accessToken);
         setPaymentRegistered(billingList.length > 0);
-      } catch (error: unknown) {
-        console.error('[billing] error:', error);
+      } catch {
         setPaymentRegistered(null);
       }
 
