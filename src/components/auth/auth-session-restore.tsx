@@ -1,10 +1,15 @@
 'use client';
 
 import { getBillingList } from '@/app/api/payment/get-billing-list';
+import { SUPER_ACCESS_TOKEN_KEY } from '@/constants/auth';
 import { useAuthStore } from '@/features/auth/stores/auth-store';
 import { useEffect, useRef } from 'react';
 
-export default function AuthSessionRestore() {
+export default function AuthSessionRestore({
+  isLoggedIn,
+}: {
+  isLoggedIn: boolean;
+}) {
   const requestedRef = useRef(false);
   const setAccessToken = useAuthStore((state) => state.setAccessToken);
   const clearAccessToken = useAuthStore((state) => state.clearAccessToken);
@@ -31,6 +36,31 @@ export default function AuthSessionRestore() {
         setAccessToken(devToken);
         return;
       }
+    }
+
+    // 슈퍼(시연) 계정 세션: sessionStorage에 저장된 accessToken 복구
+    const superToken =
+      typeof window !== 'undefined'
+        ? window.sessionStorage.getItem(SUPER_ACCESS_TOKEN_KEY)
+        : null;
+    if (superToken) {
+      setAccessToken(superToken);
+      void (async () => {
+        try {
+          const billingList = await getBillingList(superToken);
+          setPaymentRegistered(billingList.length > 0);
+        } catch (error: unknown) {
+          console.error('[billing] error:', error);
+          setPaymentRegistered(null);
+        }
+      })();
+      return;
+    }
+
+    // refresh_token 쿠키 부재 시 refresh 호출 스킵
+    if (!isLoggedIn) {
+      clearAccessToken();
+      return;
     }
 
     const restoreSession = async () => {
@@ -87,7 +117,13 @@ export default function AuthSessionRestore() {
     };
 
     void restoreSession();
-  }, [setAccessToken, clearAccessToken, setAuthLoading, setPaymentRegistered]);
+  }, [
+    isLoggedIn,
+    setAccessToken,
+    clearAccessToken,
+    setAuthLoading,
+    setPaymentRegistered,
+  ]);
 
   return null;
 }

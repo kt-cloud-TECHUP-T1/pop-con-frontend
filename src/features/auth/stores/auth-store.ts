@@ -1,5 +1,6 @@
 'use client';
 
+import { SUPER_ACCESS_TOKEN_KEY } from '@/constants/auth';
 import { create } from 'zustand';
 
 export type AuthStatus = 'loading' | 'authenticated' | 'unauthenticated';
@@ -41,13 +42,17 @@ export const useAuthStore = create<AuthState>()((set) => ({
       authStatus: 'authenticated',
     }),
 
-  clearAccessToken: () =>
+  clearAccessToken: () => {
+    if (typeof window !== 'undefined') {
+      window.sessionStorage.removeItem(SUPER_ACCESS_TOKEN_KEY);
+    }
     set({
       accessToken: null,
       authStatus: 'unauthenticated',
       isPaymentRegistered: null,
       billingCards: [],
-    }),
+    });
+  },
 
   setAuthLoading: () =>
     set({

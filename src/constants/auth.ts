@@ -123,6 +123,8 @@ export const TERMS: readonly {
 
 export const LOGIN_REDIRECT_KEY = 'loginRedirectPath';
 export const SNACKBAR_KEY = 'login_snackbar';
+// 슈퍼(시연) 계정 세션 — refresh_token 쿠키가 없어 탭 세션 동안만 유지
+export const SUPER_ACCESS_TOKEN_KEY = '__super_access_token';
 
 export const SNACKBAR_MESSAGES = {
   LOGIN_SUCCESS: {
