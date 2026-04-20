@@ -22,7 +22,12 @@ export const Recommend = () => {
   if (isError) return <FetchError sectionTitle="팝업 추천" />;
   if (recommendedCards === null) return <RecommendSkeleton />;
   if (recommendedCards.length === 0)
-    return <NoContent message="추천 팝업이 없어요." />;
+    return (
+      <NoContent
+        title="팝콘님을 위한 팝업 추천"
+        message="추천 팝업이 없어요."
+      />
+    );
 
   return (
     <Section

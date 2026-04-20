@@ -24,7 +24,12 @@ export const EndingSoon = () => {
   if (isError) return <FetchError sectionTitle="곧 종료되는 팝업" />;
   if (endingSoonCards === null) return <EndingSoonSkeleton />;
   if (endingSoonCards.length === 0) {
-    return <NoContent message="곧 종료되는 팝업이 없어요." />;
+    return (
+      <NoContent
+        title="곧 종료되는 팝업"
+        message="곧 종료되는 팝업이 없어요."
+      />
+    );
   }
 
   return (

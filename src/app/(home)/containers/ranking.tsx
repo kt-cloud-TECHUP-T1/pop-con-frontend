@@ -29,7 +29,7 @@ export const Ranking = () => {
   if (isError) return <FetchError sectionTitle="랭킹" />;
   if (rankingCards === null) return <RankingSkeleton />;
   if (rankingCards.length === 0)
-    return <NoContent message="순위에 오른 팝업이 없어요." />;
+    return <NoContent title="팝콘 랭킹" message="순위에 오른 팝업이 없어요." />;
 
   return (
     <Section

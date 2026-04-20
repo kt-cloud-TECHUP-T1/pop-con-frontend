@@ -24,7 +24,12 @@ export const Notable = () => {
   if (isError) return <FetchError sectionTitle="주목할 만한 팝업" />;
   if (notableCards === null) return <NotableSkeleton />;
   if (notableCards.length === 0) {
-    return <NoContent message="주목할 만한 팝업이 아직 없어요." />;
+    return (
+      <NoContent
+        title="주목할 만한 팝업"
+        message="주목할 만한 팝업이 아직 없어요."
+      />
+    );
   }
 
   return (

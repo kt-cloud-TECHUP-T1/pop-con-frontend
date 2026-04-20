@@ -40,7 +40,7 @@ export const DutchAuction = () => {
   if (isError) return <FetchError sectionTitle="더치 경매" />;
   if (dutchAuctionCards === null) return <DutchAuctionSkeleton />;
   if (dutchAuctionCards.length === 0)
-    return <NoContent message="진행 중인 경매가 없어요." />;
+    return <NoContent title="더치 경매" message="진행 중인 경매가 없어요." />;
 
   const handleClick = (popupId: number) => {
     router.push(`/auction/${popupId}`);

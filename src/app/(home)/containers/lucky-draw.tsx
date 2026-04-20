@@ -51,8 +51,8 @@ export const LuckyDraw = () => {
       ? '진행 중인 드로우가 없어요.'
       : '오픈 예정 드로우가 없어요.';
 
-  if (activeDrawCards.length === 0) {
-    return <NoContent message={activeTabLabel} />;
+  if (openCards.length === 0 && upcomingCards.length === 0) {
+    return <NoContent message="진행 중인 드로우가 없어요." />;
   }
 
   const handleClick = (popupId: number) => {
@@ -89,49 +89,53 @@ export const LuckyDraw = () => {
         ))}
       </div>
 
-      <GridCarousel
-        gridSize={{ default: 2, md: 3, lg: 4 }}
-        carouselOpts={{ align: 'start', loop: true }}
-        alignArrowToRatio="3/4"
-        items={activeDrawCards.map((activeDrawCard) => {
-          const likedState = getLikedPopupState(activeDrawCard);
-          const { datePart, timePart } =
-            activeDrawCard.overlay?.type === 'DRAW_OPEN_AT'
-              ? formatOpenAt(activeDrawCard.phase.openAt)
-              : { datePart: null, timePart: null };
+      {activeDrawCards.length === 0 ? (
+        <NoContent message={activeTabLabel} />
+      ) : (
+        <GridCarousel
+          gridSize={{ default: 2, md: 3, lg: 4 }}
+          carouselOpts={{ align: 'start', loop: true }}
+          alignArrowToRatio="3/4"
+          items={activeDrawCards.map((activeDrawCard) => {
+            const likedState = getLikedPopupState(activeDrawCard);
+            const { datePart, timePart } =
+              activeDrawCard.overlay?.type === 'DRAW_OPEN_AT'
+                ? formatOpenAt(activeDrawCard.phase.openAt)
+                : { datePart: null, timePart: null };
 
-          return (
-            <CardThumbnail
-              key={`lucky-draw-${activeDrawCard.popupId}`}
-              thumbnailUrl={activeDrawCard.thumbnailUrl ?? undefined}
-              thumbnailRatio="3/4"
-              title={activeDrawCard.title}
-              description={activeDrawCard.subText ?? undefined}
-              caption={activeDrawCard.caption ?? undefined}
-              countView={activeDrawCard.stats?.viewCount || 0}
-              countLike={likedState.likeCount}
-              showButtonLike
-              showCountView
-              showCountLike
-              onClick={() => handleClick(activeDrawCard.popupId)}
-              onClickLike={() => handleClickLike(activeDrawCard)}
-              isLiked={likedState.isLiked}
-              overlayBadge={
-                datePart && timePart ? (
-                  <Typography
-                    variant="label-2"
-                    weight="medium"
-                    className="text-white"
-                  >
-                    {datePart} {timePart} 오픈
-                  </Typography>
-                ) : undefined
-              }
-              overlayBadgeBackground="var(--orange-50)"
-            />
-          );
-        })}
-      />
+            return (
+              <CardThumbnail
+                key={`lucky-draw-${activeDrawCard.popupId}`}
+                thumbnailUrl={activeDrawCard.thumbnailUrl ?? undefined}
+                thumbnailRatio="3/4"
+                title={activeDrawCard.title}
+                description={activeDrawCard.subText ?? undefined}
+                caption={activeDrawCard.caption ?? undefined}
+                countView={activeDrawCard.stats?.viewCount || 0}
+                countLike={likedState.likeCount}
+                showButtonLike
+                showCountView
+                showCountLike
+                onClick={() => handleClick(activeDrawCard.popupId)}
+                onClickLike={() => handleClickLike(activeDrawCard)}
+                isLiked={likedState.isLiked}
+                overlayBadge={
+                  datePart && timePart ? (
+                    <Typography
+                      variant="label-2"
+                      weight="medium"
+                      className="text-white"
+                    >
+                      {datePart} {timePart} 오픈
+                    </Typography>
+                  ) : undefined
+                }
+                overlayBadgeBackground="var(--orange-50)"
+              />
+            );
+          })}
+        />
+      )}
     </Section>
   );
 };
