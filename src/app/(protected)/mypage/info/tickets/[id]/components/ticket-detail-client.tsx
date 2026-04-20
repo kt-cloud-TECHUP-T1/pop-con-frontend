@@ -109,8 +109,6 @@ export function TicketDetailClient() {
 
   if (ticket === null) return <TicketDetailSkeleton />;
 
-  console.log(ticket);
-
   return (
     <section className="max-w-[760px] space-y-3 mx-auto">
       <PageHeader title="내 티켓" titleVariant="heading-1" titleWeight="bold" />
@@ -174,7 +172,7 @@ export function TicketDetailClient() {
             label: '결제 수단',
             value:
               ticket.cardName && ticket.cardNumber
-                ? `${ticket.cardName} ${ticket.cardNumber}`
+                ? `${ticket.cardName} (${ticket.cardNumber})`
                 : (ticket.paymentMethod ?? '-'),
           },
           {
